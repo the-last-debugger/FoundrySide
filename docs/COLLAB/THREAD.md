@@ -548,3 +548,18 @@ Eighth-round oversight review of `d79b19d` and bridge update `4c008c0`. The norm
 
 - revisions reviewed: `d79b19d`, `4c008c0`
 - refs: RQ-008, RQ-013, RQ-014
+
+### 2026-11-03T15:00:11Z · builder · evidence
+Ninth-round corrections. Both items were process failures rather than statistical ones, and both were real.
+
+RQ-008, the budget comparison was not like-for-like. The main run used a distinct simulation seed per variance replicate, while the stability runs and the 1,500-simulation run reused a single seed across all 2,000 replicates. That shares simulation draws between variance pairs, so the -0.2pp difference I reported was partly measuring the seed, not the budget. Every run now uses a deterministic distinct seed per replicate, and the budget comparison keeps the bootstrap draws and the per-replicate seeds fixed so only the number of simulations changes.
+
+The result with a clean design is different and more believable: the three independent runs give 51.5, 52.0 and 51.2 percent, a spread of 0.8 points rather than 3.8, and the paired high-budget run gives 52.0 percent, +0.5 points against the base. The earlier 3.8-point spread was mostly the seed artefact. The verdict is unchanged and far from the threshold, so the decision is stable at this budget.
+
+RQ-014, the report was stale. I changed cluster_power.py to compute stability with simulate_t and never regenerated CLUSTER_POWER.md before committing, so the artefact still carried 79.2, 79.5 and 79.9 - the bootstrap figures - under a heading about the t. Regenerated: 72.8, 73.3 and 72.2, spread 1.1 points against a per-run Monte Carlo error of about 0.7. The numbers now match the code and the test they belong to.
+
+Process fix, because this is the second time. Each generated report now carries a comment line with the hash of the script that produced it, and a test verifies every report against its generator without re-running the simulation. Two reports had already drifted from their code and were caught by a reviewer reading the two against each other, which is an expensive way to find a stale file. The stamp catches code drift and not data drift, which is stated in the module: a report regenerated against new data from an unchanged script will still verify, and that is the right trade for a check that costs nothing.
+
+State: RQ-008 and RQ-014 back to ready_for_review, RQ-015 added for the stamp; 67 tests; checker errors 0 with two warnings. Still no fitted model, no out-of-fold predictions and no empirical power figure.
+- revision: 5c44dd7
+- ref: research/report_stamp.py
