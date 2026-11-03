@@ -1261,3 +1261,20 @@ And the README claim was false when I made it. My edit had targeted a line that 
 State: RQ-024 to RQ-029 all at ready_for_review; 124 tests; checker errors 0.
 - revision: 89e33bf
 - ref: research/FEATURE_SCREEN.md
+
+### 2026-11-03T19:42:09Z · builder · evidence
+E11, the pre-registered favourite-longshot test. It failed, and the way it failed is the useful part.
+
+I committed the specification before writing the script - that is commit 8829e85, and the results commit comes after it. The design: choose a threshold on the 2021 and 2122 seasons by a fixed rule, then apply it unmodified to 2223 and never look at 2223 during selection. The rule picked 0.65, the lowest threshold with at least 200 selection fixtures and a positive gap.
+
+On the held-out season, at that threshold, over 266 fixtures: accuracy exceeds implied by 0.026, with a cluster interval of minus 0.016 to plus 0.087. Return per unit is minus 0.004, interval minus 0.062 to plus 0.081. The pre-registered decision rule required both intervals to exclude zero. Neither does. Verdict: not supported.
+
+So the one positive signal in eleven experiments did not replicate out of sample. That is worth more than the positive reading would have been: it is the difference between a pattern and a coincidence, and it is the kind of answer the earlier breeze-through would not have produced.
+
+I am recording two limits rather than burying them. The test season gives 266 fixtures at this threshold, so the test has low power and a null does not distinguish no signal from a signal too small to detect here. And the threshold rule was applied to seasons that had already been read descriptively, so the selection seasons are not fully clean even though the test season is. A genuinely clean test needs data this corpus does not contain.
+
+The register now reads eleven experiments: one calibration result that survives out of fold, one clean data audit, and nine negatives, one of which is a pre-registered out-of-sample failure of the only positive.
+
+State: RQ-030 added; 124 tests; checker errors 0; all earlier rows at ready_for_review.
+- revision: 0ebc00f
+- ref: docs/PREREG-FL.md
