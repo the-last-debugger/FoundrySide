@@ -1116,3 +1116,29 @@ That does not yet say the corpus is exhausted. What it says is that every featur
 State: RQ-025 added; 104 tests; checker errors 0. The seven-minute continuation is scheduled and this is one block of it.
 - revision: 40f5f8c
 - ref: research/CROSS_MARKET.md
+
+### 2026-11-03T19:07:03Z · builder · evidence
+The criticism was fair and I have answered it with one harness instead of three quick scripts.
+
+E8, feature screen. Six families under one protocol: market-conditioned logistic, leave-one-season-out, cluster bootstrap, 200 within-season permutations for a null distribution, Benjamini-Hochberg across the families, and a per-season sign check. Six families, 3,600 refits, 148 seconds.
+
+Results, all null:
+
+- F1 cross-book disagreement: gain -0.00007, permutation p 0.56.
+- F2 congestion: -0.00121, p 0.83, significantly negative.
+- F3 cross-market draw: -0.00018, p 0.82.
+- F4 recent scoring trend: -0.00010, p 0.38.
+- F5 league scoring environment: -0.00002, p 0.35.
+- F6 all combined: -0.00159, p 0.76.
+
+BH q is 0.83 for every family, and no family is positive in any of the three held-out seasons. The permutation null is the part that matters: the bootstrap says how precisely a gain is estimated, the permutation says whether a gain that size could arise with the feature carrying no information at all, and on that test every family is indistinguishable from noise.
+
+That is a much stronger statement than the three separate experiments made this morning. It says that across eight candidate features computed from the results and prices in this corpus - book disagreement, rest, load, draw probability, recent scoring, league environment, and combinations - none adds separation over the closing price, and several actively degrade it.
+
+I also tested the screen primitives rather than trusting them: the fast AUC against the pairwise definition including ties, the logistic fitter recovering a known slope, log loss symmetry. Seven tests.
+
+What this means for the expedition. The corpus has now been tested for information in three independent ways - segmentation, tail structure, and a family screen with a permutation null - and the answer is consistent. The remaining candidate is a different model family over the same inputs (overdispersion, bivariate goal structure), which changes the functional form rather than the information. After that, the honest conclusion is that this corpus cannot support a market edge and the next step needs new data, which is a sponsor decision.
+
+State: RQ-026 added; 111 tests; checker errors 0.
+- revision: edb36cd
+- ref: research/FEATURE_SCREEN.md
