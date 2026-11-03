@@ -21,7 +21,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from scripts.collab_note import parse_entries  # noqa: E402
+from scripts.collab_note import (  # noqa: E402
+    ACKNOWLEDGED_MALFORMED,
+    malformed_headers,
+    parse_entries,
+)
 
 COLLAB = ROOT / "docs" / "COLLAB"
 
@@ -334,6 +338,11 @@ def run_checks(thread: Path, queue: Path, decisions: Path,
     rows, errors = load_queue(queue)
     coupling_errors, warnings = check_coupling(rows, entries, verify_revisions)
     errors.extend(coupling_errors)
+    for header in malformed_headers(thread):
+        if header in ACKNOWLEDGED_MALFORMED:
+            warnings.append(f"malformed entry header (acknowledged): {header}")
+        else:
+            errors.append(f"malformed entry header, not parsed as an entry: {header}")
     errors.extend(check_decisions(decisions))
     if check_history:
         errors.extend(check_thread_history(thread))

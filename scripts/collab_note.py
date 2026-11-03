@@ -23,13 +23,37 @@ THREAD = ROOT / "docs" / "COLLAB" / "THREAD.md"
 
 AUTHORS = ("builder", "sponsor", "oversight")
 KINDS = ("note", "question", "answer", "review", "decision", "direction",
-         "blocker", "evidence", "research", "clarification")
+         "blocker", "evidence", "research", "clarification", "response")
 
 HEADER_RE = re.compile(
     r"^###\s+(?P<stamp>[0-9T:+\-.Z]*)\s*[·]\s*(?P<author>\w+)\s*[·]\s*(?P<kind>\w+)\s*$"
 )
 REVISION_RE = re.compile(r"^-\s*revision:\s*(?P<value>\S*)\s*$")
 REF_RE = re.compile(r"^-\s*ref:\s*(?P<value>.*\S)\s*$")
+
+# A header that starts with '### ' but does not match HEADER_RE used to be treated as
+# body text of the preceding entry. That is a fail-open parse: the entry disappears
+# from the record, its author and kind are lost, and the checker reports a clean
+# thread. Malformed headers are therefore surfaced explicitly. Entries acknowledged
+# here stay visible as warnings on every run rather than being hidden or rewritten,
+# because THREAD.md is append-only and the malformed line is part of the history.
+ACKNOWLEDGED_MALFORMED = {
+    "### 2026-11-03T12:XX:00Z · sponsor · response":
+        "sponsor wrote a placeholder timestamp; the entry is parsed as body of the "
+        "preceding builder entry and is restated by the builder answer entry of "
+        "2026-11-03T12:20Z",
+}
+
+
+def malformed_headers(path: Path = THREAD) -> list[str]:
+    """Entry-looking lines that do not satisfy the header grammar, in file order."""
+    if not path.exists():
+        return []
+    found = []
+    for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+        if line.startswith("### ") and not HEADER_RE.match(line):
+            found.append(line.strip())
+    return found
 
 
 def parse_entries(path: Path = THREAD) -> list[dict[str, str]]:
@@ -126,6 +150,12 @@ def check(path: Path = THREAD) -> int:
             problems += 1
         if entry["kind"] in ("review", "evidence") and not entry["revision"]:
             print(f"WARN {entry['kind']} at {entry['stamp']} records no revision")
+    for header in malformed_headers(path):
+        if header in ACKNOWLEDGED_MALFORMED:
+            print(f"WARN malformed header (acknowledged): {header}")
+        else:
+            print(f"ERROR malformed header: {header}")
+            problems += 1
     print(f"entries={len(entries)} problems={problems}")
     return 0 if problems == 0 else 1
 

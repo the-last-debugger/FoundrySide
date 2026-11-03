@@ -325,7 +325,7 @@ with its input snapshot hash, written once, never updated.
 | §1–2 vision | Keep | Clear, honest, correctly distinguishes advantage from profit |
 | §3 research laboratory | Keep, fix F1 F3 | Right epistemology, no falsifier, wrong unit of record |
 | §4 market as reference | Keep, fix F5 F7 | Right instinct; the prior is narrower than it first looks; no null model |
-| §5 sports coverage | Cut to one sport | Four sports before one edge is breadth bought with attention |
+| §5 sports coverage | Phase 1 only | One sport is a sampling frame for the instrument, not a reduction of the vision — see `PROPOSAL_SETTLEMENT.md` §0 |
 | §6 accumulators | Keep as a one-day test | Best insight in the document; needs a measurement, not a laboratory |
 | §7 jackpots | Defer | Feasibility question unanswered and cheap to answer |
 | §8 user profiles | Rewrite (F9) | Encodes the return targets §17 disclaims |
@@ -387,7 +387,9 @@ of research answers them on the sponsor's behalf:
 
 1. **What is the product?** A board that restates the market's view with abstention
    discipline — which the evidence supports today — or an independent model that
-   must beat that board at matched coverage — which nothing yet supports.
+   must beat that board at matched coverage — which nothing yet supports. Phase one
+   does not settle this: it decides only what is displayed while the instrument is
+   unproven (`PROPOSAL_SETTLEMENT.md` §0).
 2. **What is the bar?** A number, in the units OLPRS already measured, that a model
    must clear before any claim is made about it.
 3. **What is out of scope for ninety days?** Accumulators, jackpots, multi-sport

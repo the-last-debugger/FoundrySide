@@ -21,7 +21,13 @@ from scripts.collab_check import (  # noqa: E402
     load_queue,
     run_checks,
 )
-from scripts.collab_note import append, build_entry, parse_entries  # noqa: E402
+from scripts.collab_note import (  # noqa: E402
+    ACKNOWLEDGED_MALFORMED,
+    append,
+    build_entry,
+    malformed_headers,
+    parse_entries,
+)
 
 FIXTURE_THREAD = """# Thread
 
@@ -150,6 +156,45 @@ class DecisionsTest(unittest.TestCase):
 
     def test_rejects_an_empty_decision_log(self):
         self.assertTrue(check_decisions(self._decisions("# Decisions\n\nnone yet\n")))
+
+
+class MalformedHeaderTest(unittest.TestCase):
+    """A header that does not parse is a record-level failure, not body text."""
+
+    BAD = "### 2026-11-03T12:XX:00Z · sponsor · response"
+
+    def _thread(self) -> Path:
+        tmp = Path(tempfile.mkdtemp()) / "THREAD.md"
+        tmp.write_text(FIXTURE_THREAD + "\n" + self.BAD + "\nThe asks.\n", encoding="utf-8")
+        return tmp
+
+    def test_malformed_header_is_detected(self):
+        self.assertEqual(malformed_headers(self._thread()), [self.BAD])
+
+    def test_malformed_header_is_not_counted_as_an_entry(self):
+        # Documents the fail-open behaviour that the detector exists to surface: the
+        # header is absorbed as body of the previous entry, so the count is unchanged.
+        self.assertEqual(len(parse_entries(self._thread())), 2)
+
+    def test_malformed_header_fails_the_check(self):
+        root = Path(tempfile.mkdtemp())
+        # A different malformed header, because BAD is acknowledged and downgraded to a
+        # warning; the error path needs a header nobody has excused.
+        unknown = "### not-a-timestamp · sponsor · note"
+        (root / "thread.md").write_text(FIXTURE_THREAD + "\n" + unknown + "\n", encoding="utf-8")
+        (root / "queue.md").write_text(
+            "| ID | Change | Ref | Revision | State | Evidence | Reviewer |\n"
+            "| --- | --- | --- | --- | --- | --- | --- |\n"
+            "| RQ-001 | thing | a.md | - | draft | none | oversight |\n", encoding="utf-8")
+        (root / "decisions.md").write_text(
+            "## D-01\n\n**Decision:** x\n\n**Status:** accepted\n", encoding="utf-8")
+        errors, _, _ = run_checks(root / "thread.md", root / "queue.md",
+                                  root / "decisions.md", verify_revisions=False,
+                                  check_history=False)
+        self.assertTrue(any("malformed entry header" in e for e in errors))
+
+    def test_the_acknowledged_exception_is_still_named(self):
+        self.assertIn(self.BAD, ACKNOWLEDGED_MALFORMED)
 
 
 class RealBridgeTest(unittest.TestCase):

@@ -30,10 +30,13 @@ instead of gating it.
 
 ## What the project is waiting on
 
-A sponsor answer to the ten-decision register in `PROPOSAL_SETTLEMENT.md` §2. Nine
-can be accepted as defaults; `D-05` — the bar a model must clear before any claim of
-edge — must be stated explicitly, because it is the one decision that cannot be
-quietly revised later.
+A sponsor decision on the ten-item register in `PROPOSAL_SETTLEMENT.md` §2, which is
+**under review, not approved**. The sponsor's 2026-11-03 response accepted the
+OLPRS domain correction, declined to accept D-04–D-13 wholesale, declined to fix D-05
+before T0, and asked whether D-04/D-06 narrow the ambition. `PROPOSAL_SETTLEMENT.md` §0
+answers that: they are phase-one constraints, the ambition is unchanged, and the
+expansion ladder states what would earn each wider scope. The bar is now a rule to be
+pre-registered before scoring, with its number computed after T0.
 
 ## Running the bridge checks
 

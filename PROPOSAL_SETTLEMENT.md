@@ -1,5 +1,12 @@
 # How to settle the proposal this week
 
+**Status: recommendations under review, not decisions.** The sponsor's response of
+2026-11-03 asks whether D-04 and D-06 are phase-one constraints or a change to the
+project's ambition, declines to accept D-04–D-13 wholesale, and declines to set D-05
+before T0 has produced a real-market measurement. All three points are accepted below;
+`DECISIONS.md` still holds only what the sponsor has settled, and nothing here is
+approved.
+
 The pre-proposal asks for thirteen research reports before a formal proposal (§21,
 §22). That is a six-to-twelve-month gate in front of a document that can be written
 in a day, and it has a failure mode the sponsor has already seen twice: research
@@ -15,6 +22,62 @@ The mechanism has three parts: three questions, ten decisions, and one reply sha
 
 ---
 
+## 0. Scope: ambition, programme, phase
+
+The sponsor's question — are D-04 and D-06 phase-one constraints or a narrowing of the
+vision — has a short answer: **phase-one constraints, and the revision of D-04 below
+withdraws the one place where I had blurred it.** Three tiers keep them apart.
+
+| Tier | What it is | Changes when |
+| --- | --- | --- |
+| **Ambition** | `PRE_PROPOSAL.md` §2: an autonomous, multi-sport research laboratory with competing engines, accumulators and jackpots | Not in this phase. Nothing here removes an ambition item from the vision |
+| **Programme** | A rolling research line inside the ambition: football 1X2 now; a second market set, a second sport, accumulators later | On evidence, at a named rung of the ladder |
+| **Phase 1** | A fixed window: build the instrument, run one programme | At G3 |
+
+**What phase one actually tests is the instrument, not the thesis.** Three properties:
+can we obtain lawful, affordable data; can it be stored with point-in-time integrity;
+can a baseline be measured with an interval. If any of those fail, no version of the
+ambition is testable — so phase one stops, and the ambition is untouched, because what
+failed was the apparatus rather than the idea.
+
+**What preserving the ambition costs today: one schema decision.** Records keyed by
+`(sport, competition, market, engine)` with a declared input contract per engine, rather
+than football-shaped tables. That costs approximately nothing now and is a rewrite
+later. It is the only place where the ambition is paid for during phase one, and it is
+the difference between a narrow start and a narrow project.
+
+**The expansion ladder.** Nothing is dropped from the vision; it is queued behind a
+measurable entry condition.
+
+| Rung | Unlocked by | Not unlocked by |
+| --- | --- | --- |
+| **E0** Instrument + football programme | This register being answered | Enthusiasm |
+| **E1** Second market set (O/U, BTTS) | T0 and T2 producing baselines with intervals | The first market being interesting |
+| **E2** Second sport | E1 showing the instrument transfers, or materially better data access there, measured as cost per resolved prediction | An argument that the sport is unexplored |
+| **E3** Accumulators and jackpots | T3 showing dependence is large enough to matter, and jackpot structures being obtainable | §6 and §7 being well written |
+| **E4** Autonomy claims | A measured share of unattended operations above target, with freeze and rollback proven | A scheduler existing |
+
+**The stop rule.** Phase one stops if T1 finds no compliant source of closing prices,
+if two pre-registered engine attempts fail to beat the baseline at matched coverage, or
+if cost per decisive experiment exceeds the ceiling. Stopping kills the programme; it
+does not revise the ambition, and the record states which condition fired.
+
+**Two tracks, because the market is a control and not a ceiling.** The market is what
+makes a claim falsifiable; it is not a definition of what FoundrySide may investigate.
+
+- **Track A — price-beating.** "We estimate the outcome better than the closing price."
+  The market does cap this one, and the bar applies.
+- **Track B — decision support.** "A user makes a better decision with this than with a
+  raw price": calibrated uncertainty, abstention value, explanation of what would change
+  the estimate. The market does not cap this, because a system can be more useful than a
+  price without beating it — which is what §16 and §17 of the pre-proposal are about.
+
+Phase one instruments Track A because it is the one with a clean measurement. Track B
+needs its own measurement design and must not be judged by Track A's bar, or it will be
+declared worthless for failing a test it was never given.
+
+---
+
 ## 1. The three questions
 
 Only three things actually block a proposal. Everything else in the pre-proposal is
@@ -23,8 +86,9 @@ either downstream of them or cheap to reverse later.
 **Q1 — What is the product?**
 A board that restates the market's view, with abstention discipline, is supportable
 today from evidence in this sponsor's own repositories. An independent model that
-beats that board at matched coverage is not supported by anything yet. Which one is
-being proposed changes the first ninety days completely.
+beats that board at matched coverage is not supported by anything yet. The sponsor has
+left this open, which is right while the instrument is unmeasured: phase one needs a
+deliverable, not a product decision.
 
 **Q2 — What is the bar?**
 A single number a model must clear before any claim is made about it. Without it,
@@ -45,56 +109,69 @@ default is what happens if the sponsor says nothing — with one exception, D-05
 is the only decision that is expensive to reverse and therefore must be answered
 explicitly.
 
-### D-04 — Product thesis
+### D-04 — Phase-one deliverable *(revised after the sponsor response)*
 
-**Options:** (a) market-restatement board with abstention discipline; (b) independent
-model that must beat a market baseline to ship; (c) research instrument with no user
-product.
+**What this is not:** a decision about the product. The first draft framed the board as
+"the product", which turned a defensible interim display into the ceiling of the vision.
+That was the error in the sponsor's question, and this revision withdraws it.
 
-**Default: (a) as the product, (b) as the research programme.** The evidence supports
-(a) now — the market pick reaches 61.1% accuracy at 12.2% coverage on 12,595 priced
-fixtures (`OLPRS_v2/docs/USER_ADVANTAGE_2026-10-31.md`). Nothing in either repository
-supports (b) yet, including on 10,329 signals where the answer was 45.6% against the
-market's 45.9%.
+**Options for the phase-one deliverable:** (a) the measurement instrument alone;
+(b) instrument plus a board that shows the market's view with abstention discipline;
+(c) instrument plus a model-backed board.
 
-**Why this default:** it lets the project ship something honest on day one while the
-research programme attempts the harder claim. It also makes the programme's failure
-non-fatal: a null result on (b) leaves a working board, not an empty repository.
+**Default: (b).** The board is what it is honest to display while the instrument is
+unproven — the market's own view, restated, with an implied probability and a refusal
+to show anything weak. It is a floor, not a destination.
+
+**What stays open:** whether FoundrySide's product is a board, a model, an engine
+marketplace, or all three. That is decided at G3 on T0/T2 numbers, not now. The
+ambition in `PRE_PROPOSAL.md` §2 — multi-sport, competing engines, accumulators,
+jackpots — is unchanged and is carried by the ladder in §0, not by this decision.
 
 **Reverse cost:** low. A positioning statement, no code.
 
-### D-05 — The bar *(must be answered explicitly)*
+### D-05 — The bar: the rule now, the number after T0 *(revised after the sponsor response)*
 
-**Options:** any numeric threshold for a claim of edge.
+**The sponsor's condition is accepted:** no numeric bar is set before T0. Falsifiability
+does not require knowing the constant in advance — it requires that the rule producing it
+cannot be adjusted afterwards. So the decision is the rule; the number falls out of T0.
 
-**Default recommendation:** a model may be described as predictive only if, on
-fixtures it chose, at matched coverage, it beats the real-league favourite baseline
-**measured in T0** — provisionally around 51.5% accuracy for 1X2, a figure imported
-from virtual-league work and therefore to be replaced by the measured value before it
-is used — on **n ≥ 2,000** resolved predictions, with calibration within ±3 percentage
-points, and significance surviving Benjamini-Hochberg correction across all engine ids
-tested.
+**Rule, pre-registered before any engine is scored:**
 
-**Why this number, and its one defect:** 0.515 is the measured favourite baseline on
-16,831 fixtures at matched coverage — but those fixtures are OdiLeague, a *virtual*
-league (`SYSTEM_MAP_2026-10-31.md`). The number therefore does not transfer, and this
-register first proposed it as if it did. The correction is not to discard the bar but
-to re-measure it: **T0 below establishes the real-league favourite baseline from
-closing prices, and the bar is set at or above it before any model is scored.** What
-survives from the virtual-league work is the method — matched coverage, a favourite
-baseline, calibration, and correction — not the constant.
+```
+bar_A = baseline_T0  (95% interval, matched coverage)  +  delta
+```
 
-The correction requirement comes from the same body of work: 27 signal ids produced
-raw edges up to +12.7 points and none survived correction
-(`SIGNAL_MARKET_VERDICT`). The sample size is what makes the interval narrow enough to
-be worth quoting, and it is also what forces D-06 to be wide rather than narrow — see
-the note there.
+where `delta` is the smallest effect the planned sample resolves at 80% power, for a
+correction family declared in advance. The bar is therefore a number with a published
+lower bound, and it must be cleared on `n >= 2,000` resolved predictions of fixtures the
+engine chose, at matched coverage, with:
 
-**Reverse cost:** high. Once a bar is published, lowering it is the failure mode the
-whole repository exists to prevent. This is why it is the one item that cannot be
-defaulted.
+- accuracy above the measured baseline by at least `delta`, on non-overlapping intervals
+  at the stated confidence;
+- calibration within ±3 percentage points across probability bins;
+- significance surviving Benjamini-Hochberg correction across every engine id tested.
 
-### D-06 — First slice
+**Why the rule and not the constant:** this register previously imported 0.515 from
+OLPRS and used it as the bar. That was wrong twice — wrong domain, and a constant fixed
+before the real baseline was known. Both errors have one fix: measure first, pre-register
+the rule, then compute the number so it cannot move afterwards without a recorded
+sponsor decision.
+
+**What the rule forbids:** lowering `delta` after seeing results; changing the correction
+family after seeing results; reporting a subset of engines; presenting Track B evidence
+(§0) as Track A evidence.
+
+**Reverse cost:** high, deliberately. The rule is published before the first score, and
+changing it is a sponsor decision recorded in `DECISIONS.md` with its reason — which is
+the only honest way to change a bar.
+
+### D-06 — Phase-one sampling frame *(revised after the sponsor response)*
+
+**What this is not:** a scope decision. Football is the first domain in which the
+instrument is calibrated, not the boundary of the project. Tennis, basketball, cricket,
+accumulators and jackpots remain in the ambition and on the ladder in §0; this decision
+governs only what is measured before E1.
 
 **Default:** football only; 1X2, over/under 2.5 and both-teams-to-score; competitions
 where closing prices are reliably obtainable, listed explicitly in the data
@@ -278,5 +355,7 @@ proposal decidable, which is the step the project is actually stuck on. If a def
 is wrong, one line in the reply fixes it — that is the point of expressing them as
 defaults rather than as findings.
 
-The one thing it cannot default is the bar. A project that has not decided what
-counts as success will report success.
+The one thing it cannot leave undecided is the *rule* for the bar. The number can wait
+for T0 — the sponsor is right about that — but the procedure that produces it cannot
+wait, because a project that has not fixed how success will be computed will report
+success against whatever number it happens to reach.

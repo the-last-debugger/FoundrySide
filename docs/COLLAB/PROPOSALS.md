@@ -5,6 +5,12 @@ decided; decided items move to `DECISIONS.md`. The rationale, the alternatives a
 the evidence for each of the ten items below are in `PROPOSAL_SETTLEMENT.md`, which
 is the document to read before answering.
 
+**Status: under review.** The sponsor's response of 2026-11-03 declines to accept
+D-04–D-13 wholesale and declines to fix D-05 before T0. D-04 and D-06 were revised in
+answer and remain proposals; `PROPOSAL_SETTLEMENT.md` §0 now separates the project's
+ambition from the phase-one constraints, and the expansion ladder records what would
+earn each wider scope rather than assuming it away.
+
 ## Proposal P-01 — the settlement register (D-04 … D-13)
 
 Three questions block the proposal: what the product is, what the numeric bar is,
@@ -15,8 +21,8 @@ default, so "accept all defaults" is a complete reply.
 
 | Decision | Question | Recommended default | Cost to reverse |
 | --- | --- | --- | --- |
-| D-04 | Product thesis: market-restatement board, independent model, or research instrument | Board with abstention discipline; independent model as the research programme, not the product | Low — a positioning statement, no code |
-| D-05 | The bar: what accuracy would justify a product claim | Beat the real-league favourite baseline, set by T0 on actual closing prices (n ≥ 2,000, calibrated within ±3pp) | High once published — this is the one decision that is expensive to change later |
+| D-04 | Phase-one deliverable, not the product: instrument plus a provisional board; product vision left open to G3 | Instrument and a provisional market-view board; ambition unchanged | Low — a positioning statement, no code |
+| D-05 | The bar: rule now, number after T0 | Pre-registered rule — measured baseline + delta at 80% power, n >= 2,000, calibrated within ±3pp, BH-corrected | High once published — this is the one decision that is expensive to change later |
 | D-06 | First slice: sport, markets, competitions | Football; 1X2, O/U 2.5, BTTS; leagues with reliable closing prices only | Medium — collection and schema choices |
 | D-07 | Accumulators and jackpots in v1 | Out of scope until a single-selection edge exists (gate G2) | Low now, high after build |
 | D-08 | Data: sources, budget, terms | Free-tier and published sources only; KSh 0 for phase 1; every source ToS-checked before collection | Low |

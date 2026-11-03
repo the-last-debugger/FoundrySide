@@ -48,7 +48,11 @@ points at a queue row or a file.
 Authors: `builder` | `sponsor` | `oversight`
 
 Kinds: `note` | `question` | `answer` | `review` | `decision` | `direction` |
-`clarification` | `blocker` | `evidence` | `research`
+`clarification` | `blocker` | `evidence` | `research` | `response`
+
+`response` was added after the sponsor used it for a substantive reply; the checker
+rejects any kind outside this list, and a header that does not parse is now an error
+rather than being absorbed into the entry above it.
 
 Write entries with the helper so the shape stays valid:
 
