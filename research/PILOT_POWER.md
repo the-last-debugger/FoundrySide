@@ -1,4 +1,4 @@
-<!-- generated-by: pilot_power.py sha256=c0986dfffacd -->
+<!-- generated-by: pilot_power.py sha256=7d684cd0e7f0 -->
 
 # Sizing for the confirmatory design
 
@@ -35,13 +35,14 @@ component decomposition has been removed from the sizing path altogether.
 
 | Quantity | Value |
 | --- | --- |
-| Power at a 0.01-nat effect | **69.4%** (MC SE ±1.6pp) |
-| Power at the nominal t(15) cutoff, for comparison | 67.6% |
+| Power at a 0.01-nat effect | **70.5%** (MC SE ±1.6pp) |
+| Power at the nominal t(15) cutoff, for comparison | 69.1% |
 | Calibrated cutoff (95th percentile of the simulated null) | 2.089 |
-| Rejection rate under the null (centred residuals, no imposed effect) | 5.0% (nominally 5%) |
+| Rejection rate under the null, on an **independent** batch (seed 20262103) | 5.6% (nominally 5%) |
 | Simulated null mean | +0.00013 (should be ~0) |
 | Effect at 80% power | 0.0117 nats (bisection bracket ±0.0004) |
-| **80% crossing, Monte Carlo interval** | **0.0116 – 0.0130 nats** |
+| **80% crossing, simultaneous band (Bonferroni over the 12 grid points)** | **0.0116 – 0.0130 nats** |
+| Same crossing from pointwise intervals, for comparison | 0.0116 – 0.0130 nats (same grid points: the band widens intervals without moving the crossing at this resolution) |
 | Independent runs, seeds 20261134 and 20261165 | 69.2%, 70.1% |
 | Decision rule | adequate if power reaches 80% |
 
@@ -65,21 +66,21 @@ the cutoff on the simulated null (its 95th percentile) restores the rate to **5.
 cutoff of **3.41** instead of 2.13.
 
 On the pilot data the effect is small: the calibrated cutoff is 2.089 against the
-table's 2.131, and power moves from 67.6% to 69.4%. The
+table's 2.131, and power moves from 69.1% to 70.5%. The
 stress case is what shows the nominal test is not automatically safe; the pilot is what
-shows it happens to be adequate here.
+shows the nominal cutoff happens to hold its size on this data.
 
 ## What would it take
 
 Power at the target effect as the number of confirmatory clusters grows, holding the
 cluster-size pattern:
 
-| Confirmatory clusters | Fixtures | Power at 0.01 nats |
-| --- | --- | --- |
-| 16 | 5,794 | 69.4% |
-| 24 | 8,216 | 84.1% |
-| 32 | 11,588 | 92.6% |
-| 40 | 14,010 | 97.1% |
+| Confirmatory clusters | Fixtures | Calibrated cutoff | Power at 0.01 nats |
+| --- | --- | --- | --- |
+| 16 | 5,794 | 2.09 | 70.5% |
+| 24 | 8,216 | 2.07 | 86.6% |
+| 32 | 11,588 | 1.96 | 95.0% |
+| 40 | 14,010 | 2.10 | 97.0% |
 
 Adding clusters means adding seasons, which raises the exchangeability question the protocol
 already records. The table is a costing of that option, not an endorsement of it.

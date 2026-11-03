@@ -126,12 +126,29 @@ def simulated_mean(clusters: list[np.ndarray], sizes: np.ndarray, delta: float,
     return float(np.mean(grands))
 
 
-def wilson(hits: int, n: int) -> tuple[float, float]:
-    """95% Wilson interval for a proportion — the Monte Carlo error of one power estimate."""
+def _z_for(alpha: float) -> float:
+    """Two-sided normal critical value for lpha, by bisection on the normal CDF."""
+    target = 1 - alpha / 2
+    lo, hi = 0.0, 6.0
+    for _ in range(60):
+        mid = (lo + hi) / 2
+        if 0.5 * (1 + math.erf(mid / math.sqrt(2))) < target:
+            lo = mid
+        else:
+            hi = mid
+    return (lo + hi) / 2
+
+
+def wilson(hits: int, n: int, alpha: float = 0.05) -> tuple[float, float]:
+    """Wilson interval for a proportion at level lpha.
+
+    lpha is parameterised so a simultaneous band over the grid can use a corrected level
+    (Bonferroni) rather than the pointwise 5%.
+    """
     if n == 0:
         return (float("nan"), float("nan"))
     p = hits / n
-    z = 1.959963984540054
+    z = _z_for(alpha)
     denom = 1 + z * z / n
     centre = (p + z * z / (2 * n)) / denom
     half = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / denom
@@ -139,13 +156,14 @@ def wilson(hits: int, n: int) -> tuple[float, float]:
 
 
 def power_curve(clusters: list[np.ndarray], sizes: np.ndarray,
-                effects, sims: int = 1200, seed: int = SEED, crit: float = T_CRIT):
-    """Power at each effect, with its Monte Carlo confidence interval."""
+                effects, sims: int = 1200, seed: int = SEED, crit: float = T_CRIT,
+                alpha: float = 0.05):
+    """Power at each effect, with a Wilson interval at level lpha."""
     out = []
     for e in effects:
         _grands, stats = _simulate(clusters, sizes, float(e), sims, seed)
         hits = int(np.count_nonzero(np.abs(stats) > crit))
-        lo, hi = wilson(hits, sims)
+        lo, hi = wilson(hits, sims, alpha)
         out.append((float(e), hits / sims, lo, hi))
     return out
 
@@ -221,26 +239,43 @@ def main(argv: list[str] | None = None) -> int:
     # Calibrate the cutoff on the simulated null rather than trusting t(15): under a strong
     # size-mean association the table value is anti-conservative (12% rejection at a
     # nominal 5%). On this pilot the calibration moves the cutoff only slightly.
-    crit = empirical_crit(clusters, sizes, sims=2000)
-    power_nominal = design_power(clusters, sizes, TARGET)
-    power = design_power(clusters, sizes, TARGET, crit=crit)
-    type_one = design_power(clusters, sizes, 0.0, crit=crit)
+    # Three independent streams: the cutoff is estimated on one, validated on another, and
+    # the alternative is simulated on a third. Evaluating the null on the same draws that
+    # defined the cutoff would make the calibration rate true by construction.
+    crit = empirical_crit(clusters, sizes, sims=2000, seed=SEED)
+    eval_seed = SEED + 1000
+    alt_seed = SEED + 2000
+    power_nominal = design_power(clusters, sizes, TARGET, seed=alt_seed)
+    power = design_power(clusters, sizes, TARGET, seed=alt_seed, crit=crit)
+    type_one = design_power(clusters, sizes, 0.0, seed=eval_seed, crit=crit)
     stability = [design_power(clusters, sizes, TARGET, seed=SEED + 31 * (i + 1), crit=crit)
                  for i in range(2)]
     se = mc_se(power)
     threshold, bracket = power_threshold(clusters, sizes, crit=crit)
     effects = [0.006 + i * 0.0014 for i in range(12)]      # 0.006 … 0.0214
     curve = power_curve(clusters, sizes, effects, sims=1200, crit=crit)
-    cross_lo, cross_hi = crossing_interval(curve)
+    # Pointwise intervals do not give simultaneous coverage over the grid, so the crossing
+    # is also computed from a Bonferroni band and both are reported.
+    curve_sim = power_curve(clusters, sizes, effects, sims=1200, crit=crit,
+                            alpha=0.05 / len(effects))
+    cross_lo, cross_hi = crossing_interval(curve_sim)
+    cross_pw_lo, cross_pw_hi = crossing_interval(curve)
     null_mean = simulated_mean(clusters, sizes, 0.0)
 
     # What would it take: power at the target effect as the cluster count grows.
     base = confirmatory_sizes()
     options = []
     for k in (16, 24, 32, 40):
+        if k == len(sizes):
+            # The 16-cluster row must be the headline design, not a second estimate of it.
+            options.append((k, int(sizes.sum()), power, crit))
+            continue
         k_sizes = np.resize(base, k)
+        crit_k = empirical_crit(clusters, k_sizes, sims=1200, seed=SEED + 3000 + k)
         options.append((k, int(k_sizes.sum()),
-                        design_power(clusters, k_sizes, TARGET, sims=800, crit=crit)))
+                        design_power(clusters, k_sizes, TARGET, sims=800,
+                                     seed=SEED + 4000 + k, crit=crit_k),
+                        crit_k))
 
     doc = f"""{report_stamp.stamp(Path(__file__))}
 
@@ -282,10 +317,11 @@ component decomposition has been removed from the sizing path altogether.
 | Power at a {TARGET}-nat effect | **{power * 100:.1f}%** (MC SE ±{se * 100:.1f}pp) |
 | Power at the nominal t(15) cutoff, for comparison | {power_nominal * 100:.1f}% |
 | Calibrated cutoff (95th percentile of the simulated null) | {crit:.3f} |
-| Rejection rate under the null (centred residuals, no imposed effect) | {type_one * 100:.1f}% (nominally 5%) |
+| Rejection rate under the null, on an **independent** batch (seed {eval_seed}) | {type_one * 100:.1f}% (nominally 5%) |
 | Simulated null mean | {null_mean:+.5f} (should be ~0) |
 | Effect at 80% power | {threshold:.4f} nats (bisection bracket ±{bracket:.4f}) |
-| **80% crossing, Monte Carlo interval** | **{cross_lo:.4f} – {cross_hi:.4f} nats** |
+| **80% crossing, simultaneous band (Bonferroni over the 12 grid points)** | **{cross_lo:.4f} – {cross_hi:.4f} nats** |
+| Same crossing from pointwise intervals, for comparison | {cross_pw_lo:.4f} – {cross_pw_hi:.4f} nats (same grid points: the band widens intervals without moving the crossing at this resolution) |
 | Independent runs, seeds {SEED + 31} and {SEED + 62} | {stability[0] * 100:.1f}%, {stability[1] * 100:.1f}% |
 | Decision rule | adequate if power reaches 80% |
 
@@ -311,16 +347,16 @@ cutoff of **3.41** instead of 2.13.
 On the pilot data the effect is small: the calibrated cutoff is {crit:.3f} against the
 table's 2.131, and power moves from {power_nominal * 100:.1f}% to {power * 100:.1f}%. The
 stress case is what shows the nominal test is not automatically safe; the pilot is what
-shows it happens to be adequate here.
+shows the nominal cutoff happens to hold its size on this data.
 
 ## What would it take
 
 Power at the target effect as the number of confirmatory clusters grows, holding the
 cluster-size pattern:
 
-| Confirmatory clusters | Fixtures | Power at 0.01 nats |
-| --- | --- | --- |
-""" + "\n".join(f"| {k} | {n:,} | {p * 100:.1f}% |" for k, n, p in options) + f"""
+| Confirmatory clusters | Fixtures | Calibrated cutoff | Power at 0.01 nats |
+| --- | --- | --- | --- |
+""" + "\n".join(f"| {k} | {n:,} | {crit_k:.2f} | {p * 100:.1f}% |" for k, n, p, crit_k in options) + f"""
 
 Adding clusters means adding seasons, which raises the exchangeability question the protocol
 already records. The table is a costing of that option, not an endorsement of it.

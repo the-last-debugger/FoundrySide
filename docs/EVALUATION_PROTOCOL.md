@@ -206,12 +206,16 @@ this, and it is what the pilot runs:
    reported 93.5%, which was not power at all. Offset invariance and null centring are both
    regression tests.
 
-   **Measured result, pilot Δ of the first model:** power **69.4%** at the calibrated cutoff
-   (67.6% at the nominal t(15) value); null rejection 5.0% against a nominal 5; simulated
-   null mean +0.00013; independent runs 69.3% and 70.1%. **The design is not adequate at 0.01
-   nats for this spread.** The 80% crossing is **0.0116–0.0130 nats** as a Monte Carlo
-   interval obtained by inverting Wilson bounds on the power curve — wider than the 0.0004
-   bisection bracket, as it must be.
+   **Measured result, pilot Δ of the first model:** power **70.5%** at the calibrated cutoff
+   (69.1% at the nominal t(15) value); null rejection **5.6%** on an *independent* simulation
+   batch, against a nominal 5; independent runs 69.2% and 70.1%. **The design is not adequate
+   at 0.01 nats for this spread.** The 80% crossing is **0.0116–0.0130 nats**, from a
+   Bonferroni band over the 12 grid points; the pointwise envelope lands on the same grid
+   points, so the band widens the intervals without moving the crossing at this resolution.
+
+   The cutoff is estimated on one simulation stream, validated on a second and the
+   alternative simulated on a third. Evaluating the null on the draws that defined the cutoff
+   would make the calibration rate true by construction.
 
    **The cutoff is calibrated, not assumed.** Under an adversarial design — cluster sizes
    60 to 400 with means correlated to size — the nominal t(15) cutoff rejects 12.4% at a
@@ -223,8 +227,8 @@ this, and it is what the pilot runs:
 clusters and 5,794 fixtures give roughly two-thirds power at 0.01 nats. Three responses are
 available and all are sponsor decisions, taken before the freeze:
 
-1. **Raise the target effect** to something this design detects — about 0.0117 nats — and
-   say so in the freeze rather than after a null.
+1. **Raise the target effect** to something this design detects — the crossing sits at
+   0.0116–0.0130 nats — and say so in the freeze rather than after a null.
 2. **Add clusters**, which means adding seasons, which raises the exchangeability question
    the earlier analysis already flagged.
 3. **Add markets to the family**, increasing n at the cost of a larger correction family.
