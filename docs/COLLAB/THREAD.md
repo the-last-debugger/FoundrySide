@@ -307,3 +307,29 @@ Process note. The review's revision line wrote the SHA in backticks, so the fiel
 State: RQ-008 and RQ-011 back to ready_for_review, RQ-012 added for the clock module; RQ-009 accepted with its accuracy-only scope; 41 tests pass; checker errors 0, one acknowledged warning. Protocol remains unfrozen and nothing has been scored.
 - revision: 55780e2
 - ref: docs/EVALUATION_PROTOCOL.md
+
+
+### 2026-11-03 · sponsor · review
+
+Reviewed revision `55780e2` directly: `fixture_time.py`, its tests, `logloss_power.py`, the regenerated power report, and the evaluation protocol.
+
+**Progress acknowledged**
+
+The UTC conversion and DST gap/fold detection are meaningful improvements. The protocol now correctly treats the timezone map as an assumption, not source-provided metadata. The two-sided analytic power formula now matches the stated two-sided rejection rule, and the report makes the synthetic device and dependence caveats more visible. The previous protocol contradictions about clustering and the forecast timestamp have been corrected.
+
+**Still required**
+
+- **RQ-008 — protocol: changes requested pending consistency and a defensible dependence procedure.** The protocol defines `Δ log loss (model − market)`, while `research/logloss_power.py` constructs and reports `market − model` (positive means the model improves). Choose one sign convention and use it consistently in code, generated report, protocol, tables, and interpretation. The effect-size statement can remain “a 0.01-nat reduction relative to market”, but the signed Δ must agree. Also specify the exact cluster-aware inference and sizing procedure: the protocol currently says cluster bootstrap over division-season, while the power section uses a generic design effect `D` without defining how it is estimated from the pilot, how uncertainty in `D` is handled, or how it maps to the final test. A table of assumed D values is sensitivity analysis, not a completed pilot power method.
+
+- **RQ-011 — log-loss power: changes requested.** The two-sided correction is accepted in principle, and the synthetic device remains useful as an illustration only. However, the generated report still describes the device as if it supplies fixture-level power evidence; keep the headline conclusion explicitly conditional on its synthetic assumptions. The pilot must replace it with genuinely out-of-fold predictions and paired score differences, then estimate the cluster-aware uncertainty and power using the frozen inferential procedure. Do not let the synthetic device's 100% power headline be mistaken for expected experiment power. Reconcile the signed Δ convention as above.
+
+- **RQ-012 — fixture clock module: changes requested.** The timezone/DST implementation is a good step, but `audit()` silently skips any row with a missing Date or Time. An audit claiming coverage of every fixture must fail on missing clock fields, count total fixture rows separately from parsed clocks, and report the missing/unparseable count. It should also assert that the expected corpus rows are accounted for, rather than allowing an incomplete set to pass as “no ambiguous or unmapped clocks”. The zone mapping remains an explicit source assumption; preserve that caveat and do not treat a clean parse as independent proof that the source used those local zones.
+
+**Documentation consistency**
+
+Please update `PROPOSAL.md` and `docs/COLLAB/PROPOSALS.md` so they no longer describe the accuracy/McNemar calculation as the completed paired power basis or quote the old 0.271 independent-only threshold as the whole sizing rule. The primary metric is log loss; the accuracy study is supplementary; the new protocol's dependence-aware pilot sizing remains outstanding. Preserve the historical correction rather than deleting it.
+
+**State:** no confirmatory scoring and no protocol freeze. Exploratory pilot preparation and research code remain authorised. Please continue without waiting for another permission round on routine work.
+
+- revision reviewed: `55780e2`
+- refs: RQ-008, RQ-011, RQ-012
