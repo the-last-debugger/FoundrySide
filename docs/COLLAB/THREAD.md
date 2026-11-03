@@ -399,3 +399,30 @@ That is the point where I stop without a decision: the frame is ready, but fitti
 State: RQ-008, RQ-011 and RQ-012 back to ready_for_review, RQ-013 added for the frame; 48 tests; checker errors 0.
 - revision: 0a5f9d0
 - ref: research/PILOT_FRAME.md
+
+
+### 2026-11-03T14:20:00Z · sponsor · review
+
+Reviewed revision `0a5f9d0`: `fixture_time.py`, its CLI tests, `pilot.py`, `PILOT_FRAME.md`, the revised evaluation protocol, and the generated log-loss power report/script.
+
+**Accepted**
+
+- **RQ-012 — accepted.** The CLI now passes `data_dir` and `expected` by keyword, and the two subprocess tests exercise the command-line entry point, including a row-count mismatch. The protocol records the audit command and row counts. The earlier CLI defect is corrected. Test execution is builder-reported (48 tests); I reviewed the code and test additions but did not independently run the suite.
+- **RQ-011 — accepted.** The protocol and report now clearly identify the device as a synthetic sensitivity calculation on real historical fixtures, not an empirical model or measured experiment power. This resolves the documentation mismatch. The synthetic output remains illustrative only.
+
+**Changes requested**
+
+1. **RQ-008 — the sizing and final inference are still not the same procedure.** Protocol §5 step 5 says to bootstrap pilot clusters, estimate variance components, and calculate confirmatory power using the two-component variance formula. Step 6 then proposes a percentile cluster-bootstrap confidence interval as the actual confirmatory test. Those are not automatically the same inferential procedure: a normal-theory power calculation based on `σ²_b/K + σ²_w/n` does not establish the power of a 16-cluster percentile-bootstrap test. Please calibrate power by simulating the actual planned confirmatory test under the pilot-estimated cluster structure, or justify and validate the approximation against that test. The lower-tail 5th-percentile power criterion should be computed from that matched procedure.
+
+2. **RQ-008 — account for unequal cluster sizes.** The confirmatory clusters range from 293 to 552 fixtures. The expression `σ²_b/K + σ²_w/n` assumes equal cluster weighting (or an approximation that needs justification), while the stated headline metric is the fixture-level mean across all eligible fixtures. Define the estimand explicitly — fixture-weighted or equal division-season weighted — and use a variance/power calculation that respects the actual cluster sizes and corresponding weights. Do not use `m̄` as if it removes the imbalance without showing why.
+
+3. **RQ-013 — make the frame validation fail closed and auditable.** `pilot.py` computes `bad_cutoff` and `unassigned`, but it only prints their counts; it still returns success if either is nonzero. Make these conditions fatal. Also report rejection reasons by category rather than only a total, and verify the claimed 67 exclusions are specifically missing/incomplete O/U prices rather than silently mixing in invalid results, clocks, or other failures. The frame should fail if any row is unassigned or if the expected corpus accounting does not reconcile.
+
+**Scope and status**
+
+The pilot frame is preparation only: it fits no engine and scores no predictions. That is appropriate at this stage. The next methodological step is to define and validate the pilot's out-of-fold evaluation and the matched cluster-aware sizing procedure. Do not treat the synthetic power report as evidence that the confirmatory sample is adequately powered.
+
+RQ-008 and RQ-013 remain `changes_requested`. RQ-011 and RQ-012 are accepted. No protocol freeze and no confirmatory scoring.
+
+- revision reviewed: `0a5f9d0`
+- refs: RQ-008, RQ-011, RQ-012, RQ-013
