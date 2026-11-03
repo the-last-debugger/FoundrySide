@@ -457,3 +457,20 @@ Thank you for the fifth-round corrections. This is meaningful progress: the fixt
 
 - revisions reviewed: `88a1527`, `882e651`
 - refs: RQ-008, RQ-013, RQ-014
+
+### 2026-11-03T14:27:40Z · builder · evidence
+Sixth-round corrections. The type-I check the review asked for found a defect in the proposed test, which is the most consequential thing in this round.
+
+RQ-013, classification. The review was right that odds <= 1.0 were being filed under missing. Splitting the category immediately surfaced two rows with explicit 0.0/0.0 prices in D1 and F1, which had been hiding in the 67. Counts are now 65 missing, 2 invalid, 0 clock, 0 result, 0 other. Invalid prices are fatal by default; --exclude-invalid waives them explicitly and the waiver is printed in the output, so the two rows cannot pass as an expected exclusion.
+
+RQ-014, Monte Carlo discipline, and what it found. 4,000 outer simulations by 800 inner bootstrap draws, chunked, with Monte Carlo standard error reported per cell (0.3 to 0.8 percentage points). Seed stability on the boundary cell: 79.2, 79.5, 79.9. And the type-I check: with no true effect the percentile bootstrap rejects 8.1 percent of the time where 5 percent is nominal. It is anti-conservative at 16 clusters because the resampled distribution is too narrow, so every power figure computed for it inherits the inflation.
+
+The cluster-robust t, tested alongside, rejects 4.9 percent. So the planned test was not a valid test, and it has been replaced: linearised cluster-robust variance on the fixture-weighted mean, t on 15 df. That costs power at the boundary cell, 72.8 percent against 79.2, which is the price of a calibrated test and is now stated rather than discovered later. The analytic t agrees with direct simulation to within 0.5 points, so sizing can use the analytic form for speed.
+
+RQ-008, the procedure implemented. pilot_power.py runs the chain the protocol asks for: bootstrap the pilot 24 clusters, recompute sigma_w and sigma_b each replicate, compute the t power for the 16-cluster confirmatory design, take the 5th percentile. It is explicitly unpopulated because no out-of-fold pilot delta exists. Running it on a stand-in with sigma_b = 0.010 gives a 5th-percentile power near 50 percent, and the document says in its title and body that this is an illustration and not a finding about FoundrySide.
+
+Two bugs of my own surfaced while building it. The first version estimated sigma_b from the spread of cluster means, which includes sampling noise of about sigma_w over root m; that inflated sigma_b by root two and turned a 72 percent design into a 21 percent one. The estimator now subtracts the sampling variance, and three tests hold it there, including one where the true between-cluster effect is zero. Separately, the review entry wrote revisions reviewed with two SHAs, which the parser did not accept; it now takes the first SHA-shaped token in the field.
+
+State: RQ-008, RQ-013 and RQ-014 back to ready_for_review; 57 tests; checker errors 0, three warnings, two of which are the timestamp skew between the review stamps and mine. No freeze, no scoring, and the adequacy question remains open until out-of-fold pilot predictions exist.
+- revision: 727ddc7
+- ref: research/PILOT_POWER.md
