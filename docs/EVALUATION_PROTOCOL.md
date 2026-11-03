@@ -159,12 +159,24 @@ this, and it is what the pilot runs:
 
 1. **From the pilot's out-of-fold predictions**, compute Δ for each fixture, labelled by
    cluster `k` (division × season), with `m_k` fixtures per cluster.
-2. **Decompose the variance**: within-cluster `σ²_w`, between-cluster `σ²_b` of the
-   cluster means, and `m̄` the mean fixtures per cluster.
-3. **ICC** = `σ²_b / (σ²_b + σ²_w)`; **design effect** `D = 1 + (m̄ − 1) · ICC`.
-4. **The variance the sizing uses** is `Var(mean Δ) ≈ σ²_b / K + σ²_w / n`, with `K` the
-   cluster count of the phase being sized and `n` its fixtures — not `sd²/n`. The counts
-   are not interchangeable:
+2. **State the estimand.** The headline metric is the **fixture-weighted** mean Δ: every
+   eligible fixture counts equally, so a large division-season contributes more than a
+   small one. This is not the same estimand as an equal-weighting of the 16 clusters, and
+   the two give different variances.
+3. **Decompose the variance**: within-cluster `σ²_w`, between-cluster `σ²_b` of the
+   cluster means. `ICC = σ²_b/(σ²_b + σ²_w)` and `D = 1 + (m̄ − 1)·ICC` are reported for
+   continuity, but they are not what the sizing uses.
+4. **The variance the sizing uses**, for the fixture-weighted estimand with the actual
+   cluster sizes:
+
+   ```
+   Var(mean Δ) = σ²_w / n  +  σ²_b · Σ_k (m_k / n)²
+   ```
+
+   With equal sizes `Σ(m_k/n)² = 1/K` and this collapses to the familiar expression. The
+   confirmatory clusters are **not** equal — 293 to 552 fixtures — and for this corpus
+   `Σ(m_k/n)² = 0.0656` against `1/16 = 0.0625`, so the between-cluster term is **1.049×**
+   the equal-size value. Small, but it is not one, and `m̄` does not make it go away.
 
    | Phase | Seasons | Fixtures | Clusters `K` |
    | --- | --- | --- | --- |
@@ -172,31 +184,29 @@ this, and it is what the pilot runs:
    | Confirmatory | 2324–2425 | 5,794 | **16** (8 × 2) |
    | Whole corpus | 2021–2425 | 14,735 | 40 (8 × 5) |
 
-   Sizing uses the **confirmatory** count, 16. A test on that window has 16 independent
-   clusters however many fixtures it contains, and widening the window adds clusters
-   only if it adds seasons. Fixture counts here are the analysis corpus for this
-   experiment — fixtures with a complete over/under 2.5 closing price, which is 14,735 of
-   the 14,802 with a 1X2 price.
-5. **Uncertainty in the components, not in a summary statistic.** Cluster-bootstrap the
-   pilot's 24 clusters (resample clusters with replacement, 2,000 replicates) and, for
-   each replicate, recompute `σ²_w`, `σ²_b` and `m̄`, then compute the power of the
-   confirmatory design (16 clusters, `n` fixtures) at the target effect. Size so that the
-   **5th percentile** of that power distribution is at least 0.80. Bootstrapping `D`
-   alone and quoting its 95th percentile is not the same thing: `D` compresses two
-   variance components into one number, and the sizing formula needs them separately.
-6. **The confirmatory test is the same statistic the sizing assumed**: a cluster bootstrap
-   over the 16 confirmatory clusters of the mean Δ, rejecting when the 95% percentile
-   interval excludes zero. With 16 clusters that interval is coarse; the number of
-   contributing clusters is reported, and a borderline result is described as
-   inconclusive rather than as evidence either way.
+   Sizing uses the **confirmatory** count, 16. Fixtures inside those 16 do not create
+   clusters; only seasons do.
+5. **Power is simulated from the test that will actually be run**, not from the formula.
+   The planned confirmatory test is a percentile cluster bootstrap of the weighted mean
+   over the 16 clusters. `research/cluster_power.py` simulates exactly that — cluster
+   effects, the observed cluster sizes, the bootstrap, the rejection rule — under a grid
+   of `(σ_w, σ_b)`. Sizing then bootstraps the pilot's 24 clusters to get a distribution
+   of `(σ_w, σ_b)`, runs the simulation for each replicate, and requires the **5th
+   percentile** of the resulting power distribution to reach 0.80.
+6. **The analytic formula is validated against that test, and only where it is used.**
+   Measured across the grid, the normal approximation and the simulated bootstrap agree
+   within **1.1pp near the 80% boundary** — the region where a sizing decision is made —
+   and diverge by up to **3.8pp at around 40% power**, where the approximation is
+   optimistic. So the formula may size near the boundary; the simulation is the
+   reference everywhere else, and it is the reference for any claim that the design is
+   adequately powered.
 
-**What this implies about the design, measured.** `research/logloss_power.py` evaluates
-the two-component formula directly. At a plausible within-fixture spread (`σ_w = 0.20`)
-and `n = 5,794`, the two-season window tolerates a between-cluster SD of only about
-**0.010** before power falls below 80%; with all five seasons (40 clusters) it tolerates
-about **0.015**. At `σ_b = 0.02` the two-season design has 42% power and the five-season
-design 68%. So the confirmatory window is the thinnest available, and whether 16 clusters
-are enough is a question the pilot answers, not one the protocol can assume.
+**What this implies about the design, measured.** At a plausible within-fixture spread
+(`σ_w = 0.20`) and `n = 5,794`, the two-season window tolerates a between-cluster SD of
+only about **0.010** before power falls below 80%; with all five seasons (40 clusters) it
+tolerates about **0.015**. At `σ_b = 0.02` the two-season design has 42–45% power and the
+five-season design 68%. The confirmatory window is the thinnest available, and whether 16
+clusters are enough is a question the pilot answers, not one the protocol can assume.
 
 The ±3pp calibration tolerance is a **guardrail, not a test**: it flags a model whose
 probabilities are systematically off, and it is reported with the reliability plot and

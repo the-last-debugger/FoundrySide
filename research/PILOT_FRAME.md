@@ -8,24 +8,39 @@ no model and scores nothing.
 | pilot | 8,941 | 24 | 380 | 294 | 552 | 2020-08-21 – 2023-06-04 |
 | confirmatory | 5,794 | 16 | 340 | 293 | 552 | 2023-08-04 – 2025-05-25 |
 
-- Rows joined: **14,735** of 14,802 source rows.
-- Rejected: **67**.
-- Cutoffs not exactly 90 minutes before kickoff: **0**.
-- Rows in an unassigned season: **0**.
+| Check | Result |
+| --- | --- |
+| every source row accounted for | PASS |
+| no clock or result defects | PASS |
+| every cutoff is exactly T-90 | PASS |
+| every fixture in an assigned phase | PASS |
+
+## Exclusions, by category
+
+| Category | Count |
+| --- | --- |
+| missing_ou_price | 67 |
+| clock | 0 |
+| result | 0 |
+| other | 0 |
+| **total** | **67** |
+
+The only expected exclusion is `missing_ou_price`: fixtures that exist but have no
+complete over/under 2.5 closing price. Clock, result and other failures are fatal, so the
+count above cannot silently mix a broken row into an "expected" bucket.
 
 ## What this establishes
 
-The clock, cutoff and cluster columns exist for every scored row, and the cutoff is
-exactly T−90 by construction rather than by assumption. That is the mechanical part of
-the point-in-time rule; the substantive part — that no *input* to a prediction is later
-than the cutoff — is enforced when an engine is fitted, by recording the maximum input
+The clock, cutoff and cluster columns exist for every scored row, the cutoff is exactly
+T−90 by construction, and the accounting closes. That is the mechanical part of the
+point-in-time rule; the substantive part — that no *input* to a prediction is later than
+the cutoff — is enforced when an engine is fitted, by recording the maximum input
 timestamp per prediction.
 
 ## What it does not establish
 
-- No engine has been fitted, so there is no Δ distribution, and the power calculation
-  remains the synthetic one in `research/LOGLOSS_POWER.md`.
-- `σ²_w` and `σ²_b` are unmeasured. The cluster counts here (24 pilot, 16 confirmatory)
-  are the ones the sizing procedure must use.
+- No engine has been fitted, so there is no Δ distribution and no measured power.
+- `σ²_w` and `σ²_b` remain unmeasured; `research/cluster_power.py` shows how they become
+  a power figure once the pilot produces them.
 - The market probability is de-vigged proportionally; no timestamp for it exists, as the
   protocol records.

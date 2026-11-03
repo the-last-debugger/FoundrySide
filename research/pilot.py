@@ -1,19 +1,14 @@
 """Build the pilot's analysis frame: one row per fixture, with its cutoff and cluster.
 
 This is pilot preparation, not scoring. It puts the pieces together that the protocol
-requires to exist before any engine is fitted:
-
-  - the fixture clock, parsed to UTC through research/fixture_time.py
-  - the T-90 information cutoff for that fixture
-  - the cluster key (division × season) and which phase the season belongs to
-  - the de-vigged market probability and the outcome, so the frame is ready to score
-
-It deliberately fits nothing. A frame is auditable in a way a model is not: either the
-columns are there and consistent, or they are not.
+requires to exist before any engine is fitted, and — after review — it **fails closed**:
+a frame that cannot account for every source row, or that contains an unassigned fixture
+or a mis-computed cutoff, is an error rather than a printed count.
 
     python research/pilot.py
+    python research/pilot.py --expect-total 14735 --expect-pilot 8941 --expect-confirmatory 5794
 
-Writes research/PILOT_FRAME.md.
+Writes research/PILOT_FRAME.md and exits non-zero if any check fails.
 """
 
 from __future__ import annotations
@@ -34,24 +29,36 @@ OUT = ROOT / "research" / "PILOT_FRAME.md"
 PILOT_SEASONS = ("2021", "2122", "2223")
 CONFIRMATORY_SEASONS = ("2324", "2425")
 
+CATEGORIES = ("missing_ou_price", "clock", "result", "other")
 
-def frame(rows: list[dict]) -> tuple[list[dict], list[str]]:
-    """Join clock, cutoff, cluster and market probability; collect rejects."""
+
+def frame(rows: list[dict]) -> tuple[list[dict], dict[str, list[str]]]:
+    """Join clock, cutoff, cluster and market probability; classify every reject."""
     out: list[dict] = []
-    rejects: list[str] = []
+    rejects: dict[str, list[str]] = {c: [] for c in CATEGORIES}
     for r in rows:
         league, season = r["_league"], r["_season"]
+        where = f"{league} {season} {r.get('Date')} {r.get('Time')}"
         try:
             kick = fixture_time.kickoff_utc(r["Date"], r["Time"], league)
             cutoff = fixture_time.cutoff_utc(r["Date"], r["Time"], league)
-            hg, ag = int(r["FTHG"]), int(r["FTAG"])
-            o_over = float(r["PC>2.5"])
-            o_under = float(r["PC<2.5"])
-        except (KeyError, ValueError, TypeError, fixture_time.ClockError) as exc:
-            rejects.append(f"{league} {season} {r.get('Date')} {r.get('Time')}: {exc}")
+        except fixture_time.ClockError as exc:
+            rejects["clock"].append(f"{where}: {exc}")
             continue
-        if o_over <= 1.0 or o_under <= 1.0:
-            rejects.append(f"{league} {season} {r.get('Date')}: bad O/U price")
+        except (KeyError, ValueError, TypeError) as exc:
+            rejects["other"].append(f"{where}: {exc}")
+            continue
+        try:
+            hg, ag = int(r["FTHG"]), int(r["FTAG"])
+        except (KeyError, TypeError, ValueError):
+            rejects["result"].append(f"{where}: no usable full-time score")
+            continue
+        try:
+            o_over, o_under = float(r["PC>2.5"]), float(r["PC<2.5"])
+            if o_over <= 1.0 or o_under <= 1.0:
+                raise ValueError("price <= 1.0")
+        except (KeyError, TypeError, ValueError):
+            rejects["missing_ou_price"].append(f"{where}: no complete O/U 2.5 price")
             continue
         raw_over, raw_under = 1 / o_over, 1 / o_under
         out.append({
@@ -88,14 +95,51 @@ def summarise(framed: list[dict]) -> str:
     return "\n".join(lines)
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    args = argv if argv is not None else sys.argv[1:]
+
+    def flag(name: str) -> int | None:
+        return int(args[args.index(name) + 1]) if name in args else None
+
+    expect_total, expect_pilot = flag("--expect-total"), flag("--expect-pilot")
+    expect_confirm = flag("--expect-confirmatory")
+
     rows = analyse.load()
     framed, rejects = frame(rows)
+    rejected = sum(len(v) for v in rejects.values())
 
     bad_cutoff = [f for f in framed
                   if not (f["cutoff_utc"] < f["kickoff_utc"] ==
                           f["cutoff_utc"] + timedelta(minutes=90))]
     unassigned = [f for f in framed if f["phase"] == "unassigned"]
+    pilot_n = sum(1 for f in framed if f["phase"] == "pilot")
+    confirm_n = sum(1 for f in framed if f["phase"] == "confirmatory")
+
+    failures: list[str] = []
+    if len(framed) + rejected != len(rows):
+        failures.append(f"accounting does not reconcile: {len(framed)} framed + "
+                        f"{rejected} rejected != {len(rows)} source rows")
+    for cat in ("clock", "result", "other"):
+        if rejects[cat]:
+            failures.append(f"{cat}: {len(rejects[cat])} row(s) — a frame cannot be built "
+                            f"over broken inputs")
+    if bad_cutoff:
+        failures.append(f"{len(bad_cutoff)} cutoff(s) are not exactly T-90")
+    if unassigned:
+        failures.append(f"{len(unassigned)} fixture(s) in an unassigned season")
+    if expect_total is not None and len(rows) != expect_total:
+        failures.append(f"expected {expect_total} source rows, found {len(rows)}")
+    if expect_pilot is not None and pilot_n != expect_pilot:
+        failures.append(f"expected {expect_pilot} pilot fixtures, found {pilot_n}")
+    if expect_confirm is not None and confirm_n != expect_confirm:
+        failures.append(f"expected {expect_confirm} confirmatory fixtures, found {confirm_n}")
+
+    checks = [
+        ("every source row accounted for", len(framed) + rejected == len(rows)),
+        ("no clock or result defects", not any(rejects[c] for c in ("clock", "result", "other"))),
+        ("every cutoff is exactly T-90", not bad_cutoff),
+        ("every fixture in an assigned phase", not unassigned),
+    ]
 
     doc = f"""# Pilot frame
 
@@ -104,35 +148,50 @@ no model and scores nothing.
 
 {summarise(framed)}
 
-- Rows joined: **{len(framed):,}** of {len(rows):,} source rows.
-- Rejected: **{len(rejects)}**.
-- Cutoffs not exactly 90 minutes before kickoff: **{len(bad_cutoff)}**.
-- Rows in an unassigned season: **{len(unassigned)}**.
+| Check | Result |
+| --- | --- |
+""" + "\n".join(f"| {name} | {'PASS' if ok else '**FAIL**'} |" for name, ok in checks) + f"""
+
+## Exclusions, by category
+
+| Category | Count |
+| --- | --- |
+""" + "\n".join(f"| {c} | {len(rejects[c])} |" for c in CATEGORIES) + f"""
+| **total** | **{rejected}** |
+
+The only expected exclusion is `missing_ou_price`: fixtures that exist but have no
+complete over/under 2.5 closing price. Clock, result and other failures are fatal, so the
+count above cannot silently mix a broken row into an "expected" bucket.
 
 ## What this establishes
 
-The clock, cutoff and cluster columns exist for every scored row, and the cutoff is
-exactly T−90 by construction rather than by assumption. That is the mechanical part of
-the point-in-time rule; the substantive part — that no *input* to a prediction is later
-than the cutoff — is enforced when an engine is fitted, by recording the maximum input
+The clock, cutoff and cluster columns exist for every scored row, the cutoff is exactly
+T−90 by construction, and the accounting closes. That is the mechanical part of the
+point-in-time rule; the substantive part — that no *input* to a prediction is later than
+the cutoff — is enforced when an engine is fitted, by recording the maximum input
 timestamp per prediction.
 
 ## What it does not establish
 
-- No engine has been fitted, so there is no Δ distribution, and the power calculation
-  remains the synthetic one in `research/LOGLOSS_POWER.md`.
-- `σ²_w` and `σ²_b` are unmeasured. The cluster counts here (24 pilot, 16 confirmatory)
-  are the ones the sizing procedure must use.
+- No engine has been fitted, so there is no Δ distribution and no measured power.
+- `σ²_w` and `σ²_b` remain unmeasured; `research/cluster_power.py` shows how they become
+  a power figure once the pilot produces them.
 - The market probability is de-vigged proportionally; no timestamp for it exists, as the
   protocol records.
 """
     OUT.write_text(doc, encoding="utf-8")
 
-    print(f"framed={len(framed):,} rejected={len(rejects)}")
-    print(summarise(framed))
+    print(f"source rows={len(rows)} framed={len(framed):,} rejected={rejected}")
+    for c in CATEGORIES:
+        print(f"  {c:16} {len(rejects[c])}")
+    for name, ok in checks:
+        print(f"  {'PASS' if ok else 'FAIL'}  {name}")
+    for f in failures:
+        print(f"FAILURE: {f}")
     print(f"wrote {OUT.relative_to(ROOT)}")
-    return 0
+    return 0 if not failures else 1
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    import sys as _sys
+    raise SystemExit(main(_sys.argv[1:]))
