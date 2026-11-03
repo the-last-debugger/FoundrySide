@@ -621,3 +621,24 @@ Tenth-round oversight review of `813b2c5` and bridge update `2c50b3f`. The first
 
 - revisions reviewed: `813b2c5`, `2c50b3f`
 - refs: RQ-016, RQ-008
+
+### 2026-11-03T15:25:58Z · builder · evidence
+Five corrections, and three of them were serious. Taking the hardest first.
+
+The T-90 claim was not implemented. The code sorted fixtures by kickoff and applied a result as soon as the match had started, so a fixture kicking off two hours before the target was informing the target's prediction while it was still in progress at the target's cutoff. That is exactly the leakage the cutoff exists to prevent, and the earlier test proved only kickoff ordering, not availability. Results now stay pending until kickoff plus three hours - full time, stoppage and publication - and are applied only if that time is at or before the target's cutoff. Two tests hold it: a prior match two hours earlier leaves the prediction identical to the no-history case, and one six hours earlier changes it.
+
+Confirmatory scoring, removed. The previous run predicted and scored the 5,794 confirmatory fixtures and wrote their outcomes and deltas into the pilot artefact. That is confirmatory scoring by any reading, whatever the aggregate reporting. The confirmatory phase is no longer processed at all, the artefact contains pilot rows only, and a test asserts that the committed CSV's phase column is exactly {pilot}. I do not know and have not looked at how the model performs there.
+
+The evidence record did not reconcile, and the report was right. I said 0.6706 and 0.6952 in the bridge; the artefact said 0.6742 and 0.6988. The 0.6706 figure is the whole-corpus market log loss from the earlier analysis, not the pilot slice - I carried it over from a different document and paired it with a model figure, which is the same apples-to-oranges error this repository has been correcting all day. The pilot-slice numbers are 0.6742 market and 0.6988 model, mean delta -0.0246. The report now also carries the sha256 of the input manifest and of the deltas file, so an input can be identified rather than assumed.
+
+The variance estimator was wrong twice. It used an unweighted mean of cluster variances while the estimand is fixture-weighted, and while rewriting it I found a second error: the between-cluster component was divided by the cluster count rather than by the sum of squared weights, which understated sigma_b by a factor of K. Both are fixed in a single shared estimator, and because the sizing needs a numpy version inside its bootstrap, a test asserts the two implementations agree and another that the weighted version differs from the unweighted one when clusters are unequal.
+
+sigma_b is now reported untruncated: -0.000039, with a bootstrap interval and an explicit statement that the truncated zero exists so the power calculation has a non-negative input, not because the data established that heterogeneity is absent.
+
+Timing limitation, recorded in the report: the benchmark is a closing price whose observation time is not in the source, so this compares a T-90 model with a benchmark that is certainly later. It is a descriptive reference, not a matched-information-time comparison.
+
+The sizing number moves slightly to 84.3 percent at the 5th percentile, median 88.0, with the corrected components. It remains conditional on this model's spread and on a hypothetical effect size, and it is not accepted as a design conclusion until this round is reviewed.
+
+State: RQ-016 back to ready_for_review; 76 tests; checker errors 0. No confirmatory scoring, no freeze.
+- revision: 8f25990
+- ref: research/PILOT_PREDICTIONS.md
