@@ -56,6 +56,34 @@ class CentringTest(unittest.TestCase):
         self.assertLess(null, 0.12)
 
 
+class EstimandTest(unittest.TestCase):
+    """Resampling must target the fixture-weighted mean, not the unweighted mean of means."""
+
+    def test_null_is_centred_when_means_are_associated_with_size(self):
+        rng = np.random.default_rng(5)
+        sizes = [400, 300, 250, 200, 150, 100, 80, 60]
+        means = [0.06, 0.04, 0.02, 0.005, -0.01, -0.03, -0.04, -0.05]
+        clusters = [rng.normal(m, 0.18, size=s) for m, s in zip(means, sizes)]
+        null_mean = pilot_power.simulated_mean(clusters, SIZES, 0.0, sims=500)
+        self.assertLess(abs(null_mean), 0.012)
+
+    def test_the_two_estimands_differ_for_this_data(self):
+        # Documents why the sampling scheme matters: the unweighted mean of cluster means
+        # is materially different from the fixture-weighted mean here.
+        sizes = [400, 300, 250, 200, 150, 100, 80, 60]
+        means = [0.06, 0.04, 0.02, 0.005, -0.01, -0.03, -0.04, -0.05]
+        weighted = sum(s * m for s, m in zip(sizes, means)) / sum(sizes)
+        unweighted = sum(means) / len(means)
+        self.assertGreater(abs(unweighted - weighted), 0.015)
+
+    def test_threshold_is_reproducible(self):
+        data = clusters()
+        a = pilot_power.power_threshold(data, SIZES, sims=120)
+        b = pilot_power.power_threshold(data, SIZES, sims=120)
+        self.assertEqual(a, b)
+        self.assertGreater(a[0], 0.0)
+
+
 class DesignPowerTest(unittest.TestCase):
     def test_rejects_almost_always_for_a_large_effect(self):
         power = pilot_power.design_power(clusters(), SIZES, 0.10, sims=200)

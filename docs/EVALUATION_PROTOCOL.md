@@ -196,28 +196,30 @@ this, and it is what the pilot runs:
    price of a calibrated test.
 6. **Sizing resamples the pilot; it does not model it.** The pilot Δ are centred on their
    fixture-weighted mean, then the target effect is imposed. Each simulation draws 16
-   clusters with replacement from the 24 pilot clusters, resamples fixtures within each to
-   the confirmatory cluster sizes, and runs the confirmatory test. Power is the rejection
-   rate. No `σ_w`, no `σ_b`, no formula.
+   clusters **with probability proportional to pilot cluster size** — the estimand weights
+   fixtures, so each fixture should have an equal chance of being represented, and uniform
+   cluster sampling would quietly target the unweighted mean of cluster means — resamples
+   fixtures within each to the confirmatory cluster sizes, and runs the confirmatory test.
+   Power is the rejection rate. No `σ_w`, no `σ_b`, no formula.
 
    **Centring is not a detail.** The pilot mean is about −0.025 — the model is behind the
    market — so imposing +0.01 on uncentred data tests "still behind, slightly less", and a
    two-sided test rejects on the existing disadvantage. An earlier version did that and
-   reported 93.5%, which was not power at all. Offset invariance is now a regression test:
-   adding a constant to every pilot Δ must leave the power unchanged.
+   reported 93.5%, which was not power at all. Offset invariance and null centring are both
+   regression tests.
 
-   **Measured result, pilot Δ of the first model:** power **66.6%** (MC SE ±1.7pp) at a
-   0.01-nat effect; null rejection 5.2% against a nominal 5; independent runs 64.2% and
-   66.1%. **The design is not adequate at 0.01 nats for this spread.** It reaches 80% at an
-   effect of about **0.0116** nats, so the stated target is just beyond it.
+   **Measured result, pilot Δ of the first model:** power **67.6%** (MC SE ±1.7pp) at a
+   0.01-nat effect; null rejection 4.5% against a nominal 5; simulated null mean +0.00013;
+   independent runs 67.5% and 69.3%. **The design is not adequate at 0.01 nats for this
+   spread.** It reaches 80% at an effect of **0.0117 nats** (bracket ±0.0004), computed by
+   bisection inside the generator rather than quoted from outside it.
 
-**What this implies.** The adequacy question that was open for many rounds now has an
-answer for one model's spread: 16 clusters and 5,794 fixtures give roughly two-thirds power
-at 0.01 nats. Three responses are available and all are sponsor decisions, taken before the
-freeze:
+**What this implies.** The adequacy question now has an answer for one model's spread: 16
+clusters and 5,794 fixtures give roughly two-thirds power at 0.01 nats. Three responses are
+available and all are sponsor decisions, taken before the freeze:
 
-1. **Raise the target effect** to something this design detects — about 0.012 nats — and say
-   so in the freeze rather than after a null.
+1. **Raise the target effect** to something this design detects — about 0.0117 nats — and
+   say so in the freeze rather than after a null.
 2. **Add clusters**, which means adding seasons, which raises the exchangeability question
    the earlier analysis already flagged.
 3. **Add markets to the family**, increasing n at the cost of a larger correction family.
