@@ -1,4 +1,4 @@
-<!-- generated-by: pilot_power.py sha256=e31450892dd0 -->
+<!-- generated-by: pilot_power.py sha256=2f05336633b5 -->
 
 # Sizing for the confirmatory design
 
@@ -38,17 +38,20 @@ component decomposition has been removed from the sizing path altogether.
 | Power at a 0.01-nat effect | **67.6%** (MC SE ±1.7pp) |
 | Rejection rate under the null (centred residuals, no imposed effect) | 4.5% (nominally 5%) |
 | Simulated null mean | +0.00013 (should be ~0) |
-| Effect at 80% power | 0.0117 nats (±0.0004 bracket) |
+| Effect at 80% power | 0.0117 nats (bisection bracket ±0.0004) |
+| Across 5 independent threshold searches | 0.0117 – 0.0125 nats |
 | Independent runs, seeds 20261134 and 20261165 | 67.5%, 69.2% |
 | Decision rule | adequate if power reaches 80% |
 
 **Verdict: NOT ADEQUATE** at this spread — one model's.
 
-This is the third number this document has carried, and the sequence matters. It was 84%
-when the sizing used an estimated variance component, 93.5% when the decomposition was
-removed but the pilot mean was not centred, and 66.6% once the centring was fixed. The 93.5%
-was not power at all — it was the model's existing disadvantage to the market, detected by a
-two-sided test. The current figure is the only one that tests the stated effect.
+This is the fourth number this document has carried, and the sequence matters. It was 84%
+when the sizing used an estimated variance component; 93.5% when the decomposition was
+removed but the pilot mean was not centred; 66.6% once the centring was fixed but clusters
+were drawn uniformly; and 67.6% with probability-proportional-to-size sampling, which is the
+estimand the protocol declares. The 93.5% was not power at all — it was the model's existing
+disadvantage to the market, detected by a two-sided test. The bracket on the threshold is
+numerical resolution; the seed spread above is the statistical uncertainty.
 
 ## What this does not show
 

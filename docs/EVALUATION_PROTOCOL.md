@@ -163,20 +163,18 @@ this, and it is what the pilot runs:
    eligible fixture counts equally, so a large division-season contributes more than a
    small one. This is not the same estimand as an equal-weighting of the 16 clusters, and
    the two give different variances.
-3. **Decompose the variance**: within-cluster `σ²_w`, between-cluster `σ²_b` of the
-   cluster means. `ICC = σ²_b/(σ²_b + σ²_w)` and `D = 1 + (m̄ − 1)·ICC` are reported for
-   continuity, but they are not what the sizing uses.
-4. **The variance the sizing uses**, for the fixture-weighted estimand with the actual
-   cluster sizes:
+3. **The variance decomposition is withdrawn.** Earlier versions of this protocol estimated
+   `σ²_w` and `σ²_b` and plugged them into a formula. Review established that the
+   unequal-cluster estimator behind that decomposition was not justified, and it has been
+   removed rather than patched. What is reported now is the cluster-robust variance of the
+   fixture-weighted mean — the quantity the confirmatory test actually divides by:
 
    ```
-   Var(mean Δ) = σ²_w / n  +  σ²_b · Σ_k (m_k / n)²
+   V̂(mean Δ) = (K/(K−1)) · Σ_k w_k² (mean_k − mean)²,   w_k = m_k / n
    ```
 
-   With equal sizes `Σ(m_k/n)² = 1/K` and this collapses to the familiar expression. The
-   confirmatory clusters are **not** equal — 293 to 552 fixtures — and for this corpus
-   `Σ(m_k/n)² = 0.0656` against `1/16 = 0.0625`, so the between-cluster term is **1.049×**
-   the equal-size value. Small, but it is not one, and `m̄` does not make it go away.
+   This is descriptive. **It is not an input to sizing**; sizing resamples clusters
+   (step 6) and uses no components at all. `σ_w` survives only as a reported spread.
 
    | Phase | Seasons | Fixtures | Clusters `K` |
    | --- | --- | --- | --- |
@@ -210,9 +208,10 @@ this, and it is what the pilot runs:
 
    **Measured result, pilot Δ of the first model:** power **67.6%** (MC SE ±1.7pp) at a
    0.01-nat effect; null rejection 4.5% against a nominal 5; simulated null mean +0.00013;
-   independent runs 67.5% and 69.3%. **The design is not adequate at 0.01 nats for this
-   spread.** It reaches 80% at an effect of **0.0117 nats** (bracket ±0.0004), computed by
-   bisection inside the generator rather than quoted from outside it.
+   independent runs 67.5% and 69.2%. **The design is not adequate at 0.01 nats for this
+   spread.** It reaches 80% at an effect of **0.0117 nats** — bisection bracket ±0.0004,
+   and **0.0117 to 0.0125 across five independent searches**, which is the statistical
+   uncertainty rather than the bracket. The bracket is numerical resolution only.
 
 **What this implies.** The adequacy question now has an answer for one model's spread: 16
 clusters and 5,794 fixtures give roughly two-thirds power at 0.01 nats. Three responses are
@@ -273,25 +272,28 @@ effect `D` — effective n = n/D — the permitted SD shrinks by `sqrt(D)`:
 | 1.5 | 3,863 | 0.222 |
 | 2.0 | 2,897 | 0.192 |
 
-The pilot estimates both quantities through steps 2–5 of §5. The table above is what
-happens to the threshold as `D` grows; it is not a substitute for measuring `D`, and
-sizing on the spread alone would repeat the mistake the accuracy analysis made.
+**The tables above are withdrawn as sizing evidence.** They belong to the
+component-decomposition method this protocol no longer uses — the `SD(Δ)` grid and the
+design-effect grid are the record of what was tried, not instructions. **The sole sizing
+procedure is §5 step 6**: centre the pilot Δ, resample clusters proportional to size,
+impose the effect, run the test.
 
-Procedure:
+The pilot's role is unchanged and does not depend on that method:
 
-1. **Pilot** on seasons 2021–2223, disjoint from the confirmatory slice: fit the engine,
-   and measure SD(Δ) and the between-cluster variance of Δ on out-of-fold predictions.
-2. **Compute n** from the measured spread, not from a guess, and record it.
+1. **Pilot** on seasons 2021–2223, disjoint from the confirmatory slice: fit the engine and
+   measure the Δ distribution on out-of-fold predictions. That distribution is the
+   resampling pool.
+2. **Size** by §5 step 6, and record the resulting power at the target effect.
 3. **Freeze**, then run on 2324–2425.
 
 The pilot may not contribute to the confirmatory claim; that is the reason it is a
 separate slice.
 
-If the measured SD exceeds the threshold, the response is chosen **before** scoring, from:
-extending the slice to more seasons (older, possibly not exchangeable); adding markets to
-the family (raises n, enlarges the correction family); or raising the target effect and
-saying so in the freeze. What is not available is running the test, missing significance,
-and reporting it as evidence of no edge.
+If the resulting power at the target effect falls short, the response is chosen **before**
+scoring, from: extending the slice to more seasons (older, possibly not exchangeable);
+adding markets to the family (raises n, enlarges the correction family); or raising the
+target effect and saying so in the freeze. What is not available is running the test,
+missing significance, and reporting it as evidence of no edge.
 
 The accuracy tables in `research/POWER.md` are now explicitly a **supplementary
 pick-level sensitivity study** and must not be cited as power evidence for log loss.

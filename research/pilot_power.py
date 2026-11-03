@@ -114,23 +114,38 @@ def simulated_mean(clusters: list[np.ndarray], sizes: np.ndarray, delta: float,
 
 
 def power_threshold(clusters: list[np.ndarray], sizes: np.ndarray,
-                    target: float = 0.80, sims: int = 300,
+                    target: float = 0.80, sims: int = 300, seed: int = SEED,
                     hi: float = 0.05, steps: int = 6) -> tuple[float, float]:
     """Effect size at which power reaches `target`, by bisection.
 
-    Returns (effect, bracket half-width). The bracket is the precision the simulation
-    supports, so the number is quoted with it rather than to four decimals.
+    Returns (effect, numerical bracket). The bracket is the width of the final bisection
+    interval — the resolution of the search, **not** the statistical uncertainty of the
+    answer. Each bisection point estimates power from `sims` simulations, whose binomial
+    standard error near 80% is about 2.3pp at 300 draws, so the crossing is less precisely
+    located than the bracket suggests. `threshold_searches()` measures that separately.
     """
-    if design_power(clusters, sizes, hi, sims=sims) < target:
+    if design_power(clusters, sizes, hi, sims=sims, seed=seed) < target:
         return (float("nan"), float("nan"))
     low, high = 0.0, hi
     for _ in range(steps):
         mid = (low + high) / 2
-        if design_power(clusters, sizes, mid, sims=sims) >= target:
+        if design_power(clusters, sizes, mid, sims=sims, seed=seed) >= target:
             high = mid
         else:
             low = mid
     return (high, (high - low) / 2)
+
+
+def threshold_searches(clusters: list[np.ndarray], sizes: np.ndarray,
+                       seeds: tuple[int, ...] = (SEED, SEED + 7, SEED + 13,
+                                                 SEED + 21, SEED + 29),
+                       sims: int = 300) -> list[float]:
+    """Repeat the whole threshold search over independent seeds.
+
+    The spread of these estimates is the statistical uncertainty of the threshold; the
+    bisection bracket is not.
+    """
+    return [power_threshold(clusters, sizes, sims=sims, seed=s)[0] for s in seeds]
 
 
 def mc_se(p: float, sims: int = SIMS) -> float:
@@ -159,6 +174,7 @@ def main(argv: list[str] | None = None) -> int:
                  for i in range(2)]
     se = mc_se(power)
     threshold, bracket = power_threshold(clusters, sizes)
+    searches = threshold_searches(clusters, sizes)
     null_mean = simulated_mean(clusters, sizes, 0.0)
 
     doc = f"""{report_stamp.stamp(Path(__file__))}
@@ -201,17 +217,20 @@ component decomposition has been removed from the sizing path altogether.
 | Power at a {TARGET}-nat effect | **{power * 100:.1f}%** (MC SE ±{se * 100:.1f}pp) |
 | Rejection rate under the null (centred residuals, no imposed effect) | {type_one * 100:.1f}% (nominally 5%) |
 | Simulated null mean | {null_mean:+.5f} (should be ~0) |
-| Effect at 80% power | {threshold:.4f} nats (±{bracket:.4f} bracket) |
+| Effect at 80% power | {threshold:.4f} nats (bisection bracket ±{bracket:.4f}) |
+| Across {len(searches)} independent threshold searches | {min(searches):.4f} – {max(searches):.4f} nats |
 | Independent runs, seeds {SEED + 31} and {SEED + 62} | {stability[0] * 100:.1f}%, {stability[1] * 100:.1f}% |
 | Decision rule | adequate if power reaches 80% |
 
 **Verdict: {'ADEQUATE' if power >= 0.80 else 'NOT ADEQUATE'}** at this spread — one model's.
 
-This is the third number this document has carried, and the sequence matters. It was 84%
-when the sizing used an estimated variance component, 93.5% when the decomposition was
-removed but the pilot mean was not centred, and 66.6% once the centring was fixed. The 93.5%
-was not power at all — it was the model's existing disadvantage to the market, detected by a
-two-sided test. The current figure is the only one that tests the stated effect.
+This is the fourth number this document has carried, and the sequence matters. It was 84%
+when the sizing used an estimated variance component; 93.5% when the decomposition was
+removed but the pilot mean was not centred; 66.6% once the centring was fixed but clusters
+were drawn uniformly; and 67.6% with probability-proportional-to-size sampling, which is the
+estimand the protocol declares. The 93.5% was not power at all — it was the model's existing
+disadvantage to the market, detected by a two-sided test. The bracket on the threshold is
+numerical resolution; the seed spread above is the statistical uncertainty.
 
 ## What this does not show
 
