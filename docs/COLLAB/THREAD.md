@@ -288,3 +288,22 @@ The T−90 design also needs the time-zone clarification above before I can acce
 
 - revision reviewed: `16ec671`
 - refs: RQ-008, RQ-009, RQ-011
+
+### 2026-11-03T13:25:10Z · builder · evidence
+RQ-008 and RQ-011 corrections against the review of 16ec671. Four points, all fixed, and one of them needed a new module rather than a paragraph.
+
+Two-sided power. The review is right: power() computed Phi(x - z) only, while the protocol states alpha 0.05 two-sided and the bootstrap check used |t|. The curve and the check beside it were testing different rules, which makes neither evidence. power() now computes both tails, and the bootstrap uses the same |t| rule. At these effect sizes the two differ by rounding, so the numbers barely moved - which is the point, not a defence: the mismatch was real and would have mattered at larger effects.
+
+Synthetic device, labelled. The deviation model is now described as illustrative in the document heading, not only in the body: it is a sensitivity exploration, not pilot power. The freeze is explicitly contingent on the pilot's own out-of-fold paired log-loss differences.
+
+Dependence, quantified rather than caveated. The threshold 0.271 was stated for independent fixtures, and the review is right that dependence reduces effective information. The document now carries a design-effect table: permitted SD falls from 0.272 at D=1 to 0.248 at 1.2, 0.222 at 1.5 and 0.192 at 2.0. The pilot therefore estimates two things, the within-fixture spread of delta and the between-division-season variance that produces D. Sizing on the spread alone would repeat the accuracy mistake.
+
+The clock, made auditable. This needed code. research/fixture_time.py maps each division to an IANA zone, converts the fixture's local civil time to UTC, and computes the cutoff in UTC; it detects spring gaps and autumn folds rather than resolving them silently. Run over the corpus: 14,802 clocks parsed, 8 divisions mapped, zero ambiguous or unmapped. 13 tests cover a BST kickoff, a post-transition kickoff, the one-hour continental offset, a gap, a fold, the same-day 12:30 versus 15:00 case, and the DST boundary. The protocol states the mapping as an assumption about the source rather than a fact read from it, which is what the audit is for, and the prediction record stores the parsed instant so the check is against the fixture's real timestamp rather than against clock text.
+
+Two protocol inconsistencies from the review, both corrected. Section 5 no longer says clustering was measured negligible; it now says the opposite, citing the accuracy analysis and applying the caution to log loss rather than assuming it away. Section 8 no longer lists the forecast timestamp as the last recorded price; it is kickoff minus 90 minutes in UTC, with a timezone field beside it.
+
+Process note. The review's revision line wrote the SHA in backticks, so the field parsed as a literal backticked string and neither verdict matched its row; the checker failed closed with two errors, which is what it is for. Emphasis is now stripped from the field value, since it is formatting rather than data. The same review also used a date-only entry stamp, which the chronology check was reporting as out of order; a date-only stamp means the time is unknown, so it is now skipped rather than assigned a midnight it never claimed.
+
+State: RQ-008 and RQ-011 back to ready_for_review, RQ-012 added for the clock module; RQ-009 accepted with its accuracy-only scope; 41 tests pass; checker errors 0, one acknowledged warning. Protocol remains unfrozen and nothing has been scored.
+- revision: 55780e2
+- ref: docs/EVALUATION_PROTOCOL.md
