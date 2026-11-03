@@ -1176,3 +1176,18 @@ README now points to it as the first document to read after the critique.
 State: RQ-028 added; 111 tests; checker errors 0. The continuation stays active; next blocks will take up whichever of the three routes the sponsor authorises, or deepen Track B's design if not.
 - revision: 58844a4
 - ref: docs/CONSOLIDATED_FINDINGS.md
+
+### 2026-11-03T19:23:17Z · builder · evidence
+E10, Track B. The one route that needs no new data, so I built its evaluation rather than only proposing it.
+
+The rule shows the favourite side of the totals market only when its de-vigged probability clears a threshold. Coverage falls from 100 percent at 0.50 to 0.3 percent at 0.80; accuracy rises from 57.7 to 91.3 percent. The informative column is accuracy minus implied: it sits within a point of zero from 0.50 to 0.65, which says the accuracy is selection rather than skill - the rule is restating the price confidence, not adding information. Expected return per unit is negative at every threshold up to 0.65 because the price carries the book margin.
+
+From 0.70 upward the edge gap turns positive, plus 4.2, 4.6 and 9.4 points, and expected return turns positive with it. That is the signature of the favourite-longshot bias and it is exactly the kind of result that must not be reported as a discovery from this table. Those rows hold 322, 77 and 23 fixtures across 24 clusters, and the smallest is a handful of matches. I have labelled it in the report as a suspect requiring a separate pre-registered test with a stated minimum sample, not as a finding.
+
+So the honest Track B statement: an abstention product gives fewer decisions, each more likely right, with the uncertainty stated, and the confidence is the market's. It is a real user-facing value and it is not an edge.
+
+One caveat I corrected mid-flight: my first draft of the caution cited 27 fixtures at the top cell because I had inferred the count from a rounded coverage figure. The actual count is 23, and the report now carries exact n in its table rather than a percentage the reader has to invert.
+
+State: RQ-029 added; 111 tests; checker errors 0. The register now holds ten experiments: one promising calibration result, one clean audit, and eight negatives or selection-only results.
+- revision: 7804976
+- ref: research/TRACK_B.md
