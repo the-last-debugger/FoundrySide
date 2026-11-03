@@ -22,6 +22,7 @@ REPORTS = (
     "CLUSTER_POWER.md",
     "PILOT_POWER.md",
     "PILOT_PREDICTIONS.md",
+    "MARKET_STRUCTURE.md",
 )
 
 
