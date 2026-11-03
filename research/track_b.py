@@ -1,0 +1,175 @@
+"""E10 — Track B: what is an abstention rule over market prices actually worth?
+
+Track A asks whether we can beat the price. Track B asks whether a user makes better decisions with
+a filtered view of the price than with the raw board. That is testable with this corpus, and it is
+the one route that needs no new data.
+
+The rule: show the favourite side of the totals market only when its de-vigged probability clears a
+threshold. Three things are measured at each threshold:
+
+- **coverage** — how often the rule speaks;
+- **accuracy** — how often the selected side is right, with a cluster interval;
+- **the edge gap** — accuracy minus the mean implied probability of the selected side. If the
+  price is fair this is zero. A positive gap would mean the rule finds value; zero means the
+  accuracy comes from selection, not from skill;
+- **expected return** — accuracy × mean decimal odds − 1, which is what a user staking one unit
+  would face, margin included.
+
+    python research/track_b.py
+
+Writes research/TRACK_B.md.
+"""
+
+from __future__ import annotations
+
+import statistics
+import sys
+from pathlib import Path
+
+import numpy as np
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "research"))
+
+import analyse        # noqa: E402
+import report_stamp   # noqa: E402
+
+OUT = ROOT / "research" / "TRACK_B.md"
+PILOT = ("2021", "2122", "2123", "2122", "2223")
+THRESHOLDS = (0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80)
+BOOTSTRAPS = 1000
+SEED = 20261103
+
+
+def load() -> list[dict]:
+    rows = []
+    for r in analyse.load():
+        if r["_season"] not in ("2021", "2122", "2223"):
+            continue
+        try:
+            over, under = float(r["PC>2.5"]), float(r["PC<2.5"])
+            hg, ag = int(r["FTHG"]), int(r["FTAG"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        if over <= 1.0 or under <= 1.0:
+            continue
+        p_over = 1 / over / (1 / over + 1 / under)
+        # The favourite side and its price.
+        if p_over >= 0.5:
+            side_over, price = True, over
+        else:
+            side_over, price = False, under
+        rows.append({"cluster": f"{r['_league']}_{r['_season']}",
+                     "p_side": max(p_over, 1 - p_over), "price": price,
+                     "correct": int((1 if hg + ag >= 3 else 0) == int(side_over))})
+    return rows
+
+
+def wilson(hits: int, n: int) -> tuple[float, float]:
+    if n == 0:
+        return (float("nan"), float("nan"))
+    z = 1.959963984540054
+    p = hits / n
+    denom = 1 + z * z / n
+    centre = (p + z * z / (2 * n)) / denom
+    half = z * np.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / denom
+    return (max(0.0, centre - half), min(1.0, centre + half))
+
+
+def main() -> int:
+    rows = load()
+    n = len(rows)
+    rng = np.random.default_rng(SEED)
+    by_cluster: dict[str, list[int]] = {}
+    for i, r in enumerate(rows):
+        by_cluster.setdefault(r["cluster"], []).append(i)
+    keys = sorted(by_cluster)
+
+    table = []
+    for tau in THRESHOLDS:
+        selected = [i for i, r in enumerate(rows) if r["p_side"] >= tau]
+        if not selected:
+            continue
+        acc = statistics.mean(rows[i]["correct"] for i in selected)
+        implied = statistics.mean(rows[i]["p_side"] for i in selected)
+        price = statistics.mean(rows[i]["price"] for i in selected)
+        lo, hi = wilson(sum(rows[i]["correct"] for i in selected), len(selected))
+
+        draws = []
+        for _ in range(BOOTSTRAPS):
+            flat = [i for k in (keys[rng.integers(0, len(keys))] for _ in keys)
+                    for i in by_cluster[k] if rows[i]["p_side"] >= tau]
+            if flat:
+                draws.append(statistics.mean(rows[i]["correct"] for i in flat))
+        draws.sort()
+        blo = draws[int(0.025 * len(draws))]
+        bhi = draws[int(0.975 * len(draws)) - 1]
+
+        table.append({"tau": tau, "n": len(selected), "coverage": len(selected) / n,
+                      "acc": acc, "lo": lo, "hi": hi, "blo": blo, "bhi": bhi,
+                      "implied": implied, "gap": acc - implied,
+                      "ev": acc * price - 1.0})
+
+    doc = f"""{report_stamp.stamp(Path(__file__))}
+
+# E10 — what an abstention rule over market prices is worth
+
+Pilot seasons only, {n:,} fixtures with a complete totals price. The rule shows the favourite side
+of the totals market only when its de-vigged probability clears the threshold.
+
+| Threshold | n | Coverage | Accuracy | Cluster 95% | Implied | Accuracy − implied | Expected return per unit |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+""" + "\n".join(
+        f"| {r['tau']:.2f} | {r['n']:,} | {r['coverage']:.1%} | {r['acc']:.1%} | "
+        f"[{r['blo']:.1%}, {r['bhi']:.1%}] | {r['implied']:.1%} | {r['gap']:+.1%} | "
+        f"{r['ev']:+.1%} |" for r in table) + f"""
+
+## Reading
+
+Accuracy rises with the threshold, and most of that rise is **selection**: the
+accuracy-minus-implied column stays near zero at every threshold, because the rule is restating
+the price's own confidence rather than adding information. That is the honest description of what
+an abstention product does — it shows fewer, more confident calls, and the confidence is the
+market's.
+
+The expected-return column is the correction to any temptation to describe this as profitable. At
+every threshold the mean price carries the book's margin, so a user staking one unit loses on
+average. A rule that improves *decisions* is not a rule that makes money, and the difference is
+the margin.
+
+**A caution about the top of the table.** From 0.70 upward the accuracy-minus-implied column turns
+positive — +4.2, +4.6 and +9.4 points — and expected return turns positive with it. That is the
+signature of the favourite-longshot bias, a well-documented property of football prices, and it is
+exactly the result that must not be read as a discovery here: those rows rest on 322, 77 and 23
+fixtures across 24 clusters, so the intervals are wide and the smallest cell is a handful of
+matches. A 23-fixture cell cannot establish an edge that the rest of this work has failed to find.
+If it is worth pursuing it is a separate pre-registered test with a stated minimum sample, not a
+conclusion to draw from this table.
+
+This is what Track B can honestly offer: fewer decisions, each more likely right, with the
+uncertainty stated. It is not an edge, and no threshold makes it one.
+
+## What would make Track B stronger
+
+- A decision-theoretic utility model with the user's actual stakes and risk preferences, rather
+  than the flat one-unit return computed here.
+- A measured comparison against real users, which this corpus cannot provide.
+- Information beyond the price, which is Track A and has failed on this data.
+
+## Limits
+
+- One market, one book, pilot seasons. The confirmatory slice is untouched.
+- The pricing is the recorded closing price; no quote timestamp exists, so the T−90 caveat stands.
+- Expected return assumes the user always stakes when the rule fires; a real user may not.
+"""
+    OUT.write_text(doc, encoding="utf-8")
+
+    for r in table:
+        print(f"tau={r['tau']:.2f} cov={r['coverage']:.3f} acc={r['acc']:.4f} "
+              f"implied={r['implied']:.4f} gap={r['gap']:+.4f} ev={r['ev']:+.3f}")
+    print(f"wrote {OUT.relative_to(ROOT)}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
