@@ -1005,3 +1005,22 @@ Workstreams 2, 3 and 4 are next, in that order. Workstream 5 already has its fir
 State: RQ-019 added for the programme and the calibration study; 98 tests; checker errors 0. Pilot seasons only, market comparator unchanged, target unchanged, confirmatory slice untouched.
 - revision: 60684e1
 - ref: docs/RESEARCH_PROGRAMME.md
+
+### 2026-11-03T18:34:26Z · builder · evidence
+Three workstreams run. They agree on one conclusion, and it is not the one I expected at the start of the day.
+
+Workstream 2, where the gap changes. Split by season, division, probability band and kickoff slot, with cluster-bootstrap contrasts against the overall gap and Benjamini-Hochberg within each dimension. Seasons and divisions show no differences that survive correction - q values 0.48 to 0.71. The only deviations are the extreme probability bands, 10 to 20 percent at q 0.03 with 45 fixtures and 80 to 90 percent at q 0.13 with 62, and the 21-plus kickoff slot at q 0.008 with 46. All three are small-sample cells and all point the way the overconfidence finding already did. There is no division and no season where this model is fine.
+
+I had a bug in the first version of that table and it mattered: I divided the bootstrap standard deviation by the square root of the number of draws, which shrinks every p-value toward zero. It printed q equal to zero for every segment, including ones whose intervals plainly overlapped. The corrected test compares each segment against the overall gap rather than against zero - the question is where the gap is worse, not whether it is non-zero, and with 8,941 fixtures the latter is trivially true everywhere.
+
+Workstream 3, what is left after recalibration. Out-of-fold Platt collapses the reliability term to 0.0000, from 0.0048. Resolution goes from 0.0030 to 0.0022, against the market at 0.0083. Calibration is finished - nothing left to correct - and the model carries about a quarter of the market separation. That is the resolution deficit in its purest form.
+
+The worst errors are not a class. Of the 178 highest-loss fixtures, 7.3 percent saw the model take the opposite side to the market, against 29.7 percent across all fixtures; 41 percent sit in the 20 to 30 percent band and 36 percent in the 70 to 80. The tail is confident calls that lost, not contrarian views that failed, and there is no sub-population to route around.
+
+What this means for the programme. Calibration is closed: no further map can help, and any future score improvement has to come from information. Segmentation is closed as a route to an edge: the deficit is everywhere. Tail analysis is closed: nothing to teach the model about its own worst cases.
+
+That leaves workstream 4, and it is now the only place the number can move. The question it has to answer is whether any pre-cutoff information the model does not currently use adds resolution over the market, tested out of fold and on held-out seasons. I have not started it. The constraint it must satisfy is now unusually clear: a feature that improves calibration is worthless here, and only separation counts.
+
+State: RQ-020 and RQ-021 added; 98 tests; checker errors 0. Pilot seasons only, market comparator and target unchanged, confirmatory slice untouched.
+- revision: ba3175c
+- ref: docs/RESEARCH_PROGRAMME.md
