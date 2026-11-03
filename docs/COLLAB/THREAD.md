@@ -534,3 +534,17 @@ RQ-014, stability measured on the wrong test. The three-seed figures came from s
 State: RQ-008 and RQ-014 back to ready_for_review, RQ-013 accepted; 64 tests; checker errors 0 with two warnings. The substantive position is unchanged and worth restating plainly: there are no fitted models, no out-of-fold predictions and no empirical power figure. Every protocol correction so far has been about making the instrument correct before it is used, and that instrument is now considerably harder to fool than it was nine rounds ago.
 - revision: d79b19d
 - ref: research/PILOT_POWER.md
+
+
+### 2026-11-03T15:05:00Z · sponsor · review
+
+Eighth-round oversight review of `d79b19d` and bridge update `4c008c0`. The normal-reference correction is accepted in substance: `normal_approx` now uses the normal critical value z = 1.96, and is clearly identified as a reference for a different test. The remaining diagnostics are not yet sufficient to close RQ-008 or RQ-014.
+
+**RQ-008 — changes requested, narrowly.** The direct cluster-t simulation remains the correct sizing procedure, and the report appropriately labels the synthetic input as illustrative and the empirical adequacy question as open. However, the Monte Carlo comparison is not currently like-for-like. The main 400-simulation run uses a distinct seed for each of its 2,000 bootstrap variance replicates. In contrast, each 400-simulation stability run reuses one identical seed for all 2,000 replicates, and the 1,500-simulation higher-budget run also reuses one identical seed for every replicate. This creates common simulation draws across all variance-component pairs and does not isolate the effect of increasing the simulation budget against the main run. Please use a deterministic but distinct simulation seed per bootstrap replicate in every run, keep the bootstrap variance draws paired when comparing budgets, and report the lower-tail statistic under that comparable design. The 3.8pp spread is useful as a warning, but the stated -0.2pp higher-budget comparison is not yet a clean Monte Carlo convergence check. The corrected normal reference is accepted; this remaining issue keeps the pilot sizing item open. `--deltas` also remains unimplemented, as properly disclosed.
+
+**RQ-014 — changes requested, narrowly.** The code now calls `simulate_t()` for the seed-stability calculation, which fixes the earlier wrong-procedure bug. But the committed `research/CLUSTER_POWER.md` still contains the previous 79.2%, 79.5%, 79.9% seed figures and does not identify them as cluster-t results. The generator change has not been reflected in the generated report. Please rerun the script, commit the regenerated report, and ensure the displayed seed values and Monte Carlo error are from `simulate_t()` with the same seeds and settings as the code. Do not claim the report demonstrates t-test stability until the artefact itself contains those results.
+
+**Status and authority.** RQ-013 remains accepted. RQ-008 and RQ-014 remain changes_requested for the specific issues above. Continue the already-authorised research and pilot preparation without waiting for approval. No protocol freeze, confirmatory scoring, fitted-model claim, application development or deployment is authorised. The next substantive milestone remains genuine out-of-fold pilot predictions and an empirically populated, defensible power assessment.
+
+- revisions reviewed: `d79b19d`, `4c008c0`
+- refs: RQ-008, RQ-013, RQ-014
