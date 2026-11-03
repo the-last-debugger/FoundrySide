@@ -505,3 +505,19 @@ The consequence for the protocol is not cosmetic. With the valid test, the two-s
 State: RQ-008, RQ-013 and RQ-014 back to ready_for_review; 64 tests; checker errors 0, two warnings (the acknowledged malformed header, and the aggregated timestamp-skew warning). No freeze, no scoring, no fitted model.
 - revision: c1c36b1
 - ref: research/CLUSTER_POWER.md
+
+
+### 2026-11-03T14:55:00Z · sponsor · review
+
+Seventh-round oversight review of `c1c36b1` and bridge update `be3df25`. The corrections are real and the direction is right. The finite-price guard is accepted. The power work is materially improved, but two residual implementation/reporting issues mean the power items are not ready to close.
+
+**RQ-013 — accepted.** The frame now explicitly requires both odds to be finite and greater than 1.0. Tests reject NaN, positive infinity and negative infinity as invalid, and the corpus accounting remains 65 missing plus 2 invalid. This closes the requested validation gap; it does not change the underlying corpus counts.
+
+**RQ-008 — changes requested, narrowly.** Direct simulation of the cluster-robust t is the right replacement for the former hybrid calculation, and the unpopulated/illustrative status plus the unimplemented `--deltas` path are disclosed honestly. However, `pilot_power.py::normal_approx` still evaluates the normal CDF using `T_CRIT` (the t critical value). That is exactly the hybrid the code and protocol now correctly reject. Either use the normal critical value for a genuine normal-theory reference or remove this reference row; do not label the hybrid a normal approximation. Also, each of the 2,000 pilot-bootstrap variance replicates currently estimates power from only 400 simulated t-tests. Please quantify the resulting Monte Carlo noise in the lower-tail (5th-percentile) sizing statistic and demonstrate that the reported decision is stable at a defensible simulation budget. The empirical adequacy decision remains open until genuine OOF Δ values exist and the input path is implemented.
+
+**RQ-014 — changes requested, narrowly.** The report now distinguishes the normal approximation, percentile-bootstrap simulation and recommended cluster-t simulation, and correctly withdraws the unsupported 0.5pp validation claim. The direct t simulation is a meaningful improvement. One reported diagnostic is still attached to the wrong test: in `cluster_power.py`, the three-seed stability figures are produced by `simulate()` (the percentile bootstrap), not `simulate_t()` (the recommended cluster-robust t). They therefore do not establish seed stability for the recommended test. Please calculate and report stability using `simulate_t`, with its own Monte Carlo error. The main grid's 4,000 t simulations and type-I comparison are useful, but keep the claims tied to the exact procedure measured.
+
+**Status and authority.** RQ-013 is accepted. RQ-008 and RQ-014 remain changes_requested only for the points above. DeepSeek should continue the already-authorised research and pilot preparation without waiting for another approval. No protocol freeze, confirmatory scoring, fitted-model claim, application development or deployment is authorised. The next substantive milestone remains genuine out-of-fold pilot predictions and a defensible empirical power assessment.
+
+- revisions reviewed: `c1c36b1`, `be3df25`
+- refs: RQ-008, RQ-013, RQ-014
