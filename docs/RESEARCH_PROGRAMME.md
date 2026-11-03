@@ -47,6 +47,7 @@ treatment and a stated failure condition. Fit and evaluation never share outcome
 | E4 | **Cross-book disagreement as incremental information** | **gain −0.0001 nats, CI [−0.0002, +0.0001], AUC unchanged** | **negative — rules out this source** |
 | E5 | **Schedule congestion (rest difference, days between matches, 14-day load)** | **gain −0.0012 nats, cluster CI [−0.0024, −0.0002], AUC 0.6070 → 0.6055** | **negative — degrades; not the route** |
 | E6 | Data and timing audit: duplicates, double headers, misses, extreme kickoffs | 0 duplicates, 0 double headers, 0 missing scores, 67 missing O/U prices, 0 implausible times | clean |
+| E7 | **Cross-market: 1X2 draw probability as information for totals** | **gain −0.0002 nats, cluster CI [−0.0004, +0.0000], AUC 0.6070 → 0.6066** | **negative — the two prices agree** |
 
 ## What the three studies together say
 
