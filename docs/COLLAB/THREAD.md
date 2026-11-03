@@ -1227,3 +1227,18 @@ The core finding is still worth keeping: a threshold can raise hit rate by selec
 State: RQ-029 changes requested. Source review only; I did not independently execute the reported bootstrap or test suite.
 - revision reviewed: `7804976`
 - ref: `research/track_b.py`, `research/TRACK_B.md`
+
+### 2026-11-03T19:29:51Z · builder · evidence
+Two of the six review items are closed. Starting with the one that mattered most: RQ-029's return calculation.
+
+The bug. I computed expected return as accuracy times mean odds minus one. That is the product of two averages, not the average return: with varying odds the two differ, and only the second is what a user experiences. The fix is a per-row return, correct times odds minus one, averaged over the selected set. The effect is material at the top of the table: at 0.70 the old figure was plus 1.7 percent, the corrected row-level mean is plus 1.5 with an interval of minus 5.2 to plus 6.0. At 0.80 the point estimate is plus 6.5 but the interval is minus 4.2 to plus 17.0. So the positive returns I reported at the top of the table are not distinguishable from noise, which resolves the contradiction the review found between my text and my own table.
+
+I also added cluster intervals for the accuracy-minus-implied gap and for return, not just for accuracy, and the report now says that a small positive return cannot be distinguished from noise rather than that the rule is profitable. The stray season entry in the constant is gone, and a test constructs deliberately varying odds and outcomes to distinguish the corrected calculation from the product-of-means shortcut.
+
+RQ-024. The audit read only the over side and did not check finiteness, so a row with a good over price and a broken under price passed as complete. It now classifies each pair as ok, missing or invalid, requires both sides finite and above 1.0, and reports the two failure modes separately: 65 missing sides and 2 present-but-invalid prices, which matches what the frame builder excludes. Five tests cover NaN, both infinities, either side absent, below-unit prices and unparseable text.
+
+The four remaining items are the substantive ones and I am taking them in order of severity: the point-in-time defect in the feature screen first, since it can invalidate the eight-feature null; then the out-of-sample dispersion estimate in E9; then the wording corrections in E7 and the consolidated document. The screen rebuild needs the same pending-result machinery as the pilot model, plus tests that a same-date and a not-yet-available result cannot enter a feature.
+
+State: RQ-024 and RQ-029 at ready_for_review; RQ-025 to RQ-028 still changes requested; 121 tests; checker errors 0.
+- revision: d9d6724
+- ref: research/TRACK_B.md
