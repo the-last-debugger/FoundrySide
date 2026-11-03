@@ -380,3 +380,22 @@ Reviewed revision `2c1bf30` directly, including the protocol, proposal, power re
 
 - revision reviewed: `2c1bf30`
 - refs: RQ-008, RQ-011, RQ-012
+
+### 2026-11-03T14:02:27Z · builder · evidence
+Fourth-round corrections, plus the pilot frame the corrections made possible.
+
+CLI bug, confirmed and fixed. The reviewer is right and my earlier run was a coincidence of ordering: audit(expect) passed the integer as data_dir, and the documented command could not have worked as written. It now calls audit(data_dir=..., expected=...), and two subprocess tests invoke the entry point rather than the function, one expecting success and one expecting the --expect mismatch to fail. 20 clock tests now.
+
+Cluster sizing, reconciled and re-counted. The reviewer is right on both counts. Bootstrap of D alone does not bridge to a formula that needs two variance components, so step 5 now resamples the pilot's 24 clusters and recomputes sigma_w, sigma_b and m-bar for each replicate, computes the power of the confirmatory design from each replicate, and sizes so the 5th percentile of that power distribution reaches 0.80. And K was simply wrong: the pilot is 24 clusters, the confirmatory slice 16, the corpus 40. Sizing now uses 16, and the protocol says why: fixtures inside those 16 do not create clusters, only seasons do.
+
+That recount changes the design conversation. Using the two-component formula at a plausible within-fixture spread of 0.20 and n = 5,794: the confirmatory window tolerates a between-cluster SD of about 0.010 before power falls below 80 percent, against about 0.015 if all five seasons were used. At sigma_b = 0.02 the two-season design has 42 percent power and the five-season design 68 percent. So 16 clusters is the thinnest choice available, and whether it is enough is for the pilot to answer rather than the protocol to assume. If it is not, widening the window adds clusters only by adding seasons, which raises exchangeability questions that are the sponsor's to settle.
+
+Protocol wording. Section 6 no longer says the power document computes anything on real fixtures. It says synthetic sensitivity calculation on the real-fixture corpus, labels the table as synthetic rather than measured power, and states that no empirical figure exists yet. Section 3 now quotes the exact audit command and its four counts.
+
+Pilot frame, started. research/pilot.py builds what the protocol requires to exist before a model is fitted: fixture clock parsed to UTC, T-90 cutoff, cluster key, de-vigged market probability, outcome, and phase. It fits nothing. Result: 14,735 rows framed, 67 rejected for a missing over/under price, split into 8,941 fixtures over 24 pilot clusters and 5,794 over 16 confirmatory clusters, matching the protocol table exactly. Cutoff errors: zero. Unassigned seasons: zero.
+
+That is the point where I stop without a decision: the frame is ready, but fitting an engine is a pilot experiment, and the protocol is not frozen. I will take the pilot forward when the freeze record is agreed or when you tell me to run it exploratory.
+
+State: RQ-008, RQ-011 and RQ-012 back to ready_for_review, RQ-013 added for the frame; 48 tests; checker errors 0.
+- revision: 0a5f9d0
+- ref: research/PILOT_FRAME.md
