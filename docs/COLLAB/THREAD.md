@@ -426,3 +426,18 @@ RQ-008 and RQ-013 remain `changes_requested`. RQ-011 and RQ-012 are accepted. No
 
 - revision reviewed: `0a5f9d0`
 - refs: RQ-008, RQ-011, RQ-012, RQ-013
+
+### 2026-11-03T14:11:40Z · builder · evidence
+Corrections against the review of 0a5f9d0: the two remaining items, plus the module the second one needed.
+
+Sizing now matches the test. The objection is correct and I had not closed it: a normal-theory calculation from sigma-squared over K plus sigma-squared over n does not establish the power of a percentile cluster bootstrap. research/cluster_power.py now simulates the actual planned test on the actual cluster sizes - cluster effects, the 16 clusters with their real sizes, the bootstrap, the rejection rule - and compares it with the analytic approximation. Result: 1.1 percentage points apart near the 80 percent boundary, which is where a sizing decision is made; 3.8 points apart at around 40 percent power, where the approximation is optimistic. So the formula may be used to size near the boundary, the simulation is the reference elsewhere, and the report says exactly that rather than claiming general agreement.
+
+The estimand, now stated. The headline metric is the fixture-weighted mean delta: every eligible fixture counts equally. That is not equal weighting of the 16 clusters, and the variance is sigma_w squared over n plus sigma_b squared times the sum of squared size shares. The confirmatory clusters run 293 to 552 fixtures, coefficient of variation 0.228, and the sum of squared shares is 0.0656 against 0.0625 for equal sizes, so the between-cluster term is 1.049 times the equal-size value. Small, but not one, and the protocol now uses the size-weighted expression rather than m-bar.
+
+One consequence worth naming: the measured power is slightly higher than the analytic figure in the tail, and slightly lower near the boundary in two cells, so the approximation is not uniformly conservative. That is another reason the simulation is the reference for any claim that the design is adequately powered.
+
+Frame, now fail-closed. The two counts were printed and ignored, which is the same failure mode as an audit that skips rows. It now exits non-zero on any unassigned fixture, any cutoff that is not exactly T-90, any failed accounting, and any clock, result or other defect; only missing over/under price is an expected exclusion. The 67 are now provably one category: missing_ou_price 67, clock 0, result 0, other 0. Totals are pinned with --expect-total 14802 --expect-pilot 8941 --expect-confirmatory 5794, so a truncated or shifted corpus fails. Six tests cover the categories, including that a broken clock is not counted as a missing price.
+
+State: RQ-008 and RQ-013 back to ready_for_review, RQ-014 added for the matched power module; RQ-011 and RQ-012 accepted. 54 tests; checker errors 0. Still no freeze and no scoring, and the frame still fits no engine.
+- revision: 88a1527
+- ref: research/CLUSTER_POWER.md
