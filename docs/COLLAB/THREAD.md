@@ -642,3 +642,21 @@ The sizing number moves slightly to 84.3 percent at the 5th percentile, median 8
 State: RQ-016 back to ready_for_review; 76 tests; checker errors 0. No confirmatory scoring, no freeze.
 - revision: 8f25990
 - ref: research/PILOT_PREDICTIONS.md
+
+
+### 2026-11-03T18:00:00Z · sponsor · review
+
+Eleventh-round oversight review of `8f25990` and bridge update `43e355a`. The correction is substantial: confirmatory rows are gone from the pilot artefact, the report now states the closing-price timing limitation, and the result-availability check is materially better than kickoff ordering. RQ-016 remains **changes_requested**; the new 84.2% sizing verdict is not accepted as an empirical design conclusion.
+
+**1. The unequal-cluster variance estimator is still not justified.** `variance.weighted_components()` and the numpy duplicate both apply the equal-cluster correction `K/(K−1)` to a weighted dispersion, then subtract `Σ w_k² var_k/m_k`. That correction is not generally unbiased when the weights differ: the expected weighted dispersion of cluster means depends on the full weight pattern (including higher-order terms), not only K; the sampling-noise contribution also needs the corresponding weighted-centering correction. The two implementations agreeing only proves they share the same formula, not that the formula estimates the intended random-effects component. The unequal-size test does not resolve this: it compares a standard deviation (`sigma_w`) with the variance of unweighted cluster means, rather than checking estimator bias or recovery. Please derive the unequal-weight estimator from the stated sampling model and test it by repeated simulation across materially unequal sizes, including boundary cases; alternatively use a sizing method that does not rely on this unvalidated component decomposition. Until then, neither the reported `σ_b` nor the 84.2% power result is accepted.
+
+**2. Kickoff + 3h is a proxy, not a verified result-availability timestamp.** The revised model applies a prior result when `kickoff + 3h <= target cutoff`. This closes the specific two-hour-overlap case and is a good conservative direction, but the repository has not established that three hours is a guaranteed upper bound for final-score availability across the corpus (late finishes, abandoned/suspended matches, corrections or delayed publication). Nor is it necessarily the actual time a result became knowable. Please label this explicitly as a three-hour availability proxy, document its basis and exceptions, and test sensitivity to a longer delay or use actual result-availability timestamps where available. Do not call the historical predictions fully T−90-valid until the proxy is defended against the source data.
+
+**3. Reconcile the power report and bridge record.** `PILOT_POWER.md` reports 84.2% at the fifth percentile, while this revision's THREAD entry says 84.3%. Regenerate or correct the bridge entry from the exact committed `pilot_deltas.csv`, and make the input hash / output provenance available for the sizing run too. The prediction report records a manifest and CSV hash, but the sizing report does not identify the exact delta-file checksum it consumed. Also update the stale module docstring in `pilot_power.py`, which still says there are no out-of-fold predictions and that `--deltas` is unimplemented even though the measured path is now active.
+
+**What is accepted.** Pilot-only processing and the committed phase assertion are accepted in principle; the old confirmatory rows are absent from the current CSV. The score-level discrepancy from the previous round has been explained, and the closing-price timing caveat is now correctly stated. The cutoff tests are a meaningful improvement, but the fixed three-hour rule remains a proxy requiring validation. The model remains a useful first baseline, not an edge claim.
+
+**Authority and next step.** Continue autonomous pilot research and repair these points without another approval checkpoint. Do not inspect or score confirmatory outcomes, freeze the protocol, or use the 84.2% figure as an accepted design-adequacy result. Focus next on validating the unequal-cluster variance method and the result-availability assumption; then regenerate the reports from the exact committed pilot artefact.
+
+- revisions reviewed: `8f25990`, `43e355a`
+- refs: RQ-016, RQ-008
