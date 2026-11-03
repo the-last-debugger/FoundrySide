@@ -29,6 +29,7 @@ sys.path.insert(0, str(ROOT / "research"))
 import analyse   # noqa: E402
 import pilot     # noqa: E402
 import report_stamp  # noqa: E402
+import variance  # noqa: E402
 
 OUT = ROOT / "research" / "PILOT_POWER.md"
 TARGET = 0.01
@@ -112,19 +113,29 @@ def synthetic_clusters(sizes: list[int], sd_w: float, sd_b: float,
 
 
 def components(clusters: list[np.ndarray]) -> tuple[float, float]:
-    """σ_w and σ_b by method of moments.
+    """σ_w and σ_b for the fixture-weighted estimand.
 
-    The spread of cluster *means* is not σ_b: each mean carries its own sampling noise,
-    about σ_w/√m_k. Estimating σ_b from the raw spread of means therefore overstates it
-    badly when m is large — by a factor of √2 in the case this was written for, which
-    turned a 72% design into a 21% one. The sampling variance is subtracted.
+    The same estimator as `research/variance.py`, written against numpy because this runs
+    inside a 2,000-replicate bootstrap; converting to Python floats there cost minutes.
+    A test asserts the two agree on the same input, so there is one definition and two
+    implementations that cannot drift apart silently.
     """
-    means = np.array([c.mean() for c in clusters])
-    variances = np.array([c.var(ddof=1) for c in clusters if len(c) > 1])
-    within = float(variances.mean())
-    sampling = float(np.mean([c.var(ddof=1) / len(c) for c in clusters if len(c) > 1]))
-    between = float(means.var(ddof=1)) - sampling
-    return float(math.sqrt(max(within, 0.0))), float(math.sqrt(max(between, 0.0)))
+    usable = [c for c in clusters if len(c) > 1]
+    k = len(usable)
+    if k < 2:
+        return float("nan"), float("nan")
+    sizes = np.array([len(c) for c in usable], dtype=float)
+    n = sizes.sum()
+    w = sizes / n
+    means = np.array([c.mean() for c in usable])
+    variances = np.array([c.var(ddof=1) for c in usable])
+    grand = float((w * means).sum())
+    sigma2_w = float((w * variances).sum())
+    var_mean_between = (k / (k - 1)) * float((w ** 2 * (means - grand) ** 2).sum())
+    sampling = float((w ** 2 * variances / sizes).sum())
+    sum_w2 = float((w ** 2).sum())
+    raw = (var_mean_between - sampling) / sum_w2
+    return math.sqrt(max(sigma2_w, 0.0)), math.sqrt(max(raw, 0.0))
 
 
 def bootstrap_components(clusters: list[np.ndarray], replicates: int = REPLICATES,

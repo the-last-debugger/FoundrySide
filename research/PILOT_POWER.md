@@ -1,4 +1,4 @@
-<!-- generated-by: pilot_power.py sha256=484f75ae0c79 -->
+<!-- generated-by: pilot_power.py sha256=3cd1abb917a1 -->
 
 # Pilot sizing — empirical input, pilot slice
 
@@ -17,7 +17,7 @@ still not the confirmatory result: the confirmatory seasons are untouched by it.
 | --- | --- |
 | 5th percentile of power | **84.2%** |
 | Median power | 88.0% |
-| Median from the normal approximation, for reference | 91.9% |
+| Median from the normal approximation, for reference | 92.0% |
 | Decision rule | adequate only if the 5th percentile reaches 80% |
 | Verdict | **ADEQUATE** (measured pilot spread) |
 
@@ -33,15 +33,15 @@ where the 0.80 rule is applied, so its noise has to be measured rather than assu
 
 | Run | 5th-percentile power |
 | --- | --- |
-| seed 20261204 | 84.2% |
+| seed 20261204 | 84.0% |
 | seed 20261305 | 84.2% |
 | seed 20261406 | 84.2% |
-| higher budget (1500 sims/replicate) | 85.4% |
+| higher budget (1500 sims/replicate) | 85.2% |
 
-- Spread across the three independent runs: **0.0pp**.
+- Spread across the three independent runs: **0.3pp**.
 - The budget comparison is **paired**: same bootstrap draws, same per-replicate seeds, only
   the number of simulated t-tests changes. Raising it to 1500 moves the statistic
-  to **85.4%**, +1.1pp against the base run.
+  to **85.2%**, +0.9pp against the base run.
 - **Decision stability:** every run lands on the same side of 80%, so the verdict is stable at this budget.
 
 ## What this shows, and what it does not
