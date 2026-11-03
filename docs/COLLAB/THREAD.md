@@ -221,3 +221,29 @@ Two process changes, both because the review itself would otherwise have been in
 State: RQ-006 to RQ-010 at ready_for_review against this revision; 28 tests pass; checker errors 0, one acknowledged warning. Two decisions are asked in PROPOSAL.md section 7: accept the protocol as the basis for the first experiment, and accept pilot-based sizing rather than a fixed floor. Neither is reversible after the freeze.
 - revision: 00d2923
 - ref: PROPOSAL.md
+
+### 2026-11-03T13:03:53Z · sponsor · response
+
+I have reviewed revision `00d2923`, including the revised phase proposal, evaluation protocol, paired power analysis, corrected T0/T1/T3 results and parked-direction note. The response to the previous review is substantial and mostly sound. I am settling the phase proposal and the corrected descriptive results, while keeping the first experiment's statistical protocol open until the remaining issues below are resolved.
+
+**Accepted**
+
+- **RQ-006 — formal research-phase proposal, revision `00d2923`: accepted as the phase-one research plan.** The scope, cost ceiling, deliverables, gates, competition description and choice of over/under 2.5 as the proposed first market are a coherent basis for proceeding. This accepts the research plan, not an application build, not a frozen preregistration, and not permission to score a confirmatory engine yet.
+- **RQ-007 — T0/T1/T3 results, revision `00d2923`: accepted.** The corrected bootstrap interval for the dependence ratio (1.49×, 95% interval 1.47–1.51) replaces the invalid earlier interval. The clearer distinction between descriptive sample summaries and inferential intervals is also accepted. Keep the important limitation: this measures outcome dependence, not bookmaker accumulator pricing.
+- **RQ-010 — parked contextual-intelligence direction, revision `00d2923`: accepted.** It accurately records the decision: future direction, not a priority, no build or data pipeline now, and only occasional low-cost notes tied to active research.
+
+**Changes still required before the first experiment can be frozen**
+
+1. **RQ-008 — evaluation protocol: changes requested.** The protocol's overall structure is approved as the working basis, but its power section is not yet complete for its primary metric. The first confirmatory metric is log loss, while `research/POWER.md` currently calculates McNemar power for *accuracy differences*. That analysis is useful as a supplementary pick-level sensitivity study; it does not establish power for the proposed 0.01-nat paired log-loss improvement. Implement the pilot-based log-loss power simulation promised in §6, show the distribution of per-fixture score differences and the resulting sample-size/power curve, and state what happens if the available confirmatory slice cannot reach the target power. Do not present the McNemar table as power evidence for log loss.
+2. **Forecast timing must be auditable.** The benchmark is a closing price, but the protocol says the model forecast must precede the closing-price timestamp. The current source files establish closing prices but do not appear to provide an auditable timestamp for when each closing quote was observed. Define a fixed, reproducible model information cutoff (for example, a specified interval before kickoff) and demonstrate that every input was available by that cutoff. The closing price can remain the later benchmark; do not imply that an unavailable quote timestamp has been verified. If an actual timestamped price source is later obtained, document its provenance separately.
+3. **RQ-009 — paired power analysis: changes requested for its inferential claims and reproducibility.** The script calls `random.gammavariate` through the module-level generator, while the binomial draws use a locally seeded `Random` instance. Consequently the stated seed does not control all random draws and the reported simulation is not fully reproducible. Route every random draw through the same seeded generator and add a repeatability check. Also, the cluster simulation varies the *rate of discordance* by cluster but holds the model's conditional chance of winning a discordant pair constant. It therefore does not test whether the model's relative advantage varies across league-season clusters. Do not conclude that clustering is negligible from this design. Add sensitivity for cluster-level variation in the paired advantage (or use a justified cluster bootstrap), and label the current McNemar results as an accuracy-only analysis.
+
+**Record consistency**
+
+`docs/COLLAB/PROPOSALS.md` still contains the superseded P-02 recommendation for a universal 5,000 floor and the old one-sample accuracy arithmetic. `DECISIONS.md` still quotes the superseded T3 interval of 1.46–1.52. Please reconcile both records with revision `00d2923`: P-02 should reflect the actual outstanding protocol/pilot-sizing decision, and D-07's evidence should use the corrected bootstrap interval. Do not silently delete the history of the earlier correction; state that the old figure was superseded.
+
+**The two sponsor decisions in PROPOSAL.md §7 remain open for now.** I am not yet accepting the protocol as frozen, nor approving the proposed pilot/confirmatory split as sufficient until the log-loss power simulation and forecast-time rule are made operational. You may continue exploratory pilot work and research-script development under the existing authorisation, but no confirmatory engine scoring until the freeze record is complete, the protocol is corrected, and the final preregistration is committed.
+
+Continue without waiting for another permission round on routine research. The phase plan is accepted; the remaining work is to make the first experiment genuinely auditable and statistically aligned with the question it claims to answer.
+- revision reviewed: 00d2923
+- refs: RQ-006, RQ-007, RQ-008, RQ-009, RQ-010
