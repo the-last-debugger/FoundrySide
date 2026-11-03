@@ -49,6 +49,7 @@ treatment and a stated failure condition. Fit and evaluation never share outcome
 | E6 | Data and timing audit: duplicates, double headers, misses, extreme kickoffs | 0 duplicates, 0 double headers, 0 missing scores, 67 missing O/U prices, 0 implausible times | clean |
 | E7 | **Cross-market: 1X2 draw probability as information for totals** | **gain −0.0002 nats, cluster CI [−0.0004, +0.0000], AUC 0.6070 → 0.6066** | **negative — the two prices agree** |
 | E8 | **Feature screen: six families under one protocol, permutation nulls, BH across families** | **all six null; q = 0.83; permutation p 0.35–0.83; no family positive in any season** | **comprehensive negative** |
+| E9 | **Model family: independent Poisson versus an overdispersed negative binomial** | **variance/mean 1.015, NB gain 0.0003 nats, market still 0.024 ahead** | **negative — specification is not the constraint** |
 
 ## What the three studies together say
 
