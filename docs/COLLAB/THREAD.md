@@ -745,3 +745,21 @@ The protocol carries the same numbers and the reason the sampling scheme matters
 State: RQ-016 back to ready_for_review; 85 tests; checker errors 0.
 - revision: 014c9b5
 - ref: research/PILOT_POWER.md
+
+
+### 2026-11-03T20:10:00Z · sponsor · review
+
+Fourteenth-round oversight review of `014c9b5` and bridge update `8e0f539`. The probability-proportional-to-size (PPS) cluster draw is a sensible correction for the fixture-weighted estimand: it aligns the expected selected source-cluster mean with the fixture-weighted pilot mean, unlike uniform cluster sampling. The new size-associated-means diagnostic and near-zero simulated null mean are useful. The generator now also owns the threshold calculation. However, RQ-016 remains **changes_requested** because the threshold's Monte Carlo precision is overstated by presentation, and the committed reports/protocol are not fully reconciled.
+
+**1. The 0.0117 threshold's ±0.0004 is only a bisection-grid bracket, not statistical uncertainty.** `power_threshold()` uses only 300 simulations at each bisection point, while the power estimate near 80% therefore has a binomial Monte Carlo standard error of about 2.3 percentage points (before accounting for the adaptive search). The returned half-width of 0.0004 describes six-step numerical bracket resolution only; it does not establish that the 80%-power effect is known to ±0.0004 nats. Please label it explicitly as a numerical bracket, not a confidence/uncertainty interval, and quantify threshold uncertainty with a defensible procedure: for example, repeat the full threshold search over independent seeds or construct a Monte Carlo interval for the crossing using enough simulations. The threshold should not be used to justify changing the 0.01 target until that uncertainty is understood.
+
+**2. The evidence still has internal discrepancies/stale text.** The committed `PILOT_POWER.md` reports independent runs 67.5% and 69.2%, while the new builder entry in THREAD says 67.5% and 69.3%. The report's historical sequence also ends by calling 66.6% the current figure, although 67.6% is now the PPS result. Reconcile the exact run values and update the historical explanation so it clearly distinguishes the pre-PPS 66.6% result from the current 67.6% result.
+
+**3. The evaluation protocol contains contradictory sizing instructions.** In §5, steps 3–4 still say to decompose σ_w/σ_b and give a variance formula as “the variance the sizing uses”; step 6 now says the sizing uses no components and no formula, instead using PPS cluster resampling. The document also has an earlier pilot procedure in §6 describing measuring the between-cluster variance and computing n, which conflicts with the new empirical power procedure. Please make the protocol internally consistent: mark the old decomposition/formula as descriptive/withdrawn if retained for historical context, and state the current PPS-resampling method as the sole sizing procedure. Do not alter the target effect or take any sponsor option by implication.
+
+**What is accepted.** The uniform-cluster sampling mismatch has been addressed in the generator; PPS is aligned with the fixture-weighted mean under the stated exchangeability assumption. The tests now include materially unequal sizes with size-associated means, a near-zero simulated null mean, and deterministic threshold reproducibility. The 67.6% estimate remains below the 80% rule and appropriately leaves the design NOT ADEQUATE at 0.01 nats for this pilot model's spread. No confirmatory scoring or protocol freeze has occurred.
+
+**Authority and next step.** Continue autonomously: quantify threshold Monte Carlo uncertainty, reconcile the exact independent-run values and report narrative, and remove the contradictory legacy sizing instructions from the protocol. Keep the 0.01-nat target unchanged; adding seasons/markets or raising the target remains a sponsor decision, not an approval. Do not inspect or score confirmatory outcomes or freeze the protocol.
+
+- revisions reviewed: `014c9b5`, `8e0f539`
+- refs: RQ-016, RQ-008
