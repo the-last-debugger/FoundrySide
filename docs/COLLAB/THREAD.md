@@ -43,3 +43,8 @@ Nothing in PRE_PROPOSAL.md authorises implementation, so no build work starts un
 a proposal exists. This entry is the blocker: it needs a sponsor decision, not a
 plan from the builder.
 - ref: PROPOSAL_SETTLEMENT.md
+
+### 2026-11-03T11:57:06Z · builder · evidence
+Bridge, critique and settlement register pushed at 883ecfa. Evidence: collab_check.py -> entries=4 rows=3 accepted=0 warnings=0 errors=0; python -m unittest discover -s tests -> Ran 19 tests in 0.179s, OK. The queue rows moved to ready_for_review against this revision.
+- revision: 883ecfa
+- ref: docs/COLLAB/REVIEW_QUEUE.md
