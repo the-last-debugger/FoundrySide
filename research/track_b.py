@@ -22,6 +22,7 @@ Writes research/TRACK_B.md.
 
 from __future__ import annotations
 
+import math
 import statistics
 import sys
 from pathlib import Path
@@ -35,7 +36,6 @@ import analyse        # noqa: E402
 import report_stamp   # noqa: E402
 
 OUT = ROOT / "research" / "TRACK_B.md"
-PILOT = ("2021", "2122", "2123", "2122", "2223")
 THRESHOLDS = (0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80)
 BOOTSTRAPS = 1000
 SEED = 20261103
@@ -51,6 +51,8 @@ def load() -> list[dict]:
             hg, ag = int(r["FTHG"]), int(r["FTAG"])
         except (KeyError, TypeError, ValueError):
             continue
+        if not (math.isfinite(over) and math.isfinite(under)):
+            continue
         if over <= 1.0 or under <= 1.0:
             continue
         p_over = 1 / over / (1 / over + 1 / under)
@@ -59,9 +61,14 @@ def load() -> list[dict]:
             side_over, price = True, over
         else:
             side_over, price = False, under
+        correct = int((1 if hg + ag >= 3 else 0) == int(side_over))
         rows.append({"cluster": f"{r['_league']}_{r['_season']}",
                      "p_side": max(p_over, 1 - p_over), "price": price,
-                     "correct": int((1 if hg + ag >= 3 else 0) == int(side_over))})
+                     "correct": correct,
+                     # Row-level return, not the product of two averages: staking one unit on
+                     # this fixture returns correct*odds − 1, and the mean of that is the
+                     # expected return a user would actually experience.
+                     "return": correct * price - 1.0})
     return rows
 
 
@@ -105,10 +112,25 @@ def main() -> int:
         blo = draws[int(0.025 * len(draws))]
         bhi = draws[int(0.975 * len(draws)) - 1]
 
+        returns = [rows[i]["return"] for i in selected]
+        gap_draws, ret_draws = [], []
+        rng2 = np.random.default_rng(SEED + 1)
+        for _ in range(BOOTSTRAPS):
+            pick = [by_cluster[keys[rng2.integers(0, len(keys))]] for _ in keys]
+            idx = [i for group in pick for i in group if rows[i]["p_side"] >= tau]
+            if not idx:
+                continue
+            gap_draws.append(statistics.mean(rows[i]["correct"] - rows[i]["p_side"] for i in idx))
+            ret_draws.append(statistics.mean(rows[i]["return"] for i in idx))
+        gap_draws.sort(); ret_draws.sort()
         table.append({"tau": tau, "n": len(selected), "coverage": len(selected) / n,
                       "acc": acc, "lo": lo, "hi": hi, "blo": blo, "bhi": bhi,
                       "implied": implied, "gap": acc - implied,
-                      "ev": acc * price - 1.0})
+                      "gap_lo": gap_draws[int(0.025 * len(gap_draws))],
+                      "gap_hi": gap_draws[int(0.975 * len(gap_draws)) - 1],
+                      "ev": statistics.mean(returns),
+                      "ev_lo": ret_draws[int(0.025 * len(ret_draws))],
+                      "ev_hi": ret_draws[int(0.975 * len(ret_draws)) - 1]})
 
     doc = f"""{report_stamp.stamp(Path(__file__))}
 
@@ -117,25 +139,27 @@ def main() -> int:
 Pilot seasons only, {n:,} fixtures with a complete totals price. The rule shows the favourite side
 of the totals market only when its de-vigged probability clears the threshold.
 
-| Threshold | n | Coverage | Accuracy | Cluster 95% | Implied | Accuracy − implied | Expected return per unit |
-| --- | --- | --- | --- | --- | --- | --- | --- |
+| Threshold | n | Coverage | Accuracy | Gap vs implied (cluster 95%) | Return per unit (cluster 95%) |
+| --- | --- | --- | --- | --- | --- |
 """ + "\n".join(
         f"| {r['tau']:.2f} | {r['n']:,} | {r['coverage']:.1%} | {r['acc']:.1%} | "
-        f"[{r['blo']:.1%}, {r['bhi']:.1%}] | {r['implied']:.1%} | {r['gap']:+.1%} | "
-        f"{r['ev']:+.1%} |" for r in table) + f"""
+        f"{r['gap']:+.1%} [{r['gap_lo']:+.1%}, {r['gap_hi']:+.1%}] | "
+        f"{r['ev']:+.1%} [{r['ev_lo']:+.1%}, {r['ev_hi']:+.1%}] |" for r in table) + f"""
 
 ## Reading
 
 Accuracy rises with the threshold, and most of that rise is **selection**: the
-accuracy-minus-implied column stays near zero at every threshold, because the rule is restating
-the price's own confidence rather than adding information. That is the honest description of what
-an abstention product does — it shows fewer, more confident calls, and the confidence is the
-market's.
+accuracy-minus-implied gap stays small and its interval straddles zero through the middle of the
+table, because the rule is restating the price's own confidence rather than adding information.
+That is the honest description of what an abstention product does — it shows fewer, more confident
+calls, and the confidence is the market's.
 
-The expected-return column is the correction to any temptation to describe this as profitable. At
-every threshold the mean price carries the book's margin, so a user staking one unit loses on
-average. A rule that improves *decisions* is not a rule that makes money, and the difference is
-the margin.
+Return per unit is the row-level mean of `correct × odds − 1`, which is what a user staking one
+unit on each selected fixture would actually experience. It is negative through most of the table
+because the price carries the book's margin. At the highest thresholds the point estimate turns
+positive; the interval is wide and those rows hold 23 to 322 fixtures, so the honest statement is
+that a small positive return cannot be distinguished from noise there, not that the rule is
+profitable.
 
 **A caution about the top of the table.** From 0.70 upward the accuracy-minus-implied column turns
 positive — +4.2, +4.6 and +9.4 points — and expected return turns positive with it. That is the

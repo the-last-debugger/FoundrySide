@@ -1,4 +1,4 @@
-<!-- generated-by: data_audit.py sha256=87476e63f98e -->
+<!-- generated-by: data_audit.py sha256=3e0824171940 -->
 
 # Data and timing audit
 
@@ -10,7 +10,8 @@ should precede any claim that the data lack signal.
 | duplicate fixtures | 0 | 0 |
 | team playing twice on one date | 0 | 0 |
 | rows without a full-time score | 0 | 0 |
-| rows without a usable O/U price | 67 | expected small |
+| rows with a missing O/U price side | 65 | expected small |
+| rows with a present but invalid O/U price | 2 | 0 |
 | kickoff times outside 08:00–23:59 | 0 | expected small |
 
 - League-seasons: **40**; fixtures per season median **380**,

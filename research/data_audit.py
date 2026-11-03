@@ -16,6 +16,7 @@ Writes research/DATA_AUDIT.md.
 
 from __future__ import annotations
 
+import math
 import statistics
 import sys
 from collections import Counter, defaultdict
@@ -31,6 +32,25 @@ import report_stamp   # noqa: E402
 OUT = ROOT / "research" / "DATA_AUDIT.md"
 
 
+
+def classify_price(row: dict) -> str:
+    """'ok', 'missing' or 'invalid' for a complete over/under 2.5 closing pair.
+
+    Both sides are checked, and both must be finite and greater than 1.0. An earlier version
+    read only the over side, so a row with a usable over price and a broken under price passed
+    as complete.
+    """
+    try:
+        over, under = float(row["PC>2.5"]), float(row["PC<2.5"])
+    except (KeyError, TypeError, ValueError):
+        return "missing"
+    if not (math.isfinite(over) and math.isfinite(under)):
+        return "invalid"
+    if over <= 1.0 or under <= 1.0:
+        return "invalid"
+    return "ok"
+
+
 def main() -> int:
     rows = analyse.load()
     total = len(rows)
@@ -39,6 +59,7 @@ def main() -> int:
     team_days: dict[tuple[str, str, str], int] = defaultdict(int)
     missing_result = 0
     missing_price = 0
+    invalid_price = 0
     bad_times = 0
     per_season: dict[tuple[str, str], int] = Counter()
 
@@ -52,11 +73,11 @@ def main() -> int:
             int(r["FTHG"]), int(r["FTAG"])
         except (KeyError, TypeError, ValueError):
             missing_result += 1
-        try:
-            if float(r["PC>2.5"]) <= 1.0:
-                missing_price += 1
-        except (KeyError, TypeError, ValueError):
+        status = classify_price(r)
+        if status == "missing":
             missing_price += 1
+        elif status == "invalid":
+            invalid_price += 1
         try:
             hour = int(r["Time"][:2])
             if hour < 8 or hour > 23:
@@ -73,7 +94,8 @@ def main() -> int:
         ("duplicate fixtures", len(duplicates), 0),
         ("team playing twice on one date", len(double_headers), 0),
         ("rows without a full-time score", missing_result, 0),
-        ("rows without a usable O/U price", missing_price, "expected small"),
+        ("rows with a missing O/U price side", missing_price, "expected small"),
+        ("rows with a present but invalid O/U price", invalid_price, 0),
         ("kickoff times outside 08:00–23:59", bad_times, "expected small"),
     ]
 
