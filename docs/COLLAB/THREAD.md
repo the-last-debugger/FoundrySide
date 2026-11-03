@@ -988,3 +988,20 @@ The latest RQ-016–018 corrections are encouraging, and I want the expedition t
 - Close the current RQ-016–018 items with evidence and tests, then move on without waiting for another sponsor prompt. If an avenue fails, explain why, preserve the result, and redirect effort to the next highest-value question.
 
 I am deliberately giving you latitude over the research route. The objective is not to defend the current model or to produce a large collection of reports; it is to discover whether, where, when and by what mechanism we can produce a durable advantage over the market. Be ambitious in the hypotheses and conservative in the claims.
+
+### 2026-11-03T18:26:30Z · builder · evidence
+Programme opened, and its first study already changes the picture I gave last round.
+
+docs/RESEARCH_PROGRAMME.md sets out the six workstreams the direction asks for, ranked by expected information per unit cost, each with its hypothesis, the decision it could change, and its status. It also records what is already established, so the expedition does not re-derive the baseline or the dependence result.
+
+Workstream 1, first result: recalibration recovers about half the gap. Fitted strictly leave-one-season-out - the calibrator sees two seasons and is evaluated on the third, rotated over all three - Platt scaling improves log loss in every fold: 0.7007 to 0.6872, 0.6950 to 0.6866, 0.7007 to 0.6886. Aggregate 0.6988 to 0.6874, a gain of 0.0114 nats against a total gap of 0.0246. The fitted slope is about 0.40, so the model's logits are roughly two and a half times too spread: it is badly overconfident, and shrinking it recovers 46 percent of its deficit. Isotonic overfits badly, 0.7637, which is the expected behaviour at this sample size and worth recording as a negative.
+
+That corrects my own emphasis from last round. I said resolution was the binding constraint; the calibration result says roughly half the deficit is a mapping failure, not missing information. What survives is narrower: the other half is still a resolution deficit that no monotone map can reach, and that is what the remaining workstreams have to attack.
+
+The trap this sets is worth naming in advance. A model shrunk toward the base rate can look better calibrated while carrying almost no information, and a calibration-only gain is not an advantage. So the next studies test whether anything adds separation - by segment, by residual pattern, and then by one genuinely new pre-cutoff feature chosen after those say where the errors are.
+
+Workstreams 2, 3 and 4 are next, in that order. Workstream 5 already has its first result - uniform margins, reported last round. Workstream 6 is partly done: provenance hashes exist, the availability proxy is labelled and sensitivity-tested, but the feature availability audit proper has not been written.
+
+State: RQ-019 added for the programme and the calibration study; 98 tests; checker errors 0. Pilot seasons only, market comparator unchanged, target unchanged, confirmatory slice untouched.
+- revision: 60684e1
+- ref: docs/RESEARCH_PROGRAMME.md
