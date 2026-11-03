@@ -19,9 +19,9 @@ treatment and a stated failure condition. Fit and evaluation never share outcome
 | # | Workstream | Hypothesis | Decision it could change | Status |
 | --- | --- | --- | --- | --- |
 | 1 | **Calibration vs information** | The gap is partly a mapping failure, not only missing information | Whether to keep this model family and recalibrate, or replace it | **first result: mixed** — Platt recovers 46% |
-| 2 | **Where and when the gap changes** | The model is less wrong in identifiable segments (season, band, division, kickoff hour) | Whether to segment rather than pool, and where to spend modelling effort | not started |
-| 3 | **Residual and failure analysis** | The largest errors are systematic, not isolated | Which feature class to attack next | not started |
-| 4 | **Alternative information and model families** | Pre-cutoff data hold information the market has not fully priced | Whether an incremental feature exists at all | not started |
+| 2 | **Where and when the gap changes** | The model is less wrong in identifiable segments | Whether to segment rather than pool | **done: the gap is uniform** |
+| 3 | **Residual and failure analysis** | The largest errors are systematic, not isolated | Which feature class to attack next | **done: the tail is not a class** |
+| 4 | **Alternative information and model families** | Pre-cutoff data hold information the market has not fully priced | Whether an incremental feature exists at all | **next — the only workstream that can now move the number** |
 | 5 | **Market structure and segmentation** | The market is differently calibrated by band or division | Where the price is weakest, if anywhere | **first result: margins uniform** |
 | 6 | **Data and timing audit** | Undetected leakage or misalignment is inflating or deflating every number | Whether current evidence can be trusted | partially done (provenance, availability proxy) |
 
@@ -36,6 +36,26 @@ treatment and a stated failure condition. Fit and evaluation never share outcome
 | The model is badly overconfident: Platt's slope is ~0.40 | `CALIBRATION_STUDY.md` | out-of-fold, consistent across folds |
 | Recalibration recovers **0.0114 of 0.0246 nats** | `CALIBRATION_STUDY.md` | out-of-fold, all three folds improve |
 | Isotonic overfits at this sample size (0.7637 vs 0.6874) | `CALIBRATION_STUDY.md` | as expected |
+
+## What the three studies together say
+
+Calibration is finished. After an out-of-fold Platt map the reliability term is 0.0000 — there
+is nothing left to correct — while resolution sits at 0.0022 against the market's 0.0083. The
+model carries about a quarter of the market's separation, and no monotone map can change that.
+
+Segmentation offers no route either. The gap is uniform across seasons and divisions once the
+multiple-comparison correction is applied; the only deviations are at the extreme probability
+bands and the 21+ kickoff slot, both with fewer than 70 fixtures, both in the direction the
+overconfidence finding predicts rather than a new one.
+
+The worst errors are not a teachable class. Among the 178 highest-loss fixtures, only 7.3% saw
+the model take the opposite side to the market, against 29.7% overall: the tail is dominated by
+confident calls that lost, not by contrarian views that failed. There is no sub-population to
+route around.
+
+The three results agree on one conclusion: the current feature set does not contain the
+information the market has, and the deficit is resolution, not calibration, segmentation or a
+fixable tail.
 
 ## The calibration result, and why it is not the win it looks like
 

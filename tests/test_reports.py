@@ -25,6 +25,7 @@ REPORTS = (
     "MARKET_STRUCTURE.md",
     "GAP_DIAGNOSIS.md",
     "CALIBRATION_STUDY.md",
+    "SEGMENT_STUDY.md",
 )
 
 
