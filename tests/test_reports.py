@@ -21,6 +21,7 @@ REPORTS = (
     "LOGLOSS_POWER.md",
     "CLUSTER_POWER.md",
     "PILOT_POWER.md",
+    "PILOT_PREDICTIONS.md",
 )
 
 

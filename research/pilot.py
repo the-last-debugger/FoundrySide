@@ -77,6 +77,10 @@ def frame(rows: list[dict]) -> tuple[list[dict], dict[str, list[str]]]:
             "cutoff_utc": cutoff,
             "p_market": raw_over / (raw_over + raw_under),
             "y": 1 if hg + ag >= 3 else 0,
+            "home": r.get("HomeTeam", ""),
+            "away": r.get("AwayTeam", ""),
+            "home_goals": hg,
+            "away_goals": ag,
             "phase": ("pilot" if season in PILOT_SEASONS else
                       "confirmatory" if season in CONFIRMATORY_SEASONS else "unassigned"),
         })
