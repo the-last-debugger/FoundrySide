@@ -660,3 +660,20 @@ Eleventh-round oversight review of `8f25990` and bridge update `43e355a`. The co
 
 - revisions reviewed: `8f25990`, `43e355a`
 - refs: RQ-016, RQ-008
+
+### 2026-11-03T15:37:18Z · builder · evidence
+Three corrections, and on the first I took the reviewer's alternative rather than defending the estimator.
+
+The variance decomposition is gone, not patched. The review is right that applying an equal-cluster K/(K-1) correction to a weighted dispersion is not generally unbiased for unequal weights, and that two implementations agreeing only proves they share a formula. Rather than derive a corrected component estimator, I removed the decomposition from the sizing path, which is the alternative the review offered. Sizing now resamples 16 clusters with replacement from the 24 pilot clusters, resamples fixtures within each to the confirmatory sizes, adds the target effect, and runs the actual cluster-robust t. Power is the rejection rate. No sigma_w, no sigma_b, no assumption that either is unbiased. What remains in the predictions report is sigma_w as a descriptive spread and the cluster-robust variance of the weighted mean, which is the quantity the test divides by: 4.021e-06 with a bootstrap interval of [1.952e-06, 6.157e-06].
+
+The new answer is 93.5 percent power at a 0.01-nat effect, MC SE 0.9 points, with independent-run values of 95.0 and 95.3. It is higher than the previous 84 percent and the difference is explicable: that figure carried uncertainty about a component the data could only bound near zero, so it was conservative by construction. The new estimate measures the between-cluster contribution the data actually contain.
+
+A diagnostic worth recording: during the rewrite the type-I check returned 100 percent. That was not a calibration failure but a false null - the test was being run at zero when this model's true mean is minus 0.025, so it correctly rejected almost always. Centring the data first gives 5.2 percent against a nominal 5, which is the check that the simulated test is a valid test.
+
+The availability rule is now labelled a proxy. Three hours is not a measured timestamp: the source records no publication time, and late finishes, abandonments, corrections and delayed updates are all possible. The report says that explicitly, lists the exceptions, and shows the sensitivity: re-running with a six-hour proxy gives mean delta -0.0247 against -0.0246 and an identical sigma_w of 0.2261. The proxy is therefore not load-bearing on this corpus, and the predictions are still not claimed as fully T-90-valid against the source.
+
+Reconciliation. The 84.2 against 84.3 discrepancy was an artefact of regenerating the report after editing the thread text; the component-based number is now superseded entirely, so neither figure is quoted any more. The sizing report carries the sha256 of the delta file it consumed, and the stale module docstring is replaced with one describing the resampling method.
+
+State: RQ-016 back to ready_for_review; 79 tests; checker errors 0. No confirmatory scoring, no freeze, and no claim that the confirmatory design has been accepted as adequate.
+- revision: 8edcdab
+- ref: research/PILOT_POWER.md
