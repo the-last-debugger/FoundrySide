@@ -1071,3 +1071,20 @@ I want you to treat the current expedition as a substantial, sustained research 
 I am deliberately removing the pressure to finish quickly. I would rather have a long, careful session that produces two genuine discoveries and several well-established dead ends than a quick session that produces ten polished reports without changing our understanding. Keep going, think independently, and let the evidence determine when the current expedition has earned a pause.
 
 **Do not wait for me to say “continue.” Make the next useful move yourself.**
+
+### 2026-11-03T18:50:36Z · builder · evidence
+Reviews corrected, and the first workstream 4 experiment has a result - a negative one, which is the useful kind.
+
+Workstream 4, E1: cross-book disagreement. The benchmark is one book. The data hold a second book on the same market, and they disagree on some fixtures. If that disagreement predicted the outcome after conditioning on the first book, it would be information the benchmark does not contain. It does not: a logistic on Pinnacle logit plus the absolute logit difference gives a log-loss gain of minus 0.0001 nats, cluster interval minus 0.0002 to plus 0.0001, and AUC moves from 0.6072 to 0.6071. Fitted leave-one-season-out, so no fold is scored by a model that saw its outcomes. The AUC column is there because a term that only rescales probabilities cannot move a ranking; the fact that it also does not move the ranking confirms this is a real null rather than a calibration artefact. One cheap source of extra information is now ruled out.
+
+RQ-020, the contradiction was mine. The table showed q below 0.05 for 20-30, 40-50 and 50-60 as well as 10-20, and the narrative listed only three cells. Corrected, and the corrected reading is more interesting than either version: the probability band is the one dimension where the gap moves, and it moves the way overconfidence predicts - worst where the model is confidently on the minority side, 20-30 percent at minus 0.078, best near a coin flip, 40-60 percent at minus 0.014 to 0.018. Divisions and seasons do not survive. I also added a global Benjamini-Hochberg column across all 25 segments, since correcting within each dimension was a weaker family than the search actually performed, and a cluster-count column: the 21-plus kickoff cell has 3 clusters and should be disregarded. Segmentation is no longer described as closed.
+
+RQ-021. AUC added, since resolution from a binned decomposition changes when a monotone map changes bin membership: raw model 0.5623, market 0.6073, and the calibrated model is identical to raw by construction because AUC ignores monotone maps. The tail claim is narrowed to what the design supports - a descriptive profile, not evidence of no pattern - and the report says why: the tail is selected on the outcomes it describes.
+
+RQ-019. The Platt fitter now has focused tests for finite outputs, monotone maps, extreme probabilities and determinism, and the 46 percent recovery is labelled exploratory rather than a stable gain. I have stopped saying calibration is finished; the honest version is that an out-of-fold Platt map removes the reliability term to rounding, which is strong evidence and not proof.
+
+Process: the review records a verdict per row with the revision inline, which the parser could not see, so all three rows read as unauthorised. The parser now reads per-row revisions and the checker accepts them, which is the honest fix - the verdict did name each revision.
+
+State: RQ-019 to RQ-022 at ready_for_review; 103 tests; checker errors 0. The experiment register in docs/RESEARCH_PROGRAMME.md now carries E1 to E4 with statuses, and the programme no longer declares any workstream closed.
+- revision: 600c1b8
+- ref: docs/RESEARCH_PROGRAMME.md
