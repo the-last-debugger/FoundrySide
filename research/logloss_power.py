@@ -106,6 +106,16 @@ def required_n(mean: float, sd: float, z_b: float = 0.8416212335729143) -> float
     return (Z + z_b) ** 2 * (sd / mean) ** 2
 
 
+def power_components(delta: float, n: int, k_clusters: int,
+                     sd_w: float, sd_b: float) -> float:
+    """Power under the two-component model: SE² = σ²_b/K + σ²_w/n."""
+    se = math.sqrt(sd_b ** 2 / k_clusters + sd_w ** 2 / n)
+    if se == 0:
+        return 1.0
+    x = delta / se
+    return phi(x - Z) + phi(-x - Z)
+
+
 def bootstrap_power(diffs: list[float], n: int, reps: int = 1000) -> float:
     rng = random.Random(SEED)
     rejections = 0
@@ -157,6 +167,23 @@ def main() -> int:
     z_b = 0.8416212335729143
     sd_threshold = TARGET * math.sqrt(n_confirm) / (Z + z_b)
     sd_grid = (0.05, 0.10, 0.15, 0.20, 0.27, 0.35, 0.50)
+
+    # Cluster accounting. The pilot is three seasons (2021, 2122, 2223), the confirmatory
+    # slice two (2324, 2425), across eight divisions.
+    pilot_seasons = ("2021", "2122", "2223")
+    n_pilot = sum(1 for _p, _y, s, _l in data if s in pilot_seasons)
+    k_pilot, k_confirm, k_all = 8 * 3, 8 * 2, 8 * 5
+
+    def sd_b_at_80(k_clusters: int, sd_w: float) -> float:
+        """Between-cluster SD at which power falls to 80% for a fixed K."""
+        lo, hi = 0.0, 0.2
+        for _ in range(60):
+            mid = (lo + hi) / 2
+            if power_components(TARGET, n_confirm, k_clusters, sd_w, mid) > 0.8:
+                lo = mid
+            else:
+                hi = mid
+        return (lo + hi) / 2
 
     lines = [
         "# Power for the primary metric: paired log-loss difference",
@@ -257,6 +284,40 @@ def main() -> int:
         "the between-division-season variance, because the second enters as `D` and can",
         "move the threshold by a fifth or more. Sizing on the spread alone would be the same",
         "mistake as sizing on accuracy.",
+        "",
+        "## The confirmatory design has 16 clusters, not 40",
+        "",
+        f"The pilot slice holds {n_pilot:,} fixtures across **{k_pilot}** division-season",
+        f"clusters (8 divisions × 3 seasons). The confirmatory slice holds {n_confirm:,}",
+        f"fixtures across **{k_confirm}** clusters (8 × 2). The full corpus is {k_all}.",
+        "Sizing must use the count of the phase being sized: a test on the confirmatory",
+        "slice has 16 independent clusters, and adding fixtures inside those 16 does not",
+        "create more.",
+        "",
+        f"Power at the target effect, with σ_w = 0.20 (a plausible within-fixture spread,",
+        "not the design's limit case, which is the table above) and the between-cluster SD",
+        "varied:",
+        "",
+        "| Between-cluster SD (σ_b) | K = 16 (confirmatory) | K = 24 (pilot) | K = 40 (all) |",
+        "| --- | --- | --- | --- |",
+    ]
+    sd_w_plausible = 0.20
+    for sd_b in (0.0, 0.005, 0.010, 0.020):
+        cells = [power_components(TARGET, n_confirm, k, sd_w_plausible, sd_b)
+                 for k in (k_confirm, k_pilot, k_all)]
+        lines.append(f"| {sd_b:.3f} | " + " | ".join(f"{c * 100:.1f}%" for c in cells) + " |")
+    lines += [
+        "",
+        "**Read the first column.** At K = 16 the design holds 80% power only while",
+        f"σ_b stays below about {sd_b_at_80(k_confirm, sd_w_plausible):.4f}; at K = 40 the",
+        f"same calculation tolerates about {sd_b_at_80(k_all, sd_w_plausible):.4f}. A",
+        "between-cluster SD of 0.01 — plausible for a model whose edge is concentrated in",
+        "particular leagues — costs the two-season design roughly a sixth of its power.",
+        "",
+        "That is the practical meaning of the earlier accuracy finding: with few clusters, the",
+        "between-cluster variance, not the fixture count, sets the power. A two-season",
+        "confirmatory window is the thinnest possible choice against this constraint, and the",
+        "pilot must show that σ_b is small enough to survive it — or the window has to widen.",
         "",
         "## Does the confirmatory slice have enough?",
         "",

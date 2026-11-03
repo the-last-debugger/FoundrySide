@@ -125,5 +125,34 @@ class AuditTest(unittest.TestCase):
         self.assertEqual(audit(d), 1)
 
 
+    def test_cli_passes_expect_as_expected_rows(self):
+        """The entry point, not just the function: `--expect` must not become data_dir."""
+        import subprocess
+        import tempfile
+
+        d = Path(tempfile.mkdtemp())
+        (d / "E0_2425.csv").write_text(
+            self.HEADER + "16/08/2024,20:00,A,B\n17/08/2024,15:00,C,D\n", encoding="utf-8")
+        script = ROOT / "research" / "fixture_time.py"
+        proc = subprocess.run(
+            [sys.executable, str(script), "--audit", "--data", str(d), "--expect", "2"],
+            capture_output=True, text=True, timeout=60)
+        self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+        self.assertIn("fixture rows:            2", proc.stdout)
+
+    def test_cli_fails_when_expect_is_wrong(self):
+        import subprocess
+        import tempfile
+
+        d = Path(tempfile.mkdtemp())
+        (d / "E0_2425.csv").write_text(self.HEADER + "16/08/2024,20:00,A,B\n",
+                                       encoding="utf-8")
+        proc = subprocess.run(
+            [sys.executable, str(ROOT / "research" / "fixture_time.py"),
+             "--audit", "--data", str(d), "--expect", "5"],
+            capture_output=True, text=True, timeout=60)
+        self.assertEqual(proc.returncode, 1)
+
+
 if __name__ == "__main__":
     unittest.main()

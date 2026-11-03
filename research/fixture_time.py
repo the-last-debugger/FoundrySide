@@ -166,8 +166,14 @@ def audit(data_dir: Path | None = None, expected: int | None = None) -> int:
 
 if __name__ == "__main__":
     import sys
+
     want_audit = "--audit" in sys.argv
     expect = None
     if "--expect" in sys.argv:
         expect = int(sys.argv[sys.argv.index("--expect") + 1])
-    sys.exit(audit(expect) if want_audit else 0)
+    data = None
+    if "--data" in sys.argv:
+        data = Path(sys.argv[sys.argv.index("--data") + 1])
+    # Keyword, not positional: `audit(expect)` silently became `data_dir=expect` when the
+    # signature gained a first parameter, and the documented command failed.
+    sys.exit(audit(data_dir=data, expected=expect) if want_audit else 0)

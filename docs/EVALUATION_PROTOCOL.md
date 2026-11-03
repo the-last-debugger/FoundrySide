@@ -102,10 +102,20 @@ tested. It matters twice a year: across a daylight-saving boundary two apparentl
 adjacent fixtures differ by an hour, and that hour decides whether an earlier match counts
 as available.
 
-Validation, run and observed: `python research/fixture_time.py --audit` parses every
-fixture clock, maps its division, and fails on any timestamp that falls in a spring gap or
-an autumn fold. Result on the corpus: **14,802 clocks parsed, 8 divisions mapped, zero
-ambiguous or unmapped**. A timestamp in a gap or a fold is an error, not a rounding
+Validation, run and observed:
+
+```
+python research/fixture_time.py --audit --expect 14802
+fixture rows:            14802
+parsed to a UTC instant: 14802
+missing clock fields:    0
+failed conversion:       0
+all 14802 fixture rows accounted for, no ambiguous or unmapped clocks
+```
+
+The audit fails on any missing or unparseable clock rather than skipping it, and
+`--expect` fails the run when the corpus is incomplete, so a truncated download cannot
+pass as clean. A timestamp in a spring gap or an autumn fold is an error, not a rounding
 decision.
 
 The parsed instant is what the cutoff is computed from and what the prediction record
@@ -152,19 +162,41 @@ this, and it is what the pilot runs:
 2. **Decompose the variance**: within-cluster `σ²_w`, between-cluster `σ²_b` of the
    cluster means, and `m̄` the mean fixtures per cluster.
 3. **ICC** = `σ²_b / (σ²_b + σ²_w)`; **design effect** `D = 1 + (m̄ − 1) · ICC`.
-4. **The variance the sizing uses** is `Var(mean Δ) ≈ σ²_b / K + σ²_w / n`, with `K`
-   clusters and `n` fixtures — not `sd²/n`. This is the quantity that decides power.
-5. **Uncertainty in `D`**: cluster-bootstrap the pilot (resample clusters with
-   replacement, 2,000 replicates), recompute ICC and `D` each time, and size against the
-   **95th percentile** of `D`. Sizing on a point estimate of `D` would repeat the error
-   of sizing on a point estimate of the spread.
-6. **The confirmatory test is the same statistic**: a cluster bootstrap over `K`
-   clusters of the confirmatory mean Δ, rejecting when the 95% percentile interval
-   excludes zero. If the pilot's bootstrap is too coarse because `K` is small, that is
-   reported as a limitation of the design, not smoothed over.
+4. **The variance the sizing uses** is `Var(mean Δ) ≈ σ²_b / K + σ²_w / n`, with `K` the
+   cluster count of the phase being sized and `n` its fixtures — not `sd²/n`. The counts
+   are not interchangeable:
 
-`K` is 40 here (8 divisions × 5 seasons). That is not many, and it is the reason step 5
-exists: the uncertainty in `D` is large enough to matter.
+   | Phase | Seasons | Fixtures | Clusters `K` |
+   | --- | --- | --- | --- |
+   | Pilot | 2021–2223 | 8,941 | **24** (8 × 3) |
+   | Confirmatory | 2324–2425 | 5,794 | **16** (8 × 2) |
+   | Whole corpus | 2021–2425 | 14,735 | 40 (8 × 5) |
+
+   Sizing uses the **confirmatory** count, 16. A test on that window has 16 independent
+   clusters however many fixtures it contains, and widening the window adds clusters
+   only if it adds seasons. Fixture counts here are the analysis corpus for this
+   experiment — fixtures with a complete over/under 2.5 closing price, which is 14,735 of
+   the 14,802 with a 1X2 price.
+5. **Uncertainty in the components, not in a summary statistic.** Cluster-bootstrap the
+   pilot's 24 clusters (resample clusters with replacement, 2,000 replicates) and, for
+   each replicate, recompute `σ²_w`, `σ²_b` and `m̄`, then compute the power of the
+   confirmatory design (16 clusters, `n` fixtures) at the target effect. Size so that the
+   **5th percentile** of that power distribution is at least 0.80. Bootstrapping `D`
+   alone and quoting its 95th percentile is not the same thing: `D` compresses two
+   variance components into one number, and the sizing formula needs them separately.
+6. **The confirmatory test is the same statistic the sizing assumed**: a cluster bootstrap
+   over the 16 confirmatory clusters of the mean Δ, rejecting when the 95% percentile
+   interval excludes zero. With 16 clusters that interval is coarse; the number of
+   contributing clusters is reported, and a borderline result is described as
+   inconclusive rather than as evidence either way.
+
+**What this implies about the design, measured.** `research/logloss_power.py` evaluates
+the two-component formula directly. At a plausible within-fixture spread (`σ_w = 0.20`)
+and `n = 5,794`, the two-season window tolerates a between-cluster SD of only about
+**0.010** before power falls below 80%; with all five seasons (40 clusters) it tolerates
+about **0.015**. At `σ_b = 0.02` the two-season design has 42% power and the five-season
+design 68%. So the confirmatory window is the thinnest available, and whether 16 clusters
+are enough is a question the pilot answers, not one the protocol can assume.
 
 The ±3pp calibration tolerance is a **guardrail, not a test**: it flags a model whose
 probabilities are systematically off, and it is reported with the reliability plot and
@@ -180,8 +212,14 @@ scale for a first serious test rather than a comfortable one. An improvement of 
 nats would be indistinguishable from noise at any sample this project can afford.
 
 **Sample size, for this metric.** Power depends on the spread of the per-fixture score
-difference Δ, not on the baseline's standard error. `research/LOGLOSS_POWER.md` computes
-it on real fixtures and reports the governing quantity:
+difference Δ, not on the baseline's standard error. `research/LOGLOSS_POWER.md` is a
+**synthetic sensitivity calculation on the real-fixture corpus**: real prices and outcomes
+are the inputs, but the per-fixture Δ is produced by a device, not by a model's
+out-of-fold predictions. It therefore fixes the *shape* of the relationship between the
+spread and the sample needed; it does **not** measure this experiment's power, and the
+pilot has not yet produced an empirical figure.
+
+The table below is that synthetic sensitivity, not measured power:
 
 | SD of Δ | n for 80% power | Power at the confirmatory slice (5,794) |
 | --- | --- | --- |

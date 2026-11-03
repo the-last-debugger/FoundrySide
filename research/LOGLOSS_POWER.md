@@ -97,6 +97,37 @@ the between-division-season variance, because the second enters as `D` and can
 move the threshold by a fifth or more. Sizing on the spread alone would be the same
 mistake as sizing on accuracy.
 
+## The confirmatory design has 16 clusters, not 40
+
+The pilot slice holds 8,941 fixtures across **24** division-season
+clusters (8 divisions × 3 seasons). The confirmatory slice holds 5,794
+fixtures across **16** clusters (8 × 2). The full corpus is 40.
+Sizing must use the count of the phase being sized: a test on the confirmatory
+slice has 16 independent clusters, and adding fixtures inside those 16 does not
+create more.
+
+Power at the target effect, with σ_w = 0.20 (a plausible within-fixture spread,
+not the design's limit case, which is the table above) and the between-cluster SD
+varied:
+
+| Between-cluster SD (σ_b) | K = 16 (confirmatory) | K = 24 (pilot) | K = 40 (all) |
+| --- | --- | --- | --- |
+| 0.000 | 96.8% | 96.8% | 96.8% |
+| 0.005 | 93.0% | 94.4% | 95.4% |
+| 0.010 | 78.7% | 85.2% | 90.3% |
+| 0.020 | 42.5% | 54.0% | 68.2% |
+
+**Read the first column.** At K = 16 the design holds 80% power only while
+σ_b stays below about 0.0097; at K = 40 the
+same calculation tolerates about 0.0153. A
+between-cluster SD of 0.01 — plausible for a model whose edge is concentrated in
+particular leagues — costs the two-season design roughly a sixth of its power.
+
+That is the practical meaning of the earlier accuracy finding: with few clusters, the
+between-cluster variance, not the fixture count, sets the power. A two-season
+confirmatory window is the thinnest possible choice against this constraint, and the
+pilot must show that σ_b is small enough to survive it — or the window has to widen.
+
 ## Does the confirmatory slice have enough?
 
 On the device it has **100.0%**. On the unknown real SD it has
