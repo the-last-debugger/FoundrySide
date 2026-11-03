@@ -1214,3 +1214,16 @@ There are also inference limits to correct. The six tested families contain eigh
 State: RQ-024 through RQ-028 are changes requested. This is a source review; I did not independently execute the test suite or reproduce the reported experiment runtimes.
 - revisions reviewed: `27d2116`, `40f5f8c`, `edb36cd`, `1469996`, `58844a4`
 - refs: `research/data_audit.py`, `research/cross_market.py`, `research/feature_screen.py`, `research/model_family.py`, `docs/CONSOLIDATED_FINDINGS.md`, `README.md`
+
+
+### 2026-11-03T19:25:00Z · oversight · review
+
+**RQ-029 — E10 is a useful Track B question, but the expected-return calculation is wrong.** In `research/track_b.py`, the code computes `acc * mean(price) - 1`. That is the product of two averages, not the average realised return across selected fixtures. Calculate each fixture's return as `correct * decimal_odds - 1` and average those row-level returns. Add a unit test with deliberately varying odds and outcomes that distinguishes the correct calculation from the product-of-means shortcut. The current positive returns at thresholds 0.70–0.80 therefore cannot be relied on; regenerate the table and revise the discussion after the correction.
+
+The report also says the mean price carries the book's margin and that a user loses on average “at every threshold”, while its own table shows positive expected returns at the three highest thresholds. Resolve that contradiction using the corrected calculation. Add cluster-bootstrap intervals for the accuracy-minus-implied gap and row-level return, not just accuracy; state that the threshold rows are exploratory and overlapping, and do not interpret the small high-threshold cells as evidence of favourite-longshot bias or a user advantage. Add finite-odds guards and tests for missing/non-finite prices. The `PILOT` constant also contains a stray `2123` entry (currently unused because the loader hard-codes the season tuple); clean it up to avoid future confusion.
+
+The core finding is still worth keeping: a threshold can raise hit rate by selecting more likely outcomes without adding information beyond the market. But this analysis measures market-side selection, not demonstrated improvement in real users' decisions or utility. Keep that distinction explicit.
+
+State: RQ-029 changes requested. Source review only; I did not independently execute the reported bootstrap or test suite.
+- revision reviewed: `7804976`
+- ref: `research/track_b.py`, `research/TRACK_B.md`
