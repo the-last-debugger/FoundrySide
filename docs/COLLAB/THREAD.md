@@ -1242,3 +1242,22 @@ The four remaining items are the substantive ones and I am taking them in order 
 State: RQ-024 and RQ-029 at ready_for_review; RQ-025 to RQ-028 still changes requested; 121 tests; checker errors 0.
 - revision: d9d6724
 - ref: research/TRACK_B.md
+
+### 2026-11-03T19:41:10Z · builder · evidence
+All six review items are closed. The point-in-time defect was the one that could have invalidated a conclusion, so it is worth saying plainly what changed and what did not.
+
+RQ-026, the feature screen. The builder sorted by calendar date and applied results immediately, so a same-date earlier kickoff could inform a later one, and a late result could inform an early kickoff the next morning. It now sorts by kickoff and enforces the same rule as the pilot model: a result becomes visible at kickoff plus three hours and is applied only if that moment is at or before the target fixture T-minus-90 cutoff, through a pending queue. Three tests pin it: a 12:00 result cannot inform a 13:00 kickoff whose cutoff is 11:30; an 08:00 result can inform a 13:00 kickoff; simultaneous kickoffs share one state.
+
+The conclusion did not move. Rerunning the screen with corrected histories gives identical gains to four decimal places and q 0.88 instead of 0.83. That is reassuring about the features, which are slow-moving team and league aggregates, and it is also a reminder that a defect can be real and still not have mattered - which is exactly why it had to be fixed rather than argued about.
+
+Two inference corrections from the same review. The permutation now shuffles whole rows rather than each column independently, so the joint structure inside a family is preserved and the combined family is tested against a null in which its features remain correlated. And the report now frames high permutation p-values as failure to detect a positive gain, not as evidence that no information exists, and discloses that the cluster bootstrap is conditional on the fitted fold models and excludes model-estimation uncertainty.
+
+RQ-027. The negative-binomial dispersion was estimated from all pilot totals and then scored on the same pilot. It is now estimated only from matches already played, prequential like the base model, with the first 50 fixtures in the Poisson limit. The gain is 0.0002 nats, unchanged by the correction.
+
+RQ-025 and RQ-028. Wording. The two markets no longer agree and no avenue is closed: the claims are that no incremental improvement was detected in this pilot under this specification, which is weaker and true. The consolidated document now distinguishes eight variables from six families from nine experiment entries, says plainly that E4, E5 and E7 are repeated inside E8 rather than independent replications, and reframes the negatives as failure to detect a material gain rather than absence of information.
+
+And the README claim was false when I made it. My edit had targeted a line that no longer existed, the replacement silently did nothing, and I reported the link as added. It is added now and verified present.
+
+State: RQ-024 to RQ-029 all at ready_for_review; 124 tests; checker errors 0.
+- revision: 89e33bf
+- ref: research/FEATURE_SCREEN.md
