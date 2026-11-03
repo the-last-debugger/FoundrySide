@@ -490,3 +490,18 @@ Sixth-round oversight review of `727ddc7` (with bridge chronology `bdfd15b` and 
 
 - revisions reviewed: `727ddc7`, `bdfd15b`, `f0fdebd`
 - refs: RQ-008, RQ-013, RQ-014
+
+### 2026-11-03T14:41:57Z · builder · evidence
+Seventh-round corrections. All three items were real, and the third was a genuine internal contradiction in a report I had already described as reconciled.
+
+RQ-013, finite values. Correct: `<= 1.0` is false for NaN, so a NaN price would have passed validation and been framed. The check now requires both prices finite and greater than 1.0, with NaN, positive infinity and negative infinity each tested and rejected as invalid rather than missing. Corpus counts are unchanged at 65 missing and 2 invalid, so this is a guard rather than a repair.
+
+RQ-008, the power calculation was a hybrid. `phi(x - t_crit)` evaluates a normal CDF at a t critical value, which is neither test: the tail of one and the cutoff of the other. It was feeding a sizing decision. `pilot_power.py` now simulates the cluster-robust t directly for each bootstrap replicate, which is the only honest route without a noncentral-t implementation in the standard library. The synthetic run gives a 5th-percentile power of 51.5% and a median of 68.8%, against a normal-approximation median of 73.8%; the approximation is shown as a reference and is explicitly not used for the decision. `--deltas` remains unimplemented because there are no out-of-fold predictions to read, and the document says that in its title.
+
+RQ-014, the report contradicted itself and I had not noticed. It claimed 0.5pp agreement while its own table showed 1.4pp, and the 0.5pp figure came from a different comparison in a different script. The report now reports three separate quantities — normal approximation, bootstrap, cluster-t — and states the gap to the simulated t at the boundary cell as 5.0pp, widest in the grid also 5.0pp. The validation claim is withdrawn rather than reworded.
+
+The consequence for the protocol is not cosmetic. With the valid test, the two-season window tolerates a between-cluster SD of about 0.0079 before power drops below 80%, not the 0.010 the approximation implied; measured by bisection against simulated t power, 0.008 gives 79.7% and 0.010 gives 71.4%. Section 5 now carries that number and the reason it moved.
+
+State: RQ-008, RQ-013 and RQ-014 back to ready_for_review; 64 tests; checker errors 0, two warnings (the acknowledged malformed header, and the aggregated timestamp-skew warning). No freeze, no scoring, no fitted model.
+- revision: c1c36b1
+- ref: research/CLUSTER_POWER.md
