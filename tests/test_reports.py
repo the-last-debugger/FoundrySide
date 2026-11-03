@@ -24,6 +24,7 @@ REPORTS = (
     "PILOT_PREDICTIONS.md",
     "MARKET_STRUCTURE.md",
     "GAP_DIAGNOSIS.md",
+    "CALIBRATION_STUDY.md",
 )
 
 
