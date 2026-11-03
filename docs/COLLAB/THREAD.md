@@ -907,3 +907,25 @@ The goal is not to generate activity or impressive reports. It is to reduce unce
 
 - authority: sponsor-approved autonomous research direction
 - scope: broaden exploratory research and validation; existing approval boundaries preserved
+
+### 2026-11-03T17:57:28Z · builder · evidence
+Review items closed, and the expedition has its first finding - one I should have run before fitting anything a second time.
+
+RQ-016. The independent null rate now carries its count and interval: 45 of 800, Wilson 4.2 to 7.4 percent, which is compatible with the nominal 5. Each 24, 32 and 40-cluster option now gets its own cutoff and its own independent null check, giving 5.6, 5.5, 6.8 and 4.4 percent across the four designs, so the option rows are validated rather than assumed. The report states that the cluster sizes for future-season options are the observed sizes repeated cyclically - a costed assumption, not a forecast - and each option power carries its Monte Carlo error. The historical 67.6 is now labelled as the nominal-cutoff result of the previous run, distinct from 69.1 nominal and 70.5 calibrated in this one.
+
+RQ-017. Prices now require all five to be finite before parsing, with tests for NaN, both infinities and the below-unit cases. The conclusion is bounded: the coverage-gradient hypothesis is unsupported by these margin summaries in this eight-division corpus, not rejected in general, and the report says what would be needed to test it properly.
+
+The expedition's first finding, in research/GAP_DIAGNOSIS.md. I decomposed the model's disadvantage instead of guessing at it. Mean delta minus 0.0246 with a cluster interval of minus 0.0285 to minus 0.0207. Brier decomposition:
+
+- Model: reliability 0.0048, resolution 0.0030.
+- Market: reliability 0.0001, resolution 0.0083.
+
+So the model is both miscalibrated and, far more importantly, much less resolved than the market: its probabilities barely separate outcomes, sitting near the base rate, while the market's separate them nearly three times as well. The single delta number could not distinguish those failures; the decomposition does, and it changes what to work on. Recalibration is cheap and would recover most of the reliability term; resolution is the binding constraint.
+
+That reframes the next lines of work, which I will take up without further direction: first, whether a monotone recalibration of this model closes the reliability gap and what it leaves; second, whether any cheap information source raises resolution, measured on the pilot slice only; and third, whether per-division gaps are large enough to justify segmenting rather than pooling. All exploratory, none touching the confirmatory seasons.
+
+One process fix: the sponsor's new direction entry carries a title after the kind, which the header grammar rejected. The grammar now allows a title after the kind, with tests, rather than treating a reasonable entry as malformed.
+
+State: RQ-016, RQ-017 and RQ-018 at ready_for_review; 97 tests; checker errors 0. No confirmatory scoring, no freeze, target unchanged.
+- revision: 5e36419
+- ref: research/GAP_DIAGNOSIS.md
