@@ -35,10 +35,18 @@ Three things are now measured rather than argued:
 
 ## What the project is waiting on
 
-One number: the **sample floor** in `docs/COLLAB/PROPOSALS.md` P-02. The power arithmetic
-shows that n ≈ 2,000 can only detect a 3.1-point edge, so the proposal recommends
-n ≥ 5,000 for any claim of edge, with 2,000 treated as inconclusive-only. That is the
-sponsor's decision and it is the only one blocking T2.
+A decision on the first experiment's design. The protocol now measures what it previously
+assumed: at the first pilot model's spread, the two-season window has **69.4%** power for a
+0.01-nat effect — below the 80% rule — and the 80% crossing sits at **0.0116–0.0130 nats**.
+Three options, all costing something:
+
+| Option | Effect |
+| --- | --- |
+| Raise the target effect to ~0.012 | Leaves the sample as is; changes what the experiment claims |
+| Add a third confirmatory season (24 clusters) | Power rises to 84.1% |
+| Add markets to the family | Raises n, enlarges the multiple-testing family |
+
+No confirmatory scoring has happened, and none will without a freeze.
 
 ## Reproducing the measurements
 

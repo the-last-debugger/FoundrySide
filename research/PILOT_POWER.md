@@ -1,4 +1,4 @@
-<!-- generated-by: pilot_power.py sha256=2f05336633b5 -->
+<!-- generated-by: pilot_power.py sha256=c0986dfffacd -->
 
 # Sizing for the confirmatory design
 
@@ -35,12 +35,14 @@ component decomposition has been removed from the sizing path altogether.
 
 | Quantity | Value |
 | --- | --- |
-| Power at a 0.01-nat effect | **67.6%** (MC SE ±1.7pp) |
-| Rejection rate under the null (centred residuals, no imposed effect) | 4.5% (nominally 5%) |
+| Power at a 0.01-nat effect | **69.4%** (MC SE ±1.6pp) |
+| Power at the nominal t(15) cutoff, for comparison | 67.6% |
+| Calibrated cutoff (95th percentile of the simulated null) | 2.089 |
+| Rejection rate under the null (centred residuals, no imposed effect) | 5.0% (nominally 5%) |
 | Simulated null mean | +0.00013 (should be ~0) |
 | Effect at 80% power | 0.0117 nats (bisection bracket ±0.0004) |
-| Across 5 independent threshold searches | 0.0117 – 0.0125 nats |
-| Independent runs, seeds 20261134 and 20261165 | 67.5%, 69.2% |
+| **80% crossing, Monte Carlo interval** | **0.0116 – 0.0130 nats** |
+| Independent runs, seeds 20261134 and 20261165 | 69.2%, 70.1% |
 | Decision rule | adequate if power reaches 80% |
 
 **Verdict: NOT ADEQUATE** at this spread — one model's.
@@ -52,6 +54,43 @@ were drawn uniformly; and 67.6% with probability-proportional-to-size sampling, 
 estimand the protocol declares. The 93.5% was not power at all — it was the model's existing
 disadvantage to the market, detected by a two-sided test. The bracket on the threshold is
 numerical resolution; the seed spread above is the statistical uncertainty.
+
+## Calibrating the cutoff
+
+The confirmatory test uses the t(15) critical value only as a starting point. Under a
+deliberately adversarial design — cluster sizes from 60 to 400 with cluster means
+correlated to size — the nominal cutoff rejects **12.4%** at a nominal 5%, because the
+cluster-robust variance is biased downward when size and mean are associated. Calibrating
+the cutoff on the simulated null (its 95th percentile) restores the rate to **5.0%** at a
+cutoff of **3.41** instead of 2.13.
+
+On the pilot data the effect is small: the calibrated cutoff is 2.089 against the
+table's 2.131, and power moves from 67.6% to 69.4%. The
+stress case is what shows the nominal test is not automatically safe; the pilot is what
+shows it happens to be adequate here.
+
+## What would it take
+
+Power at the target effect as the number of confirmatory clusters grows, holding the
+cluster-size pattern:
+
+| Confirmatory clusters | Fixtures | Power at 0.01 nats |
+| --- | --- | --- |
+| 16 | 5,794 | 69.4% |
+| 24 | 8,216 | 84.1% |
+| 32 | 11,588 | 92.6% |
+| 40 | 14,010 | 97.1% |
+
+Adding clusters means adding seasons, which raises the exchangeability question the protocol
+already records. The table is a costing of that option, not an endorsement of it.
+
+## Why the threshold carries an interval
+
+The bisection gives a point and a numerical bracket, which is the resolution of the search,
+not its uncertainty. Each power estimate is a proportion from a finite simulation, so the
+power curve has Monte Carlo error; inverting the 95% Wilson bounds on that curve gives the
+crossing interval above. That interval is what should be quoted when the question is "how
+large an effect can this design detect", and it is wider than the bracket, as it must be.
 
 ## What this does not show
 

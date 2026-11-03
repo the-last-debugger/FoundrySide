@@ -67,6 +67,28 @@ class EstimandTest(unittest.TestCase):
         null_mean = pilot_power.simulated_mean(clusters, SIZES, 0.0, sims=500)
         self.assertLess(abs(null_mean), 0.012)
 
+    def test_rejection_is_calibrated_under_the_adversarial_design(self):
+        """Same stress case as above, but checking the rejection rate, not the mean.
+
+        A near-zero average statistic does not by itself prove a calibrated rate. With
+        1,000 simulations the binomial standard error near 5% is about 0.7pp, so a
+        tolerance of 2–10% is roughly two standard errors plus a margin.
+        """
+        rng = np.random.default_rng(5)
+        sizes = [400, 300, 250, 200, 150, 100, 80, 60]
+        means = [0.06, 0.04, 0.02, 0.005, -0.01, -0.03, -0.04, -0.05]
+        clusters = [rng.normal(m, 0.18, size=s) for m, s in zip(means, sizes)]
+
+        # The nominal cutoff is anti-conservative under this stress case...
+        nominal = pilot_power.design_power(clusters, SIZES, 0.0, sims=800, seed=23)
+        self.assertGreater(nominal, 0.08)
+
+        # ...and calibrating it on the simulated null restores the rate.
+        crit = pilot_power.empirical_crit(clusters, SIZES, sims=1200, seed=17)
+        rate = pilot_power.design_power(clusters, SIZES, 0.0, sims=800, seed=23, crit=crit)
+        self.assertGreater(rate, 0.02)
+        self.assertLess(rate, 0.10)
+
     def test_the_two_estimands_differ_for_this_data(self):
         # Documents why the sampling scheme matters: the unweighted mean of cluster means
         # is materially different from the fixture-weighted mean here.

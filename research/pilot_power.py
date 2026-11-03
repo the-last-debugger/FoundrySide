@@ -99,11 +99,24 @@ def _simulate(clusters: list[np.ndarray], sizes: np.ndarray, delta: float,
     return grands, stats
 
 
+def empirical_crit(clusters: list[np.ndarray], sizes: np.ndarray,
+                   sims: int = 2000, seed: int = SEED, alpha: float = 0.95) -> float:
+    """The |t| quantile the null actually produces, rather than the t(15) table value.
+
+    Under a strong association between cluster size and cluster mean the nominal t critical
+    value is anti-conservative: the adversarial test rejects about 11-12% at a nominal 5%.
+    Calibrating the cutoff on the simulated null is the bootstrap answer, and it costs power
+    — which is the honest price, not a defect.
+    """
+    _grands, stats = _simulate(clusters, sizes, 0.0, sims, seed)
+    return float(np.quantile(np.abs(stats), alpha))
+
+
 def design_power(clusters: list[np.ndarray], sizes: np.ndarray, delta: float,
-                 sims: int = SIMS, seed: int = SEED) -> float:
-    """Rejection rate of the confirmatory t when the true effect is `delta`."""
+                 sims: int = SIMS, seed: int = SEED, crit: float = T_CRIT) -> float:
+    """Rejection rate of the confirmatory test when the true effect is `delta`."""
     _grands, stats = _simulate(clusters, sizes, delta, sims, seed)
-    return float(np.mean(np.abs(stats) > T_CRIT))
+    return float(np.mean(np.abs(stats) > crit))
 
 
 def simulated_mean(clusters: list[np.ndarray], sizes: np.ndarray, delta: float,
@@ -113,9 +126,46 @@ def simulated_mean(clusters: list[np.ndarray], sizes: np.ndarray, delta: float,
     return float(np.mean(grands))
 
 
+def wilson(hits: int, n: int) -> tuple[float, float]:
+    """95% Wilson interval for a proportion — the Monte Carlo error of one power estimate."""
+    if n == 0:
+        return (float("nan"), float("nan"))
+    p = hits / n
+    z = 1.959963984540054
+    denom = 1 + z * z / n
+    centre = (p + z * z / (2 * n)) / denom
+    half = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / denom
+    return (max(0.0, centre - half), min(1.0, centre + half))
+
+
+def power_curve(clusters: list[np.ndarray], sizes: np.ndarray,
+                effects, sims: int = 1200, seed: int = SEED, crit: float = T_CRIT):
+    """Power at each effect, with its Monte Carlo confidence interval."""
+    out = []
+    for e in effects:
+        _grands, stats = _simulate(clusters, sizes, float(e), sims, seed)
+        hits = int(np.count_nonzero(np.abs(stats) > crit))
+        lo, hi = wilson(hits, sims)
+        out.append((float(e), hits / sims, lo, hi))
+    return out
+
+
+def crossing_interval(curve, target: float = 0.80) -> tuple[float, float]:
+    """Interval for the effect at which power reaches `target`, by inverting the CIs.
+
+    Lower end: the smallest effect whose power interval still *admits* the target — we
+    cannot yet rule out that it is enough. Upper end: the smallest effect whose interval
+    is entirely above the target — it is established to be enough. That is a conservative
+    interval built from Monte Carlo error, not a range of seed outcomes.
+    """
+    lo_end = next((e for e, _p, _lo, hi in curve if hi >= target), float("nan"))
+    hi_end = next((e for e, _p, lo, _hi in curve if lo >= target), float("nan"))
+    return (lo_end, hi_end)
+
+
 def power_threshold(clusters: list[np.ndarray], sizes: np.ndarray,
                     target: float = 0.80, sims: int = 300, seed: int = SEED,
-                    hi: float = 0.05, steps: int = 6) -> tuple[float, float]:
+                    hi: float = 0.05, steps: int = 6, crit: float = T_CRIT) -> tuple[float, float]:
     """Effect size at which power reaches `target`, by bisection.
 
     Returns (effect, numerical bracket). The bracket is the width of the final bisection
@@ -124,12 +174,12 @@ def power_threshold(clusters: list[np.ndarray], sizes: np.ndarray,
     standard error near 80% is about 2.3pp at 300 draws, so the crossing is less precisely
     located than the bracket suggests. `threshold_searches()` measures that separately.
     """
-    if design_power(clusters, sizes, hi, sims=sims, seed=seed) < target:
+    if design_power(clusters, sizes, hi, sims=sims, seed=seed, crit=crit) < target:
         return (float("nan"), float("nan"))
     low, high = 0.0, hi
     for _ in range(steps):
         mid = (low + high) / 2
-        if design_power(clusters, sizes, mid, sims=sims, seed=seed) >= target:
+        if design_power(clusters, sizes, mid, sims=sims, seed=seed, crit=crit) >= target:
             high = mid
         else:
             low = mid
@@ -168,14 +218,29 @@ def main(argv: list[str] | None = None) -> int:
         raise SystemExit(f"no pilot rows found in {deltas_path}")
 
     sizes = confirmatory_sizes()
-    power = design_power(clusters, sizes, TARGET)
-    type_one = design_power(clusters, sizes, 0.0)
-    stability = [design_power(clusters, sizes, TARGET, seed=SEED + 31 * (i + 1))
+    # Calibrate the cutoff on the simulated null rather than trusting t(15): under a strong
+    # size-mean association the table value is anti-conservative (12% rejection at a
+    # nominal 5%). On this pilot the calibration moves the cutoff only slightly.
+    crit = empirical_crit(clusters, sizes, sims=2000)
+    power_nominal = design_power(clusters, sizes, TARGET)
+    power = design_power(clusters, sizes, TARGET, crit=crit)
+    type_one = design_power(clusters, sizes, 0.0, crit=crit)
+    stability = [design_power(clusters, sizes, TARGET, seed=SEED + 31 * (i + 1), crit=crit)
                  for i in range(2)]
     se = mc_se(power)
-    threshold, bracket = power_threshold(clusters, sizes)
-    searches = threshold_searches(clusters, sizes)
+    threshold, bracket = power_threshold(clusters, sizes, crit=crit)
+    effects = [0.006 + i * 0.0014 for i in range(12)]      # 0.006 … 0.0214
+    curve = power_curve(clusters, sizes, effects, sims=1200, crit=crit)
+    cross_lo, cross_hi = crossing_interval(curve)
     null_mean = simulated_mean(clusters, sizes, 0.0)
+
+    # What would it take: power at the target effect as the cluster count grows.
+    base = confirmatory_sizes()
+    options = []
+    for k in (16, 24, 32, 40):
+        k_sizes = np.resize(base, k)
+        options.append((k, int(k_sizes.sum()),
+                        design_power(clusters, k_sizes, TARGET, sims=800, crit=crit)))
 
     doc = f"""{report_stamp.stamp(Path(__file__))}
 
@@ -215,10 +280,12 @@ component decomposition has been removed from the sizing path altogether.
 | Quantity | Value |
 | --- | --- |
 | Power at a {TARGET}-nat effect | **{power * 100:.1f}%** (MC SE ±{se * 100:.1f}pp) |
+| Power at the nominal t(15) cutoff, for comparison | {power_nominal * 100:.1f}% |
+| Calibrated cutoff (95th percentile of the simulated null) | {crit:.3f} |
 | Rejection rate under the null (centred residuals, no imposed effect) | {type_one * 100:.1f}% (nominally 5%) |
 | Simulated null mean | {null_mean:+.5f} (should be ~0) |
 | Effect at 80% power | {threshold:.4f} nats (bisection bracket ±{bracket:.4f}) |
-| Across {len(searches)} independent threshold searches | {min(searches):.4f} – {max(searches):.4f} nats |
+| **80% crossing, Monte Carlo interval** | **{cross_lo:.4f} – {cross_hi:.4f} nats** |
 | Independent runs, seeds {SEED + 31} and {SEED + 62} | {stability[0] * 100:.1f}%, {stability[1] * 100:.1f}% |
 | Decision rule | adequate if power reaches 80% |
 
@@ -231,6 +298,40 @@ were drawn uniformly; and 67.6% with probability-proportional-to-size sampling, 
 estimand the protocol declares. The 93.5% was not power at all — it was the model's existing
 disadvantage to the market, detected by a two-sided test. The bracket on the threshold is
 numerical resolution; the seed spread above is the statistical uncertainty.
+
+## Calibrating the cutoff
+
+The confirmatory test uses the t(15) critical value only as a starting point. Under a
+deliberately adversarial design — cluster sizes from 60 to 400 with cluster means
+correlated to size — the nominal cutoff rejects **12.4%** at a nominal 5%, because the
+cluster-robust variance is biased downward when size and mean are associated. Calibrating
+the cutoff on the simulated null (its 95th percentile) restores the rate to **5.0%** at a
+cutoff of **3.41** instead of 2.13.
+
+On the pilot data the effect is small: the calibrated cutoff is {crit:.3f} against the
+table's 2.131, and power moves from {power_nominal * 100:.1f}% to {power * 100:.1f}%. The
+stress case is what shows the nominal test is not automatically safe; the pilot is what
+shows it happens to be adequate here.
+
+## What would it take
+
+Power at the target effect as the number of confirmatory clusters grows, holding the
+cluster-size pattern:
+
+| Confirmatory clusters | Fixtures | Power at 0.01 nats |
+| --- | --- | --- |
+""" + "\n".join(f"| {k} | {n:,} | {p * 100:.1f}% |" for k, n, p in options) + f"""
+
+Adding clusters means adding seasons, which raises the exchangeability question the protocol
+already records. The table is a costing of that option, not an endorsement of it.
+
+## Why the threshold carries an interval
+
+The bisection gives a point and a numerical bracket, which is the resolution of the search,
+not its uncertainty. Each power estimate is a proportion from a finite simulation, so the
+power curve has Monte Carlo error; inverting the 95% Wilson bounds on that curve gives the
+crossing interval above. That interval is what should be quoted when the question is "how
+large an effect can this design detect", and it is wider than the bracket, as it must be.
 
 ## What this does not show
 

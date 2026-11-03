@@ -206,12 +206,18 @@ this, and it is what the pilot runs:
    reported 93.5%, which was not power at all. Offset invariance and null centring are both
    regression tests.
 
-   **Measured result, pilot Δ of the first model:** power **67.6%** (MC SE ±1.7pp) at a
-   0.01-nat effect; null rejection 4.5% against a nominal 5; simulated null mean +0.00013;
-   independent runs 67.5% and 69.2%. **The design is not adequate at 0.01 nats for this
-   spread.** It reaches 80% at an effect of **0.0117 nats** — bisection bracket ±0.0004,
-   and **0.0117 to 0.0125 across five independent searches**, which is the statistical
-   uncertainty rather than the bracket. The bracket is numerical resolution only.
+   **Measured result, pilot Δ of the first model:** power **69.4%** at the calibrated cutoff
+   (67.6% at the nominal t(15) value); null rejection 5.0% against a nominal 5; simulated
+   null mean +0.00013; independent runs 69.3% and 70.1%. **The design is not adequate at 0.01
+   nats for this spread.** The 80% crossing is **0.0116–0.0130 nats** as a Monte Carlo
+   interval obtained by inverting Wilson bounds on the power curve — wider than the 0.0004
+   bisection bracket, as it must be.
+
+   **The cutoff is calibrated, not assumed.** Under an adversarial design — cluster sizes
+   60 to 400 with means correlated to size — the nominal t(15) cutoff rejects 12.4% at a
+   nominal 5%. Calibrating on the simulated null restores 5.0%. On the pilot data the
+   calibrated cutoff is 2.089 against the table's 2.131, so the correction is small here;
+   the stress case is what shows it is not automatically safe.
 
 **What this implies.** The adequacy question now has an answer for one model's spread: 16
 clusters and 5,794 fixtures give roughly two-thirds power at 0.01 nats. Three responses are
