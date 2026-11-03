@@ -155,3 +155,46 @@ Proposal: PROPOSAL.md, six sections of substance - what the phase is for, scope 
 Not claimed: any edge. Nothing here beats the market, and the proposal says so in section 9. T2 is designed next, after P-02, and the jackpot feasibility check is a bounded one-day desk question.
 - revision: eb0844d
 - ref: PROPOSAL.md
+
+### 2026-11-03T12:40:00Z · sponsor · response
+
+I have reviewed the new formal proposal, the T0/T1/T3 results, the analysis script and the manifest. Thank you for moving the work forward in parallel. The proposal is close to a useful working agreement, and the data work has produced genuinely useful evidence. I am approving the research direction and the bounded work below, but I am not signing off the statistical protocol or treating this draft as final yet.
+
+**What is approved**
+
+1. **Phase-one direction and boundaries:** approved as set out in the sponsor response at 12:23:48Z. The wider multi-sport ambition remains intact. Football is a practical first calibration domain, not the definition of FoundrySide.
+2. **G1 / T1 access result:** provisionally accepted as a successful research finding. The 40 files, five seasons, eight divisions and 14,802 fixtures provide a useful historical 1X2 dataset, with the manifest and file hashes preserving provenance. The reported 14,799 Pinnacle closing prices and three Bet365 closing prices are a strong initial access result. This is approval for internal research use only, not a legal opinion or permission to redistribute the source data or derived datasets.
+3. **T0:** accepted as a descriptive first measurement. The 53.3% favourite-pick accuracy and its reported interval are useful reference facts for this particular sample. The withdrawn OLPRS 0.515 figure must stay withdrawn. Do not treat 53.3% as the final success threshold or as a complete measure of market quality.
+4. **T3:** the point estimate is accepted as a useful descriptive finding: BTTS and over 2.5 outcomes are positively associated in this sample, so multiplying their marginal outcome frequencies is not a valid independence assumption. This supports further dependence research, not a conclusion about bookmaker combination pricing or a ready-made accumulator model.
+5. **Autonomy and cost:** continue the already authorised independent research, reproducible analysis and bounded experiments. The cost ceiling remains KSh 0 recurring; no paid data, hosting, inference, accounts, third-party contact, publication or real-money execution is authorised.
+
+**What is not yet approved**
+
+**P-02 — do not accept n ≥ 5,000 as the final sample floor yet.** I agree with the concern that n = 2,000 may be too underpowered to rule out small improvements. However, the calculation in the current proposal uses a one-sample proportion approximation. Our actual question is a comparison of two methods on the same fixtures, so their errors are paired; the detectable difference depends on how often the methods disagree and which one is correct on those disagreements. League, season and time clustering may also affect uncertainty. Please calculate power for the actual paired evaluation design, preferably with a simulation or a justified paired test and cluster-aware resampling. Show several plausible effect sizes and the sample sizes needed to detect them. Keep n = 5,000 as a provisional planning scenario only, not an approved universal threshold.
+
+The final protocol should also:
+- Compare probability forecasts with the de-vigged market probabilities using proper scoring rules such as log loss and Brier score, alongside calibration and coverage. Favourite-pick accuracy can remain a descriptive metric, but it is not enough to establish that one probability model is better than another.
+- Use paired, time-aware evaluation and uncertainty estimates that respect league/season clustering where appropriate. The current Wilson intervals are useful descriptive summaries, but should not be assumed to settle the uncertainty for future model comparisons.
+- Recalculate the T3 ratio interval. The current interval divides the Wilson limits for the joint rate by a fixed product of marginal rates; it does not propagate uncertainty in both marginals. A bootstrap or other justified interval for the ratio is needed before quoting 1.46–1.52 as its confidence interval.
+- Explain the practical effect size being targeted, the correction family and the role of the proposed ±3pp calibration tolerance. Calibration tolerance should be a guardrail reported with reliability plots and bin counts, not a substitute for proper probabilistic scoring.
+
+**Two proposal corrections before review can pass**
+
+- The proposal describes the sample as eight top-division European leagues, but E1 is the English second tier. Please correct that description and state the actual competition mix. The difference matters when discussing homogeneity and generalisation.
+- The scope says 1X2 first, while the earlier T2 recommendation proposed over/under 2.5 because it was not used in OLPRS. Please resolve this explicitly. Recommend which single market and benchmark should be the first confirmatory experiment, and explain why. Do not score an engine until the target market, forecast timestamp, benchmark, coverage rule, scoring metrics, sample/power method and multiple-testing family are preregistered.
+
+**Contextual Intelligence & Anomaly Discovery — approved as a parked research direction, not a current priority.**
+
+I do want FoundrySide eventually to be capable of connecting the smaller details around a match: official and predicted lineups, player availability, manager and tactical changes, stadium and environmental changes, press conferences, credible news, historical patterns and unusual fan-recognised observations. But this is not a priority feature now. We need to cover meaningful ground on the core instrument and first experiments before opening a substantial contextual-data programme.
+
+Please record this as a future research direction only. Do not build a news archive, contextual database, ingestion pipeline or feature system now. Do not divert T0/T1 follow-through or the design and execution of T2. At most, retain occasional low-cost desk notes when directly relevant to an active test; keep them exploratory and separate from confirmatory work. Revisit the programme only at a later gate, when the core work has matured and we can justify the data coverage, provenance, licensing and incremental-value tests. If and when it is investigated, preserve point-in-time integrity: distinguish event time from when information became available, official facts from rumours or fan speculation, predicted lineups from confirmed lineups, and pre-match information from in-play and post-match information. No arbitrary superstition weights: fan-recognised patterns are hypotheses to test, not signals to assume.
+
+**Review disposition for this revision**
+
+- RQ-006 (PROPOSAL.md, revision `eb0844d`): **changes requested**. The draft is useful and close, but the power method, scoring design, competition description and first-market choice need correction before formal acceptance.
+- RQ-007 (T0/T1/T3 results and analysis, revision `eb0844d`): **changes requested for the inferential presentation**, not rejection of the dataset or descriptive point estimates. Preserve the raw data, manifest and current results; correct the uncertainty treatment and label descriptive versus inferential claims clearly.
+- The other queue rows have not been reviewed in this pass and should not be marked accepted by implication.
+
+Please continue with the corrections and the next useful core research steps without waiting for another permission round. The contextual-intelligence idea is safely parked; the immediate priority remains a sound, affordable, preregistered first experiment. Bring back only decisions that genuinely require my approval.
+- revision reviewed: eb0844d
+- refs: PROPOSAL.md, research/RESULTS_T0_T1_T3.md, research/analyse.py, research/data_manifest.csv
