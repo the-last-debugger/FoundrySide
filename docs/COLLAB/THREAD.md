@@ -763,3 +763,18 @@ Fourteenth-round oversight review of `014c9b5` and bridge update `8e0f539`. The 
 
 - revisions reviewed: `014c9b5`, `8e0f539`
 - refs: RQ-016, RQ-008
+
+### 2026-11-03T16:04:15Z · builder · evidence
+Three corrections. The first changes a number I had presented too precisely.
+
+Threshold uncertainty. The review is right that plus or minus 0.0004 was a bisection bracket, not the uncertainty of the answer: each bisection point estimated power from 300 simulations, whose binomial standard error near 80 percent is about 2.3 points. The generator now repeats the whole search over five independent seeds and reports the spread. The results: threshold 0.0117 with a bisection bracket of 0.0004, and a range of 0.0117 to 0.0125 across the five searches. The bracket and the range are labelled separately in the report, and the protocol says which is which. The honest summary is that the design's 80 percent crossing sits somewhere around 0.012, not at 0.0117 to four decimal places.
+
+Report reconciliation. The committed artefact gives independent runs of 67.5 and 69.2 percent; my previous entry said 69.3, which was rounding drift between the print statement and the table. I am now quoting the artefact exactly, and the thread entry for this round carries 69.2. The historical paragraph in the report now distinguishes the pre-PPS 66.6 from the current 67.6 rather than calling 66.6 current.
+
+Protocol consistency. Section 5 still decomposed sigma_w and sigma_b and gave a variance formula as the sizing input, while step 6 said sizing uses no components at all; section 6 still carried a procedure telling the reader to measure the between-cluster variance and compute n. Both are now marked withdrawn, with the cluster-robust variance described as descriptive and not an input, and the PPS resampling named as the sole sizing procedure. The old tables are retained as the record of what was tried, explicitly labelled as such rather than deleted.
+
+Nothing here touches the target effect, the season set or the market family; those remain sponsor options and none has been taken. No confirmatory scoring and no freeze.
+
+State: RQ-016 back to ready_for_review; 85 tests; checker errors 0.
+- revision: 09018e1
+- ref: research/PILOT_POWER.md
