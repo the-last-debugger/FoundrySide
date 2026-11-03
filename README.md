@@ -10,7 +10,7 @@ proposal is reviewed and approved.
 | --- | --- |
 | `PRE_PROPOSAL.md` | The sponsor's vision: what FoundrySide is meant to investigate. Written first, unchanged. |
 | `CRITIQUE.md` | A review of it: eleven findings, what to keep, what to cut, and what the prior art already answers. |
-| `PROPOSAL_SETTLEMENT.md` | The fast path to a decidable proposal: three questions, ten decisions with defaults, three one-day tests. |
+| `PROPOSAL_SETTLEMENT.md` | The fast path to a decidable proposal: three questions, ten decisions with defaults, four one-day tests. |
 | `docs/COLLAB/` | The bridge: thread, review queue, decisions, proposals. Start at `docs/COLLAB/README.md`. |
 
 ## The state of the argument
@@ -21,11 +21,11 @@ research reports before a proposal.
 
 `CRITIQUE.md` argues that the vision is sound and the sequence is not: the document
 has no falsifier, no null model, no cost unit, and does not cite the sponsor's own
-prior results — which already answer its central question, negatively, on 10,329
-resolved signals.
+prior results — 10,329 resolved signals on a *virtual* league, which answered its
+central question for that domain and leave the real-world version open.
 
 `PROPOSAL_SETTLEMENT.md` is the proposed way out: settle ten decisions (nine of them
-by default), draft the proposal the same day, and let three one-day tests de-risk it
+by default), draft the proposal the same day, and let four one-day tests de-risk it
 instead of gating it.
 
 ## What the project is waiting on

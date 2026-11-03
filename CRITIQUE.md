@@ -154,12 +154,19 @@ market.** If that is the answer, the honest product is not edge.
 **Fix:** every proposed engine carries a persistence explanation, or it is recorded
 as a lead rather than a research programme.
 
-### F7 — The decisive finding: the central research question has already been answered, by this sponsor, and the answer is no
+### F7 — The central research question has been answered once, in a market that is not this one
 
 §13 says the project "should not assume that its proposed capabilities are entirely
-new" — and then proposes to investigate from scratch the exact question that
-OLPRS_v2 already answered on live data. The results are in the sponsor's own
-repository and are not cited anywhere in the pre-proposal.
+new" — and then proposes to investigate from scratch a question OLPRS_v2 has already
+tested on 10,329 resolved signals. The results are in the sponsor's own repository and
+are not cited anywhere in the pre-proposal.
+
+**The domain narrows the transfer, and the first draft of this critique over-read it.**
+OdiLeague is a *virtual* league: `OLPRS_v2/docs/SYSTEM_MAP_2026-10-31.md` describes it
+as "a virtual football league: fixtures are simulated, not played", with 38 rounds a
+season at two-minute intervals and each season lasting about 76 minutes
+(`ODILEAGUE_STRUCTURE.md`). That cadence is why OLPRS could amass 16,831 priced
+fixtures. It is also why the market in those fixtures is not a real one.
 
 `OLPRS_v2/docs/SIGNAL_MARKET_VERDICT_2026-10-31.md`, on 10,329 resolved signals
 matched to a priced fixture:
@@ -187,14 +194,53 @@ probability clears a threshold, reaches 61.1% at 12.2% coverage
 (`USER_ADVANTAGE`, second half) — a defensible *board* claim built from nothing but
 price and abstention.
 
-This changes the pre-proposal's centre of gravity. §4 is not an open question for
-the feature class already tried (form, position, odds tiers). It is a question with a
-negative prior, and a new programme must say what is different this time — a
-different class of input, a different market, or a genuinely different comparison.
+**What transfers, and what does not.**
 
-**Fix:** cite these three results in the proposal as prior art with the same status
-as external literature, and make "what is different from OLPRS" a required section.
-A programme that cannot answer it will reproduce a null.
+| | Transfers? | Why |
+| --- | --- | --- |
+| The method: market-implied benchmark, matched coverage, BH correction, calibration, point-in-time provenance | **Yes, fully** | These are properties of a comparison, not of a league |
+| The constant 0.515 as "the bar" | **No** | It is a virtual-league quantity and must be re-measured on real closing prices before it can be a bar — corrected in `PROPOSAL_SETTLEMENT.md` D-05 |
+| "Real football markets are efficient, so FoundrySide is pointless" | **No — and this critique does not claim it** | OLPRS traded against one operator's price on an outcome that operator may itself generate, with no sharp money and no aggregated information flow |
+| "Real markets are softer than virtual ones" | **No** | The opposite is likelier: real closing lines aggregate informed money and are the most heavily modelled prices in sport |
+| The feature-class lesson: form, position and odds-tier features restate the price | **Yes** | It is a property of the features, and those are the features §3 and §4 propose to rebuild |
+
+`SYSTEM_MAP` also records that whether OdiLeague's simulation is deterministic or
+seeded is "unknown, and not testable from outside". That line is the strongest reason
+not to over-read the null: if the operator prices from the same process that generates
+the result, the market is unbeatable *by construction*, and the experiment measured the
+operator's information advantage rather than market efficiency. The honest summary is
+narrower than "already answered": one feature class, against one kind of market,
+produced nothing.
+
+**What is left for "what is different this time".** Three differences are nameable and
+each has a measurement. None of them is "the real world", which is a setting, not a
+hypothesis.
+
+1. **Information latency.** Real prices move as lineups, injuries, travel and weather
+   become public. Whether a *specific* class of announcement is absorbed slowly is
+   measurable, has a clock attached, and has no analogue in a league where nothing is
+   announced.
+2. **Coverage gradient.** Sharp money concentrates in the top five leagues and the main
+   markets; lower divisions and secondary markets carry wider margins and thinner
+   attention. That is a place an edge could survive because nobody is looking — which
+   is exactly the persistence explanation F6 demands, and it is testable by comparing
+   margin and closing-line behaviour across divisions.
+3. **Correlation structure.** §6's dependence question is arithmetic about how
+   combinations are priced, not a fact about football, and it survives the domain change
+   intact.
+
+**A planning consequence the domain change forces.** Real football accrues evidence
+about three orders of magnitude slower than OdiLeague: roughly 600 fixtures an hour
+there, roughly one fixture per league per day here. One division yields ~90 fixtures in
+90 days; twenty divisions yield ~2,700. So D-05's sample requirement and D-06's slice
+are not independent decisions — a narrow slice cannot satisfy the bar inside the gates,
+and a wide slice changes what the model must generalise across. That tension is carried
+into `PROPOSAL_SETTLEMENT.md` rather than hidden.
+
+**Fix:** cite these results as prior art with their domain attached, and make "what is
+different from OLPRS" a required section that answers the three items above. A
+programme that cannot answer them will reproduce a null for a different reason and will
+not know which.
 
 ### F8 — §6 names the right problem and proposes no test for it
 
@@ -278,7 +324,7 @@ with its input snapshot hash, written once, never updated.
 | --- | --- | --- |
 | §1–2 vision | Keep | Clear, honest, correctly distinguishes advantage from profit |
 | §3 research laboratory | Keep, fix F1 F3 | Right epistemology, no falsifier, wrong unit of record |
-| §4 market as reference | Keep, fix F5 F7 | Right instinct, answered prior, no null model |
+| §4 market as reference | Keep, fix F5 F7 | Right instinct; the prior is narrower than it first looks; no null model |
 | §5 sports coverage | Cut to one sport | Four sports before one edge is breadth bought with attention |
 | §6 accumulators | Keep as a one-day test | Best insight in the document; needs a measurement, not a laboratory |
 | §7 jackpots | Defer | Feasibility question unanswered and cheap to answer |
@@ -317,9 +363,11 @@ an inventory of parts already built and paid for.
 **From OLPRS, take the measurements and the scars — they are the project's only
 empirical base:**
 
-- the market is the benchmark, and it wins: 45.6% vs 45.9%, 0/27 after correction;
+- the market is the benchmark, and it wins there: 45.6% vs 45.9%, 0/27 after
+  correction — a result about a virtual league, so see F7 before importing it;
 - the favourite is the baseline to beat, not "the market" in the abstract: 0.515 at
-  matched coverage;
+  matched coverage on virtual fixtures, a figure that must be re-measured on real
+  closing prices before it is a bar;
 - abstention is the strongest product finding available: 61.1% at 12.2% coverage;
 - point-in-time integrity is a *write-time* obligation, not an analysis-time one;
 - collector drift is normal, not exceptional: sources change shape silently, so

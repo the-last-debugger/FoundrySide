@@ -16,7 +16,7 @@ default, so "accept all defaults" is a complete reply.
 | Decision | Question | Recommended default | Cost to reverse |
 | --- | --- | --- | --- |
 | D-04 | Product thesis: market-restatement board, independent model, or research instrument | Board with abstention discipline; independent model as the research programme, not the product | Low — a positioning statement, no code |
-| D-05 | The bar: what accuracy would justify a product claim | Beat the market favourite at matched coverage (1X2 ≥ 51.5%, n ≥ 2,000, calibrated within ±3pp) | High once published — this is the one decision that is expensive to change later |
+| D-05 | The bar: what accuracy would justify a product claim | Beat the real-league favourite baseline, set by T0 on actual closing prices (n ≥ 2,000, calibrated within ±3pp) | High once published — this is the one decision that is expensive to change later |
 | D-06 | First slice: sport, markets, competitions | Football; 1X2, O/U 2.5, BTTS; leagues with reliable closing prices only | Medium — collection and schema choices |
 | D-07 | Accumulators and jackpots in v1 | Out of scope until a single-selection edge exists (gate G2) | Low now, high after build |
 | D-08 | Data: sources, budget, terms | Free-tier and published sources only; KSh 0 for phase 1; every source ToS-checked before collection | Low |

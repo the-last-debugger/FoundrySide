@@ -68,17 +68,27 @@ non-fatal: a null result on (b) leaves a working board, not an empty repository.
 **Options:** any numeric threshold for a claim of edge.
 
 **Default recommendation:** a model may be described as predictive only if, on
-fixtures it chose, at matched coverage, it beats the favourite baseline — 1X2 accuracy
-of **≥ 51.5%** — on **n ≥ 2,000** resolved predictions, with calibration within ±3
-percentage points, and significance surviving Benjamini-Hochberg correction across all
-engine ids tested.
+fixtures it chose, at matched coverage, it beats the real-league favourite baseline
+**measured in T0** — provisionally around 51.5% accuracy for 1X2, a figure imported
+from virtual-league work and therefore to be replaced by the measured value before it
+is used — on **n ≥ 2,000** resolved predictions, with calibration within ±3 percentage
+points, and significance surviving Benjamini-Hochberg correction across all engine ids
+tested.
 
-**Why this number:** 0.515 is the measured favourite baseline on 16,831 fixtures at
-matched coverage (`USER_ADVANTAGE`). It is the honest bar because it is the thing a
-user can do without the system. The correction requirement comes from the same body
-of work: 27 signal ids produced raw edges up to +12.7 points, and none survived
-correction (`SIGNAL_MARKET_VERDICT`). The sample size is what makes the interval
-narrow enough to be worth quoting.
+**Why this number, and its one defect:** 0.515 is the measured favourite baseline on
+16,831 fixtures at matched coverage — but those fixtures are OdiLeague, a *virtual*
+league (`SYSTEM_MAP_2026-10-31.md`). The number therefore does not transfer, and this
+register first proposed it as if it did. The correction is not to discard the bar but
+to re-measure it: **T0 below establishes the real-league favourite baseline from
+closing prices, and the bar is set at or above it before any model is scored.** What
+survives from the virtual-league work is the method — matched coverage, a favourite
+baseline, calibration, and correction — not the constant.
+
+The correction requirement comes from the same body of work: 27 signal ids produced
+raw edges up to +12.7 points and none survived correction
+(`SIGNAL_MARKET_VERDICT`). The sample size is what makes the interval narrow enough to
+be worth quoting, and it is also what forces D-06 to be wide rather than narrow — see
+the note there.
 
 **Reverse cost:** high. Once a bar is published, lowering it is the failure mode the
 whole repository exists to prevent. This is why it is the one item that cannot be
@@ -93,6 +103,14 @@ catalogue. Kenyan-accessible competitions included only if D-08 clears.
 **Why:** four sports before one edge is breadth bought with attention (§5 of the
 pre-proposal). The three markets chosen are the ones with the most available data and
 the clearest baselines.
+
+**A constraint that follows from D-05:** the slice cannot be one division. A single
+league produces roughly one fixture a day, so ~90 resolved predictions in 90 days —
+short of the bar's sample requirement by more than an order of magnitude. Reaching
+n ≥ 2,000 forward means roughly twenty divisions, which changes the modelling claim
+from "this works in this league" to "this generalises across leagues". Both are
+defensible; picking one without noticing the other is not. Either widen the slice or
+extend the horizon to a full season and say so.
 
 **Reverse cost:** medium — collection code and schema follow the slice.
 
@@ -211,12 +229,13 @@ sponsor, because it is the one decision that cannot be quietly revised later.
 
 **Day 0.** Builder drafts `PROPOSAL.md` v1 and files it as a queue row.
 
-**Week 1–2: three tests, each ≤ 1 day, each with a pass/fail.**
+**Week 1–2: four tests, each ≤ 1 day, each with a pass/fail.**
 
 | Test | Question | Pass looks like | If it fails |
 | --- | --- | --- | --- |
+| **T0 Baseline** | What is the real-league favourite baseline at matched coverage, from actual closing prices? | A number with an interval, computed the same way as the OLPRS measurement, on real fixtures — this replaces the imported 0.515 and sets D-05 | The bar cannot be set, so nothing can be scored, so nothing ships. This test is not optional |
 | **T1 Access** | Can we obtain a season of results and closing prices, legally and free, for the D-06 slice? | A coverage table with closing prices for ≥ 80% of fixtures, and a recorded ToS verdict per source | Scope dies or D-08's budget rises — a sponsor decision, not a builder workaround |
-| **T2 Baseline** | On a market *not* used in OLPRS (over/under 2.5), does anything we can build beat the favourite at matched coverage? | Accuracy and calibration against favourite-always, market-implied and base rate, with intervals | The board-only product (D-04a) stands alone; the research programme is re-aimed before it grows |
+| **T2 Baseline** | On a market *not* used in OLPRS (over/under 2.5), does anything we can build beat the measured favourite at matched coverage? | Accuracy and calibration against favourite-always, market-implied and base rate, with intervals | The board-only product (D-04a) stands alone; the research programme is re-aimed before it grows |
 | **T3 Dependence** | For same-match accumulator legs, how far is realised joint frequency from the product of the marginals? | A ratio with an interval on one season of fixtures | §6 and §7 close, and the pre-proposal loses its most expensive open track |
 
 **Day 30 — gate G1.** T1 passed and ≥ 200 predictions frozen and scored forward.
@@ -225,7 +244,11 @@ collection engineering on data it may not use.
 
 **Day 60 — gate G2.** T2 either produced a market-relative edge that survives
 correction, or the programme formally becomes board-only and the proposal is rewritten
-to say so. *Kill:* two independent attempts with no edge above the baseline.
+to say so. *Kill:* two independent attempts with no edge above the baseline. Note what
+the domain change costs here: a twenty-division slice yields roughly 2,700 forward
+fixtures in 90 days, enough for the bar's sample but not enough for league-level
+claims, so no statement about a particular league is made from one season of forward
+data.
 
 **Day 90 — gate G3.** Proposal v2, with measured cost per resolved prediction and per
 decisive experiment. Decide: build, narrow, or stop.
@@ -237,13 +260,13 @@ decisive experiment. Decide: build, narrow, or stop.
 The pre-proposal treats research as a prerequisite for decision. That ordering has a
 hidden cost: research produced *before* a commitment is not aimed at anything, so it
 answers the questions that were easy to ask rather than the ones that decide. The
-three tests above are cheap precisely because a decision has already been made about
+four tests above are cheap precisely because a decision has already been made about
 what would count as failure.
 
 It also respects the one scarce resource these three repositories share. ODE records
 its cost at KSh 3–5 per investigation and concludes that "the scarce resource is your
 attention, not tokens" (`ODE/README.md`). Thirteen reports is a lot of attention
-spent before anything can be rejected. Ten defaults and three tests is attention spent
+spent before anything can be rejected. Ten defaults and four tests is attention spent
 on the three things that can change the answer.
 
 ---
