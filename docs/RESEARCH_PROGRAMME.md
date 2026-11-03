@@ -45,6 +45,8 @@ treatment and a stated failure condition. Fit and evaluation never share outcome
 | E2 | Gap by season, division, band, kickoff slot | Band is the only dimension that moves; divisions and seasons do not | provisional |
 | E3 | Decomposition after calibration, tail profile | Reliability collapses to 0.0000; AUC 0.562 vs market 0.607; tail is confident losses | descriptive |
 | E4 | **Cross-book disagreement as incremental information** | **gain −0.0001 nats, CI [−0.0002, +0.0001], AUC unchanged** | **negative — rules out this source** |
+| E5 | **Schedule congestion (rest difference, days between matches, 14-day load)** | **gain −0.0012 nats, cluster CI [−0.0024, −0.0002], AUC 0.6070 → 0.6055** | **negative — degrades; not the route** |
+| E6 | Data and timing audit: duplicates, double headers, misses, extreme kickoffs | 0 duplicates, 0 double headers, 0 missing scores, 67 missing O/U prices, 0 implausible times | clean |
 
 ## What the three studies together say
 
