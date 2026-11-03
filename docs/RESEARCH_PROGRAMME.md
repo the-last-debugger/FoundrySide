@@ -19,9 +19,9 @@ treatment and a stated failure condition. Fit and evaluation never share outcome
 | # | Workstream | Hypothesis | Decision it could change | Status |
 | --- | --- | --- | --- | --- |
 | 1 | **Calibration vs information** | The gap is partly a mapping failure, not only missing information | Whether to keep this model family and recalibrate, or replace it | **first result: mixed** — Platt recovers 46% |
-| 2 | **Where and when the gap changes** | The model is less wrong in identifiable segments | Whether to segment rather than pool | **done: the gap is uniform** |
-| 3 | **Residual and failure analysis** | The largest errors are systematic, not isolated | Which feature class to attack next | **done: the tail is not a class** |
-| 4 | **Alternative information and model families** | Pre-cutoff data hold information the market has not fully priced | Whether an incremental feature exists at all | **next — the only workstream that can now move the number** |
+| 2 | **Where and when the gap changes** | The model is less wrong in identifiable segments | Whether to segment rather than pool | **provisional: band effect only** |
+| 3 | **Residual and failure analysis** | The largest errors are systematic, not isolated | Which feature class to attack next | **provisional: descriptive** |
+| 4 | **Alternative information and model families** | Pre-cutoff data hold information the market has not fully priced | Whether an incremental feature exists at all | **running** |
 | 5 | **Market structure and segmentation** | The market is differently calibrated by band or division | Where the price is weakest, if anywhere | **first result: margins uniform** |
 | 6 | **Data and timing audit** | Undetected leakage or misalignment is inflating or deflating every number | Whether current evidence can be trusted | partially done (provenance, availability proxy) |
 
@@ -37,9 +37,18 @@ treatment and a stated failure condition. Fit and evaluation never share outcome
 | Recalibration recovers **0.0114 of 0.0246 nats** | `CALIBRATION_STUDY.md` | out-of-fold, all three folds improve |
 | Isotonic overfits at this sample size (0.7637 vs 0.6874) | `CALIBRATION_STUDY.md` | as expected |
 
+## Experiment register
+
+| # | Experiment | Result | Status |
+| --- | --- | --- | --- |
+| E1 | Platt/isotonic recalibration, leave-one-season-out | Platt +0.0114 nats of a 0.0246 gap; isotonic overfits | promising, exploratory |
+| E2 | Gap by season, division, band, kickoff slot | Band is the only dimension that moves; divisions and seasons do not | provisional |
+| E3 | Decomposition after calibration, tail profile | Reliability collapses to 0.0000; AUC 0.562 vs market 0.607; tail is confident losses | descriptive |
+| E4 | **Cross-book disagreement as incremental information** | **gain −0.0001 nats, CI [−0.0002, +0.0001], AUC unchanged** | **negative — rules out this source** |
+
 ## What the three studies together say
 
-Calibration is finished. After an out-of-fold Platt map the reliability term is 0.0000 — there
+Provisional, not final. Calibration is very likely solved. After an out-of-fold Platt map the reliability term is 0.0000 — there
 is nothing left to correct — while resolution sits at 0.0022 against the market's 0.0083. The
 model carries about a quarter of the market's separation, and no monotone map can change that.
 

@@ -60,6 +60,20 @@ def with_calibrated(rows: list[dict]) -> list[dict]:
     return rows
 
 
+
+def auc(pairs: list[tuple[float, int]]) -> float:
+    """Rank-based AUC: unchanged by any monotone recalibration."""
+    pos = [p for p, y in pairs if y == 1]
+    neg = [p for p, y in pairs if y == 0]
+    if not pos or not neg:
+        return float("nan")
+    wins = 0.0
+    for p in pos:
+        for q in neg:
+            wins += 1.0 if p > q else 0.5 if p == q else 0.0
+    return wins / (len(pos) * len(neg))
+
+
 def loss(p: float, y: int) -> float:
     p = min(max(p, 1e-6), 1 - 1e-6)
     return -math.log(p) if y else -math.log(1 - p)
@@ -156,9 +170,21 @@ out of fold.
 
 {table(rows, 'p_model')}
 
-The middle row of the first table is the one that matters: if recalibration collapses
-reliability while resolution stays where it was, the remaining deficit is information and no
-further calibration work can help.
+The middle row is the informative one, but it is a **bin-dependent** decomposition: a monotone
+map changes bin membership, so resolution can move even though the ranking does not. The AUC row
+below is the rank-only check.
+
+## Rank separation
+
+| Forecast | AUC |
+| --- | --- |
+| Raw model | {auc([(r['p_model'], r['y']) for r in rows]):.4f} |
+| Platt (out-of-fold) | {auc([(r['p_cal'], r['y']) for r in rows]):.4f} |
+| Market | {auc([(r['p_market'], r['y']) for r in rows]):.4f} |
+
+AUC is invariant to recalibration, so the raw and Platt rows should be nearly identical — and
+they are, by construction. The gap to the market's row is the separation deficit in a form that
+does not depend on binning.
 
 ## The worst {int(TAIL * 100)}% of fixtures
 
@@ -168,9 +194,10 @@ further calibration work can help.
 
 The tail profile answers one question only: whether the large losses are a *class* of fixture
 the model could be taught to handle, or the upper tail of a distribution that is simply wide.
-Concentration on disagreeing-with-the-market fixtures would suggest the model is asserting a
-view; concentration in a band would suggest overconfidence; neither would suggest a fix on its
-own.
+**The tail is selected on the outcomes it describes**, so this is a descriptive profile, not
+evidence that no pattern exists. What it can say is narrow: within this pilot, the highest-loss
+fixtures are not dominated by contrarian views, so a strategy of filtering on market disagreement
+would not have addressed them. It does not establish that the tail is patternless.
 
 ## Limits
 

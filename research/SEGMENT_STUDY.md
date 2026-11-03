@@ -1,4 +1,4 @@
-<!-- generated-by: segment_study.py sha256=7978bb774eba -->
+<!-- generated-by: segment_study.py sha256=7058da3a686f -->
 
 # Workstream 2 — where and when the gap changes
 
@@ -11,47 +11,47 @@ examined repeatedly. Nothing here is a finding until it survives a held-out seas
 
 ## By season
 
-| Segment | n | Mean Δ | Cluster 95% interval | q (BH) |
-| --- | --- | --- | --- | --- |
-| 2021 | 2,980 | -0.0258 | [-0.0336, -0.0185] | 0.705 |
-| 2122 | 2,986 | -0.0225 | [-0.0312, -0.0144] | 0.705 |
-| 2223 | 2,975 | -0.0256 | [-0.0308, -0.0213] | 0.705 |
+| Segment | n | Clusters | Mean Δ | Cluster 95% interval | q (within) | q (global) |
+| --- | --- | --- | --- | --- | --- | --- |
+| 2021 | 2,980 | 8 | -0.0258 | [-0.0336, -0.0185] | 0.705 | 0.891 |
+| 2122 | 2,986 | 8 | -0.0225 | [-0.0312, -0.0144] | 0.705 | 0.834 |
+| 2223 | 2,975 | 8 | -0.0256 | [-0.0308, -0.0213] | 0.705 | 0.891 |
 
 ## By division
 
-| Segment | n | Mean Δ | Cluster 95% interval | q (BH) |
-| --- | --- | --- | --- | --- |
-| D1 | 897 | -0.0241 | [-0.0293, -0.0186] | 0.877 |
-| E0 | 1,139 | -0.0288 | [-0.0362, -0.0229] | 0.532 |
-| E1 | 1,654 | -0.0192 | [-0.0223, -0.0141] | 0.401 |
-| F1 | 1,138 | -0.0318 | [-0.0431, -0.0254] | 0.477 |
-| I1 | 1,140 | -0.0162 | [-0.0279, -0.0034] | 0.477 |
-| N1 | 917 | -0.0266 | [-0.0373, -0.0117] | 0.877 |
-| P1 | 917 | -0.0279 | [-0.0431, -0.0194] | 0.877 |
-| SP1 | 1,139 | -0.0258 | [-0.0341, -0.0109] | 0.877 |
+| Segment | n | Clusters | Mean Δ | Cluster 95% interval | q (within) | q (global) |
+| --- | --- | --- | --- | --- | --- | --- |
+| D1 | 897 | 3 | -0.0241 | [-0.0293, -0.0186] | 0.877 | 0.956 |
+| E0 | 1,139 | 3 | -0.0288 | [-0.0362, -0.0229] | 0.532 | 0.580 |
+| E1 | 1,654 | 3 | -0.0192 | [-0.0223, -0.0141] | 0.401 | 0.200 |
+| F1 | 1,138 | 3 | -0.0318 | [-0.0431, -0.0254] | 0.477 | 0.477 |
+| I1 | 1,140 | 3 | -0.0162 | [-0.0279, -0.0034] | 0.477 | 0.477 |
+| N1 | 917 | 3 | -0.0266 | [-0.0373, -0.0117] | 0.877 | 0.917 |
+| P1 | 917 | 3 | -0.0279 | [-0.0431, -0.0194] | 0.877 | 0.878 |
+| SP1 | 1,139 | 3 | -0.0258 | [-0.0341, -0.0109] | 0.877 | 0.956 |
 
 ## By model probability band
 
-| Segment | n | Mean Δ | Cluster 95% interval | q (BH) |
-| --- | --- | --- | --- | --- |
-| 10–20% | 45 | -0.1595 | [-0.3052, -0.0884] | 0.032 |
-| 20–30% | 465 | -0.0785 | [-0.1164, -0.0526] | 0.002 |
-| 30–40% | 1,397 | -0.0203 | [-0.0380, -0.0041] | 0.580 |
-| 40–50% | 2,713 | -0.0144 | [-0.0204, -0.0092] | 0.000 |
-| 50–60% | 2,480 | -0.0179 | [-0.0230, -0.0129] | 0.010 |
-| 60–70% | 1,329 | -0.0282 | [-0.0379, -0.0191] | 0.536 |
-| 70–80% | 450 | -0.0384 | [-0.0745, -0.0082] | 0.534 |
-| 80–90% | 62 | -0.1580 | [-0.2886, +0.0144] | 0.132 |
+| Segment | n | Clusters | Mean Δ | Cluster 95% interval | q (within) | q (global) |
+| --- | --- | --- | --- | --- | --- | --- |
+| 10–20% | 45 | 9 | -0.1595 | [-0.3052, -0.0884] | 0.032 | 0.077 |
+| 20–30% | 465 | 23 | -0.0785 | [-0.1164, -0.0526] | 0.002 | 0.006 |
+| 30–40% | 1,397 | 24 | -0.0203 | [-0.0380, -0.0041] | 0.580 | 0.869 |
+| 40–50% | 2,713 | 24 | -0.0144 | [-0.0204, -0.0092] | 0.000 | 0.001 |
+| 50–60% | 2,480 | 24 | -0.0179 | [-0.0230, -0.0129] | 0.010 | 0.022 |
+| 60–70% | 1,329 | 24 | -0.0282 | [-0.0379, -0.0191] | 0.536 | 0.804 |
+| 70–80% | 450 | 23 | -0.0384 | [-0.0745, -0.0082] | 0.534 | 0.740 |
+| 80–90% | 62 | 11 | -0.1580 | [-0.2886, +0.0144] | 0.132 | 0.284 |
 
 ## By kickoff time (UTC)
 
-| Segment | n | Mean Δ | Cluster 95% interval | q (BH) |
-| --- | --- | --- | --- | --- |
-| 12–15 | 2,876 | -0.0246 | [-0.0311, -0.0184] | 0.985 |
-| 15–18 | 2,637 | -0.0247 | [-0.0321, -0.0174] | 0.985 |
-| 18–21 | 2,747 | -0.0218 | [-0.0296, -0.0147] | 0.561 |
-| 21+ | 46 | -0.0909 | [-0.1308, -0.0588] | 0.008 |
-| <12 | 635 | -0.0321 | [-0.0434, -0.0195] | 0.561 |
+| Segment | n | Clusters | Mean Δ | Cluster 95% interval | q (within) | q (global) |
+| --- | --- | --- | --- | --- | --- | --- |
+| 12–15 | 2,876 | 24 | -0.0246 | [-0.0311, -0.0184] | 0.985 | 0.985 |
+| 15–18 | 2,637 | 24 | -0.0247 | [-0.0321, -0.0174] | 0.985 | 0.985 |
+| 18–21 | 2,747 | 24 | -0.0218 | [-0.0296, -0.0147] | 0.561 | 0.673 |
+| 21+ | 46 | 3 | -0.0909 | [-0.1308, -0.0588] | 0.008 | 0.013 |
+| <12 | 635 | 21 | -0.0321 | [-0.0434, -0.0195] | 0.561 | 0.580 |
 
 ## What this can and cannot say
 
@@ -63,8 +63,20 @@ It also cannot support a claim about market inefficiency. The benchmark is a clo
 no recorded observation time, so a segment where the model does relatively better is a segment
 where a T−90 forecast is less far behind a later price — not a place where money is available.
 
+## Reading
+
+The probability band is the only dimension where the gap moves materially, and it moves the way
+overconfidence predicts: worst where the model is confidently on the minority side (20–30%,
+−0.078), best where it is close to a coin flip (40–60%, −0.014 to −0.018). Seasons and divisions
+show no differences that survive either correction.
+
+That is a *description of where the loss sits*, not a segmentation opportunity: the model is
+worst where it is most confident, and shrinking it is exactly what the Platt map already does.
+
 ## Multiple comparisons
 
-Four dimensions × up to eight segments each is 25 tests. At a nominal 5% that is about one false
-positive by construction; the BH column is there so the reader can see which differences survive
-that correction. Anything with q above 0.05 is indistinguishable from noise in this search.
+The within-column q corrects across the segments of one dimension. The global column corrects
+across all 25 segments tested, which is the stricter and more honest family for a search that
+looked at four dimensions. Some findings survive both (20–30% at q 0.006, 40–50% at 0.001);
+others do not (10–20%, q 0.077 globally). The 21+ kickoff cell rests on 3 clusters and should be
+disregarded.

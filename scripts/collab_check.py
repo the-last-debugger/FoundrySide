@@ -158,7 +158,9 @@ def check_coupling(rows, entries, verify_revisions: bool = True):
             if exists is False:
                 errors.append(f"{row['id']}: revision {revision} does not exist in this repository")
         if any(_names_row(e, row["id"]) and
-               (e["revision"] == revision or revision in e.get("revisions", []))
+               (e["revision"] == revision
+                or revision in e.get("revisions", [])
+                or e.get("row_revisions", {}).get(row["id"]) == revision)
                for e in reviews):
             continue
         other = sorted({e["revision"].strip() or "(none)"

@@ -1,4 +1,4 @@
-<!-- generated-by: residual_study.py sha256=b5cf22db32e7 -->
+<!-- generated-by: residual_study.py sha256=294febcda075 -->
 
 # Workstream 3 — what is left after recalibration, and what the worst errors are
 
@@ -21,9 +21,21 @@ out of fold.
 | Platt (out-of-fold) | 0.0000 | 0.0022 | 0.2472 |
 | Market | 0.0001 | 0.0083 | 0.2407 |
 
-The middle row of the first table is the one that matters: if recalibration collapses
-reliability while resolution stays where it was, the remaining deficit is information and no
-further calibration work can help.
+The middle row is the informative one, but it is a **bin-dependent** decomposition: a monotone
+map changes bin membership, so resolution can move even though the ranking does not. The AUC row
+below is the rank-only check.
+
+## Rank separation
+
+| Forecast | AUC |
+| --- | --- |
+| Raw model | 0.5623 |
+| Platt (out-of-fold) | 0.5618 |
+| Market | 0.6073 |
+
+AUC is invariant to recalibration, so the raw and Platt rows should be nearly identical — and
+they are, by construction. The gap to the market's row is the separation deficit in a form that
+does not depend on binning.
 
 ## The worst 2% of fixtures
 
@@ -45,9 +57,10 @@ further calibration work can help.
 
 The tail profile answers one question only: whether the large losses are a *class* of fixture
 the model could be taught to handle, or the upper tail of a distribution that is simply wide.
-Concentration on disagreeing-with-the-market fixtures would suggest the model is asserting a
-view; concentration in a band would suggest overconfidence; neither would suggest a fix on its
-own.
+**The tail is selected on the outcomes it describes**, so this is a descriptive profile, not
+evidence that no pattern exists. What it can say is narrow: within this pilot, the highest-loss
+fixtures are not dominated by contrarian views, so a strategy of filtering on market disagreement
+would not have addressed them. It does not establish that the tail is patternless.
 
 ## Limits
 

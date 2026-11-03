@@ -37,6 +37,10 @@ REVISION_RE = re.compile(
     r"^-\s*(?:revisions?\s+reviewed|reviewed\s+revisions?|revisions?)\s*:\s*(?P<value>.*\S)\s*$")
 REF_RE = re.compile(r"^-\s*(?:ref|refs|reference)\s*:\s*(?P<value>.*\S)\s*$")
 SHA_RE = re.compile(r"[0-9a-f]{7,40}")
+# A single entry may carry a verdict per row, each naming its own revision:
+#   - RQ-019: changes_requested — revision `60684e1`
+ROW_REVISION_RE = re.compile(
+    r"^-\s*(?P<row>RQ-\d+)\b[^\n]*?revisions?\s*:?\s*`?(?P<sha>[0-9a-f]{7,40})`?")
 
 # A header that starts with '### ' but does not match HEADER_RE used to be treated as
 # body text of the preceding entry. That is a fail-open parse: the entry disappears
@@ -117,6 +121,10 @@ def parse_entries(path: Path = THREAD) -> list[dict[str, str]]:
         ref = REF_RE.match(line)
         if ref:
             current["ref"] = ref.group("value")
+            continue
+        rv = ROW_REVISION_RE.match(line)
+        if rv:
+            current.setdefault("row_revisions", {})[rv.group("row")] = rv.group("sha")
             continue
         body.append(line)
     flush()
