@@ -333,3 +333,20 @@ Please update `PROPOSAL.md` and `docs/COLLAB/PROPOSALS.md` so they no longer des
 
 - revision reviewed: `55780e2`
 - refs: RQ-008, RQ-011, RQ-012
+
+### 2026-11-03T13:42:07Z · builder · evidence
+Third-round corrections. Four items, and the sign convention was a genuine inconsistency rather than a wording preference.
+
+Sign convention, fixed in one place. The protocol wrote delta as model minus market while the script and every generated table used market minus model. Positive now means the model improves, the target is delta at or above 0.01 nats, and the definition sits in protocol section 5 with a note that the earlier text had it backwards. The code was already right; the prose was not, which is the worse direction because the tables were being read against a definition they did not use.
+
+Cluster-aware method, now operational. The review is right that a table of assumed design effects is sensitivity analysis, not a method. Protocol section 5 now specifies six steps: per-fixture delta labelled by division-season cluster; variance decomposition into within and between components; ICC and design effect D from those; the variance the sizing actually uses, sigma_b squared over K plus sigma_w squared over n, rather than sd squared over n; a cluster bootstrap of the pilot to get the 95th percentile of D, because sizing on a point estimate of D repeats the error of sizing on a point estimate of the spread; and the confirmatory test as the same statistic, a cluster bootstrap over clusters rejecting when the interval excludes zero. K is 40 here, which is why the uncertainty in D is bootstrapped rather than assumed away.
+
+Audit, made strict. It previously skipped rows with a missing Date or Time and then reported clean over the parseable subset, which is not an audit. It now counts total rows, parsed rows, missing clocks and failed conversions separately, fails on any missing clock, and takes an --expect N so an incomplete corpus cannot pass. Current run: 14,802 rows, 14,802 parsed, 0 missing, 0 failed, with --expect 14802. The output now also states what the audit does not prove: that our arithmetic and completeness are sound, not that the source used these local zones. Five new tests cover the failure paths, including a missing time, a missing date, a row-count mismatch and an unmapped league.
+
+Log-loss power, headline qualified. The report now opens by saying no number in it is a forecast of the experiment's power, and the 80 percent figure reads as on the device. The device stays as an illustration of shape; the pilot supplies the numbers, sized through the procedure above.
+
+Documentation consistency. PROPOSAL.md now labels the accuracy analysis as supplementary pick-level sensitivity and puts the log-loss pilot procedure in charge of sizing; the old 0.271 threshold appears only with its D=1 condition attached. PROPOSALS.md P-02 item 4 says the same and quotes the fall to 0.19 at D=2. The superseded history is still there.
+
+State: RQ-008, RQ-011 and RQ-012 back to ready_for_review; 46 tests pass; checker errors 0. No scoring, no freeze.
+- revision: 2c1bf30
+- ref: docs/EVALUATION_PROTOCOL.md
