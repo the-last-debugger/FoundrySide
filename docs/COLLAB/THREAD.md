@@ -136,3 +136,22 @@ This is authorisation for research and experiments, not for building the Foundry
 Please update the proposal/decision register to reflect these settled directions, draft the concise formal proposal promptly, and proceed with the authorised work without waiting for another round of permission. Bring me decisions that genuinely require my input — especially any cost, legal boundary or irreversible scope choice — rather than routine research choices.
 
 The aim is momentum with discipline: settle the research programme now, learn from evidence as it arrives, and preserve the full FoundrySide ambition without pretending that the first experiment has already proved it.
+
+### 2026-11-03T12:29:46Z · builder · evidence
+T0, T1 and T3 are run, and the proposal is drafted. Results first, because two of them change decisions.
+
+T1 (access): football-data.co.uk division files, 40 files, 8 divisions, 5 seasons, 2020-09-12 to 2025-05-25, 14,802 fixtures. Every fixture has a complete closing 1X2 price; 14,799 of them are Pinnacle closing, 3 are Bet365 closing. sha256 per file recorded in research/data_manifest.csv. Cost KSh 0, no account, nothing redistributed. Legal position recorded as a reading of published reuse terms, not an opinion - any publication of derived data is a separate decision (P-03).
+
+T0 (baseline): favourite by closing price is 53.3 percent, 95 percent interval 52.5-54.1, on 14,802 fixtures. Home always 43.0, draw always 25.2, random 33.3. Mean 1X2 overround 2.8 percent. The OLPRS figure of 51.5 is withdrawn and would have been too lenient: the real baseline is 1.8 points higher. Per-league accuracy runs from 47.5 (E1) to 56.4 (N1), an 8.9 point spread, which is why pooling is allowed for measuring the instrument and forbidden for claiming a model works.
+
+T3 (dependence): P(BTTS) 53.1, P(over 2.5) 51.8, product 27.5, realised joint 40.9 (95 percent interval 40.1-41.7), ratio 1.49 (1.46-1.52), P(over 2.5 given BTTS) 77.0. Multiplying the marginals understates the joint by 13.4 points, a 49 percent relative error, and the ratio is above 1.3 in all eight divisions. Section 6 of the pre-proposal was right and its magnitude is now known.
+
+One consequence needs your decision, and I have not treated it as settled. The power arithmetic at the measured baseline shows the proposed floor of n >= 2000 can only detect a 3.1 point edge; n = 5000 detects 2.0; the whole corpus detects 1.1. A 3.1 point requirement is implausibly large for the signals this project would build, so a null at 2000 would look decisive while being uninformative. PROPOSAL.md section 4 therefore recommends n >= 5000 for any claim of edge, with n around 2000 accepted only as inconclusive. That is P-02 and it is the single thing blocking T2.
+
+Also updated: D-04 to D-13 are recorded in DECISIONS.md as settled, with the two changes made in settlement - D-04 is now a phase-one deliverable rather than a product definition, and D-05 is settled as a rule with its constants left open, which is exactly what P-02 is. PROPOSALS.md now holds only three items: the closed register, the sample floor, and the derived-data publication question.
+
+Proposal: PROPOSAL.md, six sections of substance - what the phase is for, scope in and out, data and legal position, evaluation rules including the power table, what was learned, deliverables and gates. Gate G1 has passed; G2 is the first pre-registered engine, which waits on P-02.
+
+Not claimed: any edge. Nothing here beats the market, and the proposal says so in section 9. T2 is designed next, after P-02, and the jackpot feasibility check is a bounded one-day desk question.
+- revision: eb0844d
+- ref: PROPOSAL.md
