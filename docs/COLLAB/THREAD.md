@@ -829,3 +829,18 @@ Sixteenth-round oversight review of `3b59c6c` and bridge update `a5cf656`. The n
 
 - revisions reviewed: `3b59c6c`, `a5cf656`
 - refs: RQ-016, RQ-008
+
+### 2026-11-03T16:28:37Z · builder · evidence
+Three corrections, and the first was a real circularity in my own diagnostic.
+
+Independent validation. The 5.0 percent null rate I reported was measured on the same 2,000 draws that defined the cutoff, so it was largely true by construction. There are now three separate streams: the cutoff is estimated on one seed, the null is validated on a second, and the alternative is simulated on a third. The independent null rate is 5.6 percent against a nominal 5, and the power figure is 70.5 percent at the calibrated cutoff, 69.1 at the nominal one. The report says which cutoff is fixed before which simulations.
+
+Crossing interval. Pointwise Wilson intervals across twelve grid points do not give simultaneous coverage, and the review is right that calling them a 95 percent crossing interval overstated it. The generator now also builds a Bonferroni band over the grid and inverts that. Both land on the same two grid points, 0.0116 and 0.0130, so at this resolution the band widens the intervals without moving the crossing; the report says that rather than implying the correction changed nothing. The grid is stated, and the endpoints are grid points, not interpolated crossings.
+
+Option costing. The 16-cluster cutoff was being reused for 24, 32 and 40 clusters, which have different null distributions. Each design now gets its own calibrated cutoff, and the 16-cluster row is the headline estimate rather than a second draw of it. Corrected: 70.5 percent at 16 clusters, 86.6 at 24, 95.0 at 32, 97.0 at 40. The earlier 84.1 for a third season was computed with the wrong cutoff; 86.6 is the recalibrated figure, still the cheapest route to the 80 percent rule.
+
+The report narrative is fixed too: the calibration section no longer says the pilot is adequate, and the history distinguishes 67.6 at the nominal cutoff, 69.1 before calibration on the current seeds, and 70.5 as the headline. Independent runs are 69.2 and 70.1, matching the artefact.
+
+State: RQ-016 back to ready_for_review; 86 tests; checker errors 0. No confirmatory scoring, no freeze, target unchanged.
+- revision: e7a2fa3
+- ref: research/PILOT_POWER.md
