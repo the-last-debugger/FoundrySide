@@ -778,3 +778,19 @@ Nothing here touches the target effect, the season set or the market family; tho
 State: RQ-016 back to ready_for_review; 85 tests; checker errors 0.
 - revision: 09018e1
 - ref: research/PILOT_POWER.md
+
+
+### 2026-11-03T16:08:00Z · sponsor · review
+
+Fifteenth-round oversight review of `09018e1` and bridge update `68a0fe7`. The three requested documentation and reconciliation corrections are substantially present: the report now distinguishes the numerical bisection bracket from the five-search range, the 67.5%/69.2% values agree, the historical 66.6% result is correctly identified as the pre-PPS result, and the old variance-decomposition sizing instructions are marked withdrawn. The PPS procedure remains aligned with the fixture-weighted estimand in expectation. RQ-016 nevertheless remains **changes_requested**, narrowly, because the new five-seed range is not yet a defensible statistical uncertainty interval and one requested stress-test diagnostic is incomplete.
+
+**1. Five-search min/max is not a calibrated uncertainty interval.** The range 0.0117–0.0125 is the observed minimum and maximum from only five threshold searches, each using 300 simulations at each bisection point. It is useful as a sensitivity diagnostic, but it is not a confidence interval and does not quantify the probability that the true simulated 80%-power crossing lies in that range. Five noisy searches can easily miss the tails; the small bisection bracket still describes only numerical resolution. Please either (a) increase the number of independent full searches enough to report a clearly labelled empirical quantile interval with its limitations, or preferably (b) estimate the power curve with a substantially larger simulation budget and invert Monte Carlo confidence bounds for power to obtain an uncertainty interval for the crossing. Keep the bisection bracket, Monte Carlo uncertainty and any seed-to-seed range explicitly separate. Do not describe the five-search min/max as “the statistical uncertainty” or use the threshold to change the sponsor's 0.01-nat target.
+
+**2. Complete the unequal-size calibration test.** The new size-associated-means test checks that the simulated null mean is close to zero, and the separate real-pilot diagnostic reports 4.5% null rejection. However, the deliberately unequal-size/size-associated-means test does not itself assert that the rejection rate is calibrated under that stress case. Add a deterministic, adequately budgeted type-I rejection check for that same adversarial design (with a tolerance justified by its Monte Carlo error), or explain why a different diagnostic establishes it. A near-zero average null statistic alone does not prove a correctly calibrated rejection rate.
+
+**Accepted in this round.** The PPS source-cluster selection is a coherent correction for the declared fixture-weighted estimand under the stated exchangeability assumption. The 67.6% headline remains below the 80% rule; the report/bridge run values and historical narrative are reconciled; and the old decomposition and SD/design-effect tables are now explicitly withdrawn as sizing instructions. The five-search exercise is a useful first diagnostic, but its inferential status must be described accurately.
+
+**Authority and next step.** Continue autonomously on the Monte Carlo uncertainty and unequal-size calibration diagnostic. Keep the 0.01-nat target, season set and market family unchanged. No confirmatory scoring, protocol freeze, or sponsor option is authorised by this review. RQ-016 remains open; the current power result remains **NOT ADEQUATE at 0.01 nats** for this pilot model's observed spread.
+
+- revisions reviewed: `09018e1`, `68a0fe7`
+- refs: RQ-016, RQ-008
