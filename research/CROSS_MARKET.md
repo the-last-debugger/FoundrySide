@@ -1,4 +1,4 @@
-<!-- generated-by: cross_market.py sha256=fa3588204146 -->
+<!-- generated-by: cross_market.py sha256=935c2dae9797 -->
 
 # E7 — does the 1X2 market add information to the totals market?
 
@@ -27,12 +27,17 @@ leave-one-season-out.
 ## Reading
 
 A positive interval would mean the two markets are not informationally identical and the totals
-price leaves something on the table — the first genuine finding of the expedition and a concrete
-place to look further. An interval containing zero means the two prices agree, which is what an
-efficient pair of markets should do, and it closes another cheap avenue.
+price leaves something on the table. An interval containing zero means **no incremental improvement
+was detected in this pilot under this specification** — weaker than saying the two markets agree,
+and much weaker than saying they are efficient. Two prices from one book, one corpus, three
+seasons.
 
 Either way the effect would have to be large enough to matter against a 0.0246-nat deficit. A
 gain of a few thousandths would be a curiosity, not an advantage.
+
+The cluster interval resamples fixed out-of-fold predictions, so it is conditional on the fitted
+fold models and does **not** include model-estimation uncertainty. It bounds the sampling
+variability of the comparison, not the uncertainty of the modelling choice.
 
 ## Limits
 

@@ -26,7 +26,7 @@ from __future__ import annotations
 import math
 import sys
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import numpy as np
@@ -35,6 +35,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "research"))
 
 import analyse        # noqa: E402
+import fixture_time   # noqa: E402
 import report_stamp   # noqa: E402
 
 OUT = ROOT / "research" / "FEATURE_SCREEN.md"
@@ -43,6 +44,7 @@ PERMUTATIONS = 200
 BOOTSTRAPS = 1000
 SEED = 20261103
 DEFAULT_REST = 14.0
+RESULT_DELAY = timedelta(hours=3)
 
 
 def logit(p):
@@ -100,70 +102,104 @@ def predict(X: np.ndarray, beta: np.ndarray) -> np.ndarray:
 
 
 def build() -> tuple[list[dict], list[str]]:
-    """One row per pilot fixture with every candidate feature, computed prior-only."""
-    rows = []
+    """One row per pilot fixture with every candidate feature, computed prior-only.
+
+    Point-in-time is enforced at the kickoff level, not by calendar date. A result becomes
+    visible at kickoff + 3h and is applied only when that moment is at or before the target
+    fixture's own T−90 cutoff, using a pending queue — the same rule as pilot_model.py.
+    An earlier version sorted by date and applied results immediately, so a same-date match
+    could inform another and a late result could inform an early kickoff the next day.
+    """
+    raw = []
     for r in analyse.load():
         try:
-            date = datetime.strptime(r["Date"], "%d/%m/%Y")
+            kickoff = fixture_time.kickoff_utc(r["Date"], r["Time"], r["_league"])
+            cutoff = fixture_time.cutoff_utc(r["Date"], r["Time"], r["_league"])
             hg, ag = int(r["FTHG"]), int(r["FTAG"])
             po_over, po_under = float(r["PC>2.5"]), float(r["PC<2.5"])
             pb_over, pb_under = float(r["B365C>2.5"]), float(r["B365C<2.5"])
             h, d, a = float(r["PSCH"]), float(r["PSCD"]), float(r["PSCA"])
-        except (KeyError, TypeError, ValueError):
+        except (KeyError, TypeError, ValueError, fixture_time.ClockError):
             continue
-        if min(po_over, po_under, pb_over, pb_under, h, d, a) <= 1.0:
+        prices = [po_over, po_under, pb_over, pb_under, h, d, a]
+        if not all(np.isfinite(p) for p in prices) or min(prices) <= 1.0:
             continue
         po = 1 / po_over / (1 / po_over + 1 / po_under)
         pb = 1 / pb_over / (1 / pb_over + 1 / pb_under)
         p_draw = (1 / d) / (1 / h + 1 / d + 1 / a)
-        rows.append({"season": r["_season"], "league": r["_league"],
-                     "cluster": f"{r['_league']}_{r['_season']}", "date": date,
-                     "home": r["HomeTeam"], "away": r["AwayTeam"],
-                     "goals": hg + ag, "x": float(logit(np.array([po]))[0]),
-                     "y": 1 if hg + ag >= 3 else 0,
-                     "d_book": abs(float(logit(np.array([po]))[0]) - float(logit(np.array([pb]))[0])),
-                     "draw": float(logit(np.array([p_draw]))[0]),
-                     "league_key": f"{r['_league']}_{r['_season']}"})
-    rows.sort(key=lambda r: (r["league"], r["season"], r["date"]))
+        raw.append({"season": r["_season"], "league": r["_league"],
+                    "cluster": f"{r['_league']}_{r['_season']}",
+                    "kickoff": kickoff, "cutoff": cutoff,
+                    "home": r["HomeTeam"], "away": r["AwayTeam"],
+                    "goals": hg + ag, "x": float(logit(np.array([po]))[0]),
+                    "y": 1 if hg + ag >= 3 else 0,
+                    "d_book": abs(float(logit(np.array([po]))[0]) - float(logit(np.array([pb]))[0])),
+                    "draw": float(logit(np.array([p_draw]))[0])})
+    raw.sort(key=lambda r: (r["league"], r["season"], r["kickoff"]))
 
     last_seen: dict[tuple[str, str], datetime] = {}
     recent: dict[tuple[str, str], list[datetime]] = defaultdict(list)
     team_goals: dict[tuple[str, str], list[int]] = defaultdict(list)
     league_goals: dict[tuple[str, str], list[int]] = defaultdict(list)
+    pending: list[tuple[datetime, dict]] = []
 
-    for r in rows:
-        def rest(team: str) -> float:
-            key = (r["league"], team)
-            return (r["date"] - last_seen[key]).days if key in last_seen else DEFAULT_REST
-
-        def load(team: str) -> int:
-            key = (r["league"], team)
-            return sum(1 for dd in recent[key] if (r["date"] - dd).days <= 14)
-
-        def trend(team: str) -> float:
-            hist = team_goals[(r["league"], team)][-5:]
-            return float(np.mean(hist)) if hist else float(np.mean(league_goals[(r["league"], r["season"])] or [2.6]))
-
-        rest_h, rest_a = rest(r["home"]), rest(r["away"])
-        th, ta = trend(r["home"]), trend(r["away"])
-        lg = league_goals[(r["league"], r["season"])][-60:]
-        r["rest_diff"] = rest_h - rest_a
-        r["min_rest"] = min(rest_h, rest_a)
-        r["load14"] = float(load(r["home"]) + load(r["away"]))
-        r["trend_sum"] = th + ta
-        r["trend_diff"] = th - ta
-        r["league_env"] = float(np.mean(lg)) if lg else 2.6
-
+    def apply(r: dict) -> None:
         for team in (r["home"], r["away"]):
             key = (r["league"], team)
-            last_seen[key] = r["date"]
-            recent[key].append(r["date"])
+            last_seen[key] = r["kickoff"]
+            recent[key].append(r["kickoff"])
             team_goals[key].append(r["goals"])
         league_goals[(r["league"], r["season"])].append(r["goals"])
 
+    out: list[dict] = []
+    i = 0
+    while i < len(raw):
+        key = (raw[i]["league"], raw[i]["season"], raw[i]["kickoff"])
+        group = []
+        while i < len(raw) and (raw[i]["league"], raw[i]["season"], raw[i]["kickoff"]) == key:
+            group.append(raw[i])
+            i += 1
+
+        cutoff = group[0]["cutoff"]
+        still_pending = []
+        for available_at, row in pending:
+            if available_at <= cutoff:
+                apply(row)
+            else:
+                still_pending.append((available_at, row))
+        pending = still_pending
+
+        for r in group:
+            def rest(team: str) -> float:
+                k = (r["league"], team)
+                return (r["kickoff"] - last_seen[k]).total_seconds() / 86400 if k in last_seen else DEFAULT_REST
+
+            def load(team: str) -> int:
+                k = (r["league"], team)
+                return sum(1 for dd in recent[k] if (r["kickoff"] - dd).days <= 14)
+
+            def trend(team: str) -> float:
+                hist = team_goals[(r["league"], team)][-5:]
+                lg_now = league_goals[(r["league"], r["season"])][-60:]
+                fallback = float(np.mean(lg_now)) if lg_now else 2.6
+                return float(np.mean(hist)) if hist else fallback
+
+            rest_h, rest_a = rest(r["home"]), rest(r["away"])
+            th, ta = trend(r["home"]), trend(r["away"])
+            lg = league_goals[(r["league"], r["season"])][-60:]
+            r["rest_diff"] = rest_h - rest_a
+            r["min_rest"] = min(rest_h, rest_a)
+            r["load14"] = float(load(r["home"]) + load(r["away"]))
+            r["trend_sum"] = th + ta
+            r["trend_diff"] = th - ta
+            r["league_env"] = float(np.mean(lg)) if lg else 2.6
+            pending.append((r["kickoff"] + RESULT_DELAY, r))
+        out.extend(group)
+        pending.sort(key=lambda item: item[0])
+
     features = ["d_book", "rest_diff", "min_rest", "load14", "draw",
                 "trend_sum", "trend_diff", "league_env"]
-    return [r for r in rows if r["season"] in PILOT], features
+    return [r for r in out if r["season"] in PILOT], features
 
 
 FAMILIES = {
@@ -234,10 +270,14 @@ def main() -> int:
             perm_rows = [dict(r) for r in rows]
             for season in seasons:
                 idx = [i for i, r in enumerate(perm_rows) if r["season"] == season]
-                for c in cols:
-                    vals = [perm_rows[i][c] for i in idx]
-                    rng.shuffle(vals)
-                    for i, v in zip(idx, vals):
+                # Permute whole rows, not columns independently: shuffling each column on its
+                # own destroys the joint structure inside a family and would test a null in
+                # which the features are independent of each other.
+                order = list(idx)
+                rng.shuffle(order)
+                moved = {i: {c: perm_rows[j][c] for c in cols} for i, j in zip(idx, order)}
+                for i, values in moved.items():
+                    for c, v in values.items():
                         perm_rows[i][c] = v
             g, _, _ = oof_gain(perm_rows, cols, y)
             null_gains.append(g)

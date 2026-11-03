@@ -59,10 +59,23 @@ def main() -> int:
     var_total = statistics.variance(totals)
     dispersion = mean_total ** 2 / (var_total - mean_total) if var_total > mean_total else float("inf")
 
-    # The model's own predictions, then the same pipeline with a negative-binomial total.
+    # The model's own predictions; the negative-binomial variant uses a dispersion estimated
+    # only from matches already played, so no prediction is scored with a parameter fitted on
+    # its own outcome.
     base = pm.predict([dict(r) for r in pilot_rows])
-    nb = pm.predict([dict(r) for r in pilot_rows],
-                    over_fn=lambda lh, la: nb_over(lh + la, dispersion))
+    seen: list[int] = []
+    for r in base:
+        if len(seen) >= 50:
+            m, v = statistics.mean(seen), statistics.variance(seen)
+            size = m * m / (v - m) if v > m else float("inf")
+        else:
+            size = float("inf")
+        # An infinite or enormous size is the Poisson limit, where the negative-binomial
+        # formula degenerates; use the Poisson probability directly there.
+        r["p_nb"] = (pm.p_over_25(r["lam_h"], r["lam_a"])
+                     if not math.isfinite(size) or size > 1e6
+                     else nb_over(r["lam_h"] + r["lam_a"], size))
+        seen.append(r["home_goals"] + r["away_goals"])
 
     def ll(rows, key):
         return statistics.mean(pm.logloss(r[key], r["y"]) for r in rows)
@@ -107,7 +120,7 @@ variant has almost nothing to correct.
 | Forecast | Log loss | Brier |
 | --- | --- | --- |
 | Independent Poisson | {ll(base, 'p_model'):.4f} | {brier(base, 'p_model'):.4f} |
-| Negative-binomial total | {ll(nb, 'p_model'):.4f} | {brier(nb, 'p_model'):.4f} |
+| Negative-binomial total | {ll(base, 'p_nb'):.4f} | {brier(base, 'p_nb'):.4f} |
 | Market (closing) | {ll(base, 'p_market'):.4f} | {brier(base, 'p_market'):.4f} |
 
 ## Reading
@@ -134,7 +147,7 @@ as such, not as a vindication of either family.
 
     print(f"mean={mean_total:.3f} var={var_total:.3f} ratio={var_total / mean_total:.3f} "
           f"dispersion={dispersion:.2f}")
-    print(f"poisson_ll={ll(base, 'p_model'):.4f} nb_ll={ll(nb, 'p_model'):.4f} "
+    print(f"poisson_ll={ll(base, 'p_model'):.4f} nb_ll={ll(base, 'p_nb'):.4f} "
           f"market_ll={ll(base, 'p_market'):.4f}")
     print(f"wrote {OUT.relative_to(ROOT)}")
     return 0

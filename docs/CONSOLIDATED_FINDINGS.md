@@ -73,24 +73,31 @@ There is no division or season in which the model is fine.
 The worst 2% of fixtures (n=178) show only **7.3% disagreement with the market's side**, against
 29.7% overall: the tail is confident calls that lost, not contrarian views that failed.
 
-## 5. Every information source tested, and its verdict
+## 5. Information sources tested, and their verdicts
 
 All tests use the same protocol: market-conditioned logistic, leave-one-season-out, cluster
 bootstrap, and — in the screen — a within-season permutation null and Benjamini-Hochberg across
 families.
 
+**How to count these.** They are not nine independent experiments. E4, E5 and E7 are three
+families that E8 also contains; E8 tests six families built from eight variables; E9 is one
+alternative distributional specification over the same inputs. The honest count is **eight
+variables, in six families, screened once** — with three of those families also examined
+individually earlier, which is repetition rather than replication.
+
 | # | Candidate | Gain (nats) | Interval | Verdict |
 | --- | --- | --- | --- | --- |
-| E4 | Cross-book disagreement | −0.0001 | [−0.0002, +0.0001] | negative |
+| E4 | Cross-book disagreement | −0.0001 | [−0.0002, +0.0001] | no gain detected |
 | E5 | Schedule congestion | −0.0012 | [−0.0024, −0.0002] | negative, significantly |
-| E7 | Cross-market (1X2 → totals) | −0.0002 | [−0.0004, +0.0000] | negative |
-| E8 | Recent scoring trend | −0.0001 | [−0.0003, +0.0001] | negative |
-| E8 | League scoring environment | −0.0000 | [−0.0002, +0.0002] | null |
+| E7 | Cross-market (1X2 → totals) | −0.0002 | [−0.0004, +0.0000] | no gain detected |
+| E8 | Recent scoring trend | −0.0001 | [−0.0003, +0.0001] | no gain detected |
+| E8 | League scoring environment | −0.0000 | [−0.0002, +0.0002] | no gain detected |
 | E8 | All eight features combined | −0.0016 | [−0.0029, −0.0005] | negative, significantly |
-| E9 | Negative-binomial totals | +0.0003 | negligible | specification is not the constraint |
+| E9 | Negative-binomial totals | +0.0002 | prequential dispersion | not a material gain |
 
-In the screen, all six families have permutation p between 0.35 and 0.83 and BH q = 0.83. No
-family is positive in any held-out season.
+In the screen, all six families have permutation p between 0.24 and 0.88 and BH q = 0.88. No
+family is positive in any held-out season. A high permutation p means **a positive gain of that
+size was not detected**; it is not evidence that no information exists.
 
 ## 6. What this establishes
 
@@ -100,8 +107,8 @@ family is positive in any held-out season.
    uncertainty, permutation nulls, multiplicity correction, and artefact provenance.
 3. **The first model's deficit is quantified and decomposed** — 0.0246 nats, of which about half
    is calibration (recoverable) and half is missing separation (not recoverable by any map).
-4. **No feature derived from this corpus adds information to the closing price.** Eight
-   candidates, one permutation-tested screen, five independent negatives.
+4. **No tested candidate demonstrated a material improvement** over the closing price under the
+   current pilot design. Eight variables, six families, one screen with a permutation null.
 5. **The corpus is internally consistent** — the nulls are not a data-corruption artefact.
 
 ## 7. What this does not establish

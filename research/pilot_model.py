@@ -132,6 +132,8 @@ def predict(rows: list[dict], result_delay: timedelta = RESULT_DELAY,
             lam_h = max(0.2, min(4.0, hs_h_att * as_a_def / max(lh, 0.1)))
             lam_a = max(0.2, min(4.0, as_a_att * hs_h_def / max(la, 0.1)))
             row = dict(f)
+            row["lam_h"] = lam_h
+            row["lam_a"] = lam_a
             row["p_model"] = (over_fn or p_over_25)(lam_h, lam_a)
             row["delta"] = logloss(row["p_market"], row["y"]) - logloss(row["p_model"], row["y"])
             out.append(row)

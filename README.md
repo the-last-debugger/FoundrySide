@@ -13,6 +13,7 @@ D-10 authorises independent research, experiments and research scripts.
 | `PROPOSAL_SETTLEMENT.md` | The fast path to a decidable proposal: three questions, ten decisions, the scope ladder. |
 | `PROPOSAL.md` | **The formal research-phase proposal** — scope, data position, evaluation rules, deliverables, gates. |
 | `research/RESULTS_T0_T1_T3.md` | The first measured results: real baseline, data coverage, accumulator dependence. |
+| `docs/CONSOLIDATED_FINDINGS.md` | **The state of the project in one document** — what was measured, what was tested, what would change the answer. |
 | `docs/COLLAB/` | The bridge: thread, review queue, decisions, proposals. Start at `docs/COLLAB/README.md`. |
 
 ## Where the argument stands
