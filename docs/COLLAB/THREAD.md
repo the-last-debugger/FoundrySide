@@ -712,3 +712,21 @@ Worth recording that this is the third number this document has carried: 84 perc
 State: RQ-016 back to ready_for_review; 82 tests; checker errors 0. No confirmatory scoring and no freeze.
 - revision: e8d86d3
 - ref: research/PILOT_POWER.md
+
+
+### 2026-11-03T19:05:00Z · sponsor · review
+
+Thirteenth-round oversight review of `e8d86d3` and bridge update `1118d4f`. The centring correction fixes the specific defect identified in the previous round: the old 93.5% figure was contaminated by the pilot model's negative mean, and the corrected result is materially lower at 66.6%. The offset-invariance test is useful, and the old stability figures have been replaced. However, RQ-016 remains **changes_requested**: the new implementation still appears inconsistent with the protocol's fixture-weighted estimand.
+
+**1. Cluster resampling and centring do not currently target the same estimand.** The protocol defines the headline Δ as the fixture-weighted mean: each fixture counts equally. In `design_power()`, the pilot residuals are centred on the fixture-weighted mean (`sum(c.sum()) / sum(len(c))`), but each bootstrap cluster is then selected with equal probability via `rng.integers(0, k_pool, size=k)`. Because pilot cluster sizes differ, equal-probability cluster sampling has an expected source-cluster mean equal to the *unweighted average of cluster means*, not the fixture-weighted pilot mean. Assigning the sampled clusters the confirmatory size weights does not remove that mismatch: the target weights sum to one, while each selected source cluster still has probability 1/K. If cluster means are associated with cluster size, the simulated null need not be centred at zero for the declared fixture-weighted estimand. The reported 5.2% null rejection rate does not rule this out; it may be close by chance for this particular pilot.
+
+Please make the resampling distribution consistent with the declared estimand and explain the choice. One possible approach is probability-proportional-to-pilot-cluster-size sampling (with replacement), followed by within-cluster fixture resampling to the confirmatory sizes; another valid design is acceptable if its expectation and variance target the fixture-weighted mean. Do not silently switch the estimand to equal-cluster weighting. Add tests with materially unequal cluster sizes and deliberately size-associated cluster means, checking that the simulated null is centred correctly and has calibrated rejection. Retain the common-offset invariance test, but do not treat it as sufficient evidence of estimand correctness.
+
+**2. The claimed 0.0116-nat 80%-power threshold is not reproducible from the committed generator.** The report generator evaluates only the fixed `TARGET = 0.01`; there is no bisection or effect-grid calculation in `pilot_power.py`, and the report does not provide the seed/simulation procedure or uncertainty for the 0.0116 threshold. Either implement and report a deterministic, reproducible threshold calculation using the corrected resampling design, with Monte Carlo uncertainty, or remove the precise 0.0116 claim and describe it as an unverified exploratory estimate. Recompute it after resolving item 1.
+
+**What is accepted.** The original centring bug was correctly identified and fixed; the corrected 66.6% result appropriately withdraws the old 93.5% ADEQUATE verdict; the 5.2% null check and two independent runs are useful diagnostics; the report now matches the bridge on 64.2% and 66.1%; and the generator retains the input CSV checksum and report stamp. The pilot remains descriptive, with the closing-price timing and three-hour result-availability proxy caveats intact.
+
+**Authority and next step.** Continue autonomously on the resampling/estimand correction and reproducible threshold calculation. Do not inspect or score confirmatory outcomes, change the 0.01-nat target, add seasons or markets, freeze the protocol, or treat this power estimate as accepted until the weighting issue is resolved and reviewed. The sponsor decisions listed in the report remain options, not approvals.
+
+- revisions reviewed: `e8d86d3`, `1118d4f`
+- refs: RQ-016, RQ-008
