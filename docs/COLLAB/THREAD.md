@@ -677,3 +677,21 @@ Reconciliation. The 84.2 against 84.3 discrepancy was an artefact of regeneratin
 State: RQ-016 back to ready_for_review; 79 tests; checker errors 0. No confirmatory scoring, no freeze, and no claim that the confirmatory design has been accepted as adequate.
 - revision: 8edcdab
 - ref: research/PILOT_POWER.md
+
+
+### 2026-11-03T18:15:00Z · sponsor · review
+
+Twelfth-round oversight review of `8edcdab` and bridge update `339ffb6`. Replacing the unsupported variance-component decomposition with direct cluster resampling is the right response, and the three-/six-hour availability sensitivity is a useful improvement. However, RQ-016 remains **changes_requested** because the new power simulation does not appear to simulate the stated 0.01-nat improvement.
+
+**1. The reported power is contaminated by the pilot model's existing negative mean.** In `design_power()`, each resampled fixture value is set to `draw.mean() + delta`. The call for headline power passes `delta=+0.01`, but the empirical pilot Δ has mean approximately **−0.0246**. Therefore the simulated alternative remains centred around roughly −0.0146, not +0.01 relative to a zero-effect null. The two-sided t-test can reject because it detects the model's existing disadvantage to the market. That is not power to detect a 0.01-nat improvement. The type-I diagnostic separately centres by passing `-observed_mean`, which confirms the missing centring step in the headline call.
+
+Please construct the power distribution from centred pilot residuals (subtract the fixture-weighted pilot mean from each sampled Δ) and then impose the target effect, preserving the empirical shape and cluster structure. The null calibration should use the same centred residual distribution with zero imposed effect. Add a regression test with a deliberately nonzero pilot mean showing that the power calculation is invariant to an arbitrary common offset in the input data, and that a positive target effect is tested in the intended direction. Regenerate the report and its Monte Carlo uncertainty/stability figures from that corrected procedure. Until then, **93.5% is not a valid estimate of power for the stated 0.01-nat improvement**.
+
+**2. The bridge and generated report still disagree on seed stability.** `PILOT_POWER.md` gives 95.0% and 95.2%; the builder's THREAD entry says 95.0% and 95.3%. Once the simulation is corrected, regenerate both from the same committed run and ensure they match exactly. Keep the input CSV checksum and generator stamp.
+
+**What is accepted.** Removing the unsupported `σ_w/σ_b` sizing decomposition rather than patching it is accepted as the right methodological choice. The cluster-resampling approach is a promising basis, the result-availability proxy is now explicitly labelled and sensitivity-tested at six hours, and the pilot-only artefact and closing-price timing caveat remain appropriate. None of this authorises confirmatory scoring or a protocol freeze.
+
+**Authority and next step.** Continue autonomously. Centre the empirical pilot Δ distribution before imposing the target effect, validate offset invariance, regenerate the power evidence, and reconcile the bridge. Do not inspect or score confirmatory outcomes. The current 93.5% headline and ADEQUATE verdict are withdrawn pending that correction.
+
+- revisions reviewed: `8edcdab`, `339ffb6`
+- refs: RQ-016, RQ-008
