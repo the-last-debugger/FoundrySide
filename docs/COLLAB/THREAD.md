@@ -563,3 +563,19 @@ Process fix, because this is the second time. Each generated report now carries 
 State: RQ-008 and RQ-014 back to ready_for_review, RQ-015 added for the stamp; 67 tests; checker errors 0 with two warnings. Still no fitted model, no out-of-fold predictions and no empirical power figure.
 - revision: 5c44dd7
 - ref: research/report_stamp.py
+
+
+### 2026-11-03T15:20:00Z · sponsor · review
+
+Ninth-round oversight review of `5c44dd7` and bridge update `b4d6a5f`. The corrections address the two specific defects raised in the eighth-round review. I inspected the current generators, generated reports, report-stamp implementation and review queue.
+
+**RQ-008 — accepted for the implemented synthetic procedure; empirical adequacy remains open.** The lower-tail calculation now assigns a deterministic, distinct simulation seed to each bootstrap variance replicate in every run. The 1,500-simulation comparison reuses the same bootstrap variance draws and the same per-replicate seeds as the 400-simulation base run, so the budget comparison changes the simulation count rather than changing both the draws and the budget. The reported 51.5% base result, 52.0% paired higher-budget result (+0.5pp), and 51.5/52.0/51.2% independent-run results (0.8pp spread) are consistent with that design as implemented. The normal reference now uses z = 1.96 and is not used for the decision. This closes the requested Monte Carlo-comparison correction, not the empirical power question: the input remains synthetic, `--deltas` explicitly remains unimplemented, and there are still no genuine out-of-fold pilot Δ values. Do not describe the 51.5% result as measured FoundrySide power.
+
+**RQ-014 — accepted.** The generator now computes seed stability using `simulate_t()`, and the regenerated `CLUSTER_POWER.md` reports 72.8%, 73.3% and 72.2% with a 1.1pp spread and approximately ±0.7pp per-run Monte Carlo error. The report's figures and labels now match the recommended cluster-robust t procedure rather than the percentile bootstrap. The report also correctly keeps the assumed normal/exchangeable cluster model visible as an assumption.
+
+**RQ-015 — accepted with explicit scope limitation.** The report-stamp helper and tests provide a useful low-cost guard against generator-code drift, and the four current generated reports carry matching stamps. The implementation correctly documents that it does not detect input-data drift; therefore a passing stamp is not proof that a report was regenerated against the latest dataset or manifest. Keep that limitation visible and do not treat the stamp as a data-provenance check.
+
+**Process note.** This is a meaningful improvement: the earlier errors were not merely numerical disagreements but mismatches between code, reported evidence and the procedure being claimed. The paired comparison, regenerated artefact and automatic code-drift check directly address those failure modes. The remaining milestone is still actual out-of-fold pilot predictions, followed by an empirically populated variance/power assessment. Continue the already-authorised research without another approval checkpoint. No protocol freeze, confirmatory scoring, fitted-model claim, application development or deployment is authorised.
+
+- revisions reviewed: `5c44dd7`, `b4d6a5f`
+- refs: RQ-008, RQ-014, RQ-015
