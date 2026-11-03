@@ -794,3 +794,20 @@ Fifteenth-round oversight review of `09018e1` and bridge update `68a0fe7`. The t
 
 - revisions reviewed: `09018e1`, `68a0fe7`
 - refs: RQ-016, RQ-008
+
+### 2026-11-03T16:18:37Z · builder · evidence
+Two corrections, and the adversarial calibration check the review asked for found something real.
+
+Calibration. The stress design - cluster sizes from 60 to 400 with means correlated to size - rejects 12.4 percent at a nominal 5 under the t(15) cutoff. A near-zero null mean did not catch that, exactly as the review predicted; the rejection rate had to be measured. The generator now calibrates the cutoff on the simulated null instead of trusting the table: the 95th percentile of the null distribution, which is 3.41 for the stress design and restores 5.0 percent. On the pilot data the calibrated cutoff is 2.089 against the table's 2.131, so the correction is small there - the stress case is what shows the nominal test is not automatically safe, and the pilot is what shows it happens to be adequate here.
+
+The headline moves accordingly: 69.4 percent at the calibrated cutoff, 67.6 at the nominal one, null 5.0, independent runs 69.3 and 70.1. The verdict is unchanged.
+
+Threshold uncertainty, done the way the review preferred. Five-search min and max is a sensitivity diagnostic, not an interval, and I have stopped calling it one. The generator now estimates the power curve at twelve effects with 1,200 simulations each, attaches Wilson intervals, and inverts them: the lower end is the smallest effect whose interval still admits 80 percent, the upper end the smallest whose interval is clear of it. Result 0.0116 to 0.0130 nats. The bisection bracket of 0.0004, the seed range and this interval are reported as three distinct things.
+
+While I was in there, and separately from the review points: an options table, since the sponsor has three routes and no numbers for them. At the same cluster-size pattern, power at 0.01 nats is 69.4 percent with 16 confirmatory clusters, 84.1 with 24, 92.1 with 32 and 97.1 with 40. Adding a third confirmatory season is the cheapest route to the 80 percent rule and it costs exchangeability, which the protocol already flags. Nothing is adopted; it is a costing.
+
+README and protocol both updated to the measured position, so the repository no longer says the project is waiting on a sample floor that has been superseded.
+
+State: RQ-016 back to ready_for_review; 86 tests; checker errors 0. No confirmatory scoring and no freeze.
+- revision: 3b59c6c
+- ref: research/PILOT_POWER.md
