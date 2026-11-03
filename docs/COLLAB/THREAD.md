@@ -53,3 +53,26 @@ Bridge, critique and settlement register pushed at 883ecfa. Evidence: collab_che
 Correction accepted, superseding F7 as first written. The sponsor challenged the provenance of the OLPRS null: OdiLeague is a virtual league, not real sport. Verified in OLPRS_v2/docs/SYSTEM_MAP_2026-10-31.md line 12 ('fixtures are simulated, not played') and ODILEAGUE_STRUCTURE.md (38 rounds per season, two minutes apart, season about 76 minutes) - roughly 600 fixtures an hour, which is why 16,831 priced fixtures exist there and will not exist here. Three consequences, now in the documents: (1) F7 retitled and rewritten - what transfers is the method and the feature-class lesson, not the domain conclusion; the null is about one operator's price on an outcome that operator may itself generate, with no sharp money, and SYSTEM_MAP records that whether the simulation is seeded is unknown and not testable from outside. (2) 0.515 is withdrawn as the bar; that number was mine, imported without a domain caveat, and it is replaced by T0, a one-day measurement of the real-league favourite baseline from closing prices. (3) The evidence rate differs by about three orders of magnitude, so one division yields about 90 fixtures in 90 days against a bar needing n >= 2000: D-06 must be a wide slice (about twenty divisions) or the horizon must be a full season. The claim 'real markets are softer because the prior came from a virtual league' is explicitly rejected in the same section - real closing lines aggregate informed money, and the honest difference is latency, coverage and correlation, not realism.
 - revision: 01035b0
 - ref: CRITIQUE.md
+
+
+### 2026-11-03T12:XX:00Z · sponsor · response
+
+Thank you for the independent critique and, especially, for correcting the OLPRS comparison.
+
+I agree that the OdiLeague result must not be treated as a conclusion about real-world sporting markets. The distinction is material: the transferable evidence is the evaluation methodology and the lessons about feature testing and correction, not the virtual league's measured outcome or its favourite baseline. Withdrawing the imported 0.515 threshold and replacing it with a measured real-market baseline is the right correction. Please preserve that distinction consistently in all subsequent research and proposal material.
+
+I also agree with the broader discipline behind the settlement register: define falsifiable tests, measure the real-market baseline, establish lawful and affordable data access, and avoid building ahead of evidence. The proposed tests are useful ways to turn uncertainty into concrete work.
+
+However, I want to clarify one important point before treating the proposed first slice as a settled description of FoundrySide.
+
+The long-term ambition remains an autonomous, multi-sport sports-intelligence research laboratory. Football may be the most practical first experimental domain, and a small set of well-supported markets may be the right place to begin measurement. That does not mean the overall project should become football-only, that other sports and markets are no longer part of the research ambition, or that the market-restatement board is now the final product vision.
+
+Please clarify whether D-04 and D-06 are intended strictly as pragmatic phase-one constraints — a narrow, testable starting point from which the wider FoundrySide vision can be pursued if evidence and resources justify it — or whether you are recommending a substantive change to the ultimate ambition and product direction.
+
+My preference is to retain the wider ambition while being uncompromising about sequencing. We should earn expansion through evidence, not discard it simply because the first experiment must be narrow. Likewise, the market should be a serious reference baseline, not automatically the ceiling of what FoundrySide is allowed to investigate.
+
+For now, treat the settlement defaults as recommendations under review, not sponsor-approved decisions. In particular, I am not yet accepting D-04 through D-13 wholesale, and I am not setting the D-05 numeric success bar before T0 has produced a defensible real-market measurement and interval.
+
+Please respond to the distinction above and explain how you would preserve the full FoundrySide ambition while keeping the first phase focused, falsifiable, affordable and capable of being stopped if the evidence does not support continuation.
+
+No implementation is authorised. The existing research-and-proposal gate remains in force.
