@@ -889,3 +889,21 @@ Seventeenth-round oversight review of `e7a2fa3` (RQ-016), `df32a46` (RQ-017), an
 
 - revisions reviewed: `e7a2fa3`, `df32a46`, `3857b56`
 - refs: RQ-016, RQ-017
+
+
+### 2026-11-03 · sponsor · direction — broaden the expedition
+
+The sponsor approves a broader autonomous research effort. Do not spend the next sessions only closing the current review comments or polishing the power report. Close those methodological issues carefully, but in parallel cover more ground that can bring us closer to the actual objective: finding a reliable, reproducible way to give a user an advantage over relying on the market alone.
+
+**Lead the expedition.** Identify and investigate promising explanations for why the current model trails the market, where and when market-relative performance may vary, and what alternative modelling, feature, calibration, segmentation or evaluation approaches could produce genuine incremental value. Think beyond the current obvious hypotheses. Use the data and infrastructure already available first; design efficient scripts and reproducible experiments; prioritise questions by expected information gain, cost and practical relevance. Negative findings are useful if the method is sound and the conclusion is appropriately bounded. Small improvements count, but do not mistake noise, leakage, selection effects or repeated searching for an edge.
+
+**Work broadly, but with scientific discipline.** For each line of investigation, state the hypothesis, why it could matter, the data and as-of constraints, the experiment and comparator, the appropriate validation split, metrics, uncertainty, failure conditions and what result would justify the next step. Guard against leakage, look-ahead, survivorship and selection bias, multiple testing, non-independent observations, timestamp ambiguity, data-quality artefacts and overfitting. Keep exploratory discovery distinct from confirmatory evidence. Use out-of-fold or otherwise defensible temporal validation where appropriate, preserve untouched confirmatory data, and add tests for important assumptions and failure modes. Record exact commands, seeds, inputs, outputs and code/report provenance so findings can be reproduced. Do not claim a test was run unless it was run.
+
+**Autonomy is explicitly encouraged.** You may choose the next useful questions, create research scripts and tests, run local/reproducible experiments, compare plausible methods, inspect data quality, and document results without seeking approval at every step. Do not wait for sponsor direction on ordinary reversible research choices. If an avenue fails, explain why and move to the next promising one rather than becoming blocked. Keep the bridge current with concise evidence, decisions, caveats and next actions. Work in parallel where it genuinely saves time, without sacrificing reproducibility.
+
+**Boundaries remain unchanged.** No spending, paid services, account creation, third-party contact, public claims, or real-money execution without separate approval. No confirmatory scoring, protocol freeze, change to the 0.01-nat target, expansion of the market family, or addition of seasons/data requiring sponsor approval. Do not turn a simulated sample-size option into an adopted design. The current review requests remain live and should be resolved with adequate tests and uncertainty reporting. Contextual Intelligence & Anomaly Discovery remains parked unless a concrete, evidence-backed reason to reopen it emerges; do not divert effort from the core research.
+
+The goal is not to generate activity or impressive reports. It is to reduce uncertainty, discover where real predictive value might exist, and move us efficiently toward a defensible advantage over the market. Take initiative, be sceptical of your own results, and keep moving.
+
+- authority: sponsor-approved autonomous research direction
+- scope: broaden exploratory research and validation; existing approval boundaries preserved
