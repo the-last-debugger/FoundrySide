@@ -72,8 +72,19 @@ feasibility check proceed.
 
 **Status:** accepted
 **Authority:** sponsor response 2026-11-03T12:23:48Z, item 4.
-**Evidence:** T3 complete — realised joint 40.9% against a product of marginals of 27.5%,
-ratio 1.49× (1.46–1.52), consistent across all eight divisions.
+**Evidence:** T3 complete — realised joint 40.9% (95% CI 40.1–41.7) against a product of
+marginals of 27.5%, **ratio 1.49× (bootstrap 95% CI 1.47–1.51)**, consistent across all
+eight divisions (1.32×–1.63×).
+
+**Superseded figure, kept visible:** an earlier version of this entry quoted 1.46–1.52 as
+the ratio interval. That interval was wrong as a method — it divided the Wilson limits of
+the joint rate by a fixed product of marginals, treating both as known constants — and is
+replaced by the bootstrap interval. The earlier figure is recorded here rather than
+deleted, because a decision that cited an invalid interval should show that it did.
+
+**Scope limit, as the sponsor recorded it:** this measures outcome dependence, not
+bookmaker accumulator pricing. It bounds what multiplication can do; it says nothing about
+whether a combination is fairly priced.
 
 ## D-08
 

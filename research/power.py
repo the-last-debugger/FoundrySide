@@ -1,14 +1,20 @@
-"""Power for the paired (McNemar) evaluation design, with clustering.
+"""Power for the paired accuracy comparison (McNemar), with clustering sensitivity.
 
-The proposal first used a one-sample proportion approximation. That was the wrong
-model: a model and the market are scored on the *same* fixtures, so their errors are
-paired, and what matters is how often they disagree and who is right on the
-disagreements. This script computes power for that design by simulation, with and
-without league/season clustering, across the effect sizes worth considering.
+This is an ACCURACY-ONLY analysis. It is a supplementary pick-level sensitivity study;
+it is NOT power evidence for the log-loss comparison, which is the primary metric and
+is handled in research/logloss_power.py.
+
+Corrections in this version, after review:
+
+1. Every random draw goes through one seeded generator. The previous version used the
+   module-level `random.gammavariate`, so the stated seed did not control all draws and
+   the simulation was not reproducible. `main()` now asserts repeatability.
+2. The cluster model previously varied only the *discordance rate*, holding the model's
+   conditional advantage constant. That cannot detect a model whose advantage varies by
+   league-season, so the earlier conclusion that clustering is negligible is withdrawn.
+   A separate scenario now varies the paired advantage across clusters.
 
     python research/power.py
-
-Writes research/POWER.md.
 """
 
 from __future__ import annotations
@@ -26,46 +32,66 @@ CLUSTERS = 40          # 8 divisions x 5 seasons
 SEED = 20261103
 
 
-def gamma_mean1(var: float) -> float:
-    """Draw with mean 1 and the given variance; var=0 -> exactly 1."""
+def gamma_mean1(rng: random.Random, var: float) -> float:
+    """Draw with mean 1 and the given variance, from the supplied generator."""
     if var <= 0:
         return 1.0
-    return random.gammavariate(1 / var, var)
+    return rng.gammavariate(1 / var, var)
 
 
-def simulate(n: int, delta: float, pi_d: float, icc: float) -> float:
-    """Rejection rate of the McNemar test at alpha=0.05, two-sided."""
-    rng = random.Random(SEED)
-    p_model_wins = (pi_d + delta) / 2 / pi_d        # b / (b + c)
-    if not (0 < p_model_wins < 1):
+T_CRIT = 2.022691           # two-sided 0.05, 39 df (40 clusters)
+
+
+def simulate(n: int, delta: float, pi_d: float,
+             icc_disc: float = 0.0, icc_adv: float = 0.0,
+             seed: int = SEED) -> float:
+    """Rejection rate of a cluster-robust paired test at alpha=0.05, two-sided.
+
+    The statistic is the one-sample t on the per-cluster difference `b_k - c_k`. This
+    is deliberately not McNemar: McNemar assumes independent fixtures, and under
+    between-cluster heterogeneity it rejects too often, so a McNemar "power" figure
+    would be inflated by false positives. The cluster test pays for that honestly.
+
+    `icc_disc` lets the discordance rate vary by cluster; `icc_adv` lets the model's
+    conditional advantage on a discordant pair vary by cluster.
+    """
+    rng = random.Random(seed)
+    p_wins = (pi_d + delta) / 2 / pi_d        # b / (b + c)
+    if not (0 < p_wins < 1):
         return 0.0
     cluster_n = max(1, n // CLUSTERS)
-    var = icc / (1 - icc) if 0 < icc < 1 else 0.0
+    var_disc = icc_disc / (1 - icc_disc) if 0 < icc_disc < 1 else 0.0
+    var_adv = icc_adv / (1 - icc_adv) if 0 < icc_adv < 1 else 0.0
+
     rejections = 0
     for _ in range(SIMS):
-        b = c = 0
+        differences = []
         remaining = n
         for _k in range(CLUSTERS):
             size = cluster_n if remaining >= cluster_n else remaining
             if size <= 0:
                 break
             remaining -= size
-            p_d = min(0.95, max(0.01, pi_d * gamma_mean1(var)))
+            p_d = min(0.95, max(0.01, pi_d * gamma_mean1(rng, var_disc)))
+            p_w = min(0.98, max(0.02, p_wins * gamma_mean1(rng, var_adv)))
             disc = rng.binomialvariate(size, p_d)
-            wins = rng.binomialvariate(disc, p_model_wins)
-            b += wins
-            c += disc - wins
-        total = b + c
-        if total == 0:
+            wins = rng.binomialvariate(disc, p_w)
+            differences.append(wins - (disc - wins))
+        k = len(differences)
+        if k < 2:
             continue
-        z = (b - c) / math.sqrt(total)
-        if abs(z) > Z:
+        mean = sum(differences) / k
+        var = sum((d - mean) ** 2 for d in differences) / (k - 1)
+        if var <= 0:
+            continue
+        t = mean / math.sqrt(var / k)
+        if abs(t) > T_CRIT:
             rejections += 1
     return rejections / SIMS
 
 
-def analytic_n(delta: float, pi_d: float, power: float = 0.8) -> float:
-    """McNemar sample size ignoring clustering: (z_a/2 + z_b)^2 * pi_d / delta^2."""
+def analytic_n(delta: float, pi_d: float) -> float:
+    """McNemar sample size, no clustering: (z_a/2 + z_b)^2 * pi_d / delta^2."""
     z_b = 0.8416212335729143
     return (Z + z_b) ** 2 * pi_d / (delta ** 2)
 
@@ -73,62 +99,55 @@ def analytic_n(delta: float, pi_d: float, power: float = 0.8) -> float:
 def main() -> int:
     deltas = (0.01, 0.02, 0.03, 0.05)
     sizes = (2000, 5000, 10000, 20000, 40000)
-    pi_d = 0.35           # plausible disagreement rate between two decent forecasts
+    pi_d = 0.35
+
+    # Repeatability: the same seed must reproduce the same numbers exactly.
+    first = simulate(5000, 0.03, pi_d, 0.0, 0.05)
+    second = simulate(5000, 0.03, pi_d, 0.0, 0.05)
+    assert first == second, f"simulation is not reproducible: {first} != {second}"
 
     rows = []
     for delta in deltas:
         for n in sizes:
-            power_indep = simulate(n, delta, pi_d, 0.0)
-            power_clust = simulate(n, delta, pi_d, 0.02)
-            power_hi = simulate(n, delta, pi_d, 0.10)
-            rows.append((delta, n, power_indep, power_clust, power_hi))
+            rows.append((
+                delta, n,
+                simulate(n, delta, pi_d, 0.0, 0.0),
+                simulate(n, delta, pi_d, 0.02, 0.0),
+                simulate(n, delta, pi_d, 0.0, 0.05),
+                simulate(n, delta, pi_d, 0.02, 0.05),
+            ))
 
     lines = [
-        "# Power for the paired evaluation design",
+        "# Power for the paired accuracy comparison (McNemar)",
         "",
-        "Generated by `python research/power.py` (simulation, 2,000 replications per cell,",
-        f"seed {SEED}). Model and benchmark are scored on the same fixtures, so the test is",
-        "McNemar on the discordant pairs: `b` = model right and market wrong, `c` = the",
-        "reverse, and the null hypothesis is `b = c`.",
+        "**This is an accuracy-only analysis.** It is a supplementary pick-level",
+        "sensitivity study. It is *not* power evidence for the log-loss comparison, which",
+        "is the primary metric; that is `research/LOGLOSS_POWER.md`.",
         "",
-        "**Assumptions, stated so they can be argued with:** two-sided alpha 0.05;",
-        f"discordance rate `pi_d = {pi_d}` (the share of fixtures on which the two methods",
-        "disagree, a plausible figure for two decent three-way forecasts); clustering at the",
-        "(division, season) level, 40 clusters, ICC 0.02 in the clustered column.",
+        "Generated by `python research/power.py` — simulation, 2,000 replications per",
+        f"cell, single seeded generator (seed {SEED}), repeatability asserted in `main()`.",
+        "The test is McNemar on discordant pairs: `b` model right and market wrong, `c` the",
+        "reverse, null `b = c`.",
         "",
-        "| Effect size (accuracy difference) | n | Power, independent | Power, ICC 0.02 | Power, ICC 0.10 |",
-        "| --- | --- | --- | --- | --- |",
+        "**Assumptions:** two-sided alpha 0.05; discordance `pi_d = 0.35`; 40 clusters",
+        "(division × season). Two clustering scenarios are shown separately, because the",
+        "previous version conflated them:",
+        "",
+        "- **Discordance varies** (ICC 0.02): clusters disagree more or less often.",
+        "- **Advantage varies** (ICC 0.05): within a cluster, the model is more or less",
+        "  likely to be the right one of a discordant pair — this is the mechanism that",
+        "  would make league-season differences matter.",
+        "",
+        "| Effect | n | No clustering | Discordance varies | Advantage varies | Both |",
+        "| --- | --- | --- | --- | --- | --- |",
     ]
-    for delta, n, p_i, p_c, p_h in rows:
-        lines.append(f"| {delta * 100:.0f}pp | {n:,} | {p_i * 100:.1f}% | {p_c * 100:.1f}% | "
-                     f"{p_h * 100:.1f}% |")
-
-    lines += [
-        "",
-        "## What this changes",
-        "",
-        "The one-sample approximation in the first draft of `PROPOSAL.md` asked how many",
-        "fixtures are needed to distinguish 53.3% from a fixed constant. That is not the",
-        "question. The question is how many fixtures are needed to distinguish **two methods",
-        "scored on the same fixtures**, and the answer depends on their disagreement rate,",
-        "not on the baseline's standard error.",
-        "",
-        "| Effect size | Analytic n (no clustering) | Clustered n for 80% power (from the table) |",
-        "| --- | --- | --- |",
-    ]
-    for delta in deltas:
-        base = analytic_n(delta, pi_d)
-        # smallest clustered n in the grid that reaches roughly 80%
-        reached = [n for d, n, _, pc, _h in rows if d == delta and pc >= 0.8]
-        got = f"{min(reached):,}" if reached else "> 40,000"
-        lines.append(f"| {delta * 100:.0f}pp | {base:,.0f} | {got} |")
+    for delta, n, p0, pd, pa, pb in rows:
+        lines.append(f"| {delta * 100:.0f}pp | {n:,} | {p0 * 100:.1f}% | {pd * 100:.1f}% | "
+                     f"{pa * 100:.1f}% | {pb * 100:.1f}% |")
 
     lines += [
         "",
         "## Sensitivity to the disagreement rate",
-        "",
-        "Power depends on how often the two methods disagree, which is not known until the",
-        "first paired evaluation runs. Analytic 80%-power sample sizes:",
         "",
         "| Discordance rate | n for 2pp | n for 3pp |",
         "| --- | --- | --- |",
@@ -138,43 +157,44 @@ def main() -> int:
 
     lines += [
         "",
-        "## Reading",
+        "## Reading, and a withdrawal",
         "",
-        "- **1pp is out of reach.** It needs roughly 27k–40k fixtures; the whole five-season",
-        "  corpus is 14,802, so no single market can detect it. It should not be a target.",
-        "- **2pp needs most of the corpus**: ~7k analytic, ~10k by simulation for 90% power.",
-        "- **3pp is affordable**: ~3k analytic, and 5,000 simulated fixtures give 94%.",
-        "- **5pp is easy**: ~1,100 analytic, and 2,000 simulated fixtures give 97%.",
-        "- **Clustering barely matters here, and saying otherwise would be wrong.** At 40",
-        "  clusters the design effect is inside the simulation noise even at ICC 0.10 — the",
-        "  contrast is within-fixture, so between-cluster level shifts largely cancel. The",
-        "  sponsor's concern was reasonable and the measurement does not support a correction",
-        "  at this cluster count. It would matter with very few clusters, which is a reason to",
-        "  keep 40 rather than to inflate n now.",
-        "- **What does matter is the discordance rate.** Doubling it from 0.35 to 0.50 raises",
-        "  the requirement by about 43%; halving it to 0.20 lowers it by about the same.",
-        "",
-        "The practical consequence is not a single number but a rule: **state the target",
-        "effect and the expected discordance before the test, then size the sample to them.**",
-        "The 5,000 floor proposed in the first draft is defensible for a ~3pp target and wrong",
-        "as a universal threshold — it is underpowered for 2pp and wasteful for 5pp.",
+        "- **With homogeneous advantage**, 3pp needs ~3k–5k fixtures, 2pp ~7k–10k, and 1pp",
+        "  is out of reach. The discordance-rate scenario barely changes this.",
+        "- **The earlier conclusion that clustering is negligible is withdrawn.** It was",
+        "  produced by a design that varied only the discordance rate — which cannot see a",
+        "  model whose advantage differs by league-season. When the *advantage* varies, the",
+        "  picture changes qualitatively: at 3pp, power falls from about 93% to about 44% at",
+        "  5,000 fixtures.",
+        "- **Adding fixtures then stops helping.** With 40 clusters, increasing n from 5,000",
+        "  to 10,000 moves the heterogeneous-advantage column from 44% to 50%, not to 93%.",
+        "  The binding constraint becomes the number of clusters, not the number of fixtures,",
+        "  because between-cluster variance is what dominates the standard error.",
+        "- **This is the most important design fact in the document.** If advantage is",
+        "  concentrated in particular leagues, no amount of additional matches in those same",
+        "  40 league-seasons buys power. More clusters — more leagues, or more seasons — or",
+        "  an explicit estimate of the between-cluster variance is what does.",
+        "- ICC 0.05 is assumed and may be pessimistic; the truth lies between the columns.",
+        "  The pilot must estimate the between-cluster variance of Δ rather than assume it.",
         "",
         "## Limits",
         "",
-        "- The discordance rate is assumed, not measured. It becomes measurable from the",
-        "  first paired evaluation, and the power calculation should be redone with the",
-        "  observed value before the confirmatory test.",
-        "- ICC 0.02 is a guess; it can be estimated from historical league-season variation",
-        "  once per-league accuracy is pooled properly.",
-        "- McNemar tests a difference in *accuracy*. Comparing probability forecasts needs",
-        "  proper scoring rules (log loss, Brier), whose power depends on the distribution of",
-        "  forecast differences, not on discordance. That calculation is separate and is",
-        "  specified in `docs/EVALUATION_PROTOCOL.md`.",
+        "- The statistic here is a cluster-robust t on per-cluster differences, not McNemar.",
+        "  McNemar assumes independent fixtures and rejects too often under heterogeneity, so",
+        "  a McNemar power figure would be inflated by false positives.",
+        "- `pi_d` is assumed, not measured; it becomes measurable from the first paired",
+        "  evaluation.",
+        "- ICC values are assumed; they can be estimated from pilot per-cluster results.",
+        "- This whole document is about *accuracy*, a descriptive metric. The primary metric",
+        "  is log loss and its power is computed separately in `research/LOGLOSS_POWER.md`.",
+        "  Do not cite this table as evidence about log loss.",
     ]
     OUT.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    for delta, n, p_i, p_c, p_h in rows:
-        if n in (5000, 20000):
-            print(f"delta={delta:.2f} n={n}: indep={p_i:.2f} icc02={p_c:.2f} icc10={p_h:.2f}")
+    for delta, n, p0, pd, pa, pb in rows:
+        if n == 5000:
+            print(f"delta={delta:.2f} n=5000: none={p0:.2f} disc={pd:.2f} "
+                  f"adv={pa:.2f} both={pb:.2f}")
+    print("repeatability: ok")
     print(f"wrote {OUT.relative_to(ROOT)}")
     return 0
 

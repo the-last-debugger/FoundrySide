@@ -45,19 +45,41 @@ Proportional de-vig is one of several defensible methods. It is declared here ra
 than buried, and the sensitivity check is to repeat the headline comparison against the
 Bet365 pair — if the conclusion changes with the book, the conclusion was about the book.
 
-## 3. Forecast timestamp and point-in-time rule
+## 3. Forecast timing and point-in-time rule
 
-- The benchmark is the closing price **as recorded**, i.e. the last pre-kickoff
-  observation in the file.
-- The model must produce its probability from information available **strictly before**
-  that timestamp.
-- Any feature whose value could have changed after that timestamp is excluded unless its
-  as-of value is stored with the prediction. This is the lesson from
+**There is no observation timestamp in the source files.** They record a closing price
+and a kickoff date and time; they do not record when the closing quote was observed.
+Nothing in this protocol may claim otherwise, and no result may describe the model's
+cutoff as "before the closing price was observed", because that instant is unknown.
+
+Instead the design uses a **fixed, reproducible information cutoff**:
+
+```
+cutoff = kickoff time − 90 minutes
+```
+
+applied to the fixture's own `Date` and `Time` columns. The rules that follow from it:
+
+- **Model inputs.** Only matches whose result was final before the cutoff. Operationally:
+  a prior match qualifies when its kickoff plus three hours is at or before the cutoff,
+  which covers full time plus stoppage and a margin for publication.
+- **No same-day leakage.** A match earlier the same day does not qualify unless it
+  finished inside that window, which excludes the common case of a 15:00 fixture
+  following a 12:30 one.
+- **No aggregate that includes the fixture.** No season-ending tables, no form window
+  that reaches forward, no standings computed from a snapshot taken after the cutoff.
+- **Auditability.** Every prediction record stores the maximum input timestamp used.
+  The audit recomputes the cutoff from `Date` and `Time` and fails the run if any record
+  exceeds it. This is the write-time provenance lesson from
   `OLPRS_v2/docs/PIT_INTEGRITY_2026-10-31.md`, where the join was correct and the
   provenance was still lost.
-- Training data for a fixture is drawn only from matches strictly before its date. No
-  season-ending aggregates, no league tables that include the fixture itself.
-- A run in which the rule cannot be verified is reported as invalid, not as a result.
+- **The benchmark stays the closing price**, which is later than the cutoff. That is
+  deliberate — the comparison is "our T−90 forecast against the closing line" — and it is
+  not a claim about when the closing price was set.
+- If a timestamped price source is obtained later, its provenance is documented
+  separately and it becomes a second benchmark, not a reinterpretation of this one.
+
+A run in which the cutoff cannot be verified is reported as invalid, not as a result.
 
 ## 4. Coverage and exclusions
 
@@ -93,22 +115,40 @@ loss is the same order as the book's own edge — which is exactly why it is the
 scale for a first serious test rather than a comfortable one. An improvement of 0.001
 nats would be indistinguishable from noise at any sample this project can afford.
 
-**Sample size.** The power that matters is for the paired log-loss difference, which
-depends on the spread of Δ, not on the baseline's standard error. That spread is unknown
-until measured, so it is measured first:
+**Sample size, for this metric.** Power depends on the spread of the per-fixture score
+difference Δ, not on the baseline's standard error. `research/LOGLOSS_POWER.md` computes
+it on real fixtures and reports the governing quantity:
 
-1. **Pilot** on seasons 2021–2223 (disjoint from the confirmatory slice): fit the engine,
-   produce the per-fixture Δ distribution, and estimate the observed discordance.
-2. **Power by simulation** on that distribution, for the target 0.01 nats, at 80% power
-   and two-sided alpha 0.05.
-3. **Freeze n**, then run on 2324–2425.
+| SD of Δ | n for 80% power | Power at the confirmatory slice (5,794) |
+| --- | --- | --- |
+| 0.10 | 785 | 100% |
+| 0.15 | 1,766 | 99.9% |
+| 0.20 | 3,140 | 96.8% |
+| **0.27** | **5,722** | **80.5%** |
+| 0.35 | 9,615 | 58.5% |
+| 0.50 | 19,622 | 33.1% |
 
-The pilot slice may not contribute to the confirmatory claim — that is the whole reason
-it is a separate slice.
+**The confirmatory slice supports 80% power at 0.01 nats only while SD(Δ) ≲ 0.271.** That
+number, not the margin, is what the pilot has to establish.
 
-The accuracy-based power table in `research/POWER.md` remains the guide for how much data
-a given *pick-level* edge needs (roughly 10k–30k fixtures for a 1–2pp edge). It is no
-longer the primary sizing argument, because accuracy is no longer the primary metric.
+Procedure:
+
+1. **Pilot** on seasons 2021–2223, disjoint from the confirmatory slice: fit the engine,
+   and measure SD(Δ) and the between-cluster variance of Δ on out-of-fold predictions.
+2. **Compute n** from the measured spread, not from a guess, and record it.
+3. **Freeze**, then run on 2324–2425.
+
+The pilot may not contribute to the confirmatory claim; that is the reason it is a
+separate slice.
+
+If the measured SD exceeds the threshold, the response is chosen **before** scoring, from:
+extending the slice to more seasons (older, possibly not exchangeable); adding markets to
+the family (raises n, enlarges the correction family); or raising the target effect and
+saying so in the freeze. What is not available is running the test, missing significance,
+and reporting it as evidence of no edge.
+
+The accuracy tables in `research/POWER.md` are now explicitly a **supplementary
+pick-level sensitivity study** and must not be cited as power evidence for log loss.
 
 ## 7. Multiple testing
 

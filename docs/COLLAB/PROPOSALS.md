@@ -12,30 +12,28 @@ recorded in `DECISIONS.md`. Two changed in settlement and the change matters:
 - **D-05** was accepted as a *rule* (pre-register, measure the baseline, freeze) with its
   constants explicitly left open, which is now P-02.
 
-## P-02 — the sample floor and calibration tolerance *(open)*
+## P-02 — the first experiment's protocol and pilot sizing *(open)*
 
-This is the only number in the proposal that still needs the sponsor's agreement, and
-the power arithmetic changed what it should be.
+**Superseded, kept visible:** the earlier wording here recommended a universal floor of
+n ≥ 5,000 on the strength of a one-sample accuracy calculation. Both parts were wrong.
+The design is paired, and the primary metric is log loss, not accuracy. That
+recommendation is withdrawn rather than deleted, because the mistake is part of the
+record.
 
-| Planned n | Detectable difference at 80% power, baseline 53.3% |
-| --- | --- |
-| 500 | ~6.3pp |
-| 2,000 | ~3.1pp |
-| 5,000 | ~2.0pp |
-| 14,802 (the whole corpus) | ~1.1pp |
+**What is now open** is the protocol itself, in `docs/EVALUATION_PROTOCOL.md`:
 
-**Recommendation:** n ≥ 5,000 for any claim of edge; n ≈ 2,000 accepted only as
-*inconclusive and underpowered*, never as evidence that an edge does not exist; the
-calibration tolerance stays at ±3pp because it is a practical bound rather than a
-statistical one, and it should be reported alongside the reliability curve rather than
-instead of it.
+1. Accept over/under 2.5 as the first market, on the measured coverage (14,737 Pinnacle
+   closing prices, 99.6%).
+2. Accept the de-vigged closing price as benchmark and **log loss as the primary metric**,
+   with accuracy demoted to descriptive.
+3. Accept the 0.01-nat target — 1.5% relative to the market's 0.6706, the same order as
+   the book's 3.1% margin.
+4. Accept **pilot-based sizing** rather than a fixed n: the confirmatory slice (5,794
+   fixtures) supports 80% power at 0.01 nats only while SD(Δ) ≲ 0.271, and the pilot
+   measures it.
 
-**Why the change:** the register proposed n ≥ 2,000 as a floor. At that size the test
-can only see a 3.1-point edge, which is implausibly large for the signals this project
-would build, so a null at 2,000 would be uninformative while looking decisive. That is
-the failure mode the repository exists to prevent.
-
-**Decision needed:** accept the 5,000 floor, or set another number with a stated reason.
+**Decision needed:** items 1–4, or a stated alternative. Nothing is scored until the
+freeze record in protocol §8 is complete.
 
 ## P-03 — publishing derived data *(open, legal)*
 

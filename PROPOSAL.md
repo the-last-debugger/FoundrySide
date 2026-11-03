@@ -133,12 +133,21 @@ disagree. Recalculated on the paired (McNemar) design by simulation
 | 3pp | ~3,000 | 5,000 gives 94% |
 | 5pp | ~1,100 | 2,000 gives 97% |
 
-Two findings worth stating plainly. **Clustering barely affects this test** at 40
-league-season clusters, even at ICC 0.10 — the contrast is within-fixture, so
-between-cluster shifts largely cancel. The concern was reasonable; the measurement does
-not support a correction at this cluster count. And **the requirement is a function of
-the target edge and the disagreement rate**, so a single universal floor is the wrong
-instrument: 5,000 is right for ~3pp and wrong either side of it.
+Two findings worth stating plainly, and the second corrects revision 1.
+
+**Clustering changes the answer, and revision 1 was wrong to say otherwise.** The first
+analysis varied only the *discordance rate* by cluster, which cannot detect a model whose
+advantage differs by league-season. When the *advantage* is allowed to vary, the picture
+changes qualitatively: at a 3pp edge, power falls from about 93% to about 44% at 5,000
+fixtures, and adding fixtures then stops helping — moving from 5,000 to 10,000 lifts it
+from 44% to 50%, not to 93%. With 40 league-season clusters, **the cluster count becomes
+the binding constraint, not the fixture count.** That is now the most important design
+fact in the power analysis, and it argues for estimating between-cluster variance in the
+pilot rather than assuming it away.
+
+**The requirement is a function of the target edge and the disagreement rate**, so a
+single universal floor is the wrong instrument: 5,000 is right for ~3pp and wrong either
+side of it.
 
 The sizing that governs the first experiment is the paired log-loss power in
 `docs/EVALUATION_PROTOCOL.md` §6: a pilot slice estimates the distribution of Δ, the
