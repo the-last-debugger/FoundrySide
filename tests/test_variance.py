@@ -1,8 +1,8 @@
-"""The two implementations of the weighted variance estimator must agree.
+"""Tests for the cluster-level variance used in sizing.
 
-`research/variance.py` is the readable definition; `research/pilot_power.py` has a numpy
-version because it runs inside a 2,000-replicate bootstrap. Two implementations of one
-definition is a drift risk, so it is tested rather than trusted.
+The decomposition into within- and between-cluster components was removed after review:
+the unequal-weight estimator was not defensible. What remains is the cluster-robust
+variance of the fixture-weighted mean, which is what the confirmatory test divides by.
 """
 
 from __future__ import annotations
@@ -11,48 +11,48 @@ import sys
 import unittest
 from pathlib import Path
 
-import numpy as np
-
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from research import pilot_power, variance  # noqa: E402
+from research import variance  # noqa: E402
 
 
-def clusters(seed: int = 0) -> list[list[float]]:
-    rng = np.random.default_rng(seed)
-    sizes = [293, 306, 340, 380, 380, 552, 306, 340]
-    out = []
-    for i, m in enumerate(sizes):
-        base = 0.01 * (i % 3) - 0.02
-        out.append(list(rng.normal(base, 0.23, size=m)))
-    return out
+class ClusterVarianceTest(unittest.TestCase):
+    def test_matches_the_hand_computation_for_equal_clusters(self):
+        # Four clusters, two values each: means 0.5 and 1.5 alternating.
+        clusters = [[0.0, 1.0], [1.0, 2.0], [0.0, 1.0], [1.0, 2.0]]
+        w = [0.25] * 4
+        means = [0.5, 1.5, 0.5, 1.5]
+        grand = 1.0
+        expected = (4 / 3) * sum(wk ** 2 * (m - grand) ** 2 for wk, m in zip(w, means))
+        self.assertAlmostEqual(variance.cluster_robust_var(clusters), expected, places=12)
 
+    def test_weights_favour_the_large_cluster(self):
+        # A large cluster with no spread should dominate the weighted within-SD: the
+        # fixture-weighted value must sit far below the unweighted average of the three
+        # cluster variances.
+        clusters = [[1.0] * 400, [0.0, 2.0], [0.0, 2.0]]
+        weighted = variance.sigma_w(clusters)
+        unweighted = float(sum(variance.sigma_w([c]) for c in clusters) / 3)
+        self.assertLess(weighted, unweighted)
+        self.assertLess(weighted, 0.2)
 
-class AgreementTest(unittest.TestCase):
-    def test_weighted_components_match_between_implementations(self):
-        data = clusters()
-        slow = variance.weighted_components(data)
-        fast_w, fast_b = pilot_power.components([np.array(c) for c in data])
-        self.assertAlmostEqual(slow["sigma_w"], fast_w, places=9)
-        self.assertAlmostEqual(slow["sigma_b"], fast_b, places=9)
+    def test_variance_shrinks_as_clusters_agree(self):
+        agreeing = [[1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0]]
+        disagreeing = [[0.0, 0.0, 0.0], [1.0, 1.0, 1.0], [2.0, 2.0, 2.0]]
+        self.assertLess(variance.cluster_robust_var(agreeing),
+                        variance.cluster_robust_var(disagreeing))
 
-    def test_weights_matter_when_clusters_are_unequal(self):
-        # One huge cluster with no spread and several small ones: the fixture-weighted
-        # estimand must be dominated by the large cluster, unlike the unweighted version.
-        data = [[5.0] * 2 + [0.0] * 200, [0.0, 10.0], [0.0, -10.0], [0.0, 8.0]]
-        weighted = variance.weighted_components(data)
-        unweighted_means = [sum(c) / len(c) for c in data]
-        self.assertLess(weighted["sigma_w"], float(np.var(unweighted_means)))
+    def test_bootstrap_interval_brackets_the_point_estimate(self):
+        clusters = [[0.0, 0.1, -0.1], [0.02, 0.03, 0.01], [-0.05, 0.0, 0.05],
+                    [0.1, 0.12, 0.08]]
+        point = variance.cluster_robust_var(clusters)
+        lo, hi = variance.bootstrap_var(clusters, replicates=300)
+        self.assertLessEqual(lo, point * 3 + 1e-12)
+        self.assertGreaterEqual(hi, point / 3 - 1e-12)
 
-    def test_negative_between_variance_is_reported_not_hidden(self):
-        # Clusters drawn from the same distribution: the untruncated component may go
-        # negative, and it must be visible rather than clipped to zero.
-        data = [[0.0, 0.02, -0.01, 0.03], [0.01, -0.02, 0.0, 0.02],
-                [-0.01, 0.01, 0.02, -0.02]]
-        comp = variance.weighted_components(data)
-        self.assertLess(comp["var_between"], 1e-6)
-        self.assertGreaterEqual(comp["sigma_b"], 0.0)
+    def test_too_few_clusters_is_not_a_number(self):
+        self.assertTrue(variance.cluster_robust_var([[1.0, 2.0]]) != variance.cluster_robust_var([[1.0, 2.0]]))
 
 
 if __name__ == "__main__":
