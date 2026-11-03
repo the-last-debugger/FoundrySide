@@ -101,7 +101,10 @@ def parse_entries(path: Path = THREAD) -> list[dict[str, str]]:
             continue
         rev = REVISION_RE.match(line)
         if rev:
-            current["revision"] = rev.group("value")
+            # A SHA is often written as `abc1234` in prose. The emphasis is formatting,
+            # not data, and carrying it into the field silently breaks the match between
+            # a verdict and the row it authorises.
+            current["revision"] = rev.group("value").strip("`*_ ")
             continue
         ref = REF_RE.match(line)
         if ref:

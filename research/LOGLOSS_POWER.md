@@ -67,10 +67,28 @@ therefore overstate the case. What matters is the *unknown* SD of a real model's
 | 0.50 | 19,622 | 33.1% |
 
 **The confirmatory slice supports 80% power at a 0.01-nat effect only while
-SD(Δ) ≲ 0.272.** That is the number the pilot has to establish. It
-is not a matter of opinion and it is not something the protocol can assume: it is
-measurable on the pilot slice, and it decides whether the experiment is worth
-running as designed.
+SD(Δ) ≲ 0.272**, assuming the fixtures are independent. That is the
+number the pilot has to establish. It is not a matter of opinion and it is not
+something the protocol can assume: it is measurable on the pilot slice, and it
+decides whether the experiment is worth running as designed.
+
+## If the fixtures are not independent
+
+The threshold above assumes independence. With a design effect `D` — the effective
+sample is `n/D` — the permitted SD shrinks by `sqrt(D)`, which is the same fact
+from the other side: dependence makes the requirement stricter.
+
+| Design effect | Effective confirmatory n | SD(Δ) still detectable |
+| --- | --- | --- |
+| 1.0 | 5,794 | 0.272 |
+| 1.2 | 4,828 | 0.248 |
+| 1.5 | 3,863 | 0.222 |
+| 2.0 | 2,897 | 0.192 |
+
+So the pilot has two jobs, not one: estimate the within-fixture spread of Δ **and**
+the between-division-season variance, because the second enters as `D` and can
+move the threshold by a fifth or more. Sizing on the spread alone would be the same
+mistake as sizing on accuracy.
 
 ## Does the confirmatory slice have enough?
 

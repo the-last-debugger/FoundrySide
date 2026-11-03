@@ -203,7 +203,10 @@ def check_decisions(path: Path) -> list[str]:
 
 
 def _as_utc(stamp: str):
-    if not stamp:
+    # A date-only stamp means the time is unknown. Treating it as midnight invents an
+    # ordering the record does not support, so it is skipped rather than flagged as
+    # out of order — the entry is still visible in the file, which is the point.
+    if not stamp or "T" not in stamp:
         return None
     try:
         moment = datetime.fromisoformat(stamp.replace("Z", "+00:00"))

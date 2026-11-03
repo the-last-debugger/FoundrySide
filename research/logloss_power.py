@@ -84,11 +84,19 @@ def deltas(data, w_bar: float, q: float = Q, seed: int = SEED) -> list[float]:
 
 
 def power(diffs: list[float], n: int) -> float:
+    """Two-sided power at alpha 0.05, matching the protocol and the bootstrap check.
+
+    An earlier version computed only the upper tail, Phi(x - z), while the protocol
+    specifies a two-sided test and the bootstrap used |t|. The two tails agree to
+    rounding at these effect sizes, but a curve that tests a different rule from the
+    check beside it is not evidence.
+    """
     mean = sum(diffs) / len(diffs)
     sd = math.sqrt(sum((d - mean) ** 2 for d in diffs) / (len(diffs) - 1))
     if sd == 0:
         return 1.0
-    return phi(mean * math.sqrt(n) / sd - Z)
+    x = mean * math.sqrt(n) / sd
+    return phi(x - Z) + phi(-x - Z)
 
 
 def required_n(mean: float, sd: float, z_b: float = 0.8416212335729143) -> float:
@@ -212,15 +220,36 @@ def main() -> int:
     ]
     for sd_assumed in sd_grid:
         needed = required_n(TARGET, sd_assumed)
-        p_confirm = phi(TARGET * math.sqrt(n_confirm) / sd_assumed - Z)
+        p_confirm = phi(TARGET * math.sqrt(n_confirm) / sd_assumed - Z) \
+            + phi(-TARGET * math.sqrt(n_confirm) / sd_assumed - Z)
         lines.append(f"| {sd_assumed:.2f} | {needed:,.0f} | {p_confirm * 100:.1f}% |")
     lines += [
         "",
         f"**The confirmatory slice supports 80% power at a 0.01-nat effect only while",
-        f"SD(Δ) ≲ {sd_threshold:.3f}.** That is the number the pilot has to establish. It",
-        "is not a matter of opinion and it is not something the protocol can assume: it is",
-        "measurable on the pilot slice, and it decides whether the experiment is worth",
-        "running as designed.",
+        f"SD(Δ) ≲ {sd_threshold:.3f}**, assuming the fixtures are independent. That is the",
+        "number the pilot has to establish. It is not a matter of opinion and it is not",
+        "something the protocol can assume: it is measurable on the pilot slice, and it",
+        "decides whether the experiment is worth running as designed.",
+        "",
+        "## If the fixtures are not independent",
+        "",
+        "The threshold above assumes independence. With a design effect `D` — the effective",
+        "sample is `n/D` — the permitted SD shrinks by `sqrt(D)`, which is the same fact",
+        "from the other side: dependence makes the requirement stricter.",
+        "",
+        "| Design effect | Effective confirmatory n | SD(Δ) still detectable |",
+        "| --- | --- | --- |",
+    ]
+    for deff in (1.0, 1.2, 1.5, 2.0):
+        eff_n = n_confirm / deff
+        thr = TARGET * math.sqrt(eff_n) / (Z + z_b)
+        lines.append(f"| {deff:.1f} | {eff_n:,.0f} | {thr:.3f} |")
+    lines += [
+        "",
+        "So the pilot has two jobs, not one: estimate the within-fixture spread of Δ **and**",
+        "the between-division-season variance, because the second enters as `D` and can",
+        "move the threshold by a fifth or more. Sizing on the spread alone would be the same",
+        "mistake as sizing on accuracy.",
         "",
         "## Does the confirmatory slice have enough?",
         "",

@@ -79,6 +79,39 @@ applied to the fixture's own `Date` and `Time` columns. The rules that follow fr
 - If a timestamped price source is obtained later, its provenance is documented
   separately and it becomes a second benchmark, not a reinterpretation of this one.
 
+### The clock is an assumption, and it is checked
+
+The files carry a date and a kickoff time with no timezone field. Subtracting ninety
+minutes from a wall clock is reproducible arithmetic on an ambiguous clock, which is not
+auditable. The rule is therefore: each division's date and time are **local civil time in
+that country**, converted to UTC with the IANA zone below, and all arithmetic happens in
+UTC.
+
+| Division | Zone |
+| --- | --- |
+| E0, E1 | Europe/London |
+| SP1 | Europe/Madrid |
+| D1 | Europe/Berlin |
+| I1 | Europe/Rome |
+| F1 | Europe/Paris |
+| N1 | Europe/Oslo |
+| P1 | Europe/Lisbon |
+
+This is an assumption about the source, not a fact read from it, which is why it is
+tested. It matters twice a year: across a daylight-saving boundary two apparently
+adjacent fixtures differ by an hour, and that hour decides whether an earlier match counts
+as available.
+
+Validation, run and observed: `python research/fixture_time.py --audit` parses every
+fixture clock, maps its division, and fails on any timestamp that falls in a spring gap or
+an autumn fold. Result on the corpus: **14,802 clocks parsed, 8 divisions mapped, zero
+ambiguous or unmapped**. A timestamp in a gap or a fold is an error, not a rounding
+decision.
+
+The parsed instant is what the cutoff is computed from and what the prediction record
+stores, so "the cutoff was respected" is checked against the fixture's actual parsed
+timestamp rather than against string comparison of clock text.
+
 A run in which the cutoff cannot be verified is reported as invalid, not as a result.
 
 ## 4. Coverage and exclusions
@@ -98,9 +131,10 @@ like an outlier is kept, because dropping it is how a backtest becomes a story.
 
 The comparison is **paired**: per-fixture Δ log loss (model − market), summarised as a
 mean with a bootstrap interval resampled over fixtures, and a cluster bootstrap over
-(division, season) as a robustness check. Clustering was measured to have a negligible
-effect on the accuracy contrast (`research/POWER.md`); for log loss it is checked rather
-than assumed.
+(division, season) as a robustness check. The accuracy study in `research/POWER.md`
+found that clustering can remove most of the power when a model's advantage varies by
+league — an earlier claim in this protocol that clustering was negligible is withdrawn,
+and the same caution is applied to log loss rather than assumed away.
 
 The ±3pp calibration tolerance is a **guardrail, not a test**: it flags a model whose
 probabilities are systematically off, and it is reported with the reliability plot and
@@ -130,6 +164,20 @@ it on real fixtures and reports the governing quantity:
 
 **The confirmatory slice supports 80% power at 0.01 nats only while SD(Δ) ≲ 0.271.** That
 number, not the margin, is what the pilot has to establish.
+
+**Dependence changes the threshold, so the SD alone is not sufficient.** With a design
+effect `D` — effective n = n/D — the permitted SD shrinks by `sqrt(D)`:
+
+| Design effect | Effective confirmatory n | SD(Δ) still detectable |
+| --- | --- | --- |
+| 1.0 | 5,794 | 0.272 |
+| 1.2 | 4,828 | 0.248 |
+| 1.5 | 3,863 | 0.222 |
+| 2.0 | 2,897 | 0.192 |
+
+The pilot therefore estimates **both** the within-fixture spread of Δ and the
+between-division-season variance that produces `D`. Sizing on the spread alone would
+repeat the mistake the accuracy analysis made.
 
 Procedure:
 
@@ -165,7 +213,8 @@ Committed as `research/PREREG-<id>.md` before any scoring, containing:
 | --- | --- |
 | Market and outcome definition | over/under 2.5 goals, `FTHG + FTAG >= 3` |
 | Benchmark and de-vig method | Pinnacle closing, proportional normalisation |
-| Forecast timestamp | last recorded pre-kickoff price |
+| Forecast timestamp | kickoff − 90 min, computed in UTC per §3 |
+| Competition timezones | per-division IANA zones, `research/fixture_time.py` |
 | Engine id and version | _to be filled_ |
 | Feature list, with as-of rule per feature | _to be filled_ |
 | Training window and refit cadence | _to be filled_ |
