@@ -17,8 +17,31 @@ stand-in, so the procedure is ready when the data is.
 | --- | --- |
 | 5th percentile of power | **51.5%** |
 | Median power | 68.8% |
+| Median from the normal approximation, for reference | 74.1% |
 | Decision rule | adequate only if the 5th percentile reaches 80% |
 | Verdict | **NOT ADEQUATE** (on synthetic input) |
+
+The power for each replicate is obtained by **simulating the cluster-robust t**, not by a
+normal approximation. The reference row is a genuine normal-theory test (z = 1.96), not a
+hybrid, and it is shown for context only; the decision does not use it.
+
+## Monte Carlo stability of the decision statistic
+
+Each replicate's power is an estimate from **400** simulated t-tests, and
+the 5th percentile of 2,000 such estimates is itself a noisy quantity — and it is exactly
+where the 0.80 rule is applied, so its noise has to be measured rather than assumed.
+
+| Run | 5th-percentile power |
+| --- | --- |
+| seed 20261204 | 50.7% |
+| seed 20261305 | 54.5% |
+| seed 20261406 | 54.0% |
+| higher budget (1500 sims/replicate) | 51.3% |
+
+- Spread across the three independent runs: **3.8pp**.
+- Raising the simulation budget per replicate to 1500 moves the statistic to
+  **51.3%**, -0.2pp against the base run.
+- **Decision stability:** every run lands on the same side of 80%, so the verdict is stable at this budget.
 
 ## What this shows, and what it does not
 

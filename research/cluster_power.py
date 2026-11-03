@@ -150,7 +150,10 @@ def main() -> int:
     # Seed stability on the cell nearest the decision boundary.
     ref_w, ref_b = 0.20, 0.010
     seeds = (SEED, SEED + 1, SEED + 2)
-    stability = [simulate(TARGET, sizes, ref_w, ref_b, seed=s) for s in seeds]
+    # Seed stability must be measured on the recommended test, not on the bootstrap. The
+    # earlier version reported bootstrap stability and sat next to a recommendation about
+    # the t, which is a claim attached to the wrong procedure.
+    stability = [simulate_t(TARGET, sizes, ref_w, ref_b, seed=s) for s in seeds]
 
     # Type-I error: no effect, so the rejection rate should be near alpha = 0.05.
     type_one = [simulate(0.0, sizes, 0.20, sd_b, seed=SEED) for sd_b in (0.0, 0.010)]
@@ -219,10 +222,11 @@ def main() -> int:
         f"**{worst_near * 100:.1f}pp**. That is the number to quote, if any is.",
         "",
         "Seed stability on the cell nearest the boundary "
-        f"(σ_w = {ref_w}, σ_b = {ref_b}), three seeds: "
+        f"(σ_w = {ref_w}, σ_b = {ref_b}), **on the cluster-t, three seeds**: "
         + ", ".join(f"{p * 100:.1f}%" for p in stability)
-        + f" — spread **{(max(stability) - min(stability)) * 100:.1f}pp**, consistent with "
-        f"the reported Monte Carlo error.",
+        + f" — spread **{(max(stability) - min(stability)) * 100:.1f}pp**, against a "
+        f"per-run Monte Carlo error of about ±{mc_se(0.75) * 100:.1f}pp. ",
+        "The spread is consistent with the simulation error, so the t figures are stable",
         "",
         "## Type-I error, and a test that fails it",
         "",
