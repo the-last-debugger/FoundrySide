@@ -232,6 +232,48 @@ def league_table(scored: list[dict]) -> str:
     return "\n".join(lines)
 
 
+def bootstrap_ratio(scored: list[dict], reps: int = 10000, seed: int = 20261103) -> tuple[float, float]:
+    """Percentile bootstrap for the ratio, resampling fixtures.
+
+    The earlier interval divided the Wilson limits of the joint rate by a fixed
+    product of marginals, which treats both marginals as known constants. They are
+    estimated on the same sample, so their uncertainty has to propagate. Resampling
+    the four outcome cells is exactly a multinomial draw on the observed proportions,
+    which is cheap and needs no library.
+    """
+    import random
+
+    rng = random.Random(seed)
+    n = len(scored)
+    cells = [0, 0, 0, 0]           # (btts&over, btts&!over, !btts&over, !btts&!over)
+    for s in scored:
+        if s["btts"] and s["over25"]:
+            cells[0] += 1
+        elif s["btts"]:
+            cells[1] += 1
+        elif s["over25"]:
+            cells[2] += 1
+        else:
+            cells[3] += 1
+    p = [c / n for c in cells]
+    ratios = []
+    for _ in range(reps):
+        # Sequential binomial draws give a multinomial without numpy.
+        n1 = rng.binomialvariate(n, p[0])
+        n2 = rng.binomialvariate(n - n1, p[1] / (1 - p[0])) if p[0] < 1 else 0
+        n3 = rng.binomialvariate(n - n1 - n2, p[2] / (1 - p[0] - p[1])) \
+            if p[0] + p[1] < 1 else 0
+        btts = (n1 + n2) / n
+        over = (n1 + n3) / n
+        denom = btts * over
+        if denom > 0:
+            ratios.append((n1 / n) / denom)
+    ratios.sort()
+    if not ratios:
+        return (float("nan"), float("nan"))
+    return (ratios[int(0.025 * len(ratios))], ratios[int(0.975 * len(ratios)) - 1])
+
+
 def dependence(scored: list[dict]) -> dict:
     n = len(scored)
     p_btts = sum(1 for s in scored if s["btts"]) / n
@@ -240,12 +282,14 @@ def dependence(scored: list[dict]) -> dict:
     p_joint = joint / n
     product = p_btts * p_over
     lo, hi = wilson(joint, n)
+    boot_lo, boot_hi = bootstrap_ratio(scored)
     return {
         "n": n, "p_btts": p_btts, "p_over": p_over, "p_joint": p_joint,
         "product": product, "ratio": p_joint / product if product else float("nan"),
         "joint_lo": lo, "joint_hi": hi,
-        "ratio_lo": lo / product if product else float("nan"),
-        "ratio_hi": hi / product if product else float("nan"),
+        "ratio_lo": boot_lo, "ratio_hi": boot_hi,
+        "naive_lo": lo / product if product else float("nan"),
+        "naive_hi": hi / product if product else float("nan"),
         "p_over_given_btts": joint / sum(1 for s in scored if s["btts"]) if p_btts else float("nan"),
     }
 
@@ -260,8 +304,35 @@ def dependence_table(scored: list[dict]) -> str:
              f"| Realised joint P(BTTS and over 2.5) | {pct(pooled['p_joint'])} "
              f"(95% CI {pct(pooled['joint_lo'])}–{pct(pooled['joint_hi'])}) |",
              f"| Ratio, realised ÷ product | **{pooled['ratio']:.2f}×** "
-             f"(range {pooled['ratio_lo']:.2f}–{pooled['ratio_hi']:.2f}) |",
-             f"| P(over 2.5 given BTTS) | {pct(pooled['p_over_given_btts'])} |"]
+             f"(bootstrap 95% CI {pooled['ratio_lo']:.2f}–{pooled['ratio_hi']:.2f}) |",
+             f"| P(over 2.5 given BTTS) | {pct(pooled['p_over_given_btts'])} |",
+             "",
+             "The ratio is a ratio of three estimated proportions, so its interval has to",
+             "propagate uncertainty in both marginals. An earlier version divided the Wilson",
+             "limits of the joint rate by a *fixed* product and quoted "
+             f"{pooled['naive_lo']:.2f}–{pooled['naive_hi']:.2f}; that treats the marginals as",
+             "known constants and is not a confidence interval. The bootstrap interval above",
+             "is the one to use. The point estimate is unchanged."]
+    return "\n".join(lines)
+
+
+def market_coverage(rows: list[dict]) -> str:
+    """Closing-price availability per market, which decides the first experiment."""
+    n = len(rows)
+    checks = [
+        ("1X2, Pinnacle closing", "PSCH", "PSCD", "PSCA"),
+        ("1X2, Bet365 closing", "B365CH", "B365CD", "B365CA"),
+        ("Over/under 2.5, Pinnacle closing", "PC>2.5", None, "PC<2.5"),
+        ("Over/under 2.5, Bet365 closing", "B365C>2.5", None, "B365C<2.5"),
+    ]
+    lines = ["| Market | Fixtures with a complete closing price | Share |",
+             "| --- | --- | --- |"]
+    for label, a, b, c in checks:
+        def present(rec):
+            keys = [a, c] if b is None else [a, b, c]
+            return all(rec.get(k) not in (None, "") for k in keys)
+        count = sum(1 for r in rows if present(r))
+        lines.append(f"| {label} | {count} | {pct(count / n)} |")
     return "\n".join(lines)
 
 
@@ -290,6 +361,60 @@ def manifest() -> str:
     return f"manifest rows: {len(lines) - 1}"
 
 
+def market_benchmark(rows: list[dict]) -> str:
+    """Characterise the over/under 2.5 benchmark: de-vigged log loss and Brier.
+
+    This is not a model comparison. It measures how well the market's own de-vigged
+    probability scores, which sets the scale against which a model's log loss is read,
+    and is the number the preregistration needs for its effect-size argument.
+    """
+    import math
+
+    pairs = 0
+    logloss = 0.0
+    brier = 0.0
+    implied_over = 0.0
+    observed_over = 0
+    overrounds: list[float] = []
+    for r in rows:
+        try:
+            o_over = float(r.get("PC>2.5", ""))
+            o_under = float(r.get("PC<2.5", ""))
+        except (TypeError, ValueError):
+            continue
+        if o_over <= 1.0 or o_under <= 1.0:
+            continue
+        try:
+            hg, ag = int(r["FTHG"]), int(r["FTAG"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        raw_over, raw_under = 1 / o_over, 1 / o_under
+        total = raw_over + raw_under
+        p_over = raw_over / total
+        y = 1 if hg + ag >= 3 else 0
+        pairs += 1
+        observed_over += y
+        implied_over += p_over
+        overrounds.append(total - 1)
+        logloss += -(math.log(p_over) if y else math.log(1 - p_over))
+        brier += (p_over - y) ** 2
+    if not pairs:
+        return "No over/under 2.5 closing prices found."
+    return "\n".join([
+        "| Benchmark measure (de-vigged Pinnacle over/under 2.5) | Value |",
+        "| --- | --- |",
+        f"| Fixtures | {pairs} |",
+        f"| Mean de-vigged P(over 2.5) | {pct(implied_over / pairs)} |",
+        f"| Observed over-2.5 rate | {pct(observed_over / pairs)} |",
+        f"| Market log loss | **{logloss / pairs:.4f} nats** |",
+        f"| Market Brier score | {brier / pairs:.4f} |",
+        f"| Mean two-way overround | {pct(sum(overrounds) / len(overrounds))} |",
+        "",
+        "This is the benchmark's own score, not a model's. It is what a model has to",
+        "beat, and the first number a preregistered effect size should be stated against.",
+    ])
+
+
 def main() -> int:
     rows = load()
     scored = score(rows)
@@ -313,6 +438,15 @@ open question in §4.
 ## 1. T1 — what was actually obtainable
 
 {coverage_table(rows)}
+
+### Closing-price availability by market
+
+{market_coverage(rows)}
+
+This table is the evidence behind the first-market recommendation in
+`docs/EVALUATION_PROTOCOL.md`. Over/under 2.5 has a complete closing price on almost
+every fixture from two independent books, which is what makes it the cheapest market
+in which to run a paired, de-vigged comparison.
 
 ## 2. T0 — the real-league favourite baseline
 
@@ -346,7 +480,31 @@ bookmakers' view.
 
 {dependence_by_league(scored)}
 
-## 4. What these numbers do not establish
+## 3b. The benchmark's own score
+
+The over/under 2.5 market, de-vigged by proportional normalisation. This is a
+characterisation of the benchmark, not a model comparison — it sets the scale for the
+effect size in `docs/EVALUATION_PROTOCOL.md`.
+
+{market_benchmark(rows)}
+
+## 4. Descriptive versus inferential
+
+Stated explicitly, because the two were mixed in the first version of this document.
+
+- **Descriptive** (no inference claimed): the accuracy figures, the overround, the
+  per-league splits, the coverage table, and the point estimates in §3. These describe
+  this sample.
+- **Inferential** (intervals, and only where the estimator matches): the Wilson
+  intervals on proportions — accuracy, home, draw, joint rate — and the bootstrap
+  interval on the dependence ratio. Nothing else here is inferential.
+- **Not inferential at all**, despite appearing in the same tables: per-league accuracy
+  comparisons between divisions. Those are descriptive splits; the intervals overlap
+  and no test of difference has been run.
+- The earlier ratio interval (1.46–1.52) was **miscomputed** — see the note in §3 — and
+  is replaced by the bootstrap interval.
+
+## 5. What these numbers do not establish
 
 - **Not a legal opinion.** Attribution and reuse terms were read, not negotiated.
   Nothing here authorises redistribution of the underlying files.

@@ -32,6 +32,16 @@ COLLAB = ROOT / "docs" / "COLLAB"
 QUEUE_STATES = ("draft", "ready_for_review", "changes_requested", "accepted")
 VERDICT_STATES = ("changes_requested", "accepted")
 UNSET_REVISIONS = ("", "-", "pending")
+
+# Who may authorise a verdict. Oversight is the intended reviewer, but the sponsor is
+# the owner of the project and has issued verdicts directly, as a `response` rather than
+# a `review`. Refusing those would force a fiction: the ledger would have to say
+# "ready_for_review" while the repository contained a clear request for changes. The
+# rule is therefore explicit and narrow — an entry from oversight or sponsor, of kind
+# review or response, naming the row and the exact revision. The builder still cannot
+# authorise anything, which is the property that matters.
+REVIEW_AUTHORS = ("oversight", "sponsor")
+REVIEW_KINDS = ("review", "response")
 RQ_RE = re.compile(r"RQ-\d+")
 SHA_RE = re.compile(r"^[0-9a-f]{7,40}$")
 PROPOSED_RE = re.compile(r"\*\*Status:\*\*\s*proposed", re.IGNORECASE)
@@ -91,11 +101,28 @@ def revision_exists(sha: str) -> bool | None:
     return False
 
 
+def _is_verdict_entry(entry: dict[str, str]) -> bool:
+    """A verdict-bearing entry: review, or a response that names a queue row.
+
+    A sponsor may write a `response` that is directions rather than a verdict ("settle
+    the phase-one direction"). Counting those as reviews produces warnings about
+    authorising nothing, which trains readers to ignore the check. A `response` counts
+    only when it actually names a row.
+    """
+    if entry["author"] not in REVIEW_AUTHORS:
+        return False
+    if entry["kind"] == "review":
+        return True
+    if entry["kind"] == "response":
+        return bool(RQ_RE.search(entry["message"]) or RQ_RE.search(entry["ref"]))
+    return False
+
+
 def check_coupling(rows, entries, verify_revisions: bool = True):
     errors: list[str] = []
     warnings: list[str] = []
     known = {row["id"] for row in rows}
-    reviews = [e for e in entries if e["author"] == "oversight" and e["kind"] == "review"]
+    reviews = [e for e in entries if _is_verdict_entry(e)]
 
     for entry in reviews:
         if not entry["revision"].strip():

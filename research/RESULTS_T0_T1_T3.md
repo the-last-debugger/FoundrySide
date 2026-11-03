@@ -6,7 +6,7 @@ no number here is estimated, and every table can be reproduced by re-running the
 script against the same manifest.
 
 **Source.** football-data.co.uk division files, `mmz4281/<season>/<league>.csv`,
-retrieved 2026-11-03T12:28Z. Free, publicly
+retrieved 2026-11-03T12:57Z. Free, publicly
 published, no account. Terms reviewed at the level of "published for reuse with
 attribution"; this is **not** a legal opinion and is recorded as such — see the
 open question in §4.
@@ -58,6 +58,20 @@ open question in §4.
 | SP1 | 2324 | 380 | 380 | 100.0% | 2023-08-11 | 2024-05-26 | PSC |
 | SP1 | 2425 | 380 | 380 | 100.0% | 2024-08-15 | 2025-05-25 | PSC |
 | **all** | | **14802** | **14802** | **100.0%** | | | |
+
+### Closing-price availability by market
+
+| Market | Fixtures with a complete closing price | Share |
+| --- | --- | --- |
+| 1X2, Pinnacle closing | 14799 | 100.0% |
+| 1X2, Bet365 closing | 14801 | 100.0% |
+| Over/under 2.5, Pinnacle closing | 14737 | 99.6% |
+| Over/under 2.5, Bet365 closing | 14800 | 100.0% |
+
+This table is the evidence behind the first-market recommendation in
+`docs/EVALUATION_PROTOCOL.md`. Over/under 2.5 has a complete closing price on almost
+every fixture from two independent books, which is what makes it the cheapest market
+in which to run a paired, de-vigged comparison.
 
 ## 2. T0 — the real-league favourite baseline
 
@@ -120,8 +134,14 @@ bookmakers' view.
 | P(over 2.5 goals) | 51.8% |
 | Product of marginals | 27.5% |
 | Realised joint P(BTTS and over 2.5) | 40.9% (95% CI 40.1%–41.7%) |
-| Ratio, realised ÷ product | **1.49×** (range 1.46–1.52) |
+| Ratio, realised ÷ product | **1.49×** (bootstrap 95% CI 1.47–1.51) |
 | P(over 2.5 given BTTS) | 77.0% |
+
+The ratio is a ratio of three estimated proportions, so its interval has to
+propagate uncertainty in both marginals. An earlier version divided the Wilson
+limits of the joint rate by a *fixed* product and quoted 1.46–1.52; that treats the marginals as
+known constants and is not a confidence interval. The bootstrap interval above
+is the one to use. The point estimate is unchanged.
 
 ### By league
 
@@ -136,7 +156,41 @@ bookmakers' view.
 | P1 | 1530 | 48.8% | 49.0% | 23.9% | 37.6% | 1.57× |
 | SP1 | 1900 | 50.9% | 46.2% | 23.5% | 37.5% | 1.60× |
 
-## 4. What these numbers do not establish
+## 3b. The benchmark's own score
+
+The over/under 2.5 market, de-vigged by proportional normalisation. This is a
+characterisation of the benchmark, not a model comparison — it sets the scale for the
+effect size in `docs/EVALUATION_PROTOCOL.md`.
+
+| Benchmark measure (de-vigged Pinnacle over/under 2.5) | Value |
+| --- | --- |
+| Fixtures | 14735 |
+| Mean de-vigged P(over 2.5) | 51.5% |
+| Observed over-2.5 rate | 51.7% |
+| Market log loss | **0.6706 nats** |
+| Market Brier score | 0.2390 |
+| Mean two-way overround | 3.1% |
+
+This is the benchmark's own score, not a model's. It is what a model has to
+beat, and the first number a preregistered effect size should be stated against.
+
+## 4. Descriptive versus inferential
+
+Stated explicitly, because the two were mixed in the first version of this document.
+
+- **Descriptive** (no inference claimed): the accuracy figures, the overround, the
+  per-league splits, the coverage table, and the point estimates in §3. These describe
+  this sample.
+- **Inferential** (intervals, and only where the estimator matches): the Wilson
+  intervals on proportions — accuracy, home, draw, joint rate — and the bootstrap
+  interval on the dependence ratio. Nothing else here is inferential.
+- **Not inferential at all**, despite appearing in the same tables: per-league accuracy
+  comparisons between divisions. Those are descriptive splits; the intervals overlap
+  and no test of difference has been run.
+- The earlier ratio interval (1.46–1.52) was **miscomputed** — see the note in §3 — and
+  is replaced by the bootstrap interval.
+
+## 5. What these numbers do not establish
 
 - **Not a legal opinion.** Attribution and reuse terms were read, not negotiated.
   Nothing here authorises redistribution of the underlying files.

@@ -74,8 +74,24 @@ There is no merge step to gate, and pretending otherwise would make the ledger l
 | `changes_requested` | oversight | Oversight reviewed it and wants a follow-up commit. The row stays open. |
 | `accepted` | oversight | Oversight reviewed this exact revision and accepts it. Terminal; it does **not** mean a merge happened, because the commit is already on `main`. |
 
-The builder never writes `changes_requested` or `accepted`. Those are oversight's
-verdicts.
+The builder never writes `changes_requested` or `accepted`. Those are verdicts.
+
+**Who may issue a verdict.** Oversight is the intended reviewer, but the sponsor is the
+project owner and has issued verdicts directly — as a `response` that names queue rows
+rather than as a `review`. The checker therefore treats an entry as verdict-bearing when:
+
+- the author is `oversight` or `sponsor`, **and**
+- the kind is `review`, **or** the kind is `response` and the entry names an `RQ-` row.
+
+A `response` that names no row is directions, not a verdict, and produces no warning. The
+builder can never authorise anything, which is the property that matters. This rule was
+written after the sponsor's 2026-11-03 review, which was otherwise correct but would have
+been invisible to the checker.
+
+**Field aliases.** `- revision reviewed:` and `- refs:` are accepted alongside `- revision:`
+and `- ref:`, because both were used in practice and both are unambiguous. The value must
+still be a bare token, and a verdict still fails if its recorded revision differs from the
+row's.
 
 ## Enforced invariants
 

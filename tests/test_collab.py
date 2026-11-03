@@ -158,6 +158,53 @@ class DecisionsTest(unittest.TestCase):
         self.assertTrue(check_decisions(self._decisions("# Decisions\n\nnone yet\n")))
 
 
+    def test_accepts_documented_field_aliases(self):
+        text = ("### 2026-11-03T12:40:00Z · oversight · review\n"
+                "RQ-006 at eb0844d.\n"
+                "- revision reviewed: eb0844d\n"
+                "- refs: PROPOSAL.md, research/RESULTS_T0_T1_T3.md\n")
+        path = Path(tempfile.mkdtemp()) / "THREAD.md"
+        path.write_text(text, encoding="utf-8")
+        entry = parse_entries(path)[0]
+        self.assertEqual(entry["revision"], "eb0844d")
+        self.assertIn("PROPOSAL.md", entry["ref"])
+
+    def test_real_bridge_verdict_is_authorised(self):
+        collab = ROOT / "docs" / "COLLAB"
+        errors, _, _ = run_checks(
+            collab / "THREAD.md", collab / "REVIEW_QUEUE.md", collab / "DECISIONS.md",
+            verify_revisions=False, check_history=False)
+        self.assertEqual([e for e in errors if "no oversight review covers" in e], [])
+
+
+class VerdictAuthorityTest(unittest.TestCase):
+    """Who may authorise a row, and which entries count as verdicts."""
+
+    def test_sponsor_response_naming_a_row_authorises(self):
+        rows = [{"id": "RQ-009", "revision": "abc1234", "state": "changes_requested"}]
+        entries = [{"author": "sponsor", "kind": "response", "stamp": "t",
+                    "revision": "abc1234", "ref": "",
+                    "message": "RQ-009 needs work."}]
+        errors, _ = check_coupling(rows, entries, verify_revisions=False)
+        self.assertEqual(errors, [])
+
+    def test_sponsor_directions_without_a_row_are_not_reviews(self):
+        rows = [{"id": "RQ-009", "revision": "abc1234", "state": "ready_for_review"}]
+        entries = [{"author": "sponsor", "kind": "response", "stamp": "t",
+                    "revision": "", "ref": "",
+                    "message": "Proceed with the phase-one direction."}]
+        errors, warnings = check_coupling(rows, entries, verify_revisions=False)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+    def test_builder_cannot_authorise_its_own_row(self):
+        rows = [{"id": "RQ-009", "revision": "abc1234", "state": "accepted"}]
+        entries = [{"author": "builder", "kind": "review", "stamp": "t",
+                    "revision": "abc1234", "ref": "RQ-009", "message": "RQ-009"}]
+        errors, _ = check_coupling(rows, entries, verify_revisions=False)
+        self.assertTrue(any("no oversight review covers" in e for e in errors))
+
+
 class MalformedHeaderTest(unittest.TestCase):
     """A header that does not parse is a record-level failure, not body text."""
 

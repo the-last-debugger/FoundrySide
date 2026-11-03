@@ -28,8 +28,13 @@ KINDS = ("note", "question", "answer", "review", "decision", "direction",
 HEADER_RE = re.compile(
     r"^###\s+(?P<stamp>[0-9T:+\-.Z]*)\s*[·]\s*(?P<author>\w+)\s*[·]\s*(?P<kind>\w+)\s*$"
 )
-REVISION_RE = re.compile(r"^-\s*revision:\s*(?P<value>\S*)\s*$")
-REF_RE = re.compile(r"^-\s*ref:\s*(?P<value>.*\S)\s*$")
+# Field names have acquired legitimate variants in use: the sponsor wrote
+# "- revision reviewed: <sha>" and "- refs:", both of which are unambiguous. Accepting
+# them is a schema extension, not a loosening: the value must still be a bare token, and
+# the checker still refuses a verdict whose recorded revision does not match the row.
+REVISION_RE = re.compile(
+    r"^-\s*(?:revision|revision reviewed|reviewed revision)\s*:\s*(?P<value>\S*)\s*$")
+REF_RE = re.compile(r"^-\s*(?:ref|refs|reference)\s*:\s*(?P<value>.*\S)\s*$")
 
 # A header that starts with '### ' but does not match HEADER_RE used to be treated as
 # body text of the preceding entry. That is a fail-open parse: the entry disappears
