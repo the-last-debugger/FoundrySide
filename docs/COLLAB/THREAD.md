@@ -198,3 +198,26 @@ Please record this as a future research direction only. Do not build a news arch
 Please continue with the corrections and the next useful core research steps without waiting for another permission round. The contextual-intelligence idea is safely parked; the immediate priority remains a sound, affordable, preregistered first experiment. Bring back only decisions that genuinely require my approval.
 - revision reviewed: eb0844d
 - refs: PROPOSAL.md, research/RESULTS_T0_T1_T3.md, research/analyse.py, research/data_manifest.csv
+
+### 2026-11-03T12:59:55Z · builder · evidence
+Corrections made against the review of eb0844d. Six substantive items, and two of the review's points changed numbers rather than wording.
+
+Power (P-02). The one-sample approximation is withdrawn; the design is paired, so power was recomputed for McNemar on the discordant pairs, by simulation, 2000 replications per cell, with a discordance assumption of 0.35. Results: a 1pp edge needs about 27,000 fixtures (40,000 gives 92 percent), 2pp about 6,900 (10,000 gives 92), 3pp about 3,000 (5,000 gives 94), 5pp about 1,100. The 5,000 floor is withdrawn as a universal threshold and replaced by sizing to the target effect. One finding is contrary to the expectation behind the request: clustering at 40 league-season clusters barely moves the test, even at ICC 0.10, because the contrast is within-fixture and between-cluster shifts largely cancel. I did not apply a design-effect correction the simulation does not support; the reasoning and the numbers are in research/POWER.md so it can be argued with.
+
+Scoring. Log loss is now primary, Brier secondary, calibration a guardrail reported with reliability plots and bin counts rather than a test, and favourite-pick accuracy is explicitly descriptive. The benchmark is scored on its own terms: de-vigged Pinnacle over/under 2.5 gives log loss 0.6706 nats, Brier 0.2390, mean implied 51.5 against observed 51.7 on 14,735 fixtures. The target is 0.01 nats, which is 1.5 percent relative and the same order as the market 3.1 percent margin; that is argued in the protocol, not asserted.
+
+T3 interval. The earlier 1.46-1.52 was wrong as a method: it divided Wilson limits of the joint rate by a fixed product of marginals, treating both as known constants. Replaced with a percentile bootstrap over the four outcome cells, 10,000 resamples: 1.49 with 95 percent interval 1.47-1.51. The point estimate is unchanged, and the old interval happened to be close, which is luck rather than validity; the corrected method is now the only one quoted.
+
+Descriptive versus inferential. New section 4 of the results states which numbers are which. Proportions with Wilson intervals and the bootstrap ratio are inferential. Per-league accuracy splits are descriptive and no test of difference has been run on them, which the earlier document implied by presenting them as intervals.
+
+Competition mix. Corrected: seven top divisions plus E1, the English Championship, which is the second tier. That was a real error, not a wording slip: E1 is 2,760 fixtures, 18.6 percent of the corpus, and the lowest-accuracy league at 47.5 percent, so the old description overstated homogeneity.
+
+First market. Resolved to over/under 2.5, on measured coverage of 14,737 Pinnacle closing prices (99.6 percent) and 14,800 Bet365. Reasons in the protocol: two-way so de-vigging is unambiguous, not the market OLPRS consumed, and the outcome has a specifiable structure so a failure is interpretable. 1X2 is deferred, not rejected. Nothing is scored until the freeze record in protocol section 8 is filled and committed.
+
+Contextual intelligence. Recorded as parked in docs/PARKED.md, with what is not authorised, what is allowed, the conditions for reopening, and the point-in-time requirements to carry forward if it is ever opened.
+
+Two process changes, both because the review itself would otherwise have been invisible to the tooling. The review used the field names revision reviewed and refs, which the parser did not accept, so both verdicts failed to authorise anything and the checker correctly failed closed; those two aliases are now accepted. And the verdict was authored by sponsor with kind response, which the checker did not treat as a verdict at all; it now does when the entry names a queue row, while a sponsor response that names no row stays directions rather than a verdict, and the builder still cannot authorise its own work. Three tests cover that boundary.
+
+State: RQ-006 to RQ-010 at ready_for_review against this revision; 28 tests pass; checker errors 0, one acknowledged warning. Two decisions are asked in PROPOSAL.md section 7: accept the protocol as the basis for the first experiment, and accept pilot-based sizing rather than a fixed floor. Neither is reversible after the freeze.
+- revision: 00d2923
+- ref: PROPOSAL.md
