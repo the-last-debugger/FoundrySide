@@ -216,17 +216,28 @@ def _as_utc(stamp: str):
 
 
 def check_chronology(entries) -> list[str]:
-    warnings: list[str] = []
+    """One aggregated warning for timestamp inversions, not one per pair.
+
+    The entries are appended in the right order; what varies is the clock of whoever
+    wrote them. Reporting each inversion separately produced a warning per review round —
+    noise that trains a reader to ignore the check, which is worse than not checking.
+    """
+    inversions: list[tuple[str, str, str, str]] = []
     previous = None
     for entry in entries:
         instant = _as_utc(entry["stamp"])
         if instant is None:
             continue
         if previous and instant < previous[1]:
-            warnings.append(f"out-of-order timestamp: {entry['stamp']} "
-                            f"({entry['author']} {entry['kind']}) follows {previous[0]}")
+            inversions.append((entry["stamp"], entry["author"], entry["kind"], previous[0]))
         previous = (entry["stamp"], instant)
-    return warnings
+    if not inversions:
+        return []
+    stamp, author, kind, predecessor = inversions[0]
+    noun = "entry carries" if len(inversions) == 1 else "entries carry"
+    return [f"{len(inversions)} {noun} a timestamp earlier than the entry before them, "
+            f"e.g. {stamp} ({author} {kind}) after {predecessor} — usually clock skew "
+            f"between authors, not a mis-ordered log"]
 
 
 def lines_removed(previous: str, current: str) -> list[str]:

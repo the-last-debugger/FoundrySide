@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from scripts.collab_check import (  # noqa: E402
+    check_chronology,
     check_coupling,
     check_decisions,
     load_queue,
@@ -175,6 +176,30 @@ class DecisionsTest(unittest.TestCase):
             collab / "THREAD.md", collab / "REVIEW_QUEUE.md", collab / "DECISIONS.md",
             verify_revisions=False, check_history=False)
         self.assertEqual([e for e in errors if "no oversight review covers" in e], [])
+
+
+class ChronologyTest(unittest.TestCase):
+    def test_inversions_are_aggregated_into_one_warning(self):
+        entries = [
+            {"stamp": "2026-11-03T10:00:00Z", "author": "builder", "kind": "note"},
+            {"stamp": "2026-11-03T11:00:00Z", "author": "sponsor", "kind": "review"},
+            {"stamp": "2026-11-03T10:30:00Z", "author": "builder", "kind": "note"},
+            {"stamp": "2026-11-03T10:40:00Z", "author": "builder", "kind": "note"},
+            {"stamp": "2026-11-03T10:20:00Z", "author": "builder", "kind": "note"},
+        ]
+        warnings = check_chronology(entries)
+        self.assertEqual(len(warnings), 1)
+        self.assertIn("2 entries", warnings[0])
+
+    def test_ordered_entries_produce_no_warning(self):
+        entries = [{"stamp": "2026-11-03T10:00:00Z", "author": "builder", "kind": "note"},
+                   {"stamp": "2026-11-03T11:00:00Z", "author": "sponsor", "kind": "review"}]
+        self.assertEqual(check_chronology(entries), [])
+
+    def test_date_only_stamps_are_skipped(self):
+        entries = [{"stamp": "2026-11-03T10:00:00Z", "author": "builder", "kind": "note"},
+                   {"stamp": "2026-11-03", "author": "sponsor", "kind": "review"}]
+        self.assertEqual(check_chronology(entries), [])
 
 
 class VerdictAuthorityTest(unittest.TestCase):
