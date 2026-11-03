@@ -15,8 +15,8 @@ stand-in, so the procedure is ready when the data is.
 
 | Quantity | Value |
 | --- | --- |
-| 5th percentile of power | **49.9%** |
-| Median power | 68.2% |
+| 5th percentile of power | **51.5%** |
+| Median power | 68.8% |
 | Decision rule | adequate only if the 5th percentile reaches 80% |
 | Verdict | **NOT ADEQUATE** (on synthetic input) |
 

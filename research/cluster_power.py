@@ -143,8 +143,9 @@ def main() -> int:
     for sd_w in (0.20, 0.15):
         for sd_b in (0.0, 0.005, 0.010, 0.020):
             a = analytic(TARGET, n, sizes, sd_w, sd_b)
-            s = simulate(TARGET, sizes, sd_w, sd_b)
-            cells.append((sd_w, sd_b, a, s, mc_se(s)))
+            b = simulate(TARGET, sizes, sd_w, sd_b)
+            t = simulate_t(TARGET, sizes, sd_w, sd_b)
+            cells.append((sd_w, sd_b, a, b, t, mc_se(b), mc_se(t)))
 
     # Seed stability on the cell nearest the decision boundary.
     ref_w, ref_b = 0.20, 0.010
@@ -159,9 +160,8 @@ def main() -> int:
     boot_cell = simulate(TARGET, sizes, 0.20, 0.010, seed=SEED)
     t_cell = simulate_t(TARGET, sizes, 0.20, 0.010, seed=SEED)
 
-    near = [(a, s, se) for w, b, a, s, se in cells if 0.70 <= a <= 0.90]
-    worst_near = max(abs(a - s) for a, s, _se in near) if near else float("nan")
-    consistent = all(abs(a - s) <= 2 * se for a, s, se in near) if near else False
+    near = [(a, t) for w, b, a, _bs, t, _s1, _s2 in cells if 0.70 <= a <= 0.90]
+    worst_near = max(abs(a - t) for a, t in near) if near else float("nan")
 
     lines = [
         "# Power for the confirmatory test, with the actual cluster sizes",
@@ -187,22 +187,36 @@ def main() -> int:
         f"{SIMS:,} simulations it is at most **{mc_se(0.5) * 100:.1f}pp**, and about "
         f"**{mc_se(0.8) * 100:.1f}pp** near 80% power.",
         "",
-        "| σ_w | σ_b | Analytic | Simulated | MC SE | Difference | Within 2 SE? |",
-        "| --- | --- | --- | --- | --- | --- | --- |",
+        "| σ_w | σ_b | Normal approx (z) | Bootstrap sim | Cluster-t sim | MC SE (t) |",
+        "| --- | --- | --- | --- | --- | --- |",
     ]
-    for sd_w, sd_b, a, s, se in cells:
-        within = "yes" if abs(a - s) <= 2 * se else "**no**"
-        lines.append(f"| {sd_w:.2f} | {sd_b:.3f} | {a * 100:.1f}% | {s * 100:.1f}% | "
-                     f"±{se * 100:.1f}pp | {(s - a) * 100:+.1f}pp | {within} |")
+    for sd_w, sd_b, a, b, t, _seb, se_t in cells:
+        lines.append(f"| {sd_w:.2f} | {sd_b:.3f} | {a * 100:.1f}% | {b * 100:.1f}% | "
+                     f"{t * 100:.1f}% | ±{se_t * 100:.1f}pp |")
+
+    boundary_a = next(a for w, b, a, _bs, _t, _s1, _s2 in cells if w == 0.20 and b == 0.010)
+    boundary_t = next(t for w, b, _a, _bs, t, _s1, _s2 in cells if w == 0.20 and b == 0.010)
+    widest = max(abs(a - t) for _w, _b, a, _bs, t, _s1, _s2 in cells)
 
     lines += [
         "",
-        f"Near the 80% boundary the largest gap is **{worst_near * 100:.1f}pp**, and every "
-        + ("cell there lies within two Monte Carlo standard errors of the approximation — "
-           "the two procedures are consistent at this precision."
-           if consistent else
-           "**not** every cell there lies within two standard errors, so the approximation "
-           "is not validated at this precision."),
+        "Three different things, and an earlier version of this report conflated them:",
+        "",
+        "- **Normal approximation (z)** — the variance formula with a normal critical value.",
+        "  It is not the power of either test.",
+        "- **Bootstrap sim** — the percentile cluster bootstrap, which rejects too often under",
+        "  the null, so its power is inflated by false positives.",
+        "- **Cluster-t sim** — the recommended test, simulated directly.",
+        "",
+        "An earlier draft claimed the approximation was validated to 0.5pp. It is not: at the",
+        f"boundary cell the approximation is **{abs(boundary_t - boundary_a) * 100:.1f}pp** "
+        f"from the simulated t, and the widest gap in the grid is **{widest * 100:.1f}pp**. "
+        "The 0.5pp figure belonged to a different comparison in a different script — two",
+        "approximations compared with each other, not an approximation against the test. It is",
+        "withdrawn.",
+        "",
+        f"Near the 80% boundary the largest gap against the simulated t is "
+        f"**{worst_near * 100:.1f}pp**. That is the number to quote, if any is.",
         "",
         "Seed stability on the cell nearest the boundary "
         f"(σ_w = {ref_w}, σ_b = {ref_b}), three seeds: "
@@ -254,9 +268,10 @@ def main() -> int:
     OUT.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
     print(f"clusters={k} n={n} cv={cv:.3f} inflation={inflation:.3f}")
-    for sd_w, sd_b, a, s, se in cells:
-        print(f"  sw={sd_w:.2f} sb={sd_b:.3f} analytic={a:.3f} sim={s:.3f} se={se:.3f}")
-    print(f"near-boundary worst gap={worst_near:.3f} consistent={consistent}")
+    for sd_w, sd_b, a, b, t, se_b, se_t in cells:
+        print(f"  sw={sd_w:.2f} sb={sd_b:.3f} approx={a:.3f} boot={b:.3f} "
+              f"t={t:.3f} (se_t={se_t:.3f})")
+    print(f"near-boundary worst gap vs t={worst_near:.3f}")
     print(f"stability={[round(p, 3) for p in stability]} type_one={[round(p, 3) for p in type_one]}")
     print(f"wrote {OUT.relative_to(ROOT)}")
     return 0

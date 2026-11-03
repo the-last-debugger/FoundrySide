@@ -42,14 +42,35 @@ def phi(x: float) -> float:
     return 0.5 * (1 + math.erf(x / math.sqrt(2)))
 
 
-def power_t(delta: float, n: int, sizes: np.ndarray, sd_w: float, sd_b: float) -> float:
-    """Power of the cluster-robust t, the test the protocol now specifies.
+def power_t(delta: float, sizes: np.ndarray, sd_w: float, sd_b: float,
+            sims: int = 400, seed: int = SEED) -> float:
+    """Power of the cluster-robust t, by simulating the test.
 
-    Validated against direct simulation in `research/cluster_power.py`: agreement within
-    0.5pp at the boundary cell this sizing turns on.
+    An earlier version computed `phi(x − t_crit)`: a normal CDF evaluated at a t critical
+    value. That is neither the normal test nor the t test — it borrows the tail of one and
+    the cutoff of the other — and it was being used to justify a sizing decision. This
+    simulates the statistic that will actually be computed, which is the only honest way
+    to get its power without a noncentral-t implementation in the standard library.
     """
-    sum_w2 = float(((sizes / sizes.sum()) ** 2).sum())
-    se = math.sqrt(sd_w ** 2 / n + sd_b ** 2 * sum_w2)
+    rng = np.random.default_rng(seed)
+    m = np.asarray(sizes, dtype=float)
+    k = len(m)
+    w = m / m.sum()
+    sqrt_m = np.sqrt(m)
+    u = rng.normal(0.0, sd_b, size=(sims, k)) if sd_b > 0 else np.zeros((sims, k))
+    eps = rng.normal(0.0, 1.0, size=(sims, k))
+    totals = m[None, :] * (delta + u) + sqrt_m[None, :] * sd_w * eps
+    means = totals / m[None, :]
+    mean = (means * w[None, :]).sum(axis=1)
+    var = (k / (k - 1)) * (((means - mean[:, None]) * w[None, :]) ** 2).sum(axis=1)
+    t = mean / np.sqrt(var)
+    return float(np.mean(np.abs(t) > T_CRIT))
+
+
+def normal_approx(delta: float, sizes: np.ndarray, sd_w: float, sd_b: float) -> float:
+    """Normal-theory reference, kept only to show how far it is from the test."""
+    m = np.asarray(sizes, dtype=float)
+    se = math.sqrt(sd_w ** 2 / m.sum() + sd_b ** 2 * float(((m / m.sum()) ** 2).sum()))
     if se == 0:
         return 1.0
     x = delta / se
@@ -127,10 +148,14 @@ def main(argv: list[str] | None = None) -> int:
 
     clusters = synthetic_clusters([int(s) for s in sizes], sd_w_syn, sd_b_syn)
     pops = bootstrap_components(clusters)
-    powers = [power_t(TARGET, N_CONFIRMATORY, confirm_sizes, w, b) for w, b in pops]
+    powers = [power_t(TARGET, confirm_sizes, w, b, seed=SEED + i)
+              for i, (w, b) in enumerate(pops)]
+    approx = [normal_approx(TARGET, confirm_sizes, w, b) for w, b in pops]
     powers.sort()
+    approx.sort()
     p05 = powers[int(0.05 * len(powers))]
     median = powers[len(powers) // 2]
+    approx_median = approx[len(approx) // 2]
 
     doc = f"""# Pilot sizing — **UNPOPULATED, ILLUSTRATIVE ONLY**
 
@@ -151,8 +176,13 @@ stand-in, so the procedure is ready when the data is.
 | --- | --- |
 | 5th percentile of power | **{p05 * 100:.1f}%** |
 | Median power | {median * 100:.1f}% |
+| Median from the normal approximation, for reference | {approx_median * 100:.1f}% |
 | Decision rule | adequate only if the 5th percentile reaches 80% |
 | Verdict | **{'ADEQUATE' if p05 >= 0.80 else 'NOT ADEQUATE'}** (on synthetic input) |
+
+The power for each replicate is obtained by **simulating the cluster-robust t**, not by a
+normal approximation. The reference row shows how close the approximation happens to be
+here; it is not used for the decision, and it is not a validation of the approximation.
 
 ## What this shows, and what it does not
 
@@ -176,7 +206,8 @@ favourable draw.
     OUT.write_text(doc, encoding="utf-8")
 
     print(f"pilot clusters={len(clusters)} synthetic sw={sd_w_syn:.3f} sb={sd_b_syn:.3f}")
-    print(f"p05={p05:.3f} median={median:.3f} verdict={'ADEQUATE' if p05 >= 0.8 else 'NOT ADEQUATE'}")
+    print(f"p05={p05:.3f} median={median:.3f} normal_approx_median={approx_median:.3f} "
+          f"verdict={'ADEQUATE' if p05 >= 0.8 else 'NOT ADEQUATE'}")
     print(f"wrote {OUT.relative_to(ROOT)}")
     return 0
 

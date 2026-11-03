@@ -13,6 +13,7 @@ Writes research/PILOT_FRAME.md and exits non-zero if any check fails.
 
 from __future__ import annotations
 
+import math
 import statistics
 import sys
 from datetime import timedelta
@@ -60,10 +61,12 @@ def frame(rows: list[dict]) -> tuple[list[dict], dict[str, list[str]]]:
             continue
         # Present but unusable is a different thing from absent, and only the first is
         # expected at this stage. Grouping them would let a corrupt price hide inside an
-        # "expected exclusion" count.
-        if o_over <= 1.0 or o_under <= 1.0:
+        # "expected exclusion" count. Finiteness is checked explicitly: NaN compares
+        # false against every bound, so a `> 1.0` test alone would let it through.
+        if not (math.isfinite(o_over) and math.isfinite(o_under)) \
+                or o_over <= 1.0 or o_under <= 1.0:
             rejects["invalid_ou_price"].append(
-                f"{where}: price <= 1.0 ({o_over}, {o_under})")
+                f"{where}: unusable price ({o_over}, {o_under})")
             continue
         raw_over, raw_under = 1 / o_over, 1 / o_under
         out.append({

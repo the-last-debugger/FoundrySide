@@ -39,11 +39,20 @@ class ComponentsTest(unittest.TestCase):
 
     def test_power_falls_as_between_cluster_variance_rises(self):
         sizes = np.array([300.0] * 16)
-        p_low = pilot_power.power_t(0.01, 5794, sizes, 0.20, 0.0)
-        p_high = pilot_power.power_t(0.01, 5794, sizes, 0.20, 0.02)
+        p_low = pilot_power.power_t(0.01, sizes, 0.20, 0.0)
+        p_high = pilot_power.power_t(0.01, sizes, 0.20, 0.02)
         self.assertGreater(p_low, p_high)
         self.assertGreater(p_low, 0.9)
         self.assertLess(p_high, 0.6)
+
+    def test_power_is_simulated_not_approximated(self):
+        # Different seeds must give slightly different numbers: a closed-form value would
+        # be identical every time.
+        sizes = np.array([300.0] * 16)
+        a = pilot_power.power_t(0.01, sizes, 0.20, 0.01, sims=200, seed=1)
+        b = pilot_power.power_t(0.01, sizes, 0.20, 0.01, sims=200, seed=2)
+        self.assertNotEqual(a, b)
+        self.assertAlmostEqual(a, b, delta=0.12)
 
 
 if __name__ == "__main__":

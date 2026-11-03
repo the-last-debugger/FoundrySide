@@ -197,22 +197,27 @@ this, and it is what the pilot runs:
 6. **Sizing runs that procedure, not a grid.** Cluster-bootstrap the pilot's 24 clusters
    (2,000 replicates), recompute `(σ_w, σ_b)` each replicate — subtracting the sampling
    variance in cluster means, or the estimate is inflated — compute the t's power for the
-   confirmatory design (16 clusters, `n = 5,794`), and require the **5th percentile** of
-   that power distribution to reach 0.80. `research/pilot_power.py` implements this end to
-   end, and `research/cluster_power.py` validates the analytic power against direct
-   simulation of the t (agreement within 0.5pp at the boundary cell).
+   confirmatory design (16 clusters, `n = 5,794`) **by simulating the t**, and require the
+   **5th percentile** of that power distribution to reach 0.80.
+
+   The power is simulated rather than approximated. A normal CDF evaluated at a t critical
+   value is neither test — it borrows the tail of one and the cutoff of the other — and it
+   overstates the t's power by about **5pp** at the boundary cell. Measured against the
+   simulated t across the grid, the normal approximation's widest gap is **5.0pp**, and
+   `research/cluster_power.py` reports the three quantities separately: the approximation,
+   the bootstrap, and the t.
 
    **It is not yet populated.** There are no out-of-fold pilot Δ values, so the current
    output is a synthetic illustration and **the adequacy question is open**. Running it on
-   a stand-in with `σ_b = 0.010` yields a 5th-percentile power of about 50% — which is
-   suggestive, not evidence, and must not be quoted as a finding about FoundrySide.
+   a stand-in with `σ_b = 0.010` yields a 5th-percentile power of about 52% — suggestive,
+   not evidence, and not to be quoted as a finding about FoundrySide.
 
 **What this implies about the design.** At a plausible within-fixture spread
 (`σ_w = 0.20`) and `n = 5,794`, the two-season window tolerates a between-cluster SD of
-roughly **0.010** before power falls below 80%, with all five seasons (40 clusters)
-tolerating about **0.015**. With the valid test the margin is thinner than the earlier
-bootstrap figures suggested. Whether 16 clusters are enough is a question the pilot
-answers, not one the protocol can assume.
+about **0.008** before the t's power falls below 80% — not the 0.010 the earlier
+approximation suggested. With all five seasons (40 clusters) the tolerance is about
+0.015. Whether 16 clusters are enough is a question the pilot answers, not one the
+protocol can assume.
 
 The ±3pp calibration tolerance is a **guardrail, not a test**: it flags a model whose
 probabilities are systematically off, and it is reported with the reliability plot and

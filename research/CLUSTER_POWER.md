@@ -18,18 +18,31 @@ The variance is therefore `σ_w²/n + σ_b²·Σ(m_k/n)²`, not `σ_w²/n + σ_b
 
 Monte Carlo standard error is reported per cell: with 4,000 simulations it is at most **0.8pp**, and about **0.6pp** near 80% power.
 
-| σ_w | σ_b | Analytic | Simulated | MC SE | Difference | Within 2 SE? |
-| --- | --- | --- | --- | --- | --- | --- |
-| 0.20 | 0.000 | 96.8% | 96.7% | ±0.3pp | -0.1pp | yes |
-| 0.20 | 0.005 | 92.8% | 92.2% | ±0.4pp | -0.6pp | yes |
-| 0.20 | 0.010 | 77.8% | 79.2% | ±0.6pp | +1.4pp | **no** |
-| 0.20 | 0.020 | 41.2% | 46.9% | ±0.8pp | +5.6pp | **no** |
-| 0.15 | 0.000 | 99.9% | 100.0% | ±0.0pp | +0.0pp | yes |
-| 0.15 | 0.005 | 98.9% | 98.6% | ±0.2pp | -0.3pp | yes |
-| 0.15 | 0.010 | 87.2% | 87.3% | ±0.5pp | +0.1pp | yes |
-| 0.15 | 0.020 | 44.5% | 49.9% | ±0.8pp | +5.4pp | **no** |
+| σ_w | σ_b | Normal approx (z) | Bootstrap sim | Cluster-t sim | MC SE (t) |
+| --- | --- | --- | --- | --- | --- |
+| 0.20 | 0.000 | 96.8% | 96.7% | 94.7% | ±0.4pp |
+| 0.20 | 0.005 | 92.8% | 92.2% | 89.4% | ±0.5pp |
+| 0.20 | 0.010 | 77.8% | 79.2% | 72.8% | ±0.7pp |
+| 0.20 | 0.020 | 41.2% | 46.9% | 37.8% | ±0.8pp |
+| 0.15 | 0.000 | 99.9% | 100.0% | 99.9% | ±0.1pp |
+| 0.15 | 0.005 | 98.9% | 98.6% | 98.0% | ±0.2pp |
+| 0.15 | 0.010 | 87.2% | 87.3% | 82.9% | ±0.6pp |
+| 0.15 | 0.020 | 44.5% | 49.9% | 41.0% | ±0.8pp |
 
-Near the 80% boundary the largest gap is **1.4pp**, and every **not** every cell there lies within two standard errors, so the approximation is not validated at this precision.
+Three different things, and an earlier version of this report conflated them:
+
+- **Normal approximation (z)** — the variance formula with a normal critical value.
+  It is not the power of either test.
+- **Bootstrap sim** — the percentile cluster bootstrap, which rejects too often under
+  the null, so its power is inflated by false positives.
+- **Cluster-t sim** — the recommended test, simulated directly.
+
+An earlier draft claimed the approximation was validated to 0.5pp. It is not: at the
+boundary cell the approximation is **5.0pp** from the simulated t, and the widest gap in the grid is **5.0pp**. The 0.5pp figure belonged to a different comparison in a different script — two
+approximations compared with each other, not an approximation against the test. It is
+withdrawn.
+
+Near the 80% boundary the largest gap against the simulated t is **5.0pp**. That is the number to quote, if any is.
 
 Seed stability on the cell nearest the boundary (σ_w = 0.2, σ_b = 0.01), three seeds: 79.2%, 79.5%, 79.9% — spread **0.8pp**, consistent with the reported Monte Carlo error.
 

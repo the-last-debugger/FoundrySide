@@ -64,6 +64,22 @@ class FrameTest(unittest.TestCase):
             framed, _ = pilot.frame([row(**{"_season": season})])
             self.assertEqual(framed[0]["phase"], expected, season)
 
+    def test_nan_price_is_invalid_not_missing(self):
+        # NaN compares false against every bound, so a `<= 1.0` test alone lets it past.
+        framed, rejects = pilot.frame([row(**{"PC>2.5": "nan"})])
+        self.assertEqual(framed, [])
+        self.assertEqual(len(rejects["invalid_ou_price"]), 1)
+
+    def test_infinite_price_is_invalid(self):
+        framed, rejects = pilot.frame([row(**{"PC<2.5": "inf"})])
+        self.assertEqual(framed, [])
+        self.assertEqual(len(rejects["invalid_ou_price"]), 1)
+
+    def test_negative_infinite_price_is_invalid(self):
+        framed, rejects = pilot.frame([row(**{"PC>2.5": "-inf"})])
+        self.assertEqual(framed, [])
+        self.assertEqual(len(rejects["invalid_ou_price"]), 1)
+
     def test_unknown_season_is_unassigned(self):
         framed, _ = pilot.frame([row(**{"_season": "9999"})])
         self.assertEqual(framed[0]["phase"], "unassigned")
