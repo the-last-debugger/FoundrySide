@@ -1,38 +1,44 @@
 # Proposals
 
-Open questions and suggested defaults awaiting a sponsor decision. Nothing here is
-decided; decided items move to `DECISIONS.md`. The rationale, the alternatives and
-the evidence for each of the ten items below are in `PROPOSAL_SETTLEMENT.md`, which
-is the document to read before answering.
+Open questions awaiting a sponsor decision. Settled items move to `DECISIONS.md`.
 
-**Status: under review.** The sponsor's response of 2026-11-03 declines to accept
-D-04–D-13 wholesale and declines to fix D-05 before T0. D-04 and D-06 were revised in
-answer and remain proposals; `PROPOSAL_SETTLEMENT.md` §0 now separates the project's
-ambition from the phase-one constraints, and the expansion ladder records what would
-earn each wider scope rather than assuming it away.
+## P-01 — the settlement register (D-04 … D-13) — **settled 2026-11-03**
 
-## Proposal P-01 — the settlement register (D-04 … D-13)
+All ten items were answered in the sponsor's response of 2026-11-03T12:23:48Z and are
+recorded in `DECISIONS.md`. Two changed in settlement and the change matters:
 
-Three questions block the proposal: what the product is, what the numeric bar is,
-and what is out of scope for the first ninety days. Everything else in
-`PRE_PROPOSAL.md` is either downstream of those three or cheap to reverse later.
-The register expresses the three as ten answerable items, each with a recommended
-default, so "accept all defaults" is a complete reply.
+- **D-04** was redefined from "product thesis" to "phase-one deliverable", because the
+  original wording let a provisional board stand in for the product vision.
+- **D-05** was accepted as a *rule* (pre-register, measure the baseline, freeze) with its
+  constants explicitly left open, which is now P-02.
 
-| Decision | Question | Recommended default | Cost to reverse |
-| --- | --- | --- | --- |
-| D-04 | Phase-one deliverable, not the product: instrument plus a provisional board; product vision left open to G3 | Instrument and a provisional market-view board; ambition unchanged | Low — a positioning statement, no code |
-| D-05 | The bar: rule now, number after T0 | Pre-registered rule — measured baseline + delta at 80% power, n >= 2,000, calibrated within ±3pp, BH-corrected | High once published — this is the one decision that is expensive to change later |
-| D-06 | First slice: sport, markets, competitions | Football; 1X2, O/U 2.5, BTTS; leagues with reliable closing prices only | Medium — collection and schema choices |
-| D-07 | Accumulators and jackpots in v1 | Out of scope until a single-selection edge exists (gate G2) | Low now, high after build |
-| D-08 | Data: sources, budget, terms | Free-tier and published sources only; KSh 0 for phase 1; every source ToS-checked before collection | Low |
-| D-09 | Infrastructure | Local-first, SQLite, one machine; no cloud until an unattended job is proven necessary | Low |
-| D-10 | Autonomy boundary | Unattended collection and scoring allowed; no accounts, no spending, no third-party contact without a decision | Medium — it is a policy others will rely on |
-| D-11 | Interface | CLI plus a local dashboard; no mobile, no public web | Low |
-| D-12 | Legal and responsible-gambling posture | Research-only framing, no return targets in user-facing copy, BCLB position documented before any public launch | Low |
-| D-13 | Timeline and gates | 30/60/90-day gates with pre-registered kill conditions; stop on G1 failure | Medium |
+## P-02 — the sample floor and calibration tolerance *(open)*
 
-**Why this is fast:** the proposal does not need the thirteen reports in
-`PRE_PROPOSAL.md` §21. It needs three numbers — the bar, the coverage cost of
-getting there, and the cost per experiment — and three scope decisions. The reports
-become de-risking after the proposal is drafted, not a gate in front of it.
+This is the only number in the proposal that still needs the sponsor's agreement, and
+the power arithmetic changed what it should be.
+
+| Planned n | Detectable difference at 80% power, baseline 53.3% |
+| --- | --- |
+| 500 | ~6.3pp |
+| 2,000 | ~3.1pp |
+| 5,000 | ~2.0pp |
+| 14,802 (the whole corpus) | ~1.1pp |
+
+**Recommendation:** n ≥ 5,000 for any claim of edge; n ≈ 2,000 accepted only as
+*inconclusive and underpowered*, never as evidence that an edge does not exist; the
+calibration tolerance stays at ±3pp because it is a practical bound rather than a
+statistical one, and it should be reported alongside the reliability curve rather than
+instead of it.
+
+**Why the change:** the register proposed n ≥ 2,000 as a floor. At that size the test
+can only see a 3.1-point edge, which is implausibly large for the signals this project
+would build, so a null at 2,000 would be uninformative while looking decisive. That is
+the failure mode the repository exists to prevent.
+
+**Decision needed:** accept the 5,000 floor, or set another number with a stated reason.
+
+## P-03 — publishing derived data *(open, legal)*
+
+If any derived dataset, model output or board is published beyond internal research, the
+reuse terms of the source need a proper review rather than the reading recorded in
+`PROPOSAL.md` §3. Not urgent, and flagged now so it is not discovered late.
