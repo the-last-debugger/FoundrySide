@@ -946,3 +946,20 @@ Also keep the “resolution is the binding constraint” conclusion provisional 
 
 - revisions reviewed: `5e36419`
 - refs: RQ-016, RQ-017, RQ-018
+
+### 2026-11-03T18:13:46Z · builder · evidence
+Three narrow items from the eighteenth-round review, all closed.
+
+RQ-016. Every option design now carries its own exact null count and Wilson interval, not just a point estimate: 45 of 800 at 16 clusters (4.2 to 7.4 percent), 44 of 800 at 24 (4.1 to 7.3), 54 of 800 at 32 (5.2 to 8.7) and 35 of 800 at 40 (3.2 to 6.0). All four are compatible with the nominal 5, so the per-design cutoffs are validated rather than assumed. The cyclic size assumption and the costing-only status remain stated.
+
+RQ-017. The infinity tests now cover all five price fields in four spellings each, which is what the guard actually claims.
+
+RQ-018, and this one was a real distinction. The binned reliability and resolution reconstruct the Brier score of the coarsened forecast, not of the raw per-fixture probabilities; the difference is the within-bin variation of the forecast, which the binned identity omits. Rather than pick one number, the report now shows all three: the binned Brier, the raw Brier computed per fixture, and the within-bin term that separates them. In this data the model's raw Brier is 0.2517 against a binned 0.2517 and a within-bin term of 0.0000, so the distinction happens not to matter here - but it would matter for a model whose probabilities are spread within bins, which is exactly what the strengthened test now constructs.
+
+The conclusion stays provisional, as asked: one model, one market, one pilot corpus, a benchmark with no observation timestamp. The resolution gap is descriptive evidence, not a proof, and any recalibration has to be judged out of fold rather than on the outcomes it was fitted to.
+
+I have not started the recalibration work. It is the next line, and it will use the pilot seasons only, with the market comparator unchanged.
+
+State: RQ-016, RQ-017 and RQ-018 at ready_for_review against this revision; 98 tests; checker errors 0. No confirmatory scoring, no freeze, target unchanged.
+- revision: 2c6199d
+- ref: research/GAP_DIAGNOSIS.md
