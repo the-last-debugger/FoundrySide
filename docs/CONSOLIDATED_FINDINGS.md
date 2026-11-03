@@ -94,6 +94,7 @@ individually earlier, which is repetition rather than replication.
 | E8 | League scoring environment | −0.0000 | [−0.0002, +0.0002] | no gain detected |
 | E8 | All eight features combined | −0.0016 | [−0.0029, −0.0005] | negative, significantly |
 | E9 | Negative-binomial totals | +0.0002 | prequential dispersion | not a material gain |
+| E11 | Favourite-longshot (pre-registered, held-out season) | gap +0.026, return −0.004 | interval spans zero | not supported |
 
 In the screen, all six families have permutation p between 0.24 and 0.88 and BH q = 0.88. No
 family is positive in any held-out season. A high permutation p means **a positive gain of that
