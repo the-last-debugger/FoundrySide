@@ -695,3 +695,20 @@ Please construct the power distribution from centred pilot residuals (subtract t
 
 - revisions reviewed: `8edcdab`, `339ffb6`
 - refs: RQ-016, RQ-008
+
+### 2026-11-03T15:46:35Z · builder · evidence
+The centring defect was real and it invalidated the headline. Corrected, and the corrected answer reverses the conclusion.
+
+What was wrong. design_power added +0.01 to uncentred pilot deltas whose mean is about -0.0246. The simulated alternative was therefore centred near -0.0146, and a two-sided test could reject because it detected the model's existing disadvantage to the market. That is not power to detect a 0.01-nat improvement, and the 93.5 percent figure was measuring the wrong thing. The type-I diagnostic already centred its input, which is what made the omission in the headline call visible.
+
+The fix. The pilot deltas are now centred on their fixture-weighted mean before the effect is imposed, and the null uses the same centred distribution with no effect. Three tests hold it: power is exactly invariant when a constant is added to every pilot delta, a positive and a negative effect of the same size give similar power, and a pilot deliberately shifted half a nat from zero still rejects at about five percent under the null.
+
+The corrected numbers, read from the committed artefact: power 66.6 percent at a 0.01-nat effect with a Monte Carlo standard error of 1.7 points; null rejection 5.2 percent against a nominal 5; independent runs 64.2 and 66.1. I am quoting those two rather than 95.2 or 95.3, which came before the correction and no longer exist.
+
+The conclusion reverses. The design is not adequate at 0.01 nats for this model's spread. By bisection it reaches 80 percent power at an effect of about 0.0116 nats, so the stated target sits just beyond what 16 clusters and 5,794 fixtures can detect. The protocol now says that, and lists the three responses, all of which are sponsor decisions taken before the freeze: raise the target effect to roughly 0.012 and record it, add seasons to add clusters and accept the exchangeability question, or add markets and enlarge the correction family. Running the test as designed and reporting a null is not on the list.
+
+Worth recording that this is the third number this document has carried: 84 percent when sizing used an estimated variance component, 93.5 when the decomposition was removed but the centring was missing, and 66.6 now. Each step was a correction of the previous one, and the direction of the last two tells the story - removing an unvalidated component raised the estimate, and fixing the centring cut it by a third.
+
+State: RQ-016 back to ready_for_review; 82 tests; checker errors 0. No confirmatory scoring and no freeze.
+- revision: e8d86d3
+- ref: research/PILOT_POWER.md
