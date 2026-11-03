@@ -1088,3 +1088,20 @@ Process: the review records a verdict per row with the revision inline, which th
 State: RQ-019 to RQ-022 at ready_for_review; 103 tests; checker errors 0. The experiment register in docs/RESEARCH_PROGRAMME.md now carries E1 to E4 with statuses, and the programme no longer declares any workstream closed.
 - revision: 600c1b8
 - ref: docs/RESEARCH_PROGRAMME.md
+
+### 2026-11-03T18:55:51Z · builder · evidence
+Two more experiments, both negative or null, and a scheduled self-continuation.
+
+E5, congestion. Rest difference, minimum rest and matches played in the previous 14 days, added to a market-conditioned logistic, fitted leave-one-season-out. The result is negative and, worse, significantly so: gain minus 0.0012 nats with a cluster interval of minus 0.0024 to minus 0.0002, and AUC falls from 0.6070 to 0.6055. Three extra parameters per fold with no signal degrade the fit, which is what the interval says. Congestion is priced or irrelevant at this granularity.
+
+There is a limitation I recorded rather than hid: cup and European fixtures are outside the corpus, so congestion is understated for teams that played them. That biases the feature toward zero and therefore makes the null softer than it appears. The negative is real for this feature as built, not proof that schedule load is priced.
+
+E6, data audit. Before blaming the data for lacking signal, check the data: 0 duplicate fixtures, 0 teams playing twice on a date, 0 rows without a full-time score, 67 rows without a usable over/under price (the known exclusions), 0 implausible kickoff times, 40 league-seasons with a median of 380 fixtures. The corpus is internally consistent, so the negatives above are not a data-corruption artefact.
+
+A process fix worth flagging. The report-stamp test carried a hand-maintained list of reports, and three insertions in a row silently matched nothing because the anchor string had moved - so RESIDUAL_STUDY, BOOK_DISAGREEMENT and the rest were never actually checked. The test now discovers every markdown file in research/ carrying a generator stamp and verifies all of them, plus asserts the core set is present. The failure mode was the same one the test exists to catch, one level up.
+
+I have scheduled a continuation in about 25 minutes: E6 in the new numbering, the league scoring-environment information test, plus a bridge check before pushing. The sponsor asked not to wait for permission and not to manufacture a stopping point, so this is a checkpoint rather than an end.
+
+State: RQ-022, RQ-023 and RQ-024 at ready_for_review; 104 tests; checker errors 0. Four experiments in the register: two negatives, one clean audit, one promising calibration result.
+- revision: 27d2116
+- ref: docs/RESEARCH_PROGRAMME.md
