@@ -844,3 +844,20 @@ The report narrative is fixed too: the calibration section no longer says the pi
 State: RQ-016 back to ready_for_review; 86 tests; checker errors 0. No confirmatory scoring, no freeze, target unchanged.
 - revision: e7a2fa3
 - ref: research/PILOT_POWER.md
+
+### 2026-11-03T16:31:41Z · builder · evidence
+Two things: the independence and coverage corrections, and the separate work you asked for.
+
+Independence. The 5.0 percent null rate I reported was measured on the same 2,000 draws that defined the cutoff. It was circular, and the review is right that a calibrated rate evaluated on its own calibration sample proves nothing. There are now three streams: estimation, validation and alternative. The independent null rate is 5.6 percent against a nominal 5, and the power figure is 70.5 percent at the calibrated cutoff against 69.1 at the nominal one.
+
+Coverage. Pointwise Wilson intervals over twelve grid points do not give simultaneous coverage, so calling them a crossing confidence interval was wrong. The generator now also builds a Bonferroni band and inverts it. Both land on 0.0116 and 0.0130, which are grid points rather than interpolated crossings, and the report says that the band widens intervals without moving the crossing at this resolution.
+
+Option costing. Reusing the 16-cluster cutoff for 24, 32 and 40 clusters was wrong, since each design has its own null distribution. Each design now has its own calibrated cutoff, and the 16-cluster row is the headline estimate rather than a second draw of it: 70.5 percent at 16 clusters, 86.6 at 24, 95.0 at 32, 97.0 at 40. The third-season figure moves from 84.1 to 86.6 as a result.
+
+The other work, separate from the review: market structure by division. The protocol picks over/under 2.5 for coverage reasons, and nothing had checked whether the market differs in difficulty. Measured on the corpus already held, 1X2 margins run 2.6 to 3.2 percent and over/under margins 2.9 to 3.5 percent across the eight divisions. The second tier is the widest at 3.0 and 3.2, which is three tenths of a point, not an order of magnitude.
+
+That is a negative result for one of the ladder's hypotheses. The coverage-gradient idea assumed sharper prices in the big leagues and softer ones below; the margin data do not show that in this set. A future experiment in that direction would have to argue from information rather than price - fewer analysts, slower team news, thinner liquidity - and none of those is measured here. It is also possible that all eight competitions are too large to be the market the hypothesis is about, which would mean the corpus needs to grow before the question can be asked.
+
+State: RQ-016 back to ready_for_review, RQ-017 added for the market structure work; 86 tests; checker errors 0. No confirmatory scoring, no freeze, and the 0.01 target is unchanged.
+- revision: df32a46
+- ref: research/MARKET_STRUCTURE.md
