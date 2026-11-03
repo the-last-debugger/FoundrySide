@@ -861,3 +861,31 @@ That is a negative result for one of the ladder's hypotheses. The coverage-gradi
 State: RQ-016 back to ready_for_review, RQ-017 added for the market structure work; 86 tests; checker errors 0. No confirmatory scoring, no freeze, and the 0.01 target is unchanged.
 - revision: df32a46
 - ref: research/MARKET_STRUCTURE.md
+
+
+### 2026-11-03T18:00:00Z · sponsor · review
+
+Seventeenth-round oversight review of `e7a2fa3` (RQ-016), `df32a46` (RQ-017), and bridge update `3857b56`. The latest power work materially improves the previous version: the pilot cutoff, independent null validation and alternative power simulation now use separate seeds; the crossing uses a Bonferroni-adjusted Wilson band; and each larger-cluster option gets its own estimated cutoff. The new market-structure report is a useful descriptive check and correctly warns that margin is not the same thing as market difficulty. Neither row is ready to accept yet.
+
+**RQ-016 — one remaining inferential gap and two reporting limits.**
+
+1. **The independent pilot null validation is not accompanied by its Monte Carlo interval.** The reported 5.6% comes from 800 simulations (the main `design_power` call uses `SIMS=800`). At a rate near 5%, that is still a visibly noisy estimate. Please report the exact rejection count, a 95% binomial/Wilson interval, and the Monte Carlo standard error. The point estimate alone is not enough to judge whether 5.6% is compatible with nominal 5%.
+
+2. **The larger-design cutoffs are estimated but not independently validated.** The 24-, 32- and 40-cluster options each estimate a cutoff from 1,200 null draws, then estimate alternative power on another seed. That avoids reusing the calibration draws for power, but unlike the 16-cluster headline, the type-I rate of each option is not checked on a third, independent null stream. Either add independent null validation (with uncertainty) for each option or label the option power rows explicitly as provisional design sensitivities, not validated routes to adequacy.
+
+3. **Make the future-cluster assumption explicit.** `np.resize(base, k)` repeats the existing 16-cluster size vector to construct 24/32/40-cluster options. The report says it holds the cluster-size pattern, but should say plainly that this is a cyclic repetition of the observed confirmatory sizes, not an observed or forecast future-season distribution. Include Monte Carlo uncertainty for each option estimate; 800 alternative draws also leave meaningful simulation error.
+
+4. **The historical power narrative remains easy to misread.** The report's sequence still says “67.6% with probability-proportional-to-size sampling” without identifying that figure as the nominal-cutoff result from the previous run. The later current-run comparison (69.1% nominal, 70.5% calibrated) helps, but please label the historical 67.6% accordingly so it cannot be mistaken for the current PPS headline.
+
+**RQ-017 — descriptive finding useful, parser not yet robustly guarded.**
+
+5. **Reject non-finite prices before calculating margins.** `market_structure.parse()` converts odds to floats and checks only whether their minimum is <= 1.0. NaN and positive infinity can pass that guard; they can then contaminate means or be silently treated as zero implied probability. Add `math.isfinite` checks for all five odds and tests for NaN and ±infinity (plus the existing lower-bound cases). I could not find a dedicated `tests/test_market_structure.py` in the current tree.
+
+6. **Keep the conclusion strictly descriptive.** The report is right that the eight divisions show similar average margins and that margin is not difficulty. This does not test whether forecastable information, model residuals, calibration, or market-relative log loss differ by division. Do not promote the “coverage-gradient” hypothesis to rejected in general: the evidence only says it is unsupported by these margin summaries in this eight-division corpus. The report's own limitation about one bookmaker and absent quote timestamps should remain prominent.
+
+**Accepted in substance.** The independent-stream correction and Bonferroni band address the prior RQ-016 objections. The market-structure calculation is a worthwhile low-cost use of existing data and its restrained interpretation is appropriate. No evidence here justifies changing the 0.01-nat target, adding seasons or markets, scoring confirmatory outcomes, or freezing the protocol.
+
+**Authority and next step.** Continue autonomously on the narrow fixes above. RQ-016 and RQ-017 remain open as `changes_requested`. Do not treat the 24-cluster option as an approved third-season extension; it is a costing only. No confirmatory scoring, target change, market-family expansion, or protocol freeze is authorised.
+
+- revisions reviewed: `e7a2fa3`, `df32a46`, `3857b56`
+- refs: RQ-016, RQ-017
