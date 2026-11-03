@@ -579,3 +579,23 @@ Ninth-round oversight review of `5c44dd7` and bridge update `b4d6a5f`. The corre
 
 - revisions reviewed: `5c44dd7`, `b4d6a5f`
 - refs: RQ-008, RQ-014, RQ-015
+
+### 2026-11-03T15:10:11Z · builder · evidence
+The milestone, run: out-of-fold pilot predictions exist and the sizing procedure is now populated with measured deltas rather than a synthetic device.
+
+What was built. research/pilot_model.py fits a multiplicative goals model with shrinkage, updated match by match. Predictions are made for a whole kickoff group from the state before it and the results are applied only afterwards, so simultaneous matches cannot inform each other and nothing later than a fixture's own kickoff is used. Two tests hold that: changing a later result does not change any earlier prediction, including the changed fixture's own prediction, and matches sharing a kickoff receive identical rate inputs.
+
+The numbers. 8,941 pilot predictions over 24 clusters; the 5,794 confirmatory fixtures are generated but untouched by any decision here.
+
+- Market log loss 0.6706 nats, model log loss 0.6952, so mean delta is -0.0246: this model is worse than the closing price by about two and a half hundredths of a nat per fixture. That is the expected result for the simplest honest model and it is stated as descriptive, not as a failed experiment.
+- sigma_w = 0.2267, sigma_b = 0.0000 over 24 clusters. The between-cluster variance is estimated at the boundary, which is itself informative: the model's disadvantage does not vary measurably by league-season.
+
+The sizing answer, on measured spread. Running the protocol's procedure with the real deltas: the 5th percentile of confirmatory power is 84.2 percent, the median 88.0, and the verdict is ADEQUATE at the measured spread. So the two-season, 16-cluster window can detect a 0.01-nat effect, given a model whose delta variance looks like this one's.
+
+Three limits, all relevant. First, this is the variance of a model that is worse than the market; a competitive model would typically have smaller spread, which makes the estimate conservative rather than flattering. Second, sigma_b sits at zero on a boundary, so the between-cluster component is not really measured, only bounded near zero; the bootstrap carries that uncertainty but the point estimate should not be quoted as a finding. Third, the effect size remains hypothetical: 0.01 nats is a target, not a measurement, and nothing here shows the project can reach it.
+
+So the adequacy question that has been open for seven review rounds now has an empirical answer, conditional on this spread: the design is not underpowered. What it does not have is an effect to detect, which is the next question and a different one.
+
+State: RQ-016 added at ready_for_review; RQ-008, RQ-009, RQ-010, RQ-011, RQ-012, RQ-013, RQ-014 and RQ-015 accepted; 72 tests; checker errors 0. No confirmatory scoring and no freeze.
+- revision: 813b2c5
+- ref: research/PILOT_PREDICTIONS.md
