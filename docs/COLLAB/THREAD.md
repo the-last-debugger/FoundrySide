@@ -1042,3 +1042,32 @@ I reviewed the committed programme, calibration, segmentation and residual-analy
 - RQ-020: changes_requested — revision `ba3175c`
 - RQ-021: changes_requested — revision `ba3175c`
 - No confirmatory scoring, protocol freeze, target change, market-family expansion or additional seasons authorised.
+
+
+### 2026-11-03 · sponsor · direction — extended autonomous research session; tangible discoveries required
+
+I want you to treat the current expedition as a substantial, sustained research session, not a short batch of reports followed by another request for direction. You have permission to take as much time as is reasonably needed to investigate the authorised questions thoroughly. There is no artificial session-length or number-of-experiments target. Do not stop merely because one report is complete, one hypothesis fails, or you have sent an update. Continue through successive research cycles until the useful avenues have been properly tested, the evidence supports a clear stopping decision, or a genuine resource/approval boundary is reached.
+
+**The priority is discoveries, not activity.** I want tangible, reproducible findings: a feature that adds incremental information; a model or calibration method that survives temporal holdouts; a market segment or timing condition with a credible and repeatable difference; a data/timing defect that explains apparent underperformance; or a well-supported negative result that eliminates a plausible avenue. A large collection of reports, exploratory p-values, code churn or an elaborate research plan is not itself progress. Every substantial experiment should change what we believe, what we test next, or what we decide not to pursue.
+
+**Work continuously across the programme.** Continue correcting RQ-019, RQ-020 and RQ-021, while starting workstream 4 immediately and keeping the data/timing audit active. Do not treat the review requests as a serial gate that prevents other work. Revisit calibration, segmentation and residual hypotheses if later evidence gives a reason; do not declare an avenue permanently closed because one initial analysis was inconclusive. In parallel, challenge the current feature set and model assumptions, test simpler and materially different model families, examine feature ablations and interactions, and test whether any candidate contributes information beyond the unchanged market comparator. Look for timing, availability, data-quality and implementation explanations before attributing every failure to an absence of predictive signal.
+
+**Use a research loop, not a report waterfall:**
+1. Identify the highest-value unresolved question and state what result would support or falsify it.
+2. Inspect the actual source data, code and feature-availability path before designing the test.
+3. Implement the smallest reproducible experiment that can answer the question.
+4. Run it with recorded inputs, seeds, commands and resource use; test the implementation itself.
+5. Compare against the unchanged market and relevant simple baselines using temporally honest splits.
+6. Examine uncertainty, cluster/season concentration, multiple testing, leakage and sensitivity.
+7. Record the result, including null or adverse results, and choose the next experiment based on what was learned.
+8. Repeat without waiting for another sponsor prompt for ordinary, reversible research work.
+
+**Make the session produce concrete artefacts.** As appropriate, commit runnable research scripts, focused tests, reproducible result tables, model/feature comparisons, data-quality audits, and concise reports that state the hypothesis, design, result, uncertainty, limitations and next decision. Keep a clear experiment register so we can see what was tried, what worked, what failed, what remains open and why. Make the bridge useful as a live research log: record meaningful milestones and blockers as they occur, not every trivial action. At the end, provide one integrated expedition report that distinguishes (a) discoveries with repeatable evidence, (b) promising leads needing more validation, (c) negative findings, (d) unresolved questions and (e) the highest-value next steps. Link every claim to the code, data manifest and report revision that supports it.
+
+**Do not manufacture a stopping point.** If one avenue fails, move to the next. If an apparent gain disappears under a stricter split, record that and try a better hypothesis. If a promising result depends on one season, division, cluster or handful of fixtures, investigate that concentration rather than promoting it. If compute is the constraint, prioritise the highest expected information per unit cost, optimise or reduce the experiment, and continue with what is feasible. If data are insufficient, identify exactly what is missing and whether it can be resolved with already-authorised sources; do not quietly acquire new paid data.
+
+**Autonomy and boundaries remain unchanged.** You may make ordinary reversible research decisions, write code, add tests, run local experiments and reorganise the research queue without asking me first. You may use the existing local environment and available resources, but do not incur spending, enable paid infrastructure, create accounts, contact third parties, publish claims, execute real-money actions or acquire cost-incurring data without separate approval. Keep the pilot/exploratory boundary, preserve the untouched confirmatory slice, and do not perform confirmatory scoring, freeze the protocol, change the 0.01-nat target, expand the market family or add seasons without approval. Keep all timestamp and feature-availability caveats explicit. Never claim an experiment or test ran unless it actually ran.
+
+I am deliberately removing the pressure to finish quickly. I would rather have a long, careful session that produces two genuine discoveries and several well-established dead ends than a quick session that produces ten polished reports without changing our understanding. Keep going, think independently, and let the evidence determine when the current expedition has earned a pause.
+
+**Do not wait for me to say “continue.” Make the next useful move yourself.**
