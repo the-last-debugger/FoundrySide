@@ -53,7 +53,14 @@ def brier(rows: list[dict], key: str) -> float:
 
 
 def decompose(rows: list[dict], key: str) -> dict[str, float]:
-    """Murphy: Brier = reliability − resolution + uncertainty, over equal-width bins."""
+    """Murphy decomposition **of the binned forecast**.
+
+    Reliability and resolution are computed from each bin's mean forecast, so the identity
+    inned = reliability − resolution + uncertainty reconstructs the Brier score of the
+    *coarsened* forecast, not of the raw per-fixture probabilities. The gap between the two
+    is the within-bin variation of the forecast, and it is reported separately rather than
+    folded silently into the total.
+    """
     n = len(rows)
     base = statistics.mean(r["y"] for r in rows)
     bins: dict[int, list[dict]] = {}
@@ -67,11 +74,15 @@ def decompose(rows: list[dict], key: str) -> dict[str, float]:
         observed = statistics.mean(g["y"] for g in group)
         reliability += weight * (predicted - observed) ** 2
         resolution += weight * (observed - base) ** 2
+    binned = reliability - resolution + base * (1 - base)
+    raw = statistics.mean((r[key] - r["y"]) ** 2 for r in rows)
     return {
         "reliability": reliability,
         "resolution": resolution,
         "uncertainty": base * (1 - base),
-        "brier": reliability - resolution + base * (1 - base),
+        "brier": binned,
+        "brier_raw": raw,
+        "within_bin": raw - binned,
     }
 
 
@@ -144,7 +155,9 @@ division-season clusters, because fixtures within a league-season are not indepe
 | Reliability (lower better) | {model['reliability']:.4f} | {market['reliability']:.4f} | how far predictions sit from the observed rate in their bin |
 | Resolution (higher better) | {model['resolution']:.4f} | {market['resolution']:.4f} | how much the predictions separate outcomes |
 | Uncertainty | {model['uncertainty']:.4f} | {market['uncertainty']:.4f} | a property of the outcome, identical for both |
-| Brier | {model['brier']:.4f} | {market['brier']:.4f} | reliability − resolution + uncertainty |
+| Brier of the **binned** forecast | {model['brier']:.4f} | {market['brier']:.4f} | reliability − resolution + uncertainty |
+| Brier of the **raw** forecast | {model['brier_raw']:.4f} | {market['brier_raw']:.4f} | computed directly, per fixture |
+| Within-bin forecast variation | {model['within_bin']:.4f} | {market['within_bin']:.4f} | raw minus binned; omitted by the binned identity |
 
 ## Calibration, model
 
@@ -171,8 +184,9 @@ of difference between divisions has been run.
 
 ## Limits
 
-- Bins are equal-width and the bin count is a choice; reliability and resolution depend on
-  it. The decomposition identity holds for any binning, the split does not.
+- Bins are equal-width and the bin count is a choice. Reliability and resolution depend on
+  it, and they describe the *binned* forecast: the identity is exact for the coarsened
+  forecast, and the raw Brier differs from it by the within-bin variation reported above.
 - One model, one market, one corpus, pilot seasons only.
 - The benchmark is a closing price with no recorded observation time, so this compares a
   T−90 model with a later benchmark.

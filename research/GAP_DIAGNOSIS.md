@@ -1,4 +1,4 @@
-<!-- generated-by: gap_diagnosis.py sha256=954943c0c7f9 -->
+<!-- generated-by: gap_diagnosis.py sha256=e4f925e418fe -->
 
 # Why the model trails the market
 
@@ -18,7 +18,9 @@ division-season clusters, because fixtures within a league-season are not indepe
 | Reliability (lower better) | 0.0048 | 0.0001 | how far predictions sit from the observed rate in their bin |
 | Resolution (higher better) | 0.0030 | 0.0083 | how much the predictions separate outcomes |
 | Uncertainty | 0.2500 | 0.2500 | a property of the outcome, identical for both |
-| Brier | 0.2517 | 0.2418 | reliability − resolution + uncertainty |
+| Brier of the **binned** forecast | 0.2517 | 0.2418 | reliability − resolution + uncertainty |
+| Brier of the **raw** forecast | 0.2520 | 0.2407 | computed directly, per fixture |
+| Within-bin forecast variation | 0.0003 | -0.0011 | raw minus binned; omitted by the binned identity |
 
 ## Calibration, model
 
@@ -71,8 +73,9 @@ of difference between divisions has been run.
 
 ## Limits
 
-- Bins are equal-width and the bin count is a choice; reliability and resolution depend on
-  it. The decomposition identity holds for any binning, the split does not.
+- Bins are equal-width and the bin count is a choice. Reliability and resolution depend on
+  it, and they describe the *binned* forecast: the identity is exact for the coarsened
+  forecast, and the raw Brier differs from it by the within-bin variation reported above.
 - One model, one market, one corpus, pilot seasons only.
 - The benchmark is a closing price with no recorded observation time, so this compares a
   T−90 model with a later benchmark.

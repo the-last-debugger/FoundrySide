@@ -41,10 +41,12 @@ class ParseTest(unittest.TestCase):
         for field in ("PSCH", "PSCD", "PSCA", "PC>2.5", "PC<2.5"):
             self.assertIsNone(market_structure.parse(row(**{field: "nan"})), field)
 
-    def test_infinities_are_rejected(self):
-        for field in ("PSCH", "PC>2.5"):
-            self.assertIsNone(market_structure.parse(row(**{field: "inf"})), field)
-            self.assertIsNone(market_structure.parse(row(**{field: "-inf"})), field)
+    def test_infinities_are_rejected_in_every_price_field(self):
+        for field in ("PSCH", "PSCD", "PSCA", "PC>2.5", "PC<2.5"):
+            for value in ("inf", "-inf", "Infinity", "-Infinity"):
+                self.assertIsNone(
+                    market_structure.parse(row(**{field: value})),
+                    f"{field}={value} should be rejected")
 
     def test_below_unit_odds_are_rejected(self):
         self.assertIsNone(market_structure.parse(row(**{"PC>2.5": "1.00"})))

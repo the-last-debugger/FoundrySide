@@ -1,4 +1,4 @@
-<!-- generated-by: pilot_power.py sha256=52db2f05fbc1 -->
+<!-- generated-by: pilot_power.py sha256=321769a32d65 -->
 
 # Sizing for the confirmatory design
 
@@ -77,10 +77,10 @@ cluster-size pattern:
 
 | Confirmatory clusters | Fixtures | Cutoff | Null rate (independent) | Power at 0.01 nats |
 | --- | --- | --- | --- | --- |
-| 16 | 5,794 | 2.09 | 5.6% | 70.5% ±1.6 |
-| 24 | 8,216 | 2.07 | 5.5% | 86.6% ±1.2 |
-| 32 | 11,588 | 1.96 | 6.8% | 95.0% ±0.8 |
-| 40 | 14,010 | 2.10 | 4.4% | 97.0% ±0.6 |
+| 16 | 5,794 | 2.09 | 5.6% (45/800; Wilson 4.2–7.4%) | 70.5% ±1.6 |
+| 24 | 8,216 | 2.07 | 5.5% (44/800; Wilson 4.1–7.3%) | 86.6% ±1.2 |
+| 32 | 11,588 | 1.96 | 6.8% (54/800; Wilson 5.2–8.7%) | 95.0% ±0.8 |
+| 40 | 14,010 | 2.10 | 4.4% (35/800; Wilson 3.2–6.0%) | 97.0% ±0.6 |
 
 The cluster sizes for each row are the observed confirmatory sizes **repeated cyclically** to
 the required count. That is a costed assumption, not an observed or forecast distribution for

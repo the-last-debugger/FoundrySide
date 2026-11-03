@@ -270,15 +270,19 @@ def main(argv: list[str] | None = None) -> int:
     for k in (16, 24, 32, 40):
         if k == len(sizes):
             # The 16-cluster row must be the headline design, not a second estimate of it.
-            options.append((k, int(sizes.sum()), power, crit, type_one, se))
+            options.append((k, int(sizes.sum()), power, crit, type_one, se,
+                            null_hits, null_lo, null_hi))
             continue
         k_sizes = np.resize(base, k)
         crit_k = empirical_crit(clusters, k_sizes, sims=1200, seed=SEED + 3000 + k)
         rate_k = design_power(clusters, k_sizes, 0.0, sims=800,
                               seed=SEED + 5000 + k, crit=crit_k)
+        hits_k = int(round(rate_k * 800))
+        lo_k, hi_k = wilson(hits_k, 800)
         p_k = design_power(clusters, k_sizes, TARGET, sims=800,
                            seed=SEED + 4000 + k, crit=crit_k)
-        options.append((k, int(k_sizes.sum()), p_k, crit_k, rate_k, mc_se(p_k, 800)))
+        options.append((k, int(k_sizes.sum()), p_k, crit_k, rate_k, mc_se(p_k, 800),
+                        hits_k, lo_k, hi_k))
 
     doc = f"""{report_stamp.stamp(Path(__file__))}
 
@@ -359,7 +363,10 @@ cluster-size pattern:
 
 | Confirmatory clusters | Fixtures | Cutoff | Null rate (independent) | Power at 0.01 nats |
 | --- | --- | --- | --- | --- |
-""" + "\n".join(f"| {k} | {n:,} | {crit_k:.2f} | {rate * 100:.1f}% | {p * 100:.1f}% ±{se_k * 100:.1f} |" for k, n, p, crit_k, rate, se_k in options) + f"""
+""" + "\n".join(
+    f"| {k} | {n:,} | {crit_k:.2f} | {rate * 100:.1f}% ({hits}/800; "
+    f"Wilson {lo * 100:.1f}–{hi * 100:.1f}%) | {p * 100:.1f}% ±{se_k * 100:.1f} |"
+    for k, n, p, crit_k, rate, se_k, hits, lo, hi in options) + f"""
 
 The cluster sizes for each row are the observed confirmatory sizes **repeated cyclically** to
 the required count. That is a costed assumption, not an observed or forecast distribution for

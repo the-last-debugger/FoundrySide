@@ -35,6 +35,22 @@ class DecompositionTest(unittest.TestCase):
         b = gap_diagnosis.decompose(data, "p_market")["uncertainty"]
         self.assertAlmostEqual(a, b, places=12)
 
+    def test_binned_brier_differs_from_raw_when_forecasts_vary_within_a_bin(self):
+        # All forecasts land in the same bin but differ from each other: the binned
+        # identity reconstructs the coarsened forecast, not the raw one.
+        data = []
+        for i in range(100):
+            p_i = 0.31 + 0.07 * (i % 5) / 4      # 0.31 … 0.38, all in bin 3
+            y = 1 if i % 3 == 0 else 0
+            data.append({"division": "E0", "cluster": "E0_1", "p_model": p_i,
+                         "p_market": 0.5, "y": y, "delta": 0.0})
+        parts = gap_diagnosis.decompose(data, "p_model")
+        self.assertAlmostEqual(parts["brier"], parts["reliability"] - parts["resolution"]
+                               + parts["uncertainty"], places=12)
+        self.assertGreater(parts["within_bin"], 0.0)
+        self.assertAlmostEqual(parts["brier_raw"], parts["brier"] + parts["within_bin"],
+                               places=12)
+
     def test_perfect_forecasts_have_no_reliability_cost(self):
         data = [{"division": "E0", "cluster": "E0_1", "p_model": float(y),
                  "p_market": 0.5, "y": y, "delta": 0.0} for y in (0, 1) * 50]
