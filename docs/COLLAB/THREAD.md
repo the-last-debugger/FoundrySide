@@ -95,3 +95,44 @@ Answering the three questions in the sponsor response.
 No implementation has started and none will without a proposal and an authorisation. RQ-002, RQ-003, RQ-004 and RQ-005 are at ready_for_review against this revision.
 - revision: 0e05653
 - ref: PROPOSAL_SETTLEMENT.md
+
+
+### 2026-11-03T12:23:48Z · sponsor · response
+
+The clarification is accepted. D-04 and D-06 are phase-one constraints, not a reduction of FoundrySide's ambition. The three-tier distinction — ambition, rolling research programme, and bounded phase — is the right way to preserve the wider multi-sport vision while keeping the first work testable. The expansion ladder is also useful, provided that "queued" means retained as a live research direction rather than silently abandoned.
+
+I want us to settle the proposal promptly and begin useful research now. We should not turn the proposal process into another long prerequisite waterfall. Please prepare a concise formal research-phase proposal from the direction below, while running the authorised tests and investigations in parallel. The proposal should state the scope, boundaries, cost ceiling, evaluation rules, deliverables and stop/continue gates. It can be refined with measured results; it does not need to wait for every experiment to finish.
+
+**Direction and decisions for the first phase**
+
+1. **D-04 — phase-one deliverable:** accept the instrument plus a provisional market-view board as the practical starting deliverable, not the final product definition. Keep both research tracks alive: (A) whether any independent method can beat an appropriate market baseline at matched coverage, and (B) whether calibrated uncertainty, abstention, explanation and decision support add value even without beating the market. The market is a benchmark, not the boundary of our ambition.
+
+2. **D-05 — evaluation rule:** accept pre-registration before scoring and measurement of the real-market baseline through T0. Do not import OLPRS's virtual-league 0.515 figure. I am not approving the proposed n ≥ 2,000 or ±3 percentage-point calibration rule as universal constants yet. Show the power/sample-size reasoning, outcome and market dependence, confidence intervals, calibration method, multiple-testing family and practical effect size. Recommend a defensible protocol before the first scored experiment; once agreed, freeze it and do not move the goalposts.
+
+3. **D-06 — first slice:** accept football as the first calibration domain and 1X2, O/U 2.5 and BTTS as candidate initial markets. Do not commit blindly to twenty divisions or claim league-level generalisation. Use T0/T1 to identify a feasible, lawful competition set and report the coverage-versus-generalisation trade-off. Other sports remain on the expansion ladder and may be investigated at desk-research level where useful.
+
+4. **D-07 — accumulators and jackpots:** defer product/engineering scope, but do not prohibit research. Run the proposed dependence measurement (T3) and a bounded feasibility check of whether relevant jackpot rules/results are publicly available. These are inexpensive investigations that can inform later decisions.
+
+5. **D-08 — data and cost:** prioritise free, published and legally usable sources. Target KSh 0 recurring cost; do not incur paid API, hosting or inference charges without asking me first. If a genuinely useful option requires spending, present the exact cost and benefit for approval. Check source terms, Kenya accessibility, coverage, historical depth and closing-price availability before automation.
+
+6. **D-09 — infrastructure:** local-first and resource-efficient by default. Research existing available compute and low-cost options only where they materially help. No cloud deployment or paid service is authorised by this response.
+
+7. **D-10 — autonomy:** DeepSeek is authorised to independently run the agreed research, desk investigations, data-access checks, reproducible offline/limited-scope experiments and supporting research scripts. It may choose sensible next tests, challenge assumptions, compare methods and report findings without seeking approval at every step. It must preserve raw evidence, timestamps, source/terms provenance, frozen predictions, experiment definitions, costs and negative results. No account creation, third-party contact, spending, public claims or real-money execution without separate approval.
+
+8. **D-11 — interface:** defer the interface decision. CLI/local dashboard may be evaluated as options, but do not let an early interface choice drive the research or become application development.
+
+9. **D-12 — legal and responsible posture:** accept research-only framing. No promises or return targets, no encouragement to chase losses, and no real-money betting execution. Record the Kenya legal/licensing questions before any public-facing launch is proposed.
+
+10. **D-13 — gates:** use staged decision gates, but treat 30/60/90 days as planning checkpoints rather than artificial deadlines that override evidence availability. Each test must have a stated question, method, data requirements, cost, pass/fail or inconclusive outcome, and what decision follows.
+
+**Immediate authorisation**
+
+Please start T0 and T1 as priorities: establish the real-world baseline methodology and determine whether suitable closing-price/result data can be obtained lawfully, affordably and with adequate coverage. Run T3's bounded dependence/jackpot feasibility work in parallel. Design T2 properly once the baseline and data access are understood; do not manufacture an edge claim from a tiny or unsuitable sample.
+
+You may also investigate other prediction approaches, information-latency hypotheses, coverage/margin differences, market-specific effects and useful prior art where they can produce a concrete, testable next step. Keep a modest exploration stream for ideas outside the current thesis, but distinguish exploratory findings from confirmatory evidence.
+
+This is authorisation for research and experiments, not for building the FoundrySide application. Reproducible research code, temporary test harnesses and analysis artefacts are allowed where needed to answer the questions; no production application, permanent product schema, deployment or public service is authorised.
+
+Please update the proposal/decision register to reflect these settled directions, draft the concise formal proposal promptly, and proceed with the authorised work without waiting for another round of permission. Bring me decisions that genuinely require my input — especially any cost, legal boundary or irreversible scope choice — rather than routine research choices.
+
+The aim is momentum with discipline: settle the research programme now, learn from evidence as it arrives, and preserve the full FoundrySide ambition without pretending that the first experiment has already proved it.
