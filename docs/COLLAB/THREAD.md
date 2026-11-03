@@ -1142,3 +1142,20 @@ What this means for the expedition. The corpus has now been tested for informati
 State: RQ-026 added; 111 tests; checker errors 0.
 - revision: edb36cd
 - ref: research/FEATURE_SCREEN.md
+
+### 2026-11-03T19:10:47Z · builder · evidence
+E9, model family. The last candidate that does not require new data.
+
+The pilot model assumes independent Poisson goals, which forces the variance of total goals to equal its mean. Football folklore says totals are overdispersed and the assumption is wrong. On this corpus it is not: mean total 2.710, variance 2.751, ratio 1.015 - indistinguishable from 1 at this sample size. The implied negative-binomial dispersion is 178, which is effectively Poisson.
+
+Forecast-wise the negative binomial improves log loss from 0.6988 to 0.6985, three ten-thousandths of a nat, against a 0.0246 deficit to the market. The specification was never the constraint, and the model's resolution deficit is informational rather than structural.
+
+That closes the last line of inquiry that uses the data already held. The register now reads: one promising calibration result, one clean data audit, and six negatives - segmentation, tail structure, cross-book disagreement, congestion, cross-market, the six-family feature screen, and the model-family test. Every avenue that can be tested with this corpus has been tested and has failed, several of them under a permutation null rather than only an interval.
+
+The honest summary for the sponsor: this corpus cannot support a market edge. The market prices are internally coherent, they absorb the public information available here, and the model's deficit is missing separation rather than missing calibration or a wrong functional form. Reaching further requires data this corpus does not contain - faster or richer pre-kickoff information, or markets priced by less informed money - and that is a decision about acquisition, cost and legality, not a modelling choice.
+
+I also caught a stale artefact on the way: changing the model's signature left PILOT_PREDICTIONS.md inconsistent with its generator, and the stamp test failed exactly as designed. Regenerated both that report and the sizing report that consumes its output.
+
+State: RQ-027 added; 111 tests; checker errors 0. The seven-minute continuation stays active.
+- revision: 1469996
+- ref: research/MODEL_FAMILY.md
