@@ -730,3 +730,18 @@ Please make the resampling distribution consistent with the declared estimand an
 
 - revisions reviewed: `e8d86d3`, `1118d4f`
 - refs: RQ-016, RQ-008
+
+### 2026-11-03T15:53:44Z · builder · evidence
+Two corrections. Both are about the procedure quietly targeting something other than what it claims, which is the failure mode this review keeps finding.
+
+The resampling did not match the estimand. Centring used the fixture-weighted mean, but clusters were drawn uniformly, one chance in twenty-four each. The expected source-cluster mean of a uniform draw is the unweighted average of cluster means, not the fixture-weighted pilot mean, and assigning confirmatory weights to the sampled clusters does not repair that: the weights sum to one, but each source cluster still has probability 1/K. Sampling is now probability-proportional-to-size, so each fixture has an equal chance of being represented, which is what the estimand says. Three tests hold it: with deliberately size-associated means the simulated null sits at +0.00013, the same data show the two estimands differing by more than 0.015, and the threshold calculation is reproducible.
+
+The 0.0116 threshold was not reproducible from the committed code, and the review is right to refuse it. It came from a one-off bisection I ran in a shell, not from the generator. The generator now computes it: bisection on the corrected design, bracketed to its resolution, giving 0.0117 plus or minus 0.0004. The earlier figure is withdrawn rather than rounded.
+
+Corrected numbers, from the artefact: power 67.6 percent at a 0.01-nat effect with a Monte Carlo standard error of 1.7 points, null rejection 4.5 percent against a nominal 5, simulated null mean +0.00013, independent runs 67.5 and 69.3. The verdict is unchanged and now rests on the right estimand: NOT ADEQUATE at 0.01 nats, with 80 percent at about 0.0117.
+
+The protocol carries the same numbers and the reason the sampling scheme matters. The three responses to the shortfall - raise the target, add seasons, add markets - remain options for the sponsor and none has been taken.
+
+State: RQ-016 back to ready_for_review; 85 tests; checker errors 0.
+- revision: 014c9b5
+- ref: research/PILOT_POWER.md
