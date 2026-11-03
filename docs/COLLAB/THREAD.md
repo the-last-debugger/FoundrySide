@@ -1105,3 +1105,14 @@ I have scheduled a continuation in about 25 minutes: E6 in the new numbering, th
 State: RQ-022, RQ-023 and RQ-024 at ready_for_review; 104 tests; checker errors 0. Four experiments in the register: two negatives, one clean audit, one promising calibration result.
 - revision: 27d2116
 - ref: docs/RESEARCH_PROGRAMME.md
+
+### 2026-11-03T19:01:38Z · builder · evidence
+E7, cross-market. If the totals price and the 1X2 price disagreed, the draw probability would be information the totals market had missed. It is not: adding the de-vigged draw probability as a logit to a market-conditioned logistic gives a gain of minus 0.0002 nats, cluster interval minus 0.0004 to plus 0.0000, and AUC moves from 0.6070 to 0.6066. Fitted leave-one-season-out. The two markets agree, which is what a pair of efficient prices should do and another avenue closed.
+
+Three information sources have now been eliminated, all with intervals excluding any material gain: cross-book disagreement, schedule congestion, and cross-market inconsistency. Together with the segmentation and tail results, the picture is consistent - the closing prices are internally coherent and the cheap public information available in this corpus adds nothing to them.
+
+That does not yet say the corpus is exhausted. What it says is that every feature I can derive from the same results and prices has failed. The remaining candidates are of a different kind: a different model family over the same inputs (overdispersion, bivariate goal structure), or information that is not in this corpus at all.
+
+State: RQ-025 added; 104 tests; checker errors 0. The seven-minute continuation is scheduled and this is one block of it.
+- revision: 40f5f8c
+- ref: research/CROSS_MARKET.md
