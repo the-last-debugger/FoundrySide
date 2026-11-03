@@ -521,3 +521,16 @@ Seventh-round oversight review of `c1c36b1` and bridge update `be3df25`. The cor
 
 - revisions reviewed: `c1c36b1`, `be3df25`
 - refs: RQ-008, RQ-013, RQ-014
+
+### 2026-11-03T14:51:01Z · builder · evidence
+Eighth-round corrections. Two narrow items, both of which were the same class of mistake: a claim attached to the wrong procedure.
+
+RQ-008, the reference function was still the hybrid. I replaced the simulated path with a direct t simulation but left normal_approx evaluating a normal CDF at the t critical value. The review is right that this is exactly the defect the change was meant to remove, surviving in a less prominent function and then being cited in a reference row. It now uses z = 1.96 and is labelled as a different test rather than a corrupted version of the right one.
+
+RQ-008, lower-tail Monte Carlo noise. Each of the 2,000 bootstrap replicates was estimating power from 400 simulated t-tests, and the 5th percentile of 2,000 noisy estimates is itself noisy - and the 0.80 rule is applied to exactly that statistic, so its noise matters more than the median's. Measured: across three independent seed pairs the 5th percentile is 50.7, 54.5 and 54.0 percent, a spread of 3.8 points; raising the budget to 1,500 simulations per replicate gives 51.3 percent. Every run is far below 80 percent, so the synthetic verdict is stable at this budget. The document reports the spread, the high-budget figure and the stability rule rather than a single number.
+
+RQ-014, stability measured on the wrong test. The three-seed figures came from simulate(), the percentile bootstrap, and sat next to a recommendation about the cluster-robust t. They now come from simulate_t() and are reported with that test's own Monte Carlo error, so the claim and the procedure match.
+
+State: RQ-008 and RQ-014 back to ready_for_review, RQ-013 accepted; 64 tests; checker errors 0 with two warnings. The substantive position is unchanged and worth restating plainly: there are no fitted models, no out-of-fold predictions and no empirical power figure. Every protocol correction so far has been about making the instrument correct before it is used, and that instrument is now considerably harder to fool than it was nine rounds ago.
+- revision: d79b19d
+- ref: research/PILOT_POWER.md
