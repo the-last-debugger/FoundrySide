@@ -120,10 +120,15 @@ alongside and survival under Benjamini-Hochberg across the declared family of en
 `delta` is justified, not chosen; the full specification is
 `docs/EVALUATION_PROTOCOL.md` §5–§7.
 
-**Power and sample size — revised for the paired design.** Revision 1 used a one-sample
-proportion approximation. That was the wrong model: the model and the market are scored
-on the same fixtures, so their errors are paired, and power depends on how often they
-disagree. Recalculated on the paired (McNemar) design by simulation
+**Supplementary: pick-level (accuracy) power.** The primary metric is log loss, and the
+sizing that governs the experiment is the dependence-aware pilot procedure in
+`docs/EVALUATION_PROTOCOL.md` §5–§6. The table below is a **supplementary sensitivity
+analysis** — how many fixtures a *pick-level* difference needs — and it must not be cited
+as power for the log-loss comparison.
+
+Revision 1 used a one-sample proportion approximation. That was the wrong model: the model
+and the market are scored on the same fixtures, so their errors are paired, and power
+depends on how often they disagree. Recalculated on the paired design by simulation
 (`research/POWER.md`):
 
 | Target edge | n for 80% power (analytic) | Simulated check |
@@ -141,17 +146,21 @@ advantage differs by league-season. When the *advantage* is allowed to vary, the
 changes qualitatively: at a 3pp edge, power falls from about 93% to about 44% at 5,000
 fixtures, and adding fixtures then stops helping — moving from 5,000 to 10,000 lifts it
 from 44% to 50%, not to 93%. With 40 league-season clusters, **the cluster count becomes
-the binding constraint, not the fixture count.** That is now the most important design
-fact in the power analysis, and it argues for estimating between-cluster variance in the
-pilot rather than assuming it away.
+the binding constraint, not the fixture count.** That is the most important design fact in
+the supplementary analysis, and it is why the protocol's sizing procedure estimates
+between-cluster variance rather than assuming it away.
 
 **The requirement is a function of the target edge and the disagreement rate**, so a
 single universal floor is the wrong instrument: 5,000 is right for ~3pp and wrong either
 side of it.
 
-The sizing that governs the first experiment is the paired log-loss power in
-`docs/EVALUATION_PROTOCOL.md` §6: a pilot slice estimates the distribution of Δ, the
-sample is sized from it, and only then does the confirmatory slice run.
+**What actually governs the first experiment.** The paired log-loss power in
+`research/LOGLOSS_POWER.md`, computed on a synthetic device and therefore illustrative
+only: it fixes the *shape* of the relationship, the pilot supplies the numbers. The
+confirmatory slice (5,794 fixtures) reaches 80% power at 0.01 nats only while SD(Δ) ≲ 0.27
+before any design effect, and the permitted SD falls as `D` rises — 0.22 at `D = 1.5`.
+The protocol's §5 procedure says how `D` and its uncertainty are estimated from the pilot;
+no threshold in this document stands alone.
 
 **Multiple testing.** Family size is declared at freeze time. BH at FDR 0.05 across that
 family. A sub-family reported afterwards is exploratory.

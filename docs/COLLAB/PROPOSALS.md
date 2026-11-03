@@ -28,9 +28,11 @@ record.
    with accuracy demoted to descriptive.
 3. Accept the 0.01-nat target — 1.5% relative to the market's 0.6706, the same order as
    the book's 3.1% margin.
-4. Accept **pilot-based sizing** rather than a fixed n: the confirmatory slice (5,794
-   fixtures) supports 80% power at 0.01 nats only while SD(Δ) ≲ 0.271, and the pilot
-   measures it.
+4. Accept **pilot-based, dependence-aware sizing** rather than a fixed n or a single
+   threshold. The confirmatory slice (5,794 fixtures) reaches 80% power at 0.01 nats only
+   while SD(Δ) ≲ 0.27 **at D = 1**, falling to 0.19 at D = 2 — so the pilot measures both
+   the within-fixture spread and the between-division-season variance, per protocol §5.
+   No number here stands on its own.
 
 **Decision needed:** items 1–4, or a stated alternative. Nothing is scored until the
 freeze record in protocol §8 is complete.

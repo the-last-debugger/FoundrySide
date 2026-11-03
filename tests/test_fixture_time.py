@@ -18,6 +18,7 @@ sys.path.insert(0, str(ROOT))
 
 from research.fixture_time import (  # noqa: E402
     ClockError,
+    audit,
     available_at_cutoff,
     clock_status,
     cutoff_utc,
@@ -87,6 +88,41 @@ class CutoffTest(unittest.TestCase):
         # The Sunday the clocks change: a 14:00 kickoff is 14:00Z, cutoff 12:30Z.
         self.assertEqual(cutoff_utc("27/10/2024", "14:00", "E0"),
                          datetime(2024, 10, 27, 12, 30, tzinfo=timezone.utc))
+
+
+class AuditTest(unittest.TestCase):
+    """The audit must account for every row, not just the parseable ones."""
+
+    HEADER = "Date,Time,HomeTeam,AwayTeam\n"
+
+    def _corpus(self, body: str) -> Path:
+        import tempfile
+        d = Path(tempfile.mkdtemp())
+        (d / "E0_2425.csv").write_text(self.HEADER + body, encoding="utf-8")
+        return d
+
+    def test_clean_corpus_passes(self):
+        d = self._corpus("16/08/2024,20:00,A,B\n17/08/2024,15:00,C,D\n")
+        self.assertEqual(audit(d, expected=2), 0)
+
+    def test_missing_time_fails_rather_than_skips(self):
+        d = self._corpus("16/08/2024,,A,B\n17/08/2024,15:00,C,D\n")
+        self.assertEqual(audit(d), 1)
+
+    def test_missing_date_fails(self):
+        d = self._corpus(",20:00,A,B\n")
+        self.assertEqual(audit(d), 1)
+
+    def test_row_count_mismatch_fails(self):
+        d = self._corpus("16/08/2024,20:00,A,B\n")
+        self.assertEqual(audit(d, expected=2), 1)
+
+    def test_unmapped_league_fails(self):
+        import tempfile
+        d = Path(tempfile.mkdtemp())
+        (d / "ZZ9_2425.csv").write_text(self.HEADER + "16/08/2024,20:00,A,B\n",
+                                        encoding="utf-8")
+        self.assertEqual(audit(d), 1)
 
 
 if __name__ == "__main__":

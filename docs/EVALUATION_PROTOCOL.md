@@ -129,12 +129,42 @@ like an outlier is kept, because dropping it is how a backtest becomes a story.
 | Calibration: reliability curve with bin counts, slope and intercept of observed on predicted | Required alongside the score, never instead of it |
 | Accuracy of the favourite-pick | Descriptive only — it compares picks, not probabilities |
 
-The comparison is **paired**: per-fixture Δ log loss (model − market), summarised as a
-mean with a bootstrap interval resampled over fixtures, and a cluster bootstrap over
-(division, season) as a robustness check. The accuracy study in `research/POWER.md`
-found that clustering can remove most of the power when a model's advantage varies by
-league — an earlier claim in this protocol that clustering was negligible is withdrawn,
-and the same caution is applied to log loss rather than assumed away.
+**Sign convention, defined once.** Δ is **market minus model**: the reduction in log loss
+the model achieves. Positive Δ is an improvement, and the target is Δ ≥ 0.01 nats. An
+earlier draft of this protocol wrote the difference as model minus market, which would
+have made every improvement negative; the code and the generated tables have always used
+market minus model, and the definition lives here so the two cannot drift again.
+
+The comparison is **paired**: per-fixture Δ, summarised as a mean with a bootstrap
+interval resampled over fixtures, and a cluster bootstrap over (division, season). The
+accuracy study in `research/POWER.md` found that clustering can remove most of the power
+when a model's advantage varies by league — an earlier claim in this protocol that
+clustering was negligible is withdrawn, and the same caution is applied to log loss
+rather than assumed away.
+
+### The cluster-aware procedure, operationally
+
+A table of assumed design effects is sensitivity analysis, not a method. The method is
+this, and it is what the pilot runs:
+
+1. **From the pilot's out-of-fold predictions**, compute Δ for each fixture, labelled by
+   cluster `k` (division × season), with `m_k` fixtures per cluster.
+2. **Decompose the variance**: within-cluster `σ²_w`, between-cluster `σ²_b` of the
+   cluster means, and `m̄` the mean fixtures per cluster.
+3. **ICC** = `σ²_b / (σ²_b + σ²_w)`; **design effect** `D = 1 + (m̄ − 1) · ICC`.
+4. **The variance the sizing uses** is `Var(mean Δ) ≈ σ²_b / K + σ²_w / n`, with `K`
+   clusters and `n` fixtures — not `sd²/n`. This is the quantity that decides power.
+5. **Uncertainty in `D`**: cluster-bootstrap the pilot (resample clusters with
+   replacement, 2,000 replicates), recompute ICC and `D` each time, and size against the
+   **95th percentile** of `D`. Sizing on a point estimate of `D` would repeat the error
+   of sizing on a point estimate of the spread.
+6. **The confirmatory test is the same statistic**: a cluster bootstrap over `K`
+   clusters of the confirmatory mean Δ, rejecting when the 95% percentile interval
+   excludes zero. If the pilot's bootstrap is too coarse because `K` is small, that is
+   reported as a limitation of the design, not smoothed over.
+
+`K` is 40 here (8 divisions × 5 seasons). That is not many, and it is the reason step 5
+exists: the uncertainty in `D` is large enough to matter.
 
 The ±3pp calibration tolerance is a **guardrail, not a test**: it flags a model whose
 probabilities are systematically off, and it is reported with the reliability plot and
@@ -162,8 +192,9 @@ it on real fixtures and reports the governing quantity:
 | 0.35 | 9,615 | 58.5% |
 | 0.50 | 19,622 | 33.1% |
 
-**The confirmatory slice supports 80% power at 0.01 nats only while SD(Δ) ≲ 0.271.** That
-number, not the margin, is what the pilot has to establish.
+**The confirmatory slice supports 80% power at 0.01 nats only while SD(Δ) ≲ 0.271** under
+independence, before any design effect. That number, not the margin, is what the pilot
+has to establish.
 
 **Dependence changes the threshold, so the SD alone is not sufficient.** With a design
 effect `D` — effective n = n/D — the permitted SD shrinks by `sqrt(D)`:
@@ -175,9 +206,9 @@ effect `D` — effective n = n/D — the permitted SD shrinks by `sqrt(D)`:
 | 1.5 | 3,863 | 0.222 |
 | 2.0 | 2,897 | 0.192 |
 
-The pilot therefore estimates **both** the within-fixture spread of Δ and the
-between-division-season variance that produces `D`. Sizing on the spread alone would
-repeat the mistake the accuracy analysis made.
+The pilot estimates both quantities through steps 2–5 of §5. The table above is what
+happens to the threshold as `D` grows; it is not a substitute for measuring `D`, and
+sizing on the spread alone would repeat the mistake the accuracy analysis made.
 
 Procedure:
 

@@ -100,37 +100,74 @@ def available_at_cutoff(input_date: str, input_clock: str, input_league: str,
     return prior <= cutoff_utc(fixture_date, fixture_clock, fixture_league)
 
 
-def audit() -> int:
-    """Every fixture in research/data must parse, map, and sit on an unambiguous clock."""
+def audit(data_dir: Path | None = None, expected: int | None = None) -> int:
+    """Every fixture row must be accounted for, parsed, mapped and unambiguous.
+
+    An audit that silently skips a row with a missing clock is not an audit: it reports
+    "clean" over whatever subset happened to be parseable. Total rows, parsed rows and
+    failures are therefore counted separately, and any missing or unparseable clock is a
+    failure rather than a skip.
+
+    A clean parse is evidence about *our* arithmetic and the corpus's completeness. It is
+    **not** evidence that the source used these local zones — the zone map is an
+    assumption, and no amount of successful conversion tests it.
+    """
     problems: list[str] = []
-    seen = 0
+    rows_total = 0
+    parsed = 0
+    missing_clock = 0
     leagues: dict[str, int] = {}
-    for path in sorted(glob.glob(str(ROOT / "research" / "data" / "*.csv"))):
+    for path in sorted(glob.glob(str((data_dir or ROOT / "research" / "data") / "*.csv"))):
         league = Path(path).stem.split("_")[0]
         with open(path, encoding="latin-1", newline="") as fh:
             for row in csv.DictReader(fh):
-                date, clock = row.get("Date", ""), row.get("Time", "")
+                rows_total += 1
+                date, clock = row.get("Date", "").strip(), row.get("Time", "").strip()
                 if not date or not clock:
+                    missing_clock += 1
+                    if missing_clock <= 10:
+                        problems.append(f"{Path(path).name}: row {rows_total} has no clock "
+                                        f"(Date={date!r}, Time={clock!r})")
                     continue
-                seen += 1
                 leagues[league] = leagues.get(league, 0) + 1
                 try:
                     kickoff_utc(date, clock, league)
                 except ClockError as exc:
                     problems.append(str(exc))
-    print(f"fixtures with a clock: {seen}")
+                    continue
+                parsed += 1
+
+    unaccounted = rows_total - parsed - missing_clock
+    print(f"fixture rows:            {rows_total}")
+    print(f"parsed to a UTC instant: {parsed}")
+    print(f"missing clock fields:    {missing_clock}")
+    print(f"failed conversion:       {unaccounted}")
     for league in sorted(leagues):
         zone = LEAGUE_TZ.get(league, "UNMAPPED")
         print(f"  {league:4} {leagues[league]:5}  {zone}")
+
+    if missing_clock:
+        problems.append(f"{missing_clock} row(s) have no Date or Time")
+    if unaccounted:
+        problems.append(f"{unaccounted} row(s) parsed but not counted as converted")
+    if expected is not None and rows_total != expected:
+        problems.append(f"expected {expected} fixture rows, found {rows_total}")
+
     if problems:
         print(f"PROBLEMS: {len(problems)}")
         for p in problems[:10]:
             print("  " + p)
         return 1
-    print("no ambiguous or unmapped clocks")
+    print(f"all {rows_total} fixture rows accounted for, no ambiguous or unmapped clocks")
+    print("note: this validates our arithmetic and completeness, not the source's "
+          "timezone convention")
     return 0
 
 
 if __name__ == "__main__":
     import sys
-    sys.exit(audit() if "--audit" in sys.argv else 0)
+    want_audit = "--audit" in sys.argv
+    expect = None
+    if "--expect" in sys.argv:
+        expect = int(sys.argv[sys.argv.index("--expect") + 1])
+    sys.exit(audit(expect) if want_audit else 0)
