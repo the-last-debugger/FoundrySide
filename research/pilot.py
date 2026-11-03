@@ -29,7 +29,7 @@ OUT = ROOT / "research" / "PILOT_FRAME.md"
 PILOT_SEASONS = ("2021", "2122", "2223")
 CONFIRMATORY_SEASONS = ("2324", "2425")
 
-CATEGORIES = ("missing_ou_price", "clock", "result", "other")
+CATEGORIES = ("missing_ou_price", "invalid_ou_price", "clock", "result", "other")
 
 
 def frame(rows: list[dict]) -> tuple[list[dict], dict[str, list[str]]]:
@@ -55,10 +55,15 @@ def frame(rows: list[dict]) -> tuple[list[dict], dict[str, list[str]]]:
             continue
         try:
             o_over, o_under = float(r["PC>2.5"]), float(r["PC<2.5"])
-            if o_over <= 1.0 or o_under <= 1.0:
-                raise ValueError("price <= 1.0")
         except (KeyError, TypeError, ValueError):
             rejects["missing_ou_price"].append(f"{where}: no complete O/U 2.5 price")
+            continue
+        # Present but unusable is a different thing from absent, and only the first is
+        # expected at this stage. Grouping them would let a corrupt price hide inside an
+        # "expected exclusion" count.
+        if o_over <= 1.0 or o_under <= 1.0:
+            rejects["invalid_ou_price"].append(
+                f"{where}: price <= 1.0 ({o_over}, {o_under})")
             continue
         raw_over, raw_under = 1 / o_over, 1 / o_under
         out.append({
@@ -103,6 +108,7 @@ def main(argv: list[str] | None = None) -> int:
 
     expect_total, expect_pilot = flag("--expect-total"), flag("--expect-pilot")
     expect_confirm = flag("--expect-confirmatory")
+    exclude_invalid = "--exclude-invalid" in args
 
     rows = analyse.load()
     framed, rejects = frame(rows)
@@ -123,6 +129,10 @@ def main(argv: list[str] | None = None) -> int:
         if rejects[cat]:
             failures.append(f"{cat}: {len(rejects[cat])} row(s) — a frame cannot be built "
                             f"over broken inputs")
+    if rejects["invalid_ou_price"] and not exclude_invalid:
+        failures.append(f"invalid_ou_price: {len(rejects['invalid_ou_price'])} row(s) with a "
+                        f"present but unusable price — rerun with --exclude-invalid to drop "
+                        f"them explicitly, or investigate")
     if bad_cutoff:
         failures.append(f"{len(bad_cutoff)} cutoff(s) are not exactly T-90")
     if unassigned:
@@ -137,6 +147,8 @@ def main(argv: list[str] | None = None) -> int:
     checks = [
         ("every source row accounted for", len(framed) + rejected == len(rows)),
         ("no clock or result defects", not any(rejects[c] for c in ("clock", "result", "other"))),
+        ("invalid prices absent or explicitly waived",
+         not rejects["invalid_ou_price"] or exclude_invalid),
         ("every cutoff is exactly T-90", not bad_cutoff),
         ("every fixture in an assigned phase", not unassigned),
     ]
@@ -159,9 +171,15 @@ no model and scores nothing.
 """ + "\n".join(f"| {c} | {len(rejects[c])} |" for c in CATEGORIES) + f"""
 | **total** | **{rejected}** |
 
-The only expected exclusion is `missing_ou_price`: fixtures that exist but have no
-complete over/under 2.5 closing price. Clock, result and other failures are fatal, so the
-count above cannot silently mix a broken row into an "expected" bucket.
+The expected exclusion is `missing_ou_price`: fixtures that exist but have no complete
+over/under 2.5 closing price. `invalid_ou_price` is a different thing — a price is
+**present** and unusable — and it is fatal unless `--exclude-invalid` is passed, in which
+case the decision is recorded here rather than made silently. Clock, result and other
+failures are always fatal, so no count above can hide a broken row in an expected bucket.
+""" + (f"""
+`--exclude-invalid` was passed: **{len(rejects['invalid_ou_price'])} row(s)** with present
+but unusable prices were dropped by explicit decision, not by rule.
+""" if exclude_invalid and rejects["invalid_ou_price"] else "") + f"""
 
 ## What this establishes
 

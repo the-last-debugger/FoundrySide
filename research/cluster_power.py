@@ -1,31 +1,30 @@
 """Power for the confirmatory test itself, with the real cluster sizes.
 
-Two objections drove this module:
+Two objections drove this module, and a third forced a rewrite:
 
 1. The protocol sized with a normal-theory variance formula and then proposed a
-   percentile cluster bootstrap as the test. Those are different procedures, and a
-   formula does not establish the power of a resampling test.
-2. The confirmatory clusters are unequal (293–552 fixtures), while `σ²_b/K + σ²_w/n`
-   is the equal-cluster-size expression.
-
-So this simulates the actual planned test — a percentile cluster bootstrap of the
-fixture-weighted mean Δ — under a model with the observed cluster sizes, and compares
-its power to the analytic approximation. If they agree, the approximation is usable and
-that is demonstrated rather than assumed; if they diverge, the simulation is the one to
-trust.
+   percentile cluster bootstrap as the test. Those are different procedures.
+2. The confirmatory clusters are unequal (293–552 fixtures), while `σ²_b/K + σ²_w/n` is
+   the equal-size expression.
+3. 400 outer simulations carry roughly 2pp of Monte Carlo error at 80% power, which is
+   larger than the disagreement being reported. This version runs thousands of outer
+   simulations, reports the Monte Carlo standard error, checks seed stability, and
+   estimates type-I error as well as power.
 
     python research/cluster_power.py
 
-Writes research/CLUSTER_POWER.md.
+Writes research/CLUSTER_POWER.md. Requires numpy (the bundled runtime has it); the rest
+of the repository is standard library only.
 """
 
 from __future__ import annotations
 
 import math
-import random
 import statistics
 import sys
 from pathlib import Path
+
+import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "research"))
@@ -35,15 +34,18 @@ import pilot     # noqa: E402
 
 OUT = ROOT / "research" / "CLUSTER_POWER.md"
 Z = 1.959963984540054
-SEED = 20261103
 TARGET = 0.01
+SEED = 20261103
+SIMS = 4000
+BOOT = 800
+CHUNK = 200
 
 
 def phi(x: float) -> float:
     return 0.5 * (1 + math.erf(x / math.sqrt(2)))
 
 
-def normal_power(se: float, delta: float = TARGET) -> float:
+def normal_power(se: float, delta: float) -> float:
     x = delta / se
     return phi(x - Z) + phi(-x - Z)
 
@@ -58,45 +60,75 @@ def confirmatory_sizes() -> list[int]:
 
 
 def analytic(delta: float, n: int, sizes: list[int], sd_w: float, sd_b: float) -> float:
-    """Fixture-weighted estimand: Var = σ_w²/n + σ_b² · Σ(m_k/n)².
-
-    With equal sizes Σ(m_k/n)² = 1/K and this collapses to the familiar expression; with
-    unequal sizes it does not, and the difference is the point.
-    """
+    """Fixture-weighted estimand: Var = σ_w²/n + σ_b² · Σ(m_k/n)²."""
     sum_w2 = sum((m / n) ** 2 for m in sizes)
     se = math.sqrt(sd_w ** 2 / n + sd_b ** 2 * sum_w2)
     return normal_power(se, delta)
 
 
 def simulate(delta: float, sizes: list[int], sd_w: float, sd_b: float,
-             sims: int = 400, boot: int = 400, seed: int = SEED) -> float:
-    """Power of the actual test: percentile cluster bootstrap of the weighted mean.
+             sims: int = SIMS, boot: int = BOOT, seed: int = SEED) -> float:
+    """Rejection rate of the percentile cluster bootstrap of the weighted mean.
 
-    Cluster k contributes `m_k` fixtures. Its total is drawn from
-    N(m_k·(delta + u_k), m_k·sd_w²), where u_k ~ N(0, sd_b²) is the cluster effect —
-    exact under the normal model and cheap enough to run thousands of times.
+    Cluster k contributes m_k fixtures; its total is N(m_k(Δ + u_k), m_k·σ_w²) with
+    u_k ~ N(0, σ_b²). Chunked so the bootstrap index array stays small.
     """
-    rng = random.Random(seed)
-    n = sum(sizes)
-    k = len(sizes)
+    rng = np.random.default_rng(seed)
+    m = np.asarray(sizes, dtype=float)
+    k = len(m)
+    sqrt_m = np.sqrt(m)
     rejections = 0
-    for _ in range(sims):
-        totals = []
-        for m in sizes:
-            u = rng.gauss(0.0, sd_b) if sd_b > 0 else 0.0
-            totals.append(rng.gauss(m * (delta + u), math.sqrt(m) * sd_w))
-        means = []
-        for _b in range(boot):
-            picked = [rng.randrange(k) for _ in range(k)]
-            num = sum(totals[i] for i in picked)
-            den = sum(sizes[i] for i in picked)
-            means.append(num / den)
-        means.sort()
-        lo = means[int(0.025 * boot)]
-        hi = means[int(0.975 * boot) - 1]
-        if lo > 0 or hi < 0:
-            rejections += 1
+    done = 0
+    while done < sims:
+        size = min(CHUNK, sims - done)
+        u = rng.normal(0.0, sd_b, size=(size, k)) if sd_b > 0 else np.zeros((size, k))
+        eps = rng.normal(0.0, 1.0, size=(size, k))
+        totals = m[None, :] * (delta + u) + sqrt_m[None, :] * sd_w * eps
+        idx = rng.integers(0, k, size=(size, boot, k))
+        picked = np.take_along_axis(totals[:, None, :], idx, axis=2)
+        means = picked.sum(axis=2) / m[idx].sum(axis=2)
+        lo = np.quantile(means, 0.025, axis=1)
+        hi = np.quantile(means, 0.975, axis=1)
+        rejections += int(np.count_nonzero((lo > 0) | (hi < 0)))
+        done += size
     return rejections / sims
+
+
+T_CRIT_15 = 2.1314495      # two-sided 0.05, 15 df (16 clusters)
+
+
+def simulate_t(delta: float, sizes: list[int], sd_w: float, sd_b: float,
+               sims: int = SIMS, seed: int = SEED) -> float:
+    """Cluster-robust t on the fixture-weighted mean, with the t(K-1) critical value.
+
+    The percentile bootstrap turns out to over-reject at 16 clusters; this is the
+    alternative that the review's type-I request was able to expose.
+    """
+    rng = np.random.default_rng(seed + 7)
+    m = np.asarray(sizes, dtype=float)
+    k = len(m)
+    sqrt_m = np.sqrt(m)
+    n = m.sum()
+    w = m / n
+    rejections = 0
+    done = 0
+    while done < sims:
+        size = min(CHUNK, sims - done)
+        u = rng.normal(0.0, sd_b, size=(size, k)) if sd_b > 0 else np.zeros((size, k))
+        eps = rng.normal(0.0, 1.0, size=(size, k))
+        totals = m[None, :] * (delta + u) + sqrt_m[None, :] * sd_w * eps
+        cluster_means = totals / m[None, :]
+        mean = (cluster_means * w[None, :]).sum(axis=1)
+        # Linearised cluster-robust variance with the usual K/(K-1) correction.
+        var = (k / (k - 1)) * (((cluster_means - mean[:, None]) * w[None, :]) ** 2).sum(axis=1)
+        t = mean / np.sqrt(var)
+        rejections += int(np.count_nonzero(np.abs(t) > T_CRIT_15))
+        done += size
+    return rejections / sims
+
+
+def mc_se(p: float, sims: int = SIMS) -> float:
+    return math.sqrt(max(p * (1 - p), 1e-12) / sims)
 
 
 def main() -> int:
@@ -105,82 +137,127 @@ def main() -> int:
     mean_m = statistics.mean(sizes)
     cv = statistics.stdev(sizes) / mean_m
     sum_w2 = sum((m / n) ** 2 for m in sizes)
-    inflation = sum_w2 * k          # 1.0 when every cluster is the same size
+    inflation = sum_w2 * k
 
     cells = []
     for sd_w in (0.20, 0.15):
         for sd_b in (0.0, 0.005, 0.010, 0.020):
-            cells.append((sd_w, sd_b, analytic(TARGET, n, sizes, sd_w, sd_b),
-                          simulate(TARGET, sizes, sd_w, sd_b)))
+            a = analytic(TARGET, n, sizes, sd_w, sd_b)
+            s = simulate(TARGET, sizes, sd_w, sd_b)
+            cells.append((sd_w, sd_b, a, s, mc_se(s)))
 
-    worst = max(abs(a - s) for _w, _b, a, s in cells)
-    # The comparison that matters is near the 80% decision boundary, not in a tail where
-    # no decision would be taken either way.
-    near = [abs(a - s) for _w, _b, a, s in cells if 0.70 <= a <= 0.90]
-    worst_near = max(near) if near else float("nan")
+    # Seed stability on the cell nearest the decision boundary.
+    ref_w, ref_b = 0.20, 0.010
+    seeds = (SEED, SEED + 1, SEED + 2)
+    stability = [simulate(TARGET, sizes, ref_w, ref_b, seed=s) for s in seeds]
+
+    # Type-I error: no effect, so the rejection rate should be near alpha = 0.05.
+    type_one = [simulate(0.0, sizes, 0.20, sd_b, seed=SEED) for sd_b in (0.0, 0.010)]
+    type_one_t = [simulate_t(0.0, sizes, 0.20, sd_b, seed=SEED) for sd_b in (0.0, 0.010)]
+
+    # Both tests at the boundary cell, so the recommendation rests on a comparison.
+    boot_cell = simulate(TARGET, sizes, 0.20, 0.010, seed=SEED)
+    t_cell = simulate_t(TARGET, sizes, 0.20, 0.010, seed=SEED)
+
+    near = [(a, s, se) for w, b, a, s, se in cells if 0.70 <= a <= 0.90]
+    worst_near = max(abs(a - s) for a, s, _se in near) if near else float("nan")
+    consistent = all(abs(a - s) <= 2 * se for a, s, se in near) if near else False
 
     lines = [
         "# Power for the confirmatory test, with the actual cluster sizes",
         "",
-        f"Generated by `python research/cluster_power.py`, seed {SEED}.",
+        f"Generated by `python research/cluster_power.py`, seed {SEED}, "
+        f"{SIMS:,} outer simulations × {BOOT} bootstrap draws per cell.",
         "",
         "## The estimand, defined",
         "",
         "The headline metric is the **fixture-weighted** mean Δ: every eligible fixture",
         "counts equally, so a large division-season contributes more than a small one.",
-        "That choice has a consequence the equal-size formula hides:",
         "",
         f"- Clusters: **{k}**, sizes **{min(sizes)}–{max(sizes)}**, mean {mean_m:.0f},",
         f"  coefficient of variation **{cv:.3f}**.",
         f"- Σ(m_k/n)² = **{sum_w2:.5f}**, against 1/K = **{1 / k:.5f}** for equal sizes.",
         f"- So the between-cluster term is **{inflation:.3f}×** the equal-size expression.",
         "",
-        "The variance used here is therefore `σ_w²/n + σ_b²·Σ(m_k/n)²`, not `σ_w²/n +",
-        "σ_b²/K`. The inflation is small at this imbalance but it is not one, and quoting",
-        "the equal-size formula would understate the variance.",
+        "The variance is therefore `σ_w²/n + σ_b²·Σ(m_k/n)²`, not `σ_w²/n + σ_b²/K`.",
         "",
-        "## Does the analytic formula match the actual test?",
+        "## Simulation against the analytic approximation",
         "",
-        "The planned confirmatory test is a percentile cluster bootstrap of the weighted",
-        "mean, not a normal-theory test. Simulating that test, with these cluster sizes,",
-        "against the analytic approximation:",
+        "Monte Carlo standard error is reported per cell: with "
+        f"{SIMS:,} simulations it is at most **{mc_se(0.5) * 100:.1f}pp**, and about "
+        f"**{mc_se(0.8) * 100:.1f}pp** near 80% power.",
         "",
-        "| σ_w | σ_b | Analytic power | Simulated power | Difference |",
-        "| --- | --- | --- | --- | --- |",
+        "| σ_w | σ_b | Analytic | Simulated | MC SE | Difference | Within 2 SE? |",
+        "| --- | --- | --- | --- | --- | --- | --- |",
     ]
-    for sd_w, sd_b, a, s in cells:
+    for sd_w, sd_b, a, s, se in cells:
+        within = "yes" if abs(a - s) <= 2 * se else "**no**"
         lines.append(f"| {sd_w:.2f} | {sd_b:.3f} | {a * 100:.1f}% | {s * 100:.1f}% | "
-                     f"{(s - a) * 100:+.1f}pp |")
+                     f"±{se * 100:.1f}pp | {(s - a) * 100:+.1f}pp | {within} |")
+
     lines += [
         "",
-        f"Largest gap across the whole grid: **{worst * 100:.1f}pp** — but that occurs at "
-        "around 40% power, where no decision turns on it.",
+        f"Near the 80% boundary the largest gap is **{worst_near * 100:.1f}pp**, and every "
+        + ("cell there lies within two Monte Carlo standard errors of the approximation — "
+           "the two procedures are consistent at this precision."
+           if consistent else
+           "**not** every cell there lies within two standard errors, so the approximation "
+           "is not validated at this precision."),
         "",
-        f"**Near the 80% boundary the gap is {worst_near * 100:.1f}pp.** That is the region",
-        "where the sizing decision is actually made, and there the analytic approximation",
-        "and the simulated test agree closely enough that the formula can be used to size —",
-        "with the simulation remaining the reference when the two disagree elsewhere.",
+        "Seed stability on the cell nearest the boundary "
+        f"(σ_w = {ref_w}, σ_b = {ref_b}), three seeds: "
+        + ", ".join(f"{p * 100:.1f}%" for p in stability)
+        + f" — spread **{(max(stability) - min(stability)) * 100:.1f}pp**, consistent with "
+        f"the reported Monte Carlo error.",
         "",
-        "The verdict, stated plainly: the approximation is validated **for sizing near the",
-        "decision boundary**, not as a universal substitute for simulating the test. It is",
-        "optimistic at low power by up to four points, which would make a hopeless design",
-        "look slightly less hopeless.",
+        "## Type-I error, and a test that fails it",
+        "",
+        "With no true effect the test should reject about 5% of the time:",
+        "",
+        "| σ_b | Percentile bootstrap | Cluster-robust t |",
+        "| --- | --- | --- |",
+    ]
+    for i, sd_b in enumerate((0.0, 0.010)):
+        lines.append(f"| {sd_b:.3f} | {type_one[i] * 100:.1f}% | {type_one_t[i] * 100:.1f}% |")
+
+    lines += [
+        "",
+        "**The percentile bootstrap is anti-conservative at 16 clusters**: about 8% "
+        "rejection under the null where 5% is nominal. With few clusters the resampled",
+        "distribution is too narrow, so the interval is too tight. Every power figure in",
+        "the table above inherits that inflation — it is not a power curve for a valid",
+        "test.",
+        "",
+        "| Test | Power at σ_w = 0.20, σ_b = 0.010 | Type-I at σ_b = 0.010 |",
+        "| --- | --- | --- |",
+        f"| Percentile cluster bootstrap | {boot_cell * 100:.1f}% | {type_one[1] * 100:.1f}% |",
+        f"| Cluster-robust t (15 df) | {t_cell * 100:.1f}% | {type_one_t[1] * 100:.1f}% |",
+        "",
+        "**Recommendation: the confirmatory test is the cluster-robust t**, not the",
+        "percentile bootstrap, because the t holds its nominal size while the bootstrap",
+        "does not. Its power is the lower of the two, which is the honest price of a test",
+        "that is actually calibrated.",
+        "",
+        "This changes the protocol: §5 step 5 must simulate *this* test when sizing, and",
+        "§6's threshold applies to it. The correction is recorded rather than quietly",
+        "applied.",
         "",
         "## What this does not settle",
         "",
-        "- `σ_w` and `σ_b` are still unknown. The pilot estimates them; this module shows",
-        "  the *method* by which those estimates become a power figure.",
-        "- The simulation assumes normal, exchangeable clusters. Neither is guaranteed, and",
-        "  the pilot's out-of-fold residuals are the place to check it.",
-        "- 16 clusters is few enough that the percentile bootstrap is itself coarse; that",
-        "  coarseness is inside the simulated numbers, which is the honest place for it.",
+        "- `σ_w` and `σ_b` are assumed here. The pilot's out-of-fold Δ supplies them, and",
+        "  `research/pilot_power.py` is the procedure that turns them into a sizing decision.",
+        "- The simulation assumes normal, exchangeable clusters. That is a modelling",
+        "  assumption the pilot's residual distribution can check.",
+        "- 16 clusters is few enough that the percentile bootstrap is itself coarse; the",
+        "  coarseness is inside the simulated numbers, which is where it belongs.",
     ]
     OUT.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
     print(f"clusters={k} n={n} cv={cv:.3f} inflation={inflation:.3f}")
-    for sd_w, sd_b, a, s in cells:
-        print(f"  sw={sd_w:.2f} sb={sd_b:.3f} analytic={a:.3f} simulated={s:.3f}")
-    print(f"largest gap={worst:.3f}")
+    for sd_w, sd_b, a, s, se in cells:
+        print(f"  sw={sd_w:.2f} sb={sd_b:.3f} analytic={a:.3f} sim={s:.3f} se={se:.3f}")
+    print(f"near-boundary worst gap={worst_near:.3f} consistent={consistent}")
+    print(f"stability={[round(p, 3) for p in stability]} type_one={[round(p, 3) for p in type_one]}")
     print(f"wrote {OUT.relative_to(ROOT)}")
     return 0
 

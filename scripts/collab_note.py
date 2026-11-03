@@ -33,8 +33,9 @@ HEADER_RE = re.compile(
 # them is a schema extension, not a loosening: the value must still be a bare token, and
 # the checker still refuses a verdict whose recorded revision does not match the row.
 REVISION_RE = re.compile(
-    r"^-\s*(?:revision|revision reviewed|reviewed revision)\s*:\s*(?P<value>\S*)\s*$")
+    r"^-\s*(?:revisions?\s+reviewed|reviewed\s+revisions?|revisions?)\s*:\s*(?P<value>.*\S)\s*$")
 REF_RE = re.compile(r"^-\s*(?:ref|refs|reference)\s*:\s*(?P<value>.*\S)\s*$")
+SHA_RE = re.compile(r"[0-9a-f]{7,40}")
 
 # A header that starts with '### ' but does not match HEADER_RE used to be treated as
 # body text of the preceding entry. That is a fail-open parse: the entry disappears
@@ -101,10 +102,12 @@ def parse_entries(path: Path = THREAD) -> list[dict[str, str]]:
             continue
         rev = REVISION_RE.match(line)
         if rev:
-            # A SHA is often written as `abc1234` in prose. The emphasis is formatting,
-            # not data, and carrying it into the field silently breaks the match between
-            # a verdict and the row it authorises.
-            current["revision"] = rev.group("value").strip("`*_ ")
+            # A verdict may name several revisions (`revisions reviewed: a, b`), and an
+            # SHA is often wrapped in backticks. Keep the first SHA-shaped token: that is
+            # the revision the verdict is anchored to, and carrying punctuation into the
+            # field silently breaks the match between a verdict and its row.
+            found = SHA_RE.findall(rev.group("value"))
+            current["revision"] = found[0] if found else rev.group("value").strip("`*_ ")
             continue
         ref = REF_RE.match(line)
         if ref:

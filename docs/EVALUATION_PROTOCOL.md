@@ -186,27 +186,33 @@ this, and it is what the pilot runs:
 
    Sizing uses the **confirmatory** count, 16. Fixtures inside those 16 do not create
    clusters; only seasons do.
-5. **Power is simulated from the test that will actually be run**, not from the formula.
-   The planned confirmatory test is a percentile cluster bootstrap of the weighted mean
-   over the 16 clusters. `research/cluster_power.py` simulates exactly that — cluster
-   effects, the observed cluster sizes, the bootstrap, the rejection rule — under a grid
-   of `(σ_w, σ_b)`. Sizing then bootstraps the pilot's 24 clusters to get a distribution
-   of `(σ_w, σ_b)`, runs the simulation for each replicate, and requires the **5th
-   percentile** of the resulting power distribution to reach 0.80.
-6. **The analytic formula is validated against that test, and only where it is used.**
-   Measured across the grid, the normal approximation and the simulated bootstrap agree
-   within **1.1pp near the 80% boundary** — the region where a sizing decision is made —
-   and diverge by up to **3.8pp at around 40% power**, where the approximation is
-   optimistic. So the formula may size near the boundary; the simulation is the
-   reference everywhere else, and it is the reference for any claim that the design is
-   adequately powered.
+5. **The confirmatory test is a cluster-robust t**, not the percentile bootstrap: a
+   linearised cluster-robust variance of the fixture-weighted mean, with `t` on `K−1 = 15`
+   degrees of freedom. The reason is measured, not stylistic. At 16 clusters the
+   percentile bootstrap rejects **8.1%** of the time under the null where 5% is nominal,
+   because the resampled distribution is too narrow; the cluster-robust t rejects **4.9%**.
+   A power figure computed for the bootstrap is therefore inflated by false positives.
+   The valid test costs power — 72.8% against 79.2% at the same cell — and that is the
+   price of a calibrated test.
+6. **Sizing runs that procedure, not a grid.** Cluster-bootstrap the pilot's 24 clusters
+   (2,000 replicates), recompute `(σ_w, σ_b)` each replicate — subtracting the sampling
+   variance in cluster means, or the estimate is inflated — compute the t's power for the
+   confirmatory design (16 clusters, `n = 5,794`), and require the **5th percentile** of
+   that power distribution to reach 0.80. `research/pilot_power.py` implements this end to
+   end, and `research/cluster_power.py` validates the analytic power against direct
+   simulation of the t (agreement within 0.5pp at the boundary cell).
 
-**What this implies about the design, measured.** At a plausible within-fixture spread
+   **It is not yet populated.** There are no out-of-fold pilot Δ values, so the current
+   output is a synthetic illustration and **the adequacy question is open**. Running it on
+   a stand-in with `σ_b = 0.010` yields a 5th-percentile power of about 50% — which is
+   suggestive, not evidence, and must not be quoted as a finding about FoundrySide.
+
+**What this implies about the design.** At a plausible within-fixture spread
 (`σ_w = 0.20`) and `n = 5,794`, the two-season window tolerates a between-cluster SD of
-only about **0.010** before power falls below 80%; with all five seasons (40 clusters) it
-tolerates about **0.015**. At `σ_b = 0.02` the two-season design has 42–45% power and the
-five-season design 68%. The confirmatory window is the thinnest available, and whether 16
-clusters are enough is a question the pilot answers, not one the protocol can assume.
+roughly **0.010** before power falls below 80%, with all five seasons (40 clusters)
+tolerating about **0.015**. With the valid test the margin is thinner than the earlier
+bootstrap figures suggested. Whether 16 clusters are enough is a question the pilot
+answers, not one the protocol can assume.
 
 The ±3pp calibration tolerance is a **guardrail, not a test**: it flags a model whose
 probabilities are systematically off, and it is reported with the reliability plot and

@@ -12,6 +12,7 @@ no model and scores nothing.
 | --- | --- |
 | every source row accounted for | PASS |
 | no clock or result defects | PASS |
+| invalid prices absent or explicitly waived | PASS |
 | every cutoff is exactly T-90 | PASS |
 | every fixture in an assigned phase | PASS |
 
@@ -19,15 +20,22 @@ no model and scores nothing.
 
 | Category | Count |
 | --- | --- |
-| missing_ou_price | 67 |
+| missing_ou_price | 65 |
+| invalid_ou_price | 2 |
 | clock | 0 |
 | result | 0 |
 | other | 0 |
 | **total** | **67** |
 
-The only expected exclusion is `missing_ou_price`: fixtures that exist but have no
-complete over/under 2.5 closing price. Clock, result and other failures are fatal, so the
-count above cannot silently mix a broken row into an "expected" bucket.
+The expected exclusion is `missing_ou_price`: fixtures that exist but have no complete
+over/under 2.5 closing price. `invalid_ou_price` is a different thing — a price is
+**present** and unusable — and it is fatal unless `--exclude-invalid` is passed, in which
+case the decision is recorded here rather than made silently. Clock, result and other
+failures are always fatal, so no count above can hide a broken row in an expected bucket.
+
+`--exclude-invalid` was passed: **2 row(s)** with present
+but unusable prices were dropped by explicit decision, not by rule.
+
 
 ## What this establishes
 
