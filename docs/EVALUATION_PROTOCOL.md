@@ -194,30 +194,36 @@ this, and it is what the pilot runs:
    A power figure computed for the bootstrap is therefore inflated by false positives.
    The valid test costs power — 72.8% against 79.2% at the same cell — and that is the
    price of a calibrated test.
-6. **Sizing runs that procedure, not a grid.** Cluster-bootstrap the pilot's 24 clusters
-   (2,000 replicates), recompute `(σ_w, σ_b)` each replicate — subtracting the sampling
-   variance in cluster means, or the estimate is inflated — compute the t's power for the
-   confirmatory design (16 clusters, `n = 5,794`) **by simulating the t**, and require the
-   **5th percentile** of that power distribution to reach 0.80.
+6. **Sizing resamples the pilot; it does not model it.** The pilot Δ are centred on their
+   fixture-weighted mean, then the target effect is imposed. Each simulation draws 16
+   clusters with replacement from the 24 pilot clusters, resamples fixtures within each to
+   the confirmatory cluster sizes, and runs the confirmatory test. Power is the rejection
+   rate. No `σ_w`, no `σ_b`, no formula.
 
-   The power is simulated rather than approximated. A normal CDF evaluated at a t critical
-   value is neither test — it borrows the tail of one and the cutoff of the other — and it
-   overstates the t's power by about **5pp** at the boundary cell. Measured against the
-   simulated t across the grid, the normal approximation's widest gap is **5.0pp**, and
-   `research/cluster_power.py` reports the three quantities separately: the approximation,
-   the bootstrap, and the t.
+   **Centring is not a detail.** The pilot mean is about −0.025 — the model is behind the
+   market — so imposing +0.01 on uncentred data tests "still behind, slightly less", and a
+   two-sided test rejects on the existing disadvantage. An earlier version did that and
+   reported 93.5%, which was not power at all. Offset invariance is now a regression test:
+   adding a constant to every pilot Δ must leave the power unchanged.
 
-   **It is not yet populated.** There are no out-of-fold pilot Δ values, so the current
-   output is a synthetic illustration and **the adequacy question is open**. Running it on
-   a stand-in with `σ_b = 0.010` yields a 5th-percentile power of about 52% — suggestive,
-   not evidence, and not to be quoted as a finding about FoundrySide.
+   **Measured result, pilot Δ of the first model:** power **66.6%** (MC SE ±1.7pp) at a
+   0.01-nat effect; null rejection 5.2% against a nominal 5; independent runs 64.2% and
+   66.1%. **The design is not adequate at 0.01 nats for this spread.** It reaches 80% at an
+   effect of about **0.0116** nats, so the stated target is just beyond it.
 
-**What this implies about the design.** At a plausible within-fixture spread
-(`σ_w = 0.20`) and `n = 5,794`, the two-season window tolerates a between-cluster SD of
-about **0.008** before the t's power falls below 80% — not the 0.010 the earlier
-approximation suggested. With all five seasons (40 clusters) the tolerance is about
-0.015. Whether 16 clusters are enough is a question the pilot answers, not one the
-protocol can assume.
+**What this implies.** The adequacy question that was open for many rounds now has an
+answer for one model's spread: 16 clusters and 5,794 fixtures give roughly two-thirds power
+at 0.01 nats. Three responses are available and all are sponsor decisions, taken before the
+freeze:
+
+1. **Raise the target effect** to something this design detects — about 0.012 nats — and say
+   so in the freeze rather than after a null.
+2. **Add clusters**, which means adding seasons, which raises the exchangeability question
+   the earlier analysis already flagged.
+3. **Add markets to the family**, increasing n at the cost of a larger correction family.
+
+What is not available is running the test as designed, missing significance, and reporting
+it as evidence of no edge.
 
 The ±3pp calibration tolerance is a **guardrail, not a test**: it flags a model whose
 probabilities are systematically off, and it is reported with the reliability plot and

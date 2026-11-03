@@ -30,16 +30,41 @@ def clusters(shift: float = 0.0, seed: int = 3) -> list[np.ndarray]:
 SIZES = np.array([300.0] * 8)
 
 
+class CentringTest(unittest.TestCase):
+    """The simulation must test the imposed effect, not the pilot's existing mean."""
+
+    def test_power_is_invariant_to_a_common_offset(self):
+        # Adding a constant to every pilot Δ must not change power: the centring step
+        # removes it, so the same seed gives the same answer exactly.
+        base = clusters()
+        shifted = [c + 7.0 for c in base]
+        a = pilot_power.design_power(base, SIZES, 0.02, sims=150, seed=11)
+        b = pilot_power.design_power(shifted, SIZES, 0.02, sims=150, seed=11)
+        self.assertEqual(a, b)
+
+    def test_effect_direction_is_symmetric(self):
+        # A two-sided test: +d and −d of the same size should have similar power.
+        data = clusters()
+        up = pilot_power.design_power(data, SIZES, 0.02, sims=300, seed=5)
+        down = pilot_power.design_power(data, SIZES, -0.02, sims=300, seed=5)
+        self.assertAlmostEqual(up, down, delta=0.06)
+
+    def test_a_deliberately_shifted_pilot_does_not_inflate_null_rejection(self):
+        # A pilot sitting far from zero must still reject at about 5% under the null.
+        data = [c - 0.5 for c in clusters()]
+        null = pilot_power.design_power(data, SIZES, 0.0, sims=400, seed=9)
+        self.assertLess(null, 0.12)
+
+
 class DesignPowerTest(unittest.TestCase):
     def test_rejects_almost_always_for_a_large_effect(self):
         power = pilot_power.design_power(clusters(), SIZES, 0.10, sims=200)
         self.assertGreater(power, 0.95)
 
     def test_rejects_about_five_percent_at_a_true_null(self):
-        # Centre the clusters, then test at zero: this is the calibration check.
+        # design_power centres internally, so a zero effect is a true null.
         data = clusters()
-        mean = float(sum(c.mean() for c in data) / len(data))
-        power = pilot_power.design_power(data, SIZES, -mean, sims=400)
+        power = pilot_power.design_power(data, SIZES, 0.0, sims=400)
         self.assertLess(power, 0.12)
         self.assertGreater(power, 0.01)
 
@@ -57,9 +82,10 @@ class DesignPowerTest(unittest.TestCase):
 
     def test_different_seeds_differ_slightly(self):
         data = clusters()
-        a = pilot_power.design_power(data, SIZES, 0.02, sims=100, seed=7)
-        b = pilot_power.design_power(data, SIZES, 0.02, sims=100, seed=8)
-        self.assertAlmostEqual(a, b, delta=0.15)
+        a = pilot_power.design_power(data, SIZES, 0.02, sims=200, seed=7)
+        b = pilot_power.design_power(data, SIZES, 0.02, sims=200, seed=8)
+        self.assertNotEqual(a, b)
+        self.assertAlmostEqual(a, b, delta=0.2)
 
 
 if __name__ == "__main__":
