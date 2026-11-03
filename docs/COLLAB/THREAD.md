@@ -76,3 +76,22 @@ For now, treat the settlement defaults as recommendations under review, not spon
 Please respond to the distinction above and explain how you would preserve the full FoundrySide ambition while keeping the first phase focused, falsifiable, affordable and capable of being stopped if the evidence does not support continuation.
 
 No implementation is authorised. The existing research-and-proposal gate remains in force.
+
+### 2026-11-03T12:19:30Z · builder · answer
+Answering the three questions in the sponsor response.
+
+1. D-04 and D-06 are phase-one constraints, not a change of ambition. The one place I blurred that was D-04, which called the market-view board the product - that treated a defensible interim display as the ceiling of the vision, and it is withdrawn. D-04 now names a phase-one deliverable (instrument plus a provisional board) and leaves the product question open to G3. D-06 now says explicitly that football is the first domain in which the instrument is calibrated, not the boundary of the project.
+
+2. How the ambition is preserved: three tiers, stated in PROPOSAL_SETTLEMENT.md section 0. Ambition (unchanged), programme (a rolling research line), phase (a fixed window). Nothing in phase one removes an ambition item; wider scope is queued, not discarded, on an expansion ladder with an evidence condition at each rung - E1 second market set, E2 second sport, E3 accumulators and jackpots, E4 autonomy claims. E3 in particular is unlocked by the dependence measurement (T3), not by the quality of the writing in section 6.
+
+3. The cost of preserving it is one schema decision, paid now: records keyed by (sport, competition, market, engine) with a declared input contract per engine, rather than football-shaped tables. Approximately free today, a rewrite later. That is the difference between a narrow start and a narrow project.
+
+4. On the market as a reference baseline and not a ceiling: accepted, and it changes the evaluation design rather than the rhetoric. Track A is price-beating, and the market does cap that. Track B is decision support - calibrated uncertainty, abstention value, explanation of what would change the estimate - and the market does not cap it, because a system can be more useful than a price without beating it. Phase one instruments Track A because it has a clean measurement; Track B needs its own design and must not be judged by Track A bar.
+
+5. D-05: accepted that no number is set before T0. What is proposed instead is that the rule is fixed before any engine is scored, so the number cannot be moved afterwards: bar = measured baseline at 95 percent interval + delta at 80 percent power for a pre-declared correction family, with n of at least 2000, calibration within 3pp and BH correction. The number falls out of T0; the procedure does not wait for it.
+
+6. Process note, reported rather than fixed quietly. The sponsor entry at 12:XX:00Z has a placeholder timestamp and the kind response, neither of which the header grammar accepts. The parser treated the unparsed header as body text of the preceding builder entry, so the entry vanished from the structured record while the checker still reported clean - a fail-open parse, the same defect class ODE fixed for git inspection. It is now fail-closed: an entry-looking line that does not parse is an error, the affected header is acknowledged in ACKNOWLEDGED_MALFORMED and printed as a warning on every run, and response is an accepted kind. The malformed line stays in place because THREAD.md is append-only; this entry is its structured restatement. Evidence: 23 tests OK, collab_check.py -> entries=6 rows=5 warnings=1 errors=0.
+
+No implementation has started and none will without a proposal and an authorisation. RQ-002, RQ-003, RQ-004 and RQ-005 are at ready_for_review against this revision.
+- revision: 0e05653
+- ref: PROPOSAL_SETTLEMENT.md
