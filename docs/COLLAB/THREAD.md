@@ -247,3 +247,22 @@ I have reviewed revision `00d2923`, including the revised phase proposal, evalua
 Continue without waiting for another permission round on routine research. The phase plan is accepted; the remaining work is to make the first experiment genuinely auditable and statistically aligned with the question it claims to answer.
 - revision reviewed: 00d2923
 - refs: RQ-006, RQ-007, RQ-008, RQ-009, RQ-010
+
+### 2026-11-03T13:14:27Z · builder · evidence
+RQ-008 and RQ-009 corrections, plus the record reconciliation.
+
+Log-loss power, now implemented. research/logloss_power.py builds per-fixture score differences on the real fixtures and prices: the model deviates from the de-vigged market probability by w, toward the truth with probability 0.6 and away otherwise, with the deviation magnitude varying per fixture. That gives a two-sided distribution, which matters: my first attempt blended the market with an oracle, so every fixture improved, the SD collapsed to 0.004 and the script reported 100 percent power at every sample size. It was degenerate and I replaced it rather than report it.
+
+The governing result is not the device. It is the sensitivity of sample size to the unknown SD of delta, which the pilot must measure: at a 0.01-nat effect, SD 0.10 needs 785 fixtures, 0.15 needs 1,766, 0.20 needs 3,140, 0.27 needs 5,722. The confirmatory slice holds 5,794, so it supports 80 percent power at this effect only while SD is at or below 0.271; at SD 0.35 power is 58.5 percent and at 0.50 it is 33.1 percent. A null from an underpowered slice is uninformative, so the protocol now names the three responses available if the pilot finds a larger SD: extend the slice, add markets to the family, or raise the target effect - each declared in the freeze, none applied after seeing results.
+
+Forecast timing, made auditable. The source files carry a closing price and a kickoff date and time, and no observation timestamp for the quote. The protocol no longer implies one. It defines a fixed cutoff of kickoff minus 90 minutes, computed from the fixture's own Date and Time, requires that inputs come only from matches final before that cutoff - kickoff plus three hours, which excludes a 12:30 match for a 15:00 fixture - and requires every prediction record to store its maximum input timestamp so the audit can fail the run. The benchmark remains the closing price, which is later than the cutoff, and that is now stated as a deliberate comparison rather than a claim about when the quote existed.
+
+RQ-009, three defects. First, reproducibility: random.gammavariate drew from the module-level generator while the binomial draws used a seeded instance, so the stated seed controlled only part of the simulation. Every draw now goes through one seeded generator and main() asserts that two runs with the same seed are identical; it passes. Second, the test: a two-sided McNemar ignores between-cluster variance and rejects too often under heterogeneity, so the clustered scenarios now use a cluster-robust t on per-cluster differences. Third, the model: I varied the discordance rate but held the model's advantage constant, which cannot detect a model that is better in particular leagues.
+
+That third defect produced a finding that reverses my previous claim. With advantage varying (ICC 0.05), power at a 3pp edge falls from about 93 percent to about 44 percent at 5,000 fixtures, and adding fixtures then stops helping: 10,000 gives 50 percent, not 93. With 40 league-season clusters the binding constraint is the number of clusters, not the number of matches. The earlier statement that clustering is negligible at 40 clusters is withdrawn, and POWER.md is relabelled as an accuracy-only supplementary study so it cannot be cited as power evidence for log loss.
+
+Record reconciliation, done as asked and with the history visible rather than deleted. P-02 no longer recommends a universal 5,000 floor; it states that the recommendation was withdrawn and why, then lists the four protocol items actually awaiting decision. D-07 now carries the corrected bootstrap interval 1.47 to 1.51, records the superseded 1.46 to 1.52 with the reason it was invalid, and states the scope limit that this measures outcome dependence and not bookmaker pricing.
+
+State: RQ-008 and RQ-009 back to ready_for_review, RQ-011 added for the log-loss power work; 28 tests pass, checker errors 0. The two sponsor decisions in PROPOSAL.md section 7 remain open, and nothing has been scored against the benchmark.
+- revision: 16ec671
+- ref: docs/EVALUATION_PROTOCOL.md
