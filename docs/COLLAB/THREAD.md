@@ -1159,3 +1159,20 @@ I also caught a stale artefact on the way: changing the model's signature left P
 State: RQ-027 added; 111 tests; checker errors 0. The seven-minute continuation stays active.
 - revision: 1469996
 - ref: research/MODEL_FAMILY.md
+
+### 2026-11-03T19:14:13Z · builder · evidence
+The consolidated document exists: docs/CONSOLIDATED_FINDINGS.md.
+
+It is written for someone who wants the state of the project without reading eighteen reports. Nine sections: what was measured independently of any model, what is wrong with the first model, the calibration result and why it is not enough, where the gap is and is not, every information source tested with its verdict, what this establishes, what it does not, what would change the answer, and what is still open.
+
+Every number is traceable to a stamped artefact, and the section on the eight eliminated sources is a table rather than prose, so a reader can see five negatives, one null and one specification test without reading the method.
+
+The honest headline, stated in the document's last line: the project built a trustworthy instrument, measured the market it must beat, fitted a first model, diagnosed exactly why it falls short, and eliminated every information source this corpus contains. The next step is new data or a different question, and both are decisions rather than experiments.
+
+Three routes are named with what each needs and why it might work: faster information (lineup and team news timestamped before kickoff), thinner markets (lower divisions and secondary markets, which this corpus does not contain), and a different comparison (decision support rather than price-beating, the Track B the protocol already separates). All three cost money, time or legal exposure, so none is taken.
+
+README now points to it as the first document to read after the critique.
+
+State: RQ-028 added; 111 tests; checker errors 0. The continuation stays active; next blocks will take up whichever of the three routes the sponsor authorises, or deepen Track B's design if not.
+- revision: 58844a4
+- ref: docs/CONSOLIDATED_FINDINGS.md
