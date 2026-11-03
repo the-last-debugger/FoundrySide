@@ -266,3 +266,25 @@ Record reconciliation, done as asked and with the history visible rather than de
 State: RQ-008 and RQ-009 back to ready_for_review, RQ-011 added for the log-loss power work; 28 tests pass, checker errors 0. The two sponsor decisions in PROPOSAL.md section 7 remain open, and nothing has been scored against the benchmark.
 - revision: 16ec671
 - ref: docs/EVALUATION_PROTOCOL.md
+
+
+### 2026-11-03 · sponsor · review
+
+I reviewed revision `16ec671`, including the new log-loss power device, the revised accuracy clustering simulation, the evaluation protocol, and the record reconciliation.
+
+**Accepted**
+
+- **RQ-009 — paired accuracy sensitivity analysis: accepted for its stated, limited purpose.** The script now routes random draws through one seeded generator and asserts repeatability; it distinguishes variation in discordance from variation in paired advantage; and it withdraws the unsupported claim that clustering is negligible. The resulting analysis is explicitly accuracy-only and supplementary. Its assumed ICC scenarios are sensitivity assumptions, not estimates of the real project’s cluster structure. Do not use these results as log-loss power evidence.
+
+**Changes still required**
+
+- **RQ-008 — evaluation protocol: changes requested.** The T−90 cutoff is a useful improvement, and the source timestamp limitation is now stated honestly. However, the protocol is internally inconsistent in two places: §5 still says clustering was measured to have a negligible effect on the accuracy contrast, which the new analysis explicitly withdraws; and §8 still lists the forecast timestamp as the “last recorded pre-kickoff price”, although the proposed model cutoff is kickoff minus 90 minutes and the benchmark is the later closing price. Correct both. Also define the timezone and daylight-saving interpretation of each competition’s Date/Time fields before calling the cutoff fully auditable; a reproducible arithmetic rule is not enough if the underlying clock is ambiguous. State how the cutoff is validated against the actual parsed fixture timestamp.
+
+- **RQ-011 — log-loss power: changes requested.** The new script is candid that it uses a synthetic deviation device, not a real engine or pilot predictions; that is useful for sensitivity exploration, but it does not yet establish the actual experiment’s power. More importantly, `power()` computes only the upper-tail probability `Phi(mean*sqrt(n)/sd - z` while the protocol specifies a two-sided alpha of 0.05. The bootstrap check uses an absolute two-sided statistic, so the analytic curve and bootstrap check are not testing the same rejection rule. Correct the analytic power calculation to the stated two-sided test and regenerate the report. Then keep the synthetic device clearly labelled as illustrative and make the freeze contingent on the pilot’s actual out-of-fold paired log-loss differences, including a cluster-aware uncertainty/power assessment. The pilot must estimate both the within-fixture spread and between-division-season variation; the 0.271 SD threshold alone is not sufficient if dependence reduces effective information.
+
+The T−90 design also needs the time-zone clarification above before I can accept the claim that it is auditable. The benchmark may remain the closing price, provided the protocol consistently describes this as a T−90 forecast compared with the closing line, not as a forecast proven to precede an observed closing-price timestamp.
+
+**State:** RQ-009 accepted with its accuracy-only scope. RQ-008 and RQ-011 remain changes requested. Exploratory research and pilot preparation may continue under the existing authorisation. No confirmatory engine scoring is authorised; the protocol is not frozen.
+
+- revision reviewed: `16ec671`
+- refs: RQ-008, RQ-009, RQ-011
