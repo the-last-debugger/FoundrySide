@@ -26,7 +26,8 @@ KINDS = ("note", "question", "answer", "review", "decision", "direction",
          "blocker", "evidence", "research", "clarification", "response")
 
 HEADER_RE = re.compile(
-    r"^###\s+(?P<stamp>[0-9T:+\-.Z]*)\s*[·]\s*(?P<author>\w+)\s*[·]\s*(?P<kind>\w+)\s*$"
+    r"^###\s+(?P<stamp>[0-9T:+\-.Z]*)\s*[·]\s*(?P<author>\w+)\s*[·]\s*(?P<kind>\w+)"
+    r"\s*(?:[—–:-]\s*.+)?$"
 )
 # Field names have acquired legitimate variants in use: the sponsor wrote
 # "- revision reviewed: <sha>" and "- refs:", both of which are unambiguous. Accepting
@@ -108,6 +109,10 @@ def parse_entries(path: Path = THREAD) -> list[dict[str, str]]:
             # field silently breaks the match between a verdict and its row.
             found = SHA_RE.findall(rev.group("value"))
             current["revision"] = found[0] if found else rev.group("value").strip("`*_ ")
+            # One verdict may cover several rows at several revisions
+            # ("revisions reviewed: a, b, c"). Keeping the whole list lets it authorise
+            # each row it names, instead of only the first.
+            current["revisions"] = found
             continue
         ref = REF_RE.match(line)
         if ref:

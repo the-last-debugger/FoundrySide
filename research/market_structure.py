@@ -14,6 +14,7 @@ Writes research/MARKET_STRUCTURE.md.
 
 from __future__ import annotations
 
+import math
 import statistics
 import sys
 from pathlib import Path
@@ -34,6 +35,11 @@ def parse(row: dict) -> dict | None:
         one_x_two = [float(row["PSCH"]), float(row["PSCD"]), float(row["PSCA"])]
         over, under = float(row["PC>2.5"]), float(row["PC<2.5"])
     except (KeyError, TypeError, ValueError):
+        return None
+    # Finiteness first: NaN compares false against every bound and would slip through a
+    # <= 1.0 guard, then poison the means.
+    prices = one_x_two + [over, under]
+    if not all(math.isfinite(o) for o in prices):
         return None
     if min(one_x_two) <= 1.0 or over <= 1.0 or under <= 1.0:
         return None
@@ -97,11 +103,12 @@ def main() -> int:
         "divisions are softer\" hypothesis is not supported by margin: the book takes",
         "approximately the same everywhere in this set.",
         "",
-        "That is a useful negative. A future coverage-gradient experiment cannot rest on",
-        "\"smaller league, wider margin\" — the margin is not wider here. It would have to argue",
-        "from information: fewer analysts, slower team news, thinner liquidity. None of those",
-        "is measured by this table, and all eight divisions are large European competitions, so",
-        "the corpus may simply not contain the kind of market the hypothesis is about.",
+        "The bound matters. This says the coverage-gradient hypothesis is **unsupported by",
+        "these margin summaries in this eight-division corpus**; it does not say the hypothesis",
+        "is false. Testing it properly needs varying forecastable information, model residuals",
+        "or market-relative log loss by division — none of which this table measures. It also",
+        "cannot separate the idea from the possibility that all eight competitions are too",
+        "large to be the market the hypothesis is about.",
         "",
         "## Limits",
         "",

@@ -1,4 +1,4 @@
-<!-- generated-by: market_structure.py sha256=5eb7b9c335ae -->
+<!-- generated-by: market_structure.py sha256=d35d26e86ceb -->
 
 # Market structure by division
 
@@ -25,11 +25,12 @@ tenths of a point, not by an order of magnitude. On this evidence the "lower
 divisions are softer" hypothesis is not supported by margin: the book takes
 approximately the same everywhere in this set.
 
-That is a useful negative. A future coverage-gradient experiment cannot rest on
-"smaller league, wider margin" — the margin is not wider here. It would have to argue
-from information: fewer analysts, slower team news, thinner liquidity. None of those
-is measured by this table, and all eight divisions are large European competitions, so
-the corpus may simply not contain the kind of market the hypothesis is about.
+The bound matters. This says the coverage-gradient hypothesis is **unsupported by
+these margin summaries in this eight-division corpus**; it does not say the hypothesis
+is false. Testing it properly needs varying forecastable information, model residuals
+or market-relative log loss by division — none of which this table measures. It also
+cannot separate the idea from the possibility that all eight competitions are too
+large to be the market the hypothesis is about.
 
 ## Limits
 

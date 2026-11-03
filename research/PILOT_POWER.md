@@ -1,4 +1,4 @@
-<!-- generated-by: pilot_power.py sha256=7d684cd0e7f0 -->
+<!-- generated-by: pilot_power.py sha256=52db2f05fbc1 -->
 
 # Sizing for the confirmatory design
 
@@ -38,7 +38,7 @@ component decomposition has been removed from the sizing path altogether.
 | Power at a 0.01-nat effect | **70.5%** (MC SE ±1.6pp) |
 | Power at the nominal t(15) cutoff, for comparison | 69.1% |
 | Calibrated cutoff (95th percentile of the simulated null) | 2.089 |
-| Rejection rate under the null, on an **independent** batch (seed 20262103) | 5.6% (nominally 5%) |
+| Rejection rate under the null, on an **independent** batch (seed 20262103) | 5.6% (45/800; Wilson 4.2–7.4%) |
 | Simulated null mean | +0.00013 (should be ~0) |
 | Effect at 80% power | 0.0117 nats (bisection bracket ±0.0004) |
 | **80% crossing, simultaneous band (Bonferroni over the 12 grid points)** | **0.0116 – 0.0130 nats** |
@@ -51,8 +51,8 @@ component decomposition has been removed from the sizing path altogether.
 This is the fourth number this document has carried, and the sequence matters. It was 84%
 when the sizing used an estimated variance component; 93.5% when the decomposition was
 removed but the pilot mean was not centred; 66.6% once the centring was fixed but clusters
-were drawn uniformly; and 67.6% with probability-proportional-to-size sampling, which is the
-estimand the protocol declares. The 93.5% was not power at all — it was the model's existing
+were drawn uniformly; 67.6% with probability-proportional-to-size sampling under the **nominal**
+t cutoff; and 70.5% now, with the calibrated cutoff and independent validation streams. The 93.5% was not power at all — it was the model's existing
 disadvantage to the market, detected by a two-sided test. The bracket on the threshold is
 numerical resolution; the seed spread above is the statistical uncertainty.
 
@@ -75,15 +75,19 @@ shows the nominal cutoff happens to hold its size on this data.
 Power at the target effect as the number of confirmatory clusters grows, holding the
 cluster-size pattern:
 
-| Confirmatory clusters | Fixtures | Calibrated cutoff | Power at 0.01 nats |
-| --- | --- | --- | --- |
-| 16 | 5,794 | 2.09 | 70.5% |
-| 24 | 8,216 | 2.07 | 86.6% |
-| 32 | 11,588 | 1.96 | 95.0% |
-| 40 | 14,010 | 2.10 | 97.0% |
+| Confirmatory clusters | Fixtures | Cutoff | Null rate (independent) | Power at 0.01 nats |
+| --- | --- | --- | --- | --- |
+| 16 | 5,794 | 2.09 | 5.6% | 70.5% ±1.6 |
+| 24 | 8,216 | 2.07 | 5.5% | 86.6% ±1.2 |
+| 32 | 11,588 | 1.96 | 6.8% | 95.0% ±0.8 |
+| 40 | 14,010 | 2.10 | 4.4% | 97.0% ±0.6 |
 
-Adding clusters means adding seasons, which raises the exchangeability question the protocol
-already records. The table is a costing of that option, not an endorsement of it.
+The cluster sizes for each row are the observed confirmatory sizes **repeated cyclically** to
+the required count. That is a costed assumption, not an observed or forecast distribution for
+future seasons, and the option rows carry their own independent null check so a mis-calibrated
+cutoff would show up as a null rate away from 5%. Adding clusters means adding seasons, which
+raises the exchangeability question the protocol already records. The table is a costing, not
+an endorsement.
 
 ## Why the threshold carries an interval
 

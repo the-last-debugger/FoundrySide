@@ -248,6 +248,8 @@ def main(argv: list[str] | None = None) -> int:
     power_nominal = design_power(clusters, sizes, TARGET, seed=alt_seed)
     power = design_power(clusters, sizes, TARGET, seed=alt_seed, crit=crit)
     type_one = design_power(clusters, sizes, 0.0, seed=eval_seed, crit=crit)
+    null_hits = int(round(type_one * SIMS))
+    null_lo, null_hi = wilson(null_hits, SIMS)
     stability = [design_power(clusters, sizes, TARGET, seed=SEED + 31 * (i + 1), crit=crit)
                  for i in range(2)]
     se = mc_se(power)
@@ -268,14 +270,15 @@ def main(argv: list[str] | None = None) -> int:
     for k in (16, 24, 32, 40):
         if k == len(sizes):
             # The 16-cluster row must be the headline design, not a second estimate of it.
-            options.append((k, int(sizes.sum()), power, crit))
+            options.append((k, int(sizes.sum()), power, crit, type_one, se))
             continue
         k_sizes = np.resize(base, k)
         crit_k = empirical_crit(clusters, k_sizes, sims=1200, seed=SEED + 3000 + k)
-        options.append((k, int(k_sizes.sum()),
-                        design_power(clusters, k_sizes, TARGET, sims=800,
-                                     seed=SEED + 4000 + k, crit=crit_k),
-                        crit_k))
+        rate_k = design_power(clusters, k_sizes, 0.0, sims=800,
+                              seed=SEED + 5000 + k, crit=crit_k)
+        p_k = design_power(clusters, k_sizes, TARGET, sims=800,
+                           seed=SEED + 4000 + k, crit=crit_k)
+        options.append((k, int(k_sizes.sum()), p_k, crit_k, rate_k, mc_se(p_k, 800)))
 
     doc = f"""{report_stamp.stamp(Path(__file__))}
 
@@ -317,7 +320,7 @@ component decomposition has been removed from the sizing path altogether.
 | Power at a {TARGET}-nat effect | **{power * 100:.1f}%** (MC SE ±{se * 100:.1f}pp) |
 | Power at the nominal t(15) cutoff, for comparison | {power_nominal * 100:.1f}% |
 | Calibrated cutoff (95th percentile of the simulated null) | {crit:.3f} |
-| Rejection rate under the null, on an **independent** batch (seed {eval_seed}) | {type_one * 100:.1f}% (nominally 5%) |
+| Rejection rate under the null, on an **independent** batch (seed {eval_seed}) | {type_one * 100:.1f}% ({null_hits}/{SIMS}; Wilson {null_lo * 100:.1f}–{null_hi * 100:.1f}%) |
 | Simulated null mean | {null_mean:+.5f} (should be ~0) |
 | Effect at 80% power | {threshold:.4f} nats (bisection bracket ±{bracket:.4f}) |
 | **80% crossing, simultaneous band (Bonferroni over the 12 grid points)** | **{cross_lo:.4f} – {cross_hi:.4f} nats** |
@@ -330,8 +333,8 @@ component decomposition has been removed from the sizing path altogether.
 This is the fourth number this document has carried, and the sequence matters. It was 84%
 when the sizing used an estimated variance component; 93.5% when the decomposition was
 removed but the pilot mean was not centred; 66.6% once the centring was fixed but clusters
-were drawn uniformly; and 67.6% with probability-proportional-to-size sampling, which is the
-estimand the protocol declares. The 93.5% was not power at all — it was the model's existing
+were drawn uniformly; 67.6% with probability-proportional-to-size sampling under the **nominal**
+t cutoff; and 70.5% now, with the calibrated cutoff and independent validation streams. The 93.5% was not power at all — it was the model's existing
 disadvantage to the market, detected by a two-sided test. The bracket on the threshold is
 numerical resolution; the seed spread above is the statistical uncertainty.
 
@@ -354,12 +357,16 @@ shows the nominal cutoff happens to hold its size on this data.
 Power at the target effect as the number of confirmatory clusters grows, holding the
 cluster-size pattern:
 
-| Confirmatory clusters | Fixtures | Calibrated cutoff | Power at 0.01 nats |
-| --- | --- | --- | --- |
-""" + "\n".join(f"| {k} | {n:,} | {crit_k:.2f} | {p * 100:.1f}% |" for k, n, p, crit_k in options) + f"""
+| Confirmatory clusters | Fixtures | Cutoff | Null rate (independent) | Power at 0.01 nats |
+| --- | --- | --- | --- | --- |
+""" + "\n".join(f"| {k} | {n:,} | {crit_k:.2f} | {rate * 100:.1f}% | {p * 100:.1f}% ±{se_k * 100:.1f} |" for k, n, p, crit_k, rate, se_k in options) + f"""
 
-Adding clusters means adding seasons, which raises the exchangeability question the protocol
-already records. The table is a costing of that option, not an endorsement of it.
+The cluster sizes for each row are the observed confirmatory sizes **repeated cyclically** to
+the required count. That is a costed assumption, not an observed or forecast distribution for
+future seasons, and the option rows carry their own independent null check so a mis-calibrated
+cutoff would show up as a null rate away from 5%. Adding clusters means adding seasons, which
+raises the exchangeability question the protocol already records. The table is a costing, not
+an endorsement.
 
 ## Why the threshold carries an interval
 

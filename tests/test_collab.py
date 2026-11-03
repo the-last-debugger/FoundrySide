@@ -43,6 +43,25 @@ RQ-001 reviewed.
 """
 
 
+class HeaderShapeTest(unittest.TestCase):
+    """A header may carry a title after the kind; it is presentation, not data."""
+
+    def test_title_after_kind_is_accepted(self):
+        text = ("### 2026-11-03 · sponsor · direction — broaden the expedition\n"
+                "Body.\n")
+        path = Path(tempfile.mkdtemp()) / "THREAD.md"
+        path.write_text(text, encoding="utf-8")
+        entries = parse_entries(path)
+        self.assertEqual(len(entries), 1)
+        self.assertEqual(entries[0]["kind"], "direction")
+        self.assertEqual(entries[0]["message"], "Body.")
+
+    def test_plain_header_still_parses(self):
+        path = Path(tempfile.mkdtemp()) / "THREAD.md"
+        path.write_text("### 2026-11-03T10:00:00Z · builder · note\nBody.\n", encoding="utf-8")
+        self.assertEqual(parse_entries(path)[0]["kind"], "note")
+
+
 class ParseEntriesTest(unittest.TestCase):
     def _thread(self, text=FIXTURE_THREAD) -> Path:
         tmp = Path(tempfile.mkdtemp()) / "THREAD.md"
