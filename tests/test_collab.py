@@ -319,6 +319,18 @@ class RealBridgeTest(unittest.TestCase):
         self.assertGreaterEqual(stats["entries"], 1)
         self.assertGreaterEqual(stats["rows"], 1)
 
+class ShallowDetectionTest(unittest.TestCase):
+    def test_a_full_clone_is_not_reported_shallow(self):
+        # If this returned True unconditionally the checker would warn on every run, which trains
+        # people to ignore warnings.
+        import subprocess
+        real = subprocess.run(["git", "rev-parse", "--is-shallow-repository"],
+                              cwd=ROOT, capture_output=True, text=True).stdout.strip()
+        if real == "true":
+            self.skipTest("this checkout is shallow")
+        from scripts.collab_check import shallow_clone
+        self.assertFalse(shallow_clone())
+
 
 if __name__ == "__main__":
     unittest.main()
