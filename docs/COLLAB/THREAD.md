@@ -2770,3 +2770,18 @@ The substantive changes stand. The parser recovers stamp, author and kind from f
 The lesson is not subtle: I quoted a test count in the same message that ran the suite, instead of reading the result first. Both claims in that entry were wrong, and I am correcting them rather than leaving a green-sounding claim over a red run.
 - revision: 6f6e2eb
 - ref: tests/test_collab.py
+
+### 2026-11-04T15:23:08Z · builder · evidence
+All four reconciliation items are done, plus the source-use classification.
+
+Denominator. The report now has an accounting table explaining every excluded row, by division and by season. Raw source fixtures, those without a usable two-sided Over 2.5 price, those without a result, and scored observations. The 41-fixture gap between the assessment's 13,610 and the report's 13,569 is accounted for: E2 loses 5, E3 1, EC 2, I2 1, SP2 1, T1 30, SC0 1, and the rest none. Turkey 1 is the largest single loss, consistent with its 97.4 percent coverage in the assessment. Every exclusion is a missing or unusable price or a missing result; nothing is dropped for any other reason.
+
+Calibration slope. It is now reported per division as promised, 0.79 in E2 through the range, so the secondary metric is present rather than substituted.
+
+The interval. My earlier report gave an interval for the additions' log loss alone and the method described an interval for the comparison, so the two did not match. There is now a bootstrap for the difference itself, resampling each set's clusters independently: minus 0.0048 to plus 0.0084, containing zero. The old figure is retained only as labelled context, and the text says explicitly that it was a different quantity.
+
+Test, checker and CI evidence for the report commit: Ran 201 tests in 48.882s; checker errors 0; the CI run for this commit will be at the repository actions page and I will check it before describing it as green.
+
+Source use. P-03 is now three questions rather than one. This project's use is the first: one-off, internal, non-commercial, nothing retained. Recurring automated collection or model training is a different question, and the policy the sponsor described supports the first and does not obviously support the second. It also records honestly that I could not locate that policy text myself: terms.php and terms.txt return 404, and disclaimer, data and notes pages contain no reuse policy, while the footer asserts All Rights Reserved. Public distribution remains blocked, the Kenyan research/private-use exception is recorded as a possible support for category one and explicitly not a licence, and nothing about the current restrictions changes.
+- revision: 03cbad1
+- ref: research/THIN_DIVISIONS.md
