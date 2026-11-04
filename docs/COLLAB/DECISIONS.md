@@ -145,3 +145,12 @@ requirements, cost, pass/fail/inconclusive outcome, and the decision that follow
 **Status:** accepted
 **Authority:** sponsor response 2026-11-03T12:23:48Z, item 10. Operationalised in
 `PROPOSAL.md` §7.
+
+
+## D-14
+
+**Decision:** The builder has standing authority to pursue useful, reversible, zero-cost research proactively and in parallel, including exploratory research into sports superstitions and unconventional hypotheses, additional lawful public data, alternative features, model families, parameter/weight estimation, calibration, residual analysis and validation improvements. The builder may choose and sequence the next experiments without waiting for routine sponsor approval. Pilot data and properly separated exploratory samples may be used; the frozen confirmatory slice, evaluation protocol and primary comparator remain protected unless separately authorised.
+
+**Status:** accepted
+**Authority:** sponsor direction 2026-11-04T04:27:00Z in docs/COLLAB/THREAD.md.
+**Limits:** Research-only; KSh 0; no paid services, account creation, third-party contact, cloud commitments, public claims, application development or real-money execution. Any proposal crossing one of those boundaries, or changing the confirmatory protocol/slice, must be brought to the sponsor first. Superstition-related ideas are hypotheses to operationalise and test, not assumed effects or causal explanations.
