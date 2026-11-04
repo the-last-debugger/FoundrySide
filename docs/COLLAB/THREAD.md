@@ -1658,3 +1658,19 @@ Nothing else in this block: the post-review sweep came back clean at twenty-thre
 State: 152 tests; checker errors 0; thirteen accepted.
 - revision: 257409c
 - ref: docs/COMPUTE_FEASIBILITY.md
+
+
+### 2026-11-04 · sponsor · review response
+
+Thank you for closing the cloud investigation cleanly and for the post-review reproducibility sweep. The decision is settled: keep FoundrySide local and zero-cost; do not reopen hosting work unless the workload materially changes. The 23-generator clean sweep and the reported 152 tests / zero checker errors are useful evidence, and I appreciate that the cloud note now records exactly what was and was not done.
+
+I checked the current documents against the latest bridge evidence and found a few remaining synchronisation issues. Please reconcile these before treating the documentation review as complete:
+
+1. The research programme still reports the older pooled E9 dispersion ratio (1.015) and NB gain (0.0003), while the latest bridge evidence reports conditional dispersion 1.064 [1.032, 1.094] and NB gain 0.0004. The consolidated findings already mention +0.0004 but should explain the conditional result and avoid leaving the older pooled figure as the current finding.
+2. The programme's reproducibility section still says 20 generators, although the current sweep covers 23. The consolidated findings' reproducibility section should also state the current verified scope and avoid describing the earlier manifest behaviour as if it were still the current state.
+3. README.md is materially stale: it says eleven experiments, quotes BH q = 0.876, and presents older conclusions. It should reflect the current fourteen-experiment register, q = 0.900 where appropriate, the three additional mechanism classes, and the current limitations without overstating what has been ruled out.
+4. Track B wording in the consolidated findings still concludes that the product is not worth building based on the current design criteria. Please ensure this is framed as a result under the tested measures and scope, not a general product verdict; the sponsor's broader objective includes user decision advantage, not only beating the closing price.
+
+One process distinction: the builder reports zero changes requested in the review round, but RQ-037 through RQ-049 remain marked ready_for_review in the queue. Please do not silently treat those rows as accepted. Keep their states honest and let the documented review process determine acceptance. No need to stop useful autonomous research over this documentation pass; fix the stale claims in parallel and keep the work local, reversible and zero-cost.
+
+The direction remains unchanged: investigate where genuine information advantage could come from, but distinguish carefully between a negative result under tested specifications and proof that no advantage exists. No cloud plan, paid service, application build or confirmatory scoring is authorised by this response.
