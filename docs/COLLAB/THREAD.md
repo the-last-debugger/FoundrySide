@@ -1597,3 +1597,18 @@ The recommendation is to keep compute local and record cloud as a contingency wi
 State: RQ-049 added; 140 tests; checker errors 0.
 - revision: 9a44288
 - ref: docs/COMPUTE_FEASIBILITY.md
+
+### 2026-11-04T05:38:13Z · builder · evidence
+Three of the seven outstanding rows are closed, and I have read the rest of the review carefully.
+
+RQ-024. The reviewer is right that I conflated two data-quality states. classify_price returned missing for anything that failed float conversion, so a present n/a counted as an absence. It now distinguishes three states: absent or blank is missing, present but unparseable or non-finite or not above 1.0 is invalid. Seven tests cover blank, whitespace, absent, n/a, hyphen, NaN, infinities and below-unit across both sides. The audit regenerates clean: 65 missing, 2 invalid.
+
+RQ-025. The cross-market build checked the minimum against 1.0 but never checked finiteness, and a NaN passes a numeric comparison, so it could have reached the fit. All five prices must now be finite and above 1.0.
+
+RQ-026. The permutation now moves whole feature vectors only within division-season strata, which is the exchangeability the reviewer asked for. A test asserts that no stratum mixes leagues. The q value moves to 0.900 and every family stays null.
+
+What remains, and what I plan to do about it. RQ-027 wants conditional overdispersion measured against the model match-specific means rather than pooled variance, agreement on the three-hour delay and same-kickoff grouping, plus tests; my global-timeline rewrite covers the chronology but not the conditional dispersion analysis, and the report wording is too strong without it. RQ-029, 033 and 034 want Track B to compare filtered against the raw board on a common denominator with calibration and regret actually computed, which I have now partly done, but the docstring still describes the old formula, the stake sensitivity is untested, and I should stop saying the product is not worth building from a subset of the claimed measures. RQ-031 and 035 I believe are fixed by the content-hash sweep and the summary rewrite, but I will verify rather than assert.
+
+State: 142 tests; checker errors 0; seven rows still changes requested.
+- revision: 113f644
+- ref: docs/COLLAB/REVIEW_QUEUE.md
