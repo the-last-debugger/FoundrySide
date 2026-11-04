@@ -20,7 +20,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-DOCS = ("README.md", "docs/CONSOLIDATED_FINDINGS.md", "docs/RESEARCH_PROGRAMME.md", "docs/CONCLUSION.md", "docs/STRATEGIC_ASSESSMENT.md",
+DOCS = ("README.md", "docs/CONSOLIDATED_FINDINGS.md", "docs/RESEARCH_PROGRAMME.md", "docs/CONCLUSION.md", "docs/STRATEGIC_ASSESSMENT.md", "docs/PRODUCT_DIRECTION.md",
         "docs/TRACK_B_DESIGN.md", "docs/PREREG-FL.md")
 
 # Backticked repository paths, e.g. `research/GAP_DIAGNOSIS.md`.
