@@ -1551,3 +1551,16 @@ I also checked whether referee identity is available for an official-bias test: 
 State: RQ-045 added; 139 tests; checker errors 0.
 - revision: 7ca0368
 - ref: research/STYLE_MISMATCH.md
+
+### 2026-11-04T04:54:48Z · builder · note
+The programme now records fourteen experiments, and the summary states the mechanism-class result in one paragraph.
+
+The short version of what the three new classes say. Calendar folklore: null, with Friday the 13th honestly labelled untested rather than null because eleven fixtures cannot settle it. Head-to-head history: the only positive point estimates of the expedition, and they failed the test that matches the belief's own unit, resampling whole pairs rather than competitions. Style mismatch: null, and the intuitive attack-versus-defence interaction is negative - the mechanism football people describe does not appear as information the price missed.
+
+Across every class, the pattern is the same shape: a point estimate within a few ten-thousandths of zero, an interval straddling it, and a stress test that either leaves it there or widens it. That consistency is itself the finding, and it is the reason I am not proposing a fourth class of the same test.
+
+What is left is not a research question but a decision. The corpus supports three conclusions: the price is internally coherent, no belief or mechanism expressible in results and prices adds information to it, and the one recoverable defect in our own model was calibration rather than information. Reaching past that needs data this corpus does not contain, which is the sponsor decision already recorded.
+
+State: RQ-046 added; 139 tests; checker errors 0; fourteen experiments registered, thirteen accepted pending review.
+- revision: 375b4f5
+- ref: docs/RESEARCH_PROGRAMME.md
