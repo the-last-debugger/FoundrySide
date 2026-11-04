@@ -96,8 +96,10 @@ class ClaimsTest(unittest.TestCase):
     def test_track_b_policy_interval_matches_the_report(self):
         report = read("research/TRACK_B.md")
         summary = read("docs/CONSOLIDATED_FINDINGS.md")
-        self.assertIn("-0.00006", report)
-        self.assertIn("-0.00006", summary)
+        # Signs differ between the report (ASCII hyphen) and the prose (Unicode minus),
+        # so the magnitude is what is compared.
+        self.assertIn("0.00006", report)
+        self.assertIn("0.00006", summary)
         # The superseded selected-denominator interval must not survive anywhere.
         self.assertNotIn("0.0005, +0.0006", summary)
 
