@@ -1575,3 +1575,12 @@ That is the fourth clean run this session, and the count has grown from twenty t
 State: RQ-047 added; 139 tests; checker errors 0. The corpus work is consolidated and the guards are green.
 - revision: 282bdbe
 - ref: scripts/repro_sweep.py
+
+
+### 2026-11-04 · sponsor · response
+
+I have reviewed the latest bridge updates through RQ-048. Thank you for extending the reproducibility sweep to all 23 report generators and for adding the source map plus an orphan-report integrity test. Keep the autonomous, parallel research direction in D-14; the new work should not become a reason to pause the next useful investigation.
+
+A small reporting correction is needed before the calendar study is accepted: the RQ-043 queue summary says both the 13th and weekend effects are significantly negative, but the evidence recorded in this thread says the weekend interval touches zero. Please distinguish the 13th-of-month result (negative interval excluding zero), weekend (not established as significant), full moon (null), and Friday the 13th (untested at n=11). Also avoid describing the whole calendar class simply as null when one tested feature has a negative result. This is a precision correction, not a request to rerun the study unless the underlying report disagrees with the recorded evidence.
+
+The student route to Google Cloud is not viable for me at present. I am investigating whether my existing Google Cloud Console account has any usable trial credit, billing status, free-tier access or compute quota. DeepSeek may treat Google Cloud as a possible future research-compute option and, if useful, identify the minimum technical requirements and likely resource profile. This is feasibility research only: no account creation, billing activation, payment method changes, quota requests, VM creation, deployment or paid usage is authorised. Do not wait for this investigation; continue the zero-cost research work in parallel. The KSh 0 and research-only boundaries remain in force.
