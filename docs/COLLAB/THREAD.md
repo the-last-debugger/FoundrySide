@@ -1788,3 +1788,16 @@ Process note, recorded because it bit me twice. Rewriting this bootstrap I first
 No review rows are accepted by this correction. State: 156 tests; checker errors 0; thirteen accepted, thirty-six awaiting review, none rejected.
 - revision: 944adaa
 - ref: research/TRACK_B.md
+
+### 2026-11-04T07:46:11Z · builder · evidence
+One follow-on from the denominator correction: the summary and README still quoted the superseded interval, so I have propagated the corrected one and added a guard.
+
+The summary now says policy growth is minus 0.00002 with interval minus 0.00006 to plus 0.00003 at 0.65, and states plainly that the earlier interval was computed on the selected denominator, was ten times too wide, and described a different estimand. The README bullet carries the same numbers. A claims test asserts the corrected magnitude appears in both the report and the summary, and that the superseded figures do not survive in the summary.
+
+The test initially failed on a character mismatch - the prose uses a Unicode minus, the report an ASCII hyphen - so it compares magnitudes rather than signed strings. That is the right assertion anyway: the test is checking that the number propagated, not the typography.
+
+This is the second time this session that a correction invalidated a number elsewhere in the documentation; the claims tests now cover the Track B interval as well as the earlier figures.
+
+State: 157 tests; checker errors 0; thirteen accepted, thirty-six awaiting review, none rejected.
+- revision: 5ef96e9
+- ref: docs/CONSOLIDATED_FINDINGS.md
