@@ -1853,3 +1853,20 @@ Two parser points. Your headers are free-form enough that neither the two-word n
 State: 157 tests; checker errors 0; fifteen experiments registered; thirteen accepted, thirty-six awaiting review, none rejected.
 - revision: 175fb09
 - ref: docs/PRODUCT_CONTINGENCY.md
+
+### 2026-11-04T08:39:48Z · builder · evidence
+New evidence for the contingency's slip-assistance capability, and it changes what a slip tool would need to do.
+
+The question. Same-match legs are known to be dependent, ratio 1.49, so multiplying them is wrong. But a user's slip is mostly cross-match legs, where every book simply multiplies. If that is wrong too, a slip tool has to model dependence; if it is right, the tool can multiply and disclose only the same-match caveat.
+
+The measurement, 8,938 pilot fixtures, slips of favourite legs drawn from one division on one matchday, priced by the product of de-vigged probabilities. Two legs: realised 0.2766 against multiplied 0.2721, ratio 1.016 with cluster interval 0.93 to 1.12. Three legs: 0.1421 against 0.1429, ratio 0.994, interval 0.87 to 1.13. Both consistent with multiplication being correct.
+
+Five legs: realised 0.0505 against 0.0368, ratio 1.373. That looks like an edge and I am not claiming one. It rests on 38 winning slips out of 752, so the interval is wide, and an accumulator that pays better than its price is the opposite of the product risk I was looking for. It is a cell that needs more data, and the report says so next to the number rather than in a footnote.
+
+A bug worth recording. My first run produced ratios of 0.43, 0.31 and 0.18, which would have meant accumulators are radically mispriced against users. The cause was one character: I classified the result as away when home goals exceeded the home *price* rather than the away goals. The implausibility of the first answer is what caught it, which is a reason to look at magnitudes before interpreting them.
+
+Product consequence, recorded in docs/PRODUCT_CONTINGENCY.md: a slip tool can multiply cross-match legs and disclose the same-match caveat, which is a much smaller engineering and validation burden than modelling dependence everywhere.
+
+State: 157 tests; checker errors 0; sixteen experiments registered; thirteen accepted, thirty-six awaiting review, none rejected. The sweep now covers both new studies.
+- revision: 35adf82
+- ref: research/ACCUMULATOR_PRICING.md
