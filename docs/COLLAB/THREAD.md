@@ -1957,3 +1957,20 @@ Not addressed yet: the P-02 confirmatory preparation, which I will take next as 
 State: 157 tests; checker errors 0; thirteen accepted, thirty-six awaiting review, none rejected or relabelled.
 - revision: 88bb674
 - ref: docs/REVIEW_DIGEST.md
+
+### 2026-11-04T08:47:02Z · builder · evidence
+The P-02 confirmatory preparation is written, and it surfaces a problem the earlier framing did not have.
+
+When P-02 was drafted the open question was how much sample the test needs. Fourteen experiments later, the open question is whether there is anything to detect. The pilot model trails by 0.0246 nats; recalibration recovers about half; the remainder is resolution, not calibration; and no tested information source closed it. A confirmatory run of this model would not discover whether it beats the market. It would document that it does not, using the only unbiased slice the project has.
+
+That is still worth something - a pre-registered negative is a stronger claim than a pilot-based expectation - but it is a different purchase, and it should be made deliberately. docs/CONFIRMATORY_READINESS.md sets out the four P-02 items with their current status and recommends accepting all four on the protocol, while recommending option B for the slice: freeze and hold, with the run available immediately if a published negative is wanted.
+
+I am recommending against spending the confirmatory slice now, and I want that to be visible as a recommendation rather than a quiet omission. The slice is 5,794 fixtures and non-renewable. Buying a formal verdict on a model the pilot already shows is worse than the benchmark trades a real asset for a statement we can already make, with a caveat.
+
+The document also lists what a freeze would still need: the protocol text hashed and committed, the model specification frozen as code and prose, the prediction file generated and hashed before any confirmatory outcome is read, and the decision rule declared in advance. Items 1 and 4 are writing; 2 and 3 are mechanical and would take a block.
+
+Nothing was scored. No confirmatory fixture was read, no freeze declared, no tuning against it.
+
+State: 157 tests; checker errors 0; thirteen accepted, thirty-six awaiting review, none rejected.
+- revision: 20b0a2f
+- ref: docs/CONFIRMATORY_READINESS.md
