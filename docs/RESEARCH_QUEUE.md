@@ -6,24 +6,28 @@ are not erased.
 
 ## Active
 
-**No active task.** The authorised thin-division measurement is **complete** — see `research/THIN_DIVISIONS.md` (E24).
+**No active task.** The authorised thin-division measurement is complete
+(`research/THIN_DIVISIONS.md`, E24).
 
-## Next
+## Recommendation on record
 
-**No next task currently authorised.**
+**Close Track A.** The best remaining candidate was measured and did not deliver: the thirteen thin
+divisions are +0.0017 nats worse than the existing eight, well inside the 0.01 descriptive scale, with
+the approximate interval containing the reference. The alternatives were rejected earlier for reasons
+that still hold — no verified pre-decision information source, no examined multi-sport dataset, and
+decision support whose decisive test needs users.
+
+This is a conclusion reached by testing the best remaining idea, not by exhaustion. Twenty-four
+experiments, twenty-three of them negative or non-material, one deployable positive (forward
+calibration, +0.0102 nats) and one bounded product fact (price shopping improves the price paid by
+~6.5% per selection, without establishing value).
 
 ## Decision pending with the sponsor
 
-One decision, and only one: whether to authorise the **thin-division market-efficiency
-measurement** described in docs/OPPORTUNITY_ASSESSMENT.md.
-
-It is not a model extension. It asks whether the de-vigged closing price is less well calibrated in
-the thirteen authorised divisions than in the eight already held. It needs no model to beat anything, no
-protocol change, no new market family, and no data cost. The evidence pack — availability, licence
-status, fixture counts and the exact estimand — is in the assessment, which this register treats as
-complete.
-
-Until that decision is taken, nothing runs: no measurement, no download, no merge, no experiment.
+**Whether to accept that recommendation and close Track A.** If accepted, the deliverable is a closing
+statement in `docs/CONCLUSION.md` and the project pauses with the record intact. If declined, the next
+step needs a named candidate and the authorisation to test it — there is nothing queued, and inventing
+one would be activity rather than progress.
 
 ## Completed this session, in order
 
