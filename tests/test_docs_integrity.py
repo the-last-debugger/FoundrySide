@@ -56,6 +56,14 @@ class ReferencesTest(unittest.TestCase):
                                   cwd=ROOT, capture_output=True)
             if proc.returncode != 0:
                 missing.append(sha)
+                continue
+            # Reachable from the branch, not merely present as a dangling object. A rebase leaves
+            # the old commit in the local database, so cat-file alone passes locally and fails in
+            # a fresh clone - which is exactly how this went unnoticed.
+            reach = subprocess.run(["git", "merge-base", "--is-ancestor", sha, "HEAD"],
+                                   cwd=ROOT, capture_output=True)
+            if reach.returncode != 0:
+                missing.append(f"{sha} (not reachable from HEAD)")
         self.assertEqual(missing, [], f"queue cites revisions not in history: {missing}")
 
     def test_queue_ids_are_unique(self):

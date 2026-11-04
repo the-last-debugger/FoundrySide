@@ -15,10 +15,10 @@ reviewer would change by accepting them, not by ID.
 | Row | Revision | State | What it is |
 | --- | --- | --- | --- |
 | RQ-027 | `aafb8fd` | ready_for_review | E9 model family: global UTC timeline with pending queue, conditional Pearson dispersion with a cluster interval, chronology tests |
-| RQ-037 | `09e562e` | ready_for_review | E9 dispersion: global UTC ordering with a pending queue and availability gating |
+| RQ-037 | `5e53254` | ready_for_review | E9 dispersion: global UTC ordering with a pending queue and availability gating |
 | RQ-026 | `fedb562` | ready_for_review | E8 feature screen: point-in-time rebuild, cluster-stratified permutation, availability and stratum tests |
-| RQ-038 | `09e562e` | ready_for_review | E8 permutation: stratified by division-season cluster, joint feature vectors preserved |
-| RQ-039 | `09e562e` | ready_for_review | Track B: every policy scored on the common fixture denominator, with raw-board comparison and regret |
+| RQ-038 | `5e53254` | ready_for_review | E8 permutation: stratified by division-season cluster, joint feature vectors preserved |
+| RQ-039 | `5e53254` | ready_for_review | Track B: every policy scored on the common fixture denominator, with raw-board comparison and regret |
 | RQ-029 | `7138b9c` | ready_for_review | Track B: row-level return, common-denominator comparison, calibration of shown probabilities, finite guards, stake sensitivity |
 | RQ-033 | `7138b9c` | ready_for_review | Track B: log-growth at a fixed stake with sensitivity at 0.5 and 2 percent |
 | RQ-034 | `7138b9c` | ready_for_review | Track B design: success criteria carry measured values, calibration criterion decisive |
@@ -30,7 +30,7 @@ reviewer would change by accepting them, not by ID.
 | Row | Revision | State | What it is |
 | --- | --- | --- | --- |
 | RQ-031 | `0d7f521` | ready_for_review | Repro sweep: content-hash snapshots so a change to an already-dirty artefact is detected |
-| RQ-040 | `a867e76` | ready_for_review | Repro sweep: content hashing instead of status sets, with a dirty-file test |
+| RQ-040 | `ddb26c3` | ready_for_review | Repro sweep: content hashing instead of status sets, with a dirty-file test |
 | RQ-047 | `282bdbe` | ready_for_review | Reproducibility: sweep extended to the three mechanism-class studies; full clean run over 23 generators |
 | RQ-048 | `76c07e7` | ready_for_review | Source map: every stamped report cited from the summary with what it establishes, and a test preventing orphans |
 
@@ -40,7 +40,7 @@ reviewer would change by accepting them, not by ID.
 | --- | --- | --- | --- |
 | RQ-028 | `0d7f521` | ready_for_review | Consolidated findings: counting corrected, overclaim replaced with not-detected-under-tested-specifications, volatile queue count removed |
 | RQ-035 | `0d7f521` | ready_for_review | Programme rewritten: stale serial instruction removed, comprehensive-negative framing replaced, parallel direction reflected |
-| RQ-041 | `a867e76` | ready_for_review | Docs synchronised with current state: README status and power, programme workstream statuses, summary wording and stale counts |
+| RQ-041 | `ddb26c3` | ready_for_review | Docs synchronised with current state: README status and power, programme workstream statuses, summary wording and stale counts |
 | RQ-043 | `39390ea` | ready_for_review | Superstition study: full moon, Friday 13th, the 13th, weekend - each tested as an increment over the market price |
 | RQ-044 | `fc8b0ac` | ready_for_review | Bogey-team study: head-to-head goals and result history as increments over price, with pair-level resampling as the stringent test |
 | RQ-045 | `7ca0368` | ready_for_review | Style-mismatch study: attack/defence interaction, venue asymmetry and scoring volatility as increments over price |
@@ -101,19 +101,28 @@ current revision, or the row should be updated first.
 | RQ-003 | 0e05653 | 1 |
 | RQ-004 | 0e05653 | 1 |
 | RQ-005 | 0e05653 | 3 |
-| RQ-016 | 2c6199d | 14 |
-| RQ-027 | aafb8fd | 1 |
+| RQ-016 | 2c6199d | 16 |
+| RQ-017 | 2c6199d | 1 |
+| RQ-018 | 2c6199d | 1 |
+| RQ-020 | 600c1b8 | 1 |
+| RQ-021 | 600c1b8 | 1 |
+| RQ-024 | fedb562 | 1 |
+| RQ-025 | fedb562 | 1 |
+| RQ-026 | fedb562 | 1 |
+| RQ-027 | aafb8fd | 2 |
 | RQ-028 | 0d7f521 | 3 |
 | RQ-029 | 7138b9c | 3 |
 | RQ-031 | 0d7f521 | 1 |
 | RQ-033 | 7138b9c | 2 |
 | RQ-035 | 0d7f521 | 2 |
-| RQ-037 | 09e562e | 2 |
-| RQ-039 | 09e562e | 2 |
-| RQ-040 | a867e76 | 1 |
-| RQ-041 | a867e76 | 3 |
+| RQ-037 | 5e53254 | 2 |
+| RQ-038 | 5e53254 | 1 |
+| RQ-039 | 5e53254 | 2 |
+| RQ-040 | ddb26c3 | 1 |
+| RQ-041 | ddb26c3 | 3 |
 | RQ-043 | 39390ea | 2 |
+| RQ-044 | fc8b0ac | 1 |
 | RQ-046 | 375b4f5 | 2 |
 | RQ-047 | 282bdbe | 1 |
-| RQ-048 | 76c07e7 | 1 |
+| RQ-048 | 76c07e7 | 2 |
 | RQ-049 | 927d357 | 1 |
