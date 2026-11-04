@@ -107,6 +107,13 @@ class ClaimsTest(unittest.TestCase):
         # The superseded selected-denominator interval must not survive anywhere.
         self.assertNotIn("0.0005, +0.0006", summary)
 
+    def test_no_document_claims_a_source_is_ruled_out(self):
+        # A null under one specification is not a universal exclusion, and the wording has drifted
+        # into that claim twice.
+        for name in ("docs/RESEARCH_PROGRAMME.md", "docs/CONSOLIDATED_FINDINGS.md", "README.md"):
+            text = read(name).lower()
+            self.assertNotIn("rules out this source", text, name)
+
 
 if __name__ == "__main__":
     unittest.main()

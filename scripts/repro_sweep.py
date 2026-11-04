@@ -23,6 +23,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PY = sys.executable
+# Per-generator bound: the slowest script (the feature screen) takes about 150 s, so 600 s is a
+# generous ceiling that still turns a hang into a failure rather than an open-ended wait.
+GENERATOR_TIMEOUT = 600
 
 # Order matters: later scripts consume artefacts written by earlier ones.
 GENERATORS = [
@@ -88,7 +91,12 @@ def main() -> int:
         # Scope drift detection to generated artefacts. Tracking the whole tree reports any
         # concurrent documentation edit as generator drift, which is noise.
         before = _artefact_state()
-        proc = subprocess.run([PY, script, *args], cwd=ROOT, capture_output=True, text=True)
+        try:
+            proc = subprocess.run([PY, script, *args], cwd=ROOT, capture_output=True,
+                                  text=True, timeout=GENERATOR_TIMEOUT)
+        except subprocess.TimeoutExpired:
+            failures.append((script, f"timed out after {GENERATOR_TIMEOUT}s"))
+            continue
         after = _artefact_state()
         if proc.returncode != 0:
             failures.append((script, proc.stderr.strip().splitlines()[-1] if proc.stderr.strip() else ""))
@@ -96,7 +104,7 @@ def main() -> int:
         if changed:
             drift.append((script, sorted(changed)))
 
-    print(f"generators run: {len(GENERATORS)}")
+    print(f"generators run: {len(GENERATORS)} (per-generator bound {GENERATOR_TIMEOUT}s)")
     if failures:
         print("\nfailures:")
         for script, err in failures:
