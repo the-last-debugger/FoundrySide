@@ -1,4 +1,4 @@
-<!-- generated-by: track_b.py sha256=cff50d235099 -->
+<!-- generated-by: track_b.py sha256=762f5b41aa62 -->
 
 # E10 — what an abstention rule over market prices is worth
 

@@ -1,4 +1,4 @@
-<!-- generated-by: market_structure.py sha256=d35d26e86ceb -->
+<!-- generated-by: market_structure.py sha256=6b9c09ecd2f8 -->
 
 # Market structure by division
 

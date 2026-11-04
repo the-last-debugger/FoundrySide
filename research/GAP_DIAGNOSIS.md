@@ -1,4 +1,4 @@
-<!-- generated-by: gap_diagnosis.py sha256=e4f925e418fe -->
+<!-- generated-by: gap_diagnosis.py sha256=b48b1e5ad394 -->
 
 # Why the model trails the market
 

@@ -23,7 +23,11 @@ PATTERN = re.compile(r"<!-- generated-by: (?P<name>\S+) sha256=(?P<digest>[0-9a-
 
 
 def _digest(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()[:12]
+    # Hash normalised bytes. A checkout with CRLF line endings is the same script, but hashing raw
+    # bytes makes every stamp fail on a Windows clone; the stamp should track content, not the
+    # platform's newline convention.
+    data = path.read_bytes().replace(b"\r\n", b"\n")
+    return hashlib.sha256(data).hexdigest()[:12]
 
 
 def stamp(script: Path) -> str:

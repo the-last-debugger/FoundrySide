@@ -1,4 +1,4 @@
-<!-- generated-by: residual_study.py sha256=294febcda075 -->
+<!-- generated-by: residual_study.py sha256=59e98727aae5 -->
 
 # Workstream 3 — what is left after recalibration, and what the worst errors are
 

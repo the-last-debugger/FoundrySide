@@ -1,4 +1,4 @@
-<!-- generated-by: cross_market.py sha256=4ee9a857ab70 -->
+<!-- generated-by: cross_market.py sha256=8a2764ce3957 -->
 
 # E7 — does the 1X2 market add information to the totals market?
 

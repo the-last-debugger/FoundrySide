@@ -1,4 +1,4 @@
-<!-- generated-by: pilot_model.py sha256=1573f1ccad1c -->
+<!-- generated-by: pilot_model.py sha256=3257ce238eb4 -->
 
 # Pilot predictions — first out-of-fold Δ, pilot seasons only
 

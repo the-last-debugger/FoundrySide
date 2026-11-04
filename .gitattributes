@@ -1,0 +1,11 @@
+# Normalise line endings so hashes and diffs do not depend on the platform.
+#
+# Report stamps hash generator content; without this, a Windows checkout (CRLF) and a Linux
+# checkout (LF) would produce different digests for the same script, and the stamp test would pass
+# on one machine and fail on the other. `eol=lf` makes the checkout deterministic.
+* text=auto eol=lf
+
+# Binary or generated files that must not be normalised.
+*.png binary
+*.jpg binary
+*.pdf binary
