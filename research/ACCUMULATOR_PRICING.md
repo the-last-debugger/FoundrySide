@@ -1,4 +1,4 @@
-<!-- generated-by: accumulator_pricing.py sha256=73f2ddddfcd3 -->
+<!-- generated-by: accumulator_pricing.py sha256=c80f8772269c -->
 
 # Accumulator pricing — is multiplying cross-match legs safe?
 
@@ -29,6 +29,22 @@ book-priced product and is more likely a selection effect in taking favourites.
 Coverage matters here: with a favourite-only rule the naive probability is high, so slips are won
 often enough to estimate the rate, unlike long-odds accumulators where the event is too rare to
 observe in three seasons.
+
+## Long combinations cannot be estimated here
+
+| Legs | Multiplied probability | Slips for a ±10% estimate | Slips available in corpus |
+| --- | --- | --- | --- |
+| 3 | 0.14130 | 608 | 2,041 |
+| 5 | 0.03833 | 2,509 | 752 |
+| 8 | 0.00542 | 18,364 | 152 |
+| 10 | 0.00147 | 67,963 | 101 |
+| 12 | 0.00040 | 250,795 | 14 |
+
+A ±10% relative estimate of an eight-leg combination needs on the order of ten thousand
+slips; the corpus can form a few hundred at most, and a jackpot is longer than eight. **Jackpot
+outcome rates are not estimable with this data**, and any product claim about them would have to
+rest on published rules and arithmetic rather than on observed results. That is a statement about
+evidence, not about jackpots being profitable or not.
 
 ## Why this matters for a slip-assistance product
 

@@ -55,8 +55,8 @@ treatment and a stated failure condition. Fit and evaluation never share outcome
 | E12 | **Superstition: full moon, Friday 13th, the 13th, weekend** | **four outcomes: the 13th significantly negative, weekend undetermined, full moon null, Friday 13th untested at n=11** | **negative** |
 | E13 | **Bogey team: head-to-head goals and result history** | **first positive point estimates (+0.00002, +0.00010) but both intervals straddle zero and widen under pair-level resampling** | **negative after stress test** |
 | E14 | **Style mismatch: attack/defence interaction, venue asymmetry, volatility** | **all null; the intuitive interaction is negative (-0.00017)** | **negative** |
-| E15 | **Best-price discovery between the two held books** | **0.17 pp of margin saved [0.14, 0.20]; 99.1% of fixtures still negative EV at the best price** | **real but bounded; margin reduction, not edge** |
-| E16 | **Accumulator pricing across matches: is multiplying legs safe?** | **2 and 3 legs consistent with 1 (1.016, 0.994); 5 legs 1.373 but rests on 38 wins** | **multiplication is adequate cross-match; long slips untested** |
+| E15 | **Best-price discovery between the two held books, by division** | **0.17 pp saved overall [0.14, 0.20]; 0.06 pp in P1 to 0.28 pp in D1; 99.1% still negative EV** | **real, bounded, and larger where margins are wider** |
+| E16 | **Accumulator pricing: cross-match multiplication, plus estimability of long combinations** | **2-3 legs consistent with 1; 5 legs 1.373 on 38 wins; an 8-leg rate needs ~18,000 slips and the corpus can form 152** | **multiplication adequate; jackpots not estimable here** |
 
 ## What the three studies together say
 

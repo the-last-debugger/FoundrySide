@@ -1,4 +1,4 @@
-<!-- generated-by: best_price.py sha256=4ca91b35d91a -->
+<!-- generated-by: best_price.py sha256=181f06fc26ba -->
 
 # Best-price discovery — what a better available price is worth
 
@@ -14,6 +14,22 @@ contingency product's central claim: that comparing prices improves a user's pos
 | Mean overround at one book | 0.0308 |
 | Mean overround at the better of the two | 0.0291 |
 | Mean margin saved, cluster 95% | **0.0017** [0.0014, 0.0020] |
+
+## By division
+
+| Division | Fixtures | One book | Best of two | Saved |
+| --- | --- | --- | --- | --- |
+| D1 | 897 | 0.0303 | 0.0275 | 0.0028 |
+| E0 | 1,138 | 0.0288 | 0.0272 | 0.0017 |
+| E1 | 1,654 | 0.0320 | 0.0307 | 0.0013 |
+| F1 | 1,138 | 0.0289 | 0.0265 | 0.0024 |
+| I1 | 1,139 | 0.0292 | 0.0270 | 0.0021 |
+| N1 | 916 | 0.0351 | 0.0339 | 0.0012 |
+| P1 | 917 | 0.0339 | 0.0333 | 0.0006 |
+| SP1 | 1,139 | 0.0293 | 0.0275 | 0.0018 |
+
+The saving is largest where the single-book margin is largest, which is what a comparison tool
+should be expected to deliver: it recovers some of the margin rather than all of it.
 
 ## What that does and does not buy
 

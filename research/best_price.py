@@ -53,7 +53,8 @@ def load() -> list[dict]:
         prices = (po_over, po_under, pb_over, pb_under)
         if not all(math.isfinite(p) for p in prices) or min(prices) <= 1.0:
             continue
-        rows.append({"cluster": f"{r['_league']}_{r['_season']}",
+        rows.append({"league": r["_league"],
+                     "cluster": f"{r['_league']}_{r['_season']}",
                      "po_over": po_over, "po_under": po_under,
                      "pb_over": pb_over, "pb_under": pb_under})
     return rows
@@ -103,6 +104,17 @@ def main() -> int:
 
     still_negative = sum(1 for r in rows if max(r["po_over"], r["pb_over"]) * fair_prob(r) - 1 < 0)
 
+    # Per-division: is the saving uniform, or concentrated where margins are widest?
+    by_league: dict[str, list[dict]] = {}
+    for row in rows:
+        by_league.setdefault(row["league"], []).append(row)
+    split = []
+    for league, group in sorted(by_league.items()):
+        s_single = statistics.mean(overround(g["po_over"], g["po_under"]) for g in group)
+        s_best = statistics.mean(overround(max(g["po_over"], g["pb_over"]),
+                                           max(g["po_under"], g["pb_under"])) for g in group)
+        split.append((league, len(group), s_single, s_best, s_single - s_best))
+
     doc = f"""{report_stamp.stamp(Path(__file__))}
 
 # Best-price discovery — what a better available price is worth
@@ -119,6 +131,16 @@ contingency product's central claim: that comparing prices improves a user's pos
 | Mean overround at one book | {statistics.mean(single):.4f} |
 | Mean overround at the better of the two | {statistics.mean(best):.4f} |
 | Mean margin saved, cluster 95% | **{statistics.mean(saving):.4f}** [{lo:.4f}, {hi:.4f}] |
+
+## By division
+
+| Division | Fixtures | One book | Best of two | Saved |
+| --- | --- | --- | --- | --- |
+""" + "\n".join(
+        f"| {d} | {n:,} | {s:.4f} | {b:.4f} | {sv:.4f} |" for d, n, s, b, sv in split) + f"""
+
+The saving is largest where the single-book margin is largest, which is what a comparison tool
+should be expected to deliver: it recovers some of the margin rather than all of it.
 
 ## What that does and does not buy
 

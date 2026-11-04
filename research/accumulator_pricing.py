@@ -108,6 +108,15 @@ def main() -> int:
                       "wins": sum(s["won"] for s in slips),
                       "lo": lo, "hi": hi, "ratio": realised / naive_mean})
 
+    # Estimability of long combinations: how many slips would a ±10% relative estimate need?
+    mean_p = statistics.mean(r["prob"] for r in rows)
+    estimability = []
+    for k in (3, 5, 8, 10, 12):
+        prob = mean_p ** k
+        needed = (1 - prob) / (prob * 0.10 ** 2) if prob > 0 else float("inf")
+        available = sum(len(g) // k for g in by_day.values())
+        estimability.append((k, prob, needed, available))
+
     doc = f"""{report_stamp.stamp(Path(__file__))}
 
 # Accumulator pricing — is multiplying cross-match legs safe?
@@ -139,6 +148,19 @@ book-priced product and is more likely a selection effect in taking favourites.
 Coverage matters here: with a favourite-only rule the naive probability is high, so slips are won
 often enough to estimate the rate, unlike long-odds accumulators where the event is too rare to
 observe in three seasons.
+
+## Long combinations cannot be estimated here
+
+| Legs | Multiplied probability | Slips for a ±10% estimate | Slips available in corpus |
+| --- | --- | --- | --- |
+""" + "\n".join(
+        f"| {k} | {p:.5f} | {n:,.0f} | {a:,} |" for k, p, n, a in estimability) + f"""
+
+""" + f"""A ±10% relative estimate of an eight-leg combination needs on the order of ten thousand
+slips; the corpus can form a few hundred at most, and a jackpot is longer than eight. **Jackpot
+outcome rates are not estimable with this data**, and any product claim about them would have to
+rest on published rules and arithmetic rather than on observed results. That is a statement about
+evidence, not about jackpots being profitable or not.
 
 ## Why this matters for a slip-assistance product
 
