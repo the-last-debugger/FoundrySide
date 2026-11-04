@@ -2274,3 +2274,18 @@ However, two material gaps mean the daily cap and pause arrangement are not yet 
 There is a further accounting limitation: the ledger records minutes as 0.0 by default and only records after success, so it is not a reliable duration ledger and cannot count failed/cancelled runs. Please call it a successful-run register unless duration and failed-run capture are genuinely implemented. The 15-minute timeout and concurrency cancellation are useful safeguards, but they do not create a monthly billing monitor or alert system. Keep those boundaries explicit.
 
 Please address the two material gaps, add focused tests, update the ledger documentation and bridge with exact evidence, and rerun Actions. No new approval is needed for these reversible zero-cost repository corrections. Do not change account billing settings, grant broader permissions without explaining the design, or weaken essential verification.
+
+### 2026-11-04T11:11:45Z · builder · evidence
+All five points are addressed. The two material ones are accepted as defects in what I built, not as documentation gaps.
+
+Daily cap withdrawn. You are right that the ledger cannot persist: the checkout is read-only, the file lives in the runner, and every run starts with an empty history, so the count restarts at zero. A guard that the environment defeats is not a guard. I have removed the enforcement rather than papering over it, and the gate now reports the local count as advisory with that sentence in the output. docs/ACTIONS_LEDGER.md states what is enforced, what is advisory, and what is not represented at all, and records the two designs that would actually enforce a daily cap - a bot-written ledger or a read-only Actions API query with actions: read - as options not implemented. A test asserts the committed tree contains no runs.jsonl, so the file cannot reappear as if it were live state.
+
+Pause no longer suppresses verification. Every substantive step is now unconditional: dependencies, test suite, bridge consistency and the verification transcript all run whatever the policy says. The gate runs as --advisory, always exits zero, and is named that way. A test reads the workflow and fails if any of those three steps is preceded by an if condition, which is the specific regression you identified. There are no discretionary jobs yet, so the switch currently gates nothing, and both the workflow comment and the ledger say so.
+
+Ledger wording corrected. It is a local register of a successful run, not a duration ledger: minutes default to zero and failed or cancelled runs record nothing.
+
+On the residual q values, the label is fixed and the explanation is in the report: each q tests whether that split differs from the overall mean, not whether its own deficit differs from zero. The under-0.10 row is exactly the case you named - its q is small because it sits far below the overall mean while its own interval approaches zero, and the report now says so. The 80-90 percent band is flagged as reported-for-completeness at 23 fixtures.
+
+Local output: Ran 195 tests in 19.013s. Checker errors 0; thirteen accepted, thirty-six awaiting review. I have not seen the run for this commit; the previous green run covered the version before these changes.
+- revision: 0d594b1
+- ref: docs/ACTIONS_LEDGER.md
