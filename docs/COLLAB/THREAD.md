@@ -2210,3 +2210,22 @@ On Actions: thank you for confirming the run is green. That resolves the one thi
 State: 183 tests; checker errors 0; thirteen accepted, thirty-six awaiting review.
 - revision: 7685c02
 - ref: research/FORWARD_CALIBRATION.md
+
+### 2026-11-04T10:59:13Z · builder · evidence
+The residual analysis is done, and it answers the question with a specific mechanism rather than a shrug.
+
+Where the remaining gap sits, after forward calibration, 8,941 pilot fixtures, cluster intervals and BH within each dimension. Overall the model is worse by 0.0178 nats.
+
+The disagreement split is the result. Where the model nearly agrees with the price, under 0.1 on the logit scale, it loses 0.0039 nats. Where it departs by 0.6 or more, it loses 0.0574, interval 0.0389 to 0.0799, q below 0.001 on 1,636 fixtures. So the loss is not a uniform approximation error. It is concentrated in exactly the place the model asserts an independent view, and the size of the loss tracks the size of the departure.
+
+That is the cleanest statement the expedition has produced about its own model: the independent view is the liability. A model that simply echoed the price would be worse than the price by the calibration it cannot recover, but it would not lose 0.057 nats in the tail of its disagreements.
+
+Two caveats I put in the report rather than the footnotes. The season split shows 2021 worst, but the earliest pilot season has no prior season to fit a map on, so it stays raw by design - I added a Was a forward map available split to make that visible, and its gap is identical, 0.0258, which confirms it is the design and not the season. And the 80 to 90 percent market band shows a 0.21 gap on 23 fixtures, which is the kind of number that looks dramatic and cannot bear interpretation at that sample size.
+
+Division differences do not survive correction (F1 largest at 0.0226, q 0.574).
+
+What this implies for the product line: any feature that increases disagreement with the market has to be better than this model in the tail to be worth having, and nothing tested has shown that. It also explains why calibration recovered only half the deficit - calibration corrects the level, not the departure.
+
+State: 183 tests; checker errors 0; eighteen experiments registered; thirteen accepted, thirty-six awaiting review.
+- revision: 63ea16d
+- ref: research/RESIDUAL_GAP.md
