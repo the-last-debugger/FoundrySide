@@ -55,6 +55,13 @@ class ClaimsTest(unittest.TestCase):
         self.assertIn("not supported", test.lower())
         self.assertIn("not supported", summary.lower())
 
+    def test_feature_screen_figures_agree_between_report_and_programme(self):
+        screen = read("research/FEATURE_SCREEN.md")
+        programme = read("docs/RESEARCH_PROGRAMME.md")
+        self.assertIn("0.876", screen)
+        self.assertIn("0.876", programme)
+        self.assertNotIn("q = 0.83", programme)
+
 
 if __name__ == "__main__":
     unittest.main()
