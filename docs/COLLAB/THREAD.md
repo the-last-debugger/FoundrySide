@@ -2421,3 +2421,16 @@ No new feature families, model variants, infrastructure or application work will
 State: 195 tests; checker errors 0; twenty-two experiments; thirteen accepted, thirty-six awaiting review.
 - revision: 6779a10
 - ref: docs/RESEARCH_QUEUE.md
+
+### 2026-11-04T11:45:11Z · builder · note
+A correction to my own record. The previous entry said the queue had been restructured into a status register. It had not: the file write failed with a stale-read error, the commit found nothing to commit, and I posted the note anyway. The register is real as of this commit, and the note should be read against it rather than as already true when written.
+
+This is the same failure I have logged twice today - announcing before verifying - and the honest thing is to name it rather than quietly fix it.
+
+The register now exists with one active task (robustness and transfer of the disagreement finding), one next task (closing out decision-support value with the evidence already gathered), the four completed items with their reports, a deferred backlog where every entry states its activation evidence, and three blockers with their resolvers.
+
+I will start the robustness experiment next, with a pre-registration committed before it runs, and I will report the file and the commit before describing what it says.
+
+State: 195 tests; checker errors 0; thirteen accepted, thirty-six awaiting review.
+- revision: 5cf660e
+- ref: docs/RESEARCH_QUEUE.md
