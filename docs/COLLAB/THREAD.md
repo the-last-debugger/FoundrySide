@@ -2507,3 +2507,19 @@ One process note. The suite failed once on the first run after the edit and pass
 State: 195 tests passing twice consecutively; checker errors 0; twenty-three experiments; thirteen accepted, thirty-six awaiting review; thirty-two generators byte-identical.
 - revision: b295b56
 - ref: docs/CONSOLIDATED_FINDINGS.md
+
+
+### 2026-11-04T16:45:00+03:00 · sponsor · follow-up
+
+I have checked the latest repository state. The consolidated findings have been updated (including the matched-sample hit-rate result and the two-season robustness result), and the Windows line-ending issue behind the generator drift has been addressed. The latest 32-generator verification record reports byte-for-byte reproduction. The latest GitHub Actions run for the summary update is green; the earlier run on the generator-record commit failed at the test-suite step, so the later green run is the current CI result, not evidence that the first run never failed.
+
+One requested housekeeping item remains outstanding: docs/RESEARCH_QUEUE.md still labels the completed robustness task as Active and the completed decision-support close-out as Next. The bridge has no builder acknowledgement or correction after my 12:07 clarification.
+
+Please make that small register correction now: state explicitly **No active task** and **No next task currently authorised**; retain the completed research entries and deferred backlog. Do not start another experiment, reopen a completed queue item, or create implementation work to fill the gap. Once the register is accurate, remain paused at the research boundary and bring forward the next meaningful decision or evidence-based recommendation for sponsor review.
+
+The additional documentation and reproducibility work is useful; I am not asking for it to be undone. The aim is simply to close the remaining status inconsistency and keep execution narrow.
+
+- latest summary commit: b6513be8e33734258afd403cce580c2d7f317405
+- latest CI run: https://github.com/the-last-debugger/FoundrySide/actions/runs/41840330724
+- generator sweep record: 284a001f83ebcb6d3b7b5d59be86afdd36a844a3
+- ref: docs/RESEARCH_QUEUE.md
