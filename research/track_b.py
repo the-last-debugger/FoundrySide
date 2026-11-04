@@ -12,8 +12,10 @@ threshold. Three things are measured at each threshold:
 - **the edge gap** — accuracy minus the mean implied probability of the selected side. If the
   price is fair this is zero. A positive gap would mean the rule finds value; zero means the
   accuracy comes from selection, not from skill;
-- **expected return** — accuracy × mean decimal odds − 1, which is what a user staking one unit
-  would face, margin included.
+- **return per unit** — the row-level mean of correct × odds − 1, which is what a user staking
+  one unit on each selected fixture would face, margin included;
+- **log-growth** — the same at a fixed fractional stake, in log-wealth terms;
+- **calibration of shown probabilities** — implied against realised, by bin, on the selected set.
 
     python research/track_b.py
 
@@ -100,6 +102,11 @@ def main() -> int:
     # Common denominator: every policy is scored on the same fixture set. Abstaining scores
     # zero growth for that fixture; the raw board takes the favourite every time. Comparing only
     # the selected rows would compare different populations and flatter the filter.
+    STAKES = (0.005, 0.01, 0.02)
+
+    def growth_at(stake: float, correct: int, price: float) -> float:
+        return math.log(1 + stake * (price - 1)) if correct else math.log(1 - stake)
+
     raw_growth = statistics.mean(r["growth"] for r in rows)
     oracle_growth = statistics.mean(
         math.log(1 + STAKE * (r["price"] - 1)) for r in rows)
@@ -137,7 +144,21 @@ def main() -> int:
             growth_draws.append(statistics.mean(rows[i]["growth"] for i in idx))
         gap_draws.sort(); ret_draws.sort(); growth_draws.sort()
         policy = [rows[i]["growth"] if i in set(selected) else 0.0 for i in range(n)]
+        # Calibration of what the rule would show, by quintile of the selected probabilities.
+        calib = []
+        chosen = sorted(selected, key=lambda i: rows[i]["p_side"])
+        for part in range(5):
+            chunk = chosen[part * len(chosen) // 5:(part + 1) * len(chosen) // 5]
+            if len(chunk) >= 20:
+                calib.append(statistics.mean(rows[i]["p_side"] for i in chunk)
+                             - statistics.mean(rows[i]["correct"] for i in chunk))
+        calib_gap = max((abs(c) for c in calib), default=float("nan"))
+        sensitivity = {s: statistics.mean(
+            growth_at(s, rows[i]["correct"], rows[i]["price"]) if i in set(selected) else 0.0
+            for i in range(n)) for s in STAKES}
+
         table.append({"tau": tau, "n": len(selected), "coverage": len(selected) / n,
+                      "calib": calib_gap, "sens": sensitivity,
                       "policy": statistics.mean(policy),
                       "delta": statistics.mean(policy) - raw_growth,
                       "regret": oracle_growth - statistics.mean(policy),
@@ -159,11 +180,12 @@ def main() -> int:
 Pilot seasons only, {n:,} fixtures with a complete totals price. The rule shows the favourite side
 of the totals market only when its de-vigged probability clears the threshold.
 
-| Threshold | n | Coverage | Accuracy | Policy growth (all fixtures) | Raw-board growth | Policy − raw | Regret vs oracle |
-| --- | --- | --- | --- | --- | --- | --- | --- |
+| Threshold | n | Coverage | Accuracy | Shown calibration gap | Policy growth | Raw board | Policy − raw | Regret | Growth at 0.5%/2% |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 """ + "\n".join(
         f"| {r['tau']:.2f} | {r['n']:,} | {r['coverage']:.1%} | {r['acc']:.1%} | "
-        f"{r['policy']:+.5f} | {raw_growth:+.5f} | {r['delta']:+.5f} | {r['regret']:.5f} |"
+        f"{r['calib']:.3f} | {r['policy']:+.5f} | {raw_growth:+.5f} | {r['delta']:+.5f} | "
+        f"{r['regret']:.5f} | {r['sens'][0.005]:+.5f} / {r['sens'][0.02]:+.5f} |"
         for r in table) + f"""
 
 ## Reading
@@ -196,8 +218,20 @@ matches. A 23-fixture cell cannot establish an edge that the rest of this work h
 If it is worth pursuing it is a separate pre-registered test with a stated minimum sample, not a
 conclusion to draw from this table.
 
-This is what Track B can honestly offer: fewer decisions, each more likely right, with the
-uncertainty stated. It is not an edge, and no threshold makes it one.
+The calibration column is the one that kills the product claim, and it does so for a reason worth
+stating. It reports the largest gap between the implied probability and the realised rate across
+quintiles of the shown set. At full coverage the gap is 1.6 points; at 0.65 it is 5.2; at 0.70 it
+is 9.4. **Filtering to confident picks makes the displayed number less trustworthy, not more**,
+because what survives the threshold is exactly the region where the favourite-longshot bias lives.
+A product that shows fewer, more confident probabilities while those probabilities get worse is
+selling confidence it does not have.
+
+The stake sensitivity adds nothing reassuring: growth is negative at 0.5% and 2% wherever it is
+negative at 1%, so the conclusion is not an artefact of the stake size chosen.
+
+This is what Track B can honestly offer: fewer decisions, and a displayed probability that is
+least accurate exactly where the filter is most confident. It is not an edge, and no threshold
+makes it one.
 
 ## What would make Track B stronger
 

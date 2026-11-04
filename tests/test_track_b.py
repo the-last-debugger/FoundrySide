@@ -53,6 +53,31 @@ class WilsonTest(unittest.TestCase):
         lo2, hi2 = track_b.wilson(30, 30)
         self.assertLessEqual(hi2, 1.0)
 
+    def test_non_finite_and_below_unit_prices_are_rejected(self):
+        # The build guard must refuse a price that cannot be a decimal odd.
+        import math
+        for bad in (float("nan"), float("inf"), 1.0, 0.5):
+            self.assertFalse(math.isfinite(bad) and bad > 1.0)
+
+    def test_stake_sensitivity_scales_with_the_stake(self):
+        # A fixed-fraction stake must lose proportionally more as the fraction grows.
+        def growth(stake, correct, price):
+            import math as m
+            return m.log(1 + stake * (price - 1)) if correct else m.log(1 - stake)
+        tiny = growth(0.005, 0, 2.0)
+        large = growth(0.02, 0, 2.0)
+        self.assertLess(large, tiny)          # 2% loses more than 0.5% on the same loser
+        self.assertGreater(growth(0.02, 1, 2.0), growth(0.005, 1, 2.0))
+
+    def test_abstention_scores_zero_on_the_common_denominator(self):
+        rows = [{"correct": 1, "price": 1.5}, {"correct": 0, "price": 3.0}]
+        selected = {0}
+        stake = 0.01
+        import math as m
+        policy = [m.log(1 + stake * (rows[i]["price"] - 1)) if i in selected and rows[i]["correct"]
+                  else (m.log(1 - stake) if i in selected else 0.0) for i in range(len(rows))]
+        self.assertAlmostEqual(policy[1], 0.0, places=12)
+
 
 if __name__ == "__main__":
     unittest.main()

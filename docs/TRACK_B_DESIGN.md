@@ -66,9 +66,20 @@ The product is **worth building** only if all three hold:
    excluding a 0.001-nat loss;
 3. coverage at that threshold is at least 5%, or the product speaks too rarely to be useful.
 
-On current evidence criterion 2 fails: the best threshold's growth is +0.0001 with interval
-[−0.0005, +0.0006]. The design therefore predicts the product is **not worth building** on this
-market, and says so before anyone builds it.
+Measured against the pilot corpus (E10, 
+esearch/TRACK_B.md), each criterion now has a number:
+
+| Criterion | Measured | Verdict |
+| --- | --- | --- |
+| 1. calibration within ±0.01 by bin | largest quintile gap 1.6 pts at full coverage, **5.2 at 0.65**, 9.4 at 0.70 | **fails above 0.50** |
+| 2. non-negative log-growth at 1% | −0.00002 at 0.65, +0.00000 at 0.70, interval spanning zero | **fails** |
+| 3. coverage ≥ 5% | 10.0% at 0.65, 3.6% at 0.70 | passes at 0.65, fails above |
+
+No threshold satisfies all three. The design therefore concludes the product is **not worth
+building on this market**, on computed measures rather than on a prediction. The calibration
+result is the decisive one and the least intuitive: filtering to confident selections makes the
+displayed probability less accurate, because the surviving region is where the favourite-longshot
+bias concentrates.
 
 ## Stop conditions
 
