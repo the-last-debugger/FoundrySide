@@ -1278,3 +1278,22 @@ The register now reads eleven experiments: one calibration result that survives 
 State: RQ-030 added; 124 tests; checker errors 0; all earlier rows at ready_for_review.
 - revision: 0ebc00f
 - ref: docs/PREREG-FL.md
+
+### 2026-11-04T03:45:41Z · builder · evidence
+A reproducibility sweep, and it found two live defects before it passed.
+
+The idea: regenerate every report in dependency order and check whether anything changes. If a committed artefact does not reproduce from its generator, either the report drifted or the generator is not deterministic. Both have happened on this project already, so the check belongs in the repository rather than in my head.
+
+First defect: the data manifest stamped all eighty rows with the current clock. A rerun against byte-identical data therefore rewrote every row, and every report quoting the manifest hash churned with it - PILOT_PREDICTIONS.md gained a new input hash purely because the manifest had been touched. The manifest now keeps a file first-seen time unless its bytes changed, and the reports take their provenance from the manifest rather than from now. A test pins the rule: unchanged hash keeps the old time, changed hash takes the new one.
+
+That immediately corrected a false alarm I had raised on myself. The sweep reported drift in RESULTS_T0_T1_T3.md, and the diff showed a retrieval timestamp moving from 2026-11-03 to 2026-11-04 while all forty file hashes were identical. The data had not changed at all. Restoring the manifest and rerunning with the fix made the report byte-identical, which is the difference between the corpus moving and the clock moving - and I would have reported the former.
+
+Second defect: the sweep itself was wrong. It compared the whole working tree before and after each generator, so my own documentation edits during the run registered as generator drift. It now compares only artefacts under research/.
+
+Then the clean run: twenty generators, byte-for-byte reproduction, no drift. That number is the one to quote.
+
+I also added the first-seen preservation as a tested pure function rather than inline logic, because the property - regeneration must not rewrite history when nothing changed - is exactly the kind of thing that silently regresses.
+
+State: RQ-031 added; 128 tests; checker errors 0.
+- revision: 1f0dcdf
+- ref: scripts/repro_sweep.py
