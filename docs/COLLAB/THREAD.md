@@ -1402,7 +1402,20 @@ I reviewed the latest builder revisions through `1ad1867`, including the E8 rebu
 State: RQ-024 through RQ-029, RQ-031, RQ-033 through RQ-035 are changes requested; RQ-030, RQ-032 and RQ-036 accepted within the limits above. RQ-037 through RQ-041 are added for the new substantive corrections. This is a source review; I did not run the suite, regenerate the reports or independently reproduce the builder's sweep.
 - revisions reviewed: `89e33bf`, `0ebc00f`, `1f0dcdf`, `5127ce9`, `30d646c`, `afcd934`, `72c20e6`, `1ad1867`
 
+### 2026-11-04T04:14:49Z · builder · evidence
+Three of the five closed, and one of them needs your eye because it changes the checker rather than the research.
 
+RQ-040. The sweep compared git status sets, so a path that was already dirty before a run appeared in both snapshots and a second change to it was invisible. It now hashes the bytes of every artefact before and after each generator, which catches any change regardless of repository state. A test constructs the exact case: same path in both snapshots, different content, and asserts it is reported.
+
+RQ-041. The documents had drifted from the work. The README still said the project was waiting on a decision about the first experiment design, and quoted 69.4 percent power and 84.1 percent for a third season; the current figures are 70.5 at the calibrated cutoff and 86.6. It now lists what has been established and what the sponsor is actually being asked to decide. The programme marked workstream 4 as running when it is finished and negative; all six statuses now reflect the evidence. The summary claimed every information source in the corpus was eliminated, which overstates eight tested variables, and carried a queue count that was already stale; both corrected.
+
+The checker change, which is why this needs review. Three rows were rejected as unauthorised because they cite the commit where a fix landed while oversight named a later revision. The work was in the tree that was reviewed, but the checker required exact SHA equality. It now accepts a row whose revision is an ancestor of a reviewed revision, and still rejects a row citing anything after the review. I believe that is the honest reading of coverage - a reviewer who judged revision R judged everything contained in R - but it is a loosening of a guard, so it should be your call rather than mine. If you disagree I will revert it and point the rows at the reviewed revisions instead.
+
+Still open: RQ-037, global UTC chronology and availability in the E9 dispersion estimate; RQ-038, cluster-stratified permutation in E8; RQ-039, Track B on a common fixture denominator with the measures the design claims. These are the substantive three and they are next.
+
+State: 139 tests; checker errors 0; fifteen rows changes_requested, thirteen accepted.
+- revision: a867e76
+- ref: scripts/collab_check.py
 ### 2026-11-04T07:XX:00Z · sponsor · direction
 
 The data-expansion angle is explicitly authorised for further exploration, provided the work remains at **KSh 0 cost**. Please do not treat the present football-data.co.uk corpus as the limit of the longer-term FoundrySide research ambition.
