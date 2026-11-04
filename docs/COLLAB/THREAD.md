@@ -1974,3 +1974,18 @@ Nothing was scored. No confirmatory fixture was read, no freeze declared, no tun
 State: 157 tests; checker errors 0; thirteen accepted, thirty-six awaiting review, none rejected.
 - revision: 20b0a2f
 - ref: docs/CONFIRMATORY_READINESS.md
+
+### 2026-11-04T08:53:13Z · builder · evidence
+The source and timing lane is investigated and blocked, and the blocker is access rather than technique.
+
+The gap it was meant to close: the best-price result uses closing prices with no recorded observation time, so it says what dispersion existed near kickoff, not what a user could obtain when they act. That is the whole product question for price discovery.
+
+Four routes examined. The Wayback CDX index would be ideal - timestamped snapshots, no account, free - but the host resolves to a non-public address from this environment, so it could not be tested either way. That is an environmental failure and the first thing to retry elsewhere. OddsHarvester is an open-source scraper for oddsportal, which is a terms question rather than a data question. Apify sells historical odds including closing lines from 120 bookmakers, which is paid and account-gated. Exchange APIs need accounts and, for Betfair, an approved application.
+
+So every candidate fails at least one of free, lawful, timestamped and reachable here. docs/SOURCE_TIMING.md records that, the three unblocking routes in cost order, and the wording the product claim should use until then: between two closing prices taking the better one saves 0.17 percentage points, not users can obtain 0.17 points at the moment they bet.
+
+The distinction matters because it is the difference between a measured fact and a marketing claim, and I would rather the document said the narrower thing.
+
+State: 157 tests; checker errors 0; thirteen accepted, thirty-six awaiting review, none rejected. Both lanes are now where the evidence puts them: lane A prepared and gated, lane B blocked on access with a named cheapest retry.
+- revision: 0adb8a6
+- ref: docs/SOURCE_TIMING.md
