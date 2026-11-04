@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import math
 import statistics
+from datetime import datetime, timedelta
 import sys
 from pathlib import Path
 
@@ -63,8 +64,24 @@ def main() -> int:
     # only from matches already played, so no prediction is scored with a parameter fitted on
     # its own outcome.
     base = pm.predict([dict(r) for r in pilot_rows])
+    # Global chronological order with a pending queue: a result enters the dispersion only when
+    # kickoff + 3h is at or before the target's own cutoff. Ordering by fixture list or by
+    # league would let a later match, or a match in another division, inform an earlier one.
+    def _dt(value):
+        # The frame may carry datetimes or ISO strings depending on the caller.
+        if isinstance(value, datetime):
+            return value
+        return datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+
+    ordered = sorted(base, key=lambda r: r["cutoff_utc"])
     seen: list[int] = []
-    for r in base:
+    pending: list[tuple[object, int]] = []
+    for r in ordered:
+        cutoff = _dt(r["cutoff_utc"])
+        due = [(a, g) for a, g in pending if a <= cutoff]
+        pending = [(a, g) for a, g in pending if a > cutoff]
+        for _a, goals in due:
+            seen.append(goals)
         if len(seen) >= 50:
             m, v = statistics.mean(seen), statistics.variance(seen)
             size = m * m / (v - m) if v > m else float("inf")
@@ -75,7 +92,8 @@ def main() -> int:
         r["p_nb"] = (pm.p_over_25(r["lam_h"], r["lam_a"])
                      if not math.isfinite(size) or size > 1e6
                      else nb_over(r["lam_h"] + r["lam_a"], size))
-        seen.append(r["home_goals"] + r["away_goals"])
+        pending.append((_dt(r["kickoff_utc"]) + timedelta(hours=3),
+                        r["home_goals"] + r["away_goals"]))
 
     def ll(rows, key):
         return statistics.mean(pm.logloss(r[key], r["y"]) for r in rows)

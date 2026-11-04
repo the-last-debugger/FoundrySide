@@ -265,11 +265,15 @@ def main() -> int:
 
         # Permutation null: shuffle the feature columns within season, refit everything.
         null_gains = []
-        seasons = sorted({r["season"] for r in rows})
+        strata = sorted({r["cluster"] for r in rows})
         for _ in range(PERMUTATIONS):
             perm_rows = [dict(r) for r in rows]
-            for season in seasons:
-                idx = [i for i, r in enumerate(perm_rows) if r["season"] == season]
+            for stratum in strata:
+                # Stratify by division-season, not by season: features are league-specific
+                # (scoring environment, team history), so shuffling across divisions mixes
+                # different leagues and tests a null nobody believes. Within a cluster the
+                # rows are exchangeable under the null that the feature carries no information.
+                idx = [i for i, r in enumerate(perm_rows) if r["cluster"] == stratum]
                 # Permute whole rows, not columns independently: shuffling each column on its
                 # own destroys the joint structure inside a family and would test a null in
                 # which the features are independent of each other.
@@ -285,7 +289,7 @@ def main() -> int:
         p_value = float((np.sum(null_gains >= gain) + 1) / (PERMUTATIONS + 1))
 
         per_season = []
-        for season in seasons:
+        for season in sorted({r["season"] for r in rows}):
             idx = np.array([i for i, r in enumerate(rows) if r["season"] == season])
             per_season.append(logloss_vec(base[idx], y[idx]) - logloss_vec(treat[idx], y[idx]))
 

@@ -1,4 +1,4 @@
-<!-- generated-by: model_family.py sha256=90e589470002 -->
+<!-- generated-by: model_family.py sha256=84657075f034 -->
 
 # Is the low resolution a functional-form problem?
 
@@ -31,7 +31,7 @@ variant has almost nothing to correct.
 | Forecast | Log loss | Brier |
 | --- | --- | --- |
 | Independent Poisson | 0.6988 | 0.2520 |
-| Negative-binomial total | 0.6986 | 0.2519 |
+| Negative-binomial total | 0.6984 | 0.2519 |
 | Market (closing) | 0.6742 | 0.2407 |
 
 ## Reading

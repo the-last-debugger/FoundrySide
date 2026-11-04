@@ -97,6 +97,13 @@ def main() -> int:
         by_cluster.setdefault(r["cluster"], []).append(i)
     keys = sorted(by_cluster)
 
+    # Common denominator: every policy is scored on the same fixture set. Abstaining scores
+    # zero growth for that fixture; the raw board takes the favourite every time. Comparing only
+    # the selected rows would compare different populations and flatter the filter.
+    raw_growth = statistics.mean(r["growth"] for r in rows)
+    oracle_growth = statistics.mean(
+        math.log(1 + STAKE * (r["price"] - 1)) for r in rows)
+
     table = []
     for tau in THRESHOLDS:
         selected = [i for i, r in enumerate(rows) if r["p_side"] >= tau]
@@ -129,7 +136,11 @@ def main() -> int:
             ret_draws.append(statistics.mean(rows[i]["return"] for i in idx))
             growth_draws.append(statistics.mean(rows[i]["growth"] for i in idx))
         gap_draws.sort(); ret_draws.sort(); growth_draws.sort()
+        policy = [rows[i]["growth"] if i in set(selected) else 0.0 for i in range(n)]
         table.append({"tau": tau, "n": len(selected), "coverage": len(selected) / n,
+                      "policy": statistics.mean(policy),
+                      "delta": statistics.mean(policy) - raw_growth,
+                      "regret": oracle_growth - statistics.mean(policy),
                       "acc": acc, "lo": lo, "hi": hi, "blo": blo, "bhi": bhi,
                       "implied": implied, "gap": acc - implied,
                       "gap_lo": gap_draws[int(0.025 * len(gap_draws))],
@@ -148,13 +159,12 @@ def main() -> int:
 Pilot seasons only, {n:,} fixtures with a complete totals price. The rule shows the favourite side
 of the totals market only when its de-vigged probability clears the threshold.
 
-| Threshold | n | Coverage | Accuracy | Gap vs implied (95%) | Return per unit (95%) | Log-growth at 1% stake (95%) |
-| --- | --- | --- | --- | --- | --- | --- |
+| Threshold | n | Coverage | Accuracy | Policy growth (all fixtures) | Raw-board growth | Policy − raw | Regret vs oracle |
+| --- | --- | --- | --- | --- | --- | --- | --- |
 """ + "\n".join(
         f"| {r['tau']:.2f} | {r['n']:,} | {r['coverage']:.1%} | {r['acc']:.1%} | "
-        f"{r['gap']:+.1%} [{r['gap_lo']:+.1%}, {r['gap_hi']:+.1%}] | "
-        f"{r['ev']:+.1%} [{r['ev_lo']:+.1%}, {r['ev_hi']:+.1%}] | "
-        f"{r['growth']:+.4f} [{r['growth_lo']:+.4f}, {r['growth_hi']:+.4f}] |" for r in table) + f"""
+        f"{r['policy']:+.5f} | {raw_growth:+.5f} | {r['delta']:+.5f} | {r['regret']:.5f} |"
+        for r in table) + f"""
 
 ## Reading
 

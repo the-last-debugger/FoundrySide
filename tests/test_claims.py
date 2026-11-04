@@ -58,8 +58,8 @@ class ClaimsTest(unittest.TestCase):
     def test_feature_screen_figures_agree_between_report_and_programme(self):
         screen = read("research/FEATURE_SCREEN.md")
         programme = read("docs/RESEARCH_PROGRAMME.md")
-        self.assertIn("0.876", screen)
-        self.assertIn("0.876", programme)
+        self.assertIn("0.900", screen)
+        self.assertIn("0.900", programme)
         self.assertNotIn("q = 0.83", programme)
 
 
