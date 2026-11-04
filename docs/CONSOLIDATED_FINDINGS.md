@@ -53,7 +53,10 @@ loss in every held-out season:
 | Platt (out-of-fold) | **0.6874** |
 | Isotonic | 0.7637 (overfits) |
 
-Gain **0.0114 nats** — about 46% of the deficit — with a fitted slope of **0.40**, meaning the raw
+Forward-only transfer, which is what a product would do, keeps **+0.0102** of that +0.0114: about
+nine tenths of the gain survives when the calibrator is fitted only on seasons that precede the one
+it is scored on (FORWARD_CALIBRATION.md). The gain **0.0114 nats** is therefore close to
+deployable, and about 46% of the deficit — with a fitted slope of **0.40**, meaning the raw
 model's logits are two and a half times too spread. After calibration, reliability falls to
 0.0000 and AUC is unchanged by construction (0.5623): **a monotone map cannot create
 separation**, and about half the deficit is exactly that.
@@ -195,6 +198,7 @@ produced it.
 | DATA_AUDIT.md | E6 | the corpus is internally consistent |
 | BEST_PRICE.md | E15 | best available price saves 0.17 pp of margin; 99.1% still negative EV |
 | ACCUMULATOR_PRICING.md | E16 | cross-match legs multiply correctly at 2-3 legs |
+| FORWARD_CALIBRATION.md | E17 | the Platt gain transfers forward: +0.0102 of +0.0114 |
 
 ## 8a. Reproducibility
 

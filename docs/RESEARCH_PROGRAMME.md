@@ -57,6 +57,7 @@ treatment and a stated failure condition. Fit and evaluation never share outcome
 | E14 | **Style mismatch: attack/defence interaction, venue asymmetry, volatility** | **all null; the intuitive interaction is negative (-0.00017)** | **negative** |
 | E15 | **Best-price discovery between the two held books, by division** | **0.17 pp saved overall [0.14, 0.20]; 0.06 pp in P1 to 0.28 pp in D1; 99.1% still negative EV** | **real, bounded, and larger where margins are wider** |
 | E16 | **Accumulator pricing: cross-match multiplication, plus estimability of long combinations** | **2-3 legs consistent with 1; 5 legs 1.373 on 38 wins; an 8-leg rate needs ~18,000 slips and the corpus can form 152** | **multiplication adequate; jackpots not estimable here** |
+| E17 | **Forward-only calibration transfer: train on priors, score the next season** | **+0.0102 nats forward against +0.0114 under leave-one-season-out; slopes 0.39 and 0.42** | **deployable: about nine tenths of the gain survives without seeing the future** |
 
 ## What the three studies together say
 
@@ -131,7 +132,7 @@ real defects:
 | Bridge checker | a verdict that names no revision, a row not authorised | once (per-row verdicts), once (malformed header) |
 | scripts/repro_sweep.py | any report that does not reproduce, and any generator that rewrites history when nothing changed | once (manifest clock churn) |
 
-A clean sweep is **25 generators** reproducing byte-for-byte.
+A clean sweep is **26 generators** reproducing byte-for-byte.
 
 ## Product contingency
 

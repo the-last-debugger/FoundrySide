@@ -56,6 +56,7 @@ GENERATORS = [
     ("research/style_mismatch.py", ()),
     ("research/best_price.py", ()),
     ("research/accumulator_pricing.py", ()),
+    ("research/forward_calibration.py", ()),
 ]
 
 
