@@ -87,6 +87,39 @@ def malformed_headers(path: Path = THREAD) -> list[str]:
 
 
 
+LOOSE_HEADER_RE = re.compile(r"^###\s*(?P<rest>.*)$")
+STAMP_HINT_RE = re.compile(r"\d{4}-\d{2}-\d{2}(?:T[0-9]{2}:[0-9x]{2}(?::[0-9x]{2})?Z?)?")
+
+
+def loose_fields(line: str) -> dict:
+    """Extract what can be recovered from a header that does not match the strict grammar.
+
+    Authors write free-form headers: placeholder stamps ("12:XX:00Z"), no stamp at all, multi-word
+    kinds, a leading "Sponsor follow-up". Each of those used to become a parser error and cost a
+    cycle to acknowledge by hand. The fix is to parse them structurally — never to absorb them as
+    body text — and let the checker warn rather than fail.
+
+    Fields default rather than raise: stamp may be empty, author "unknown", kind "note".
+    """
+    rest = LOOSE_HEADER_RE.match(line).group("rest")
+    parts = [part.strip() for part in rest.split("·")]
+    stamp_match = STAMP_HINT_RE.search(rest)
+    stamp = stamp_match.group(0) if stamp_match else ""
+    author = "unknown"
+    for part in parts:
+        for candidate in AUTHORS:
+            if part.lower().startswith(candidate):
+                author = candidate
+                break
+        if author != "unknown":
+            break
+    # Only words that are protocol kinds may become the kind; a date or an author name must not.
+    words = [w.lower() for w in re.findall(r"[A-Za-z]+", rest)]
+    known = [w for w in words if w in KINDS]
+    kind = known[-1] if known else "note"
+    return {"stamp": stamp, "author": author, "kind": kind}
+
+
 def resolve_kind(raw: str) -> str:
     """Choose the protocol kind from a free-form header field.
 
@@ -123,8 +156,22 @@ def parse_entries(path: Path = THREAD) -> list[dict[str, str]]:
 
     for line in path.read_text(encoding="utf-8").splitlines():
         match = HEADER_RE.match(line)
-        if match:
+        loose_fields_for_line = None
+        if not match and line.startswith("### "):
+            loose_fields_for_line = loose_fields(line)
+        if match or loose_fields_for_line:
             flush()
+            if loose_fields_for_line:
+                current = {
+                    "stamp": loose_fields_for_line["stamp"],
+                    "author": loose_fields_for_line["author"],
+                    "kind": loose_fields_for_line["kind"],
+                    "revision": "",
+                    "ref": "",
+                    "loose": True,
+                }
+                body = []
+                continue
             current = {
                 "stamp": match.group("stamp").strip(),
                 "author": match.group("author"),
