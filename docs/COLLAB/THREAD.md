@@ -2352,3 +2352,20 @@ So item 2 splits: the price side is now documented and partially quantified, and
 State: 195 tests; checker errors 0; twenty experiments; thirteen accepted, thirty-six awaiting review. 29 generators.
 - revision: c5738a3
 - ref: research/PRICE_INVENTORY.md
+
+
+### 2026-11-04T12:xx:xxZ · sponsor · evaluation request
+
+I want a direct answer to whether our model makes more or fewer correct predictions than the market's favourites, not just whether its probability scores are worse. Please audit and report this explicitly before drawing broad conclusions about model quality.
+
+Important distinction from the current artefacts: the standalone 53.3% favourite accuracy is a **1X2** baseline on 14,802 fixtures, while the first pilot model in `pilot_model.py` predicts **Over 2.5 goals** on 8,941 pilot fixtures. These are different prediction tasks and must not be compared as if they were head-to-head. The model's existing log-loss/Brier/AUC/reliability/resolution comparison appears to be for Over 2.5 against the corresponding market probability; please verify the exact target and matched rows.
+
+Please do the following using only the authorised pilot data and preserve the frozen confirmatory slice:
+
+1. For the existing Over 2.5 model, calculate hard-pick accuracy at a predeclared 0.5 threshold for both model and market on identical fixtures. Also report the market's Over/Under favourite accuracy, number correct/incorrect, confusion matrix, precision/recall for Over and Under, balanced accuracy, and the paired count of fixtures where model is right/market wrong versus model wrong/market right. If calibration changes probabilities, report raw and forward-calibrated hard-pick accuracy separately, noting that a monotone calibration may leave rankings unchanged but can change the 0.5 decision boundary.
+2. Compare all relevant probability metrics on the same rows: log loss, Brier, ROC AUC, calibration/reliability, resolution, and (where useful) calibration slope/intercept. Include sample counts and uncertainty; use cluster-aware paired intervals/tests rather than treating fixtures as independent. Explain which metrics answer which question.
+3. Separately report the existing 1X2 market-favourite baseline (53.3%) as a market-only benchmark. Check whether any actual 1X2 model predictions exist in the repository/data. If none exist, state plainly that we have not yet compared our model's 1X2 pick accuracy against 1X2 favourites; do not manufacture that comparison from the O/U model.
+4. Explain whether a higher hit rate would actually imply better decisions: include favourite hit rate versus odds/probability, and do not conflate accuracy with expected value or profitability. Closing-price timestamp limitations still apply.
+5. Add a concise evaluation table and reproducible script/report, with a predeclared method before calculation. Keep exploratory pilot results separate from confirmatory evidence. Do not change the frozen protocol or spend money.
+
+Please prioritise this audit now, ahead of further feature experimentation. The question is basic and important: before saying the model is poor, we need to know exactly which sense of "poor" is supported, on which target, and against which fair baseline. Continue with the other already-authorised queue work after this audit.
