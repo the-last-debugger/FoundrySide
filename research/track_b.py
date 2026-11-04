@@ -38,6 +38,7 @@ import report_stamp   # noqa: E402
 OUT = ROOT / "research" / "TRACK_B.md"
 THRESHOLDS = (0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80)
 BOOTSTRAPS = 1000
+STAKE = 0.01
 SEED = 20261103
 
 
@@ -68,7 +69,11 @@ def load() -> list[dict]:
                      # Row-level return, not the product of two averages: staking one unit on
                      # this fixture returns correct*odds − 1, and the mean of that is the
                      # expected return a user would actually experience.
-                     "return": correct * price - 1.0})
+                     "return": correct * price - 1.0,
+                     # Log-growth of a fixed 1% stake: the decision-theoretic quantity a user
+                     # experiences, as opposed to a hit rate.
+                     "growth": (math.log(1 + STAKE * (price - 1)) if correct
+                                else math.log(1 - STAKE))})
     return rows
 
 
@@ -113,7 +118,7 @@ def main() -> int:
         bhi = draws[int(0.975 * len(draws)) - 1]
 
         returns = [rows[i]["return"] for i in selected]
-        gap_draws, ret_draws = [], []
+        gap_draws, ret_draws, growth_draws = [], [], []
         rng2 = np.random.default_rng(SEED + 1)
         for _ in range(BOOTSTRAPS):
             pick = [by_cluster[keys[rng2.integers(0, len(keys))]] for _ in keys]
@@ -122,7 +127,8 @@ def main() -> int:
                 continue
             gap_draws.append(statistics.mean(rows[i]["correct"] - rows[i]["p_side"] for i in idx))
             ret_draws.append(statistics.mean(rows[i]["return"] for i in idx))
-        gap_draws.sort(); ret_draws.sort()
+            growth_draws.append(statistics.mean(rows[i]["growth"] for i in idx))
+        gap_draws.sort(); ret_draws.sort(); growth_draws.sort()
         table.append({"tau": tau, "n": len(selected), "coverage": len(selected) / n,
                       "acc": acc, "lo": lo, "hi": hi, "blo": blo, "bhi": bhi,
                       "implied": implied, "gap": acc - implied,
@@ -130,7 +136,10 @@ def main() -> int:
                       "gap_hi": gap_draws[int(0.975 * len(gap_draws)) - 1],
                       "ev": statistics.mean(returns),
                       "ev_lo": ret_draws[int(0.025 * len(ret_draws))],
-                      "ev_hi": ret_draws[int(0.975 * len(ret_draws)) - 1]})
+                      "ev_hi": ret_draws[int(0.975 * len(ret_draws)) - 1],
+                      "growth": statistics.mean(rows[i]["growth"] for i in selected),
+                      "growth_lo": growth_draws[int(0.025 * len(growth_draws))],
+                      "growth_hi": growth_draws[int(0.975 * len(growth_draws)) - 1]})
 
     doc = f"""{report_stamp.stamp(Path(__file__))}
 
@@ -139,12 +148,13 @@ def main() -> int:
 Pilot seasons only, {n:,} fixtures with a complete totals price. The rule shows the favourite side
 of the totals market only when its de-vigged probability clears the threshold.
 
-| Threshold | n | Coverage | Accuracy | Gap vs implied (cluster 95%) | Return per unit (cluster 95%) |
-| --- | --- | --- | --- | --- | --- |
+| Threshold | n | Coverage | Accuracy | Gap vs implied (95%) | Return per unit (95%) | Log-growth at 1% stake (95%) |
+| --- | --- | --- | --- | --- | --- | --- |
 """ + "\n".join(
         f"| {r['tau']:.2f} | {r['n']:,} | {r['coverage']:.1%} | {r['acc']:.1%} | "
         f"{r['gap']:+.1%} [{r['gap_lo']:+.1%}, {r['gap_hi']:+.1%}] | "
-        f"{r['ev']:+.1%} [{r['ev_lo']:+.1%}, {r['ev_hi']:+.1%}] |" for r in table) + f"""
+        f"{r['ev']:+.1%} [{r['ev_lo']:+.1%}, {r['ev_hi']:+.1%}] | "
+        f"{r['growth']:+.4f} [{r['growth_lo']:+.4f}, {r['growth_hi']:+.4f}] |" for r in table) + f"""
 
 ## Reading
 
@@ -153,6 +163,12 @@ accuracy-minus-implied gap stays small and its interval straddles zero through t
 table, because the rule is restating the price's own confidence rather than adding information.
 That is the honest description of what an abstention product does — it shows fewer, more confident
 calls, and the confidence is the market's.
+
+The log-growth column is the decision-theoretic version: the mean of log(1 + 0.01 x (odds - 1))
+on a win and log(1 - 0.01) on a loss, which is the per-fixture growth of a fixed 1% bankroll
+stake. Following the rule unconditionally costs about 0.0003 nats of log-wealth per fixture, and
+no threshold produces growth distinguishable from zero. A user would be paying the margin for the
+convenience of a filtered view.
 
 Return per unit is the row-level mean of `correct × odds − 1`, which is what a user staking one
 unit on each selected fixture would actually experience. It is negative through most of the table
