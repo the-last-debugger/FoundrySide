@@ -31,7 +31,7 @@ download and describes itself as a portal for analysis, but its footer reads "©
 Liability Disclaimer. All Rights Reserved." There is no licence statement, no grant of redistribution
 and no explicit permission to republish. So:
 
-- **File availability is verified** — HTTP 200, 14,528 fixtures parsed in memory;
+- **File availability is verified** — HTTP 200, 13,610 fixtures parsed in memory for the thirteen additions;
 - **permission to redistribute or publish derived data is not established**, and "All Rights
   Reserved" is contrary to it;
 - internal analysis of an already-held corpus is how this project has treated the source throughout,
@@ -45,7 +45,7 @@ HEAD 200 in the same `mmz4281/<season>/<league>.csv` format with closing odds:
 
 `E0 E1 E2 E3 EC SC0 SC1 SC2 SC3 D1 D2 I1 I2 SP1 SP2 F1 F2 N1 B1 P1 T1 G1`
 
-The corpus currently uses eight (E0, D1, E1, F1, I1, N1, P1, SP1). Fourteen are untapped. Counts are
+The corpus currently uses eight (E0, D1, E1, F1, I1, N1, P1, SP1). Thirteen are untapped. Counts are
 from files read **in memory** across the three pilot seasons; no file was stored, merged or added to
 the corpus.
 
@@ -59,15 +59,19 @@ the corpus.
 | F2 | 1,140 | 100.0% | 100.0% |
 | D2 | 918 | 100.0% | 100.0% |
 | B1 | 918 | 100.0% | 100.0% |
-| P1 | 918 | 99.9% | 99.9% |
 | T1 | 1,142 | 97.4% | 97.4% |
 | SC0 | 684 | 99.9% | 99.9% |
 | SC1 | 495 | 100.0% | 100.0% |
 | SC2 | 470 | 100.0% | 100.0% |
 | SC3 | 470 | 100.0% | 100.0% |
-| **Total** | **14,528** | **99.7%** | **99.7%** |
+| **13 divisions** | **13,610** | **99.7%** | **99.7%** |
 
-Larger than the pilot (8,941) and nearly three times the confirmatory slice (5,794), with coverage
+**Correction, verified against the source files.** An earlier version listed `P1` (Portugal) as an
+addition and totalled 14 divisions and 14,528 fixtures. `P1` is **already in the corpus**, so it was a
+duplicate. Re-requesting each proposed division and recounting gives **13 genuinely additional
+divisions, 13,610 fixtures**, and **39** division-season clusters, not 42.
+
+That is 1.5 times the pilot (8,941) and 2.3 times the confirmatory slice (5,794), with coverage
 comparable to the existing corpus. The smallest units are the Scottish lower tiers at 470 fixtures
 across three seasons — about 157 a season, small enough that they must be reported per division and
 never pooled silently.
@@ -86,8 +90,9 @@ between the de-vigged price and realised frequency, which needs no model at all.
 **Costs and risks.** Zero data cost. Risks: it is still one book family; lower divisions have fewer
 fixtures and more missing prices; and the provider's coverage of those leagues may be partial.
 
-**Why it ranks first.** It is the only candidate that is zero-cost, licence-identical, immediately
-parsable, and tests a mechanism with prior plausibility. It does, however, need sponsor authorisation
+**Why it ranks first.** It is the only candidate that is zero-cost at the file level, immediately parsable, and tests a
+mechanism with prior plausibility. It is **not** licence-cleared: the provider asserts copyright,
+permission to republish is not established, and any publication of derived data is P-03. It does, however, need sponsor authorisation
 because it adds divisions to the corpus, which the protocol forbids without approval.
 
 ---
@@ -152,8 +157,8 @@ outside this corpus and this authorisation.
 
 | Rank | Candidate | Zero-cost now? | Needs approval? | Verdict |
 | --- | --- | --- | --- | --- |
-| 1 | Lower/thinner divisions, same source | yes (data), **verify on normal DNS** | yes — adds divisions to the corpus | **recommended for consideration** |
-| 2 | Timestamped pre-decision information | no verified source | no, if the Wayback retry is done first | retry the free check before deciding |
+| 1 | Lower/thinner divisions, same source | verified | yes — adds divisions to the corpus | **strongest lead, not approved** |
+| 2 | Timestamped pre-decision information | index reachable, no per-fixture price history | yes, for scraping or licence work | not viable at zero cost |
 | 3 | Decision support | partially | yes — user study | bounded benefit, decisive test unavailable |
 | 4 | Other sports | unverified | yes — new data and design | reject as a first move |
 
@@ -161,7 +166,7 @@ outside this corpus and this authorisation.
 
 1. **Both free checks are done and both passed** — 22 divisions available, the Wayback index
    reachable. Neither needed permission.
-2. **Authorise the efficiency measurement on the fourteen unused divisions**, not a model extension:
+2. **Consider a bounded descriptive investigation on the thirteen unused divisions**, not a model extension:
    whether de-vigged prices deviate from realised frequency more in thin divisions. Cheaper and more
    decisive than another feature cycle, it needs no model to beat anything, and it answers a question
    about market efficiency rather than about our model.
@@ -178,8 +183,8 @@ or real-money work. Nothing here touches the confirmatory slice.
 
 This section exists so the sponsor can approve or reject a specific test rather than a direction.
 
-**Unit and data.** Division-season cluster. Fixtures from the fourteen unused divisions, three pilot
-seasons: 42 clusters, 14,528 fixtures. No confirmatory fixture is read.
+**Unit and data.** Division-season cluster. Fixtures from the thirteen unused divisions, three pilot
+seasons: 39 clusters, 13,610 fixtures. No confirmatory fixture is read.
 
 **The quantity.** *Market efficiency*, not model skill:
 
@@ -191,18 +196,36 @@ seasons: 42 clusters, 14,528 fixtures. No confirmatory fixture is read.
 - **Secondary**: market Brier score; binned reliability and resolution of the price; and the
   calibration slope from fitting a one-parameter logistic on the price's logit.
 
-**The comparison.** For each division, the market log loss on its fixtures, reported with the number
-of fixtures and a cluster-bootstrap interval resampling that division's three seasons. The reference
-is the eight divisions already in the corpus, evaluated on the same seasons and the same metric.
+**The comparison — both, and never only the pooled one.** Three things are reported:
+
+1. **Every per-division result**, with fixture count and the three individual season values. This is
+   the primary display, because pooling is exactly how a large division conceals a small one.
+2. **A pooled weighted comparison**: fixture-weighted market log loss across the thirteen additional
+   divisions against the fixture-weighted figure across the eight existing divisions, same seasons,
+   same metric.
+3. **The spread of the per-division differences**, so a pooled difference that hides a wide range is
+   visible rather than averaged away.
+
+The headline is the per-division table; the pooled number sits beside it as a summary, not a
+substitute.
 
 **Relevance.** A difference of 0.01 nats is used as the same descriptive scale as elsewhere in the
 project — the order of magnitude of the margin. It is **not** a significance threshold here, because
 this is a descriptive measurement of price quality rather than a hypothesis about an effect.
 
-**Uncertainty.** Cluster bootstrap, 2,000 draws, resampling division-seasons. Divisions with fewer
-than 500 fixtures across three seasons (the Scottish lower tiers) are reported with their intervals
-and flagged as small; no division-level significance claim is made, and nothing is pooled across
-divisions into a single "thin market" estimate without also reporting the spread.
+**Uncertainty — what the resampling can and cannot support.** The resampling unit is the
+**division-season**: 39 clusters across the thirteen additions, 24 across the eight existing
+divisions.
+
+- **Division-level results are descriptive.** Each division contributes **three season-clusters**, and
+  a bootstrap over three units does not produce a confidence interval in any useful sense. A division
+  is therefore reported as a log loss, its fixture count, and its three season values shown
+  individually — no interval, no significance claim.
+- **The pooled comparison** resamples the 39 and 24 division-seasons and is reported with an interval.
+  Even there, 39 clusters is few enough that the interval is approximate, and the report says so
+  beside the number.
+- **The bootstrap does not solve the small-cluster problem**, and no claim is made that it does.
+  Where a division has three seasons, three is what it has.
 
 **Dependence.** Fixtures within a division-season share a competition and a season; the cluster
 bootstrap accounts for that. Cross-division pooling would not, which is why the report keeps
