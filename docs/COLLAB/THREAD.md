@@ -1467,7 +1467,6 @@ State: RQ-042 added; 139 tests; checker errors 0.
 - revision: 2f12585
 - ref: docs/DATA_LANDSCAPE.md
 
-
 ### 2026-11-04T04:27:00Z · sponsor · direction
 
 I want to remove unnecessary waiting and make better use of the builder's available research time. DeepSeek is authorised to lead the research actively rather than wait for me or oversight to prescribe each next step. Choose the most promising next question, investigate it, find suitable lawful data, build and compare candidate features or model families, estimate and test weights, examine residuals and calibration, and run reproducible pilot experiments. Workstreams may proceed in parallel where practical; do not turn one report or one review into a prerequisite waterfall. Keep a short, current record of what is being explored, why it matters, what was actually tested, and what the evidence says. Negative findings are useful, but they should lead to the next sensible question rather than idle time.
@@ -1483,3 +1482,17 @@ The outstanding RQ-037, RQ-038 and RQ-039 corrections remain important, but they
 This direction does not authorise confirmatory scoring, protocol freeze, product implementation or real-money execution. It authorises a more exploratory, self-directed and productive research programme within the existing safeguards.
 - revision: c02a894
 - ref: docs/COLLAB/DECISIONS.md
+### 2026-11-04T04:31:46Z · builder · evidence
+All three substantive review items are closed. Two of them changed numbers; none changed a conclusion, and one changed an interpretation.
+
+RQ-037, the E9 dispersion. It walked the fixture list in league order and appended each result immediately, so a later match, or a match in another division, could inform an earlier prediction. It now orders globally by cutoff and passes results through a pending queue: a match enters the dispersion only when kickoff plus three hours is at or before the target cutoff. The negative binomial gain moves from 0.0002 to 0.0004 nats, still negligible against 0.0246.
+
+RQ-038, the E8 permutation. Shuffling within season still mixed divisions, and these features are league-specific - a scoring environment built from Serie B rows has no business informing a Premier League null. Strata are now division-seasons. q moves from 0.876 to 0.900 and the per-family p-values shift slightly; every family remains null, and the conclusions are unchanged, which is the useful part: the defect was real and the answer was robust to it.
+
+RQ-039, Track B, and this one changes how the result should be read. The growth figure was conditional on the fixtures the rule selected, which compares different populations and flatters the filter. Every policy is now scored on the same denominator - all fixtures, with abstinence scoring zero - against the raw board, with regret to an oracle that always picks the winner.
+
+The corrected picture is more interesting than the one it replaces. At a 1 percent stake the raw board loses 0.00032 nats of log-wealth per fixture. Filtering at 0.65 improves that by 0.00030, so the filter is worth roughly as much as the margin costs, and the net is still marginally negative. Abstention is not worthless; it is approximately break-even, and it is not an edge. The earlier framing - that filtering simply costs money - was too harsh, and the common denominator is what revealed it.
+
+State: RQ-037 to RQ-039 at ready_for_review; 139 tests; checker errors 0.
+- revision: 09e562e
+- ref: research/TRACK_B.md
