@@ -1,4 +1,4 @@
-<!-- generated-by: model_family.py sha256=84657075f034 -->
+<!-- generated-by: model_family.py sha256=018ab6fe6ccc -->
 
 # Is the low resolution a functional-form problem?
 
@@ -14,11 +14,17 @@ overdispersed total improves the model's forecasts against the unchanged market 
 | Variance of total goals | 2.751 |
 | Variance ÷ mean | 1.015 |
 | Implied negative-binomial dispersion | 177.59 |
+| Conditional Pearson dispersion (against model means) | 1.064 [1.032, 1.094] |
+| Matches contributing | 8,941 |
 
-Poisson requires the ratio to be 1. It is 1.015 — indistinguishable from 1
-at this sample size. The independent-Poisson assumption is therefore **not** materially
-misspecified for totals, contrary to the usual football folklore, and the negative-binomial
-variant has almost nothing to correct.
+Poisson requires the ratio to be 1. The **pooled** ratio is 1.015, which
+looks indistinguishable from 1. That is misleading: each match has a different conditional mean,
+so the pooled ratio mixes real heterogeneity in the means with the variance around them.
+
+The conditional test is the right one, and it disagrees. Against the model's own match-specific
+means, the Pearson dispersion is **1.064 [1.032, 1.094]** over 8,941
+matches — mildly but significantly overdispersed, about six per cent excess variance. The
+independent-Poisson form *is* mildly misspecified, and the pooled statistic hid it.
 
 ## 2. Does the better family fit the marginal distribution better?
 
@@ -36,9 +42,11 @@ variant has almost nothing to correct.
 
 ## Reading
 
-The specification is not the problem. With the ratio at 1.015 and the
-negative binomial improving log loss by a few hundredths of a thousandth of a nat, the
-independent-Poisson form is adequate for totals. Its resolution deficit is informational. If the negative binomial does not beat Poisson out of sample,
+The specification is mildly wrong, and correcting it is worth almost nothing. Overdispersion is
+real at 1.064, but the negative binomial changes log loss by +0.00043
+nats against a 0.0246 deficit. Both statements are true and the second is the one that matters:
+a misspecified model can still be the best available one, and here fixing the distribution does
+not fix the forecast. If the negative binomial does not beat Poisson out of sample,
 the specification was not the binding constraint, and the model's resolution deficit is
 informational rather than structural. That would close the model-family line of inquiry and leave
 new data as the only remaining route to a market edge.

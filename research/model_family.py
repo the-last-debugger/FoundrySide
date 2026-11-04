@@ -22,6 +22,8 @@ from __future__ import annotations
 
 import math
 import statistics
+
+import numpy as np
 from datetime import datetime, timedelta
 import sys
 from pathlib import Path
@@ -52,6 +54,38 @@ def nb_over(mean_total: float, size: float) -> float:
     return max(0.0, 1.0 - sum(nb_pmf(mean_total, size, k) for k in range(3)))
 
 
+
+def prequential_sizes(rows: list[dict], min_history: int = 50) -> list[float]:
+    """Dispersion size used at each prediction, on a global availability-based timeline.
+
+    A result enters the pool only when kickoff + 3h is at or before the target's cutoff, so
+    simultaneous kickoffs cannot inform one another and no later fixture informs an earlier one.
+    """
+    ordered = sorted(rows, key=lambda r: r["cutoff_utc"])
+    seen: list[int] = []
+    pending: list[tuple] = []
+    out: list[float] = []
+    for r in ordered:
+        cutoff = r["cutoff_utc"]
+        if isinstance(cutoff, str):
+            cutoff = datetime.fromisoformat(cutoff.replace("Z", "+00:00"))
+        due = [p for p in pending if p[0] <= cutoff]
+        pending = [p for p in pending if p[0] > cutoff]
+        for _at, goals in due:
+            seen.append(goals)
+        # Two observations are the minimum for a variance; a lower min_history still needs them.
+        if len(seen) >= max(min_history, 2):
+            m, v = statistics.mean(seen), statistics.variance(seen)
+            out.append(m * m / (v - m) if v > m else float("inf"))
+        else:
+            out.append(float("inf"))
+        kick = r["kickoff_utc"]
+        if isinstance(kick, str):
+            kick = datetime.fromisoformat(kick.replace("Z", "+00:00"))
+        pending.append((kick + timedelta(hours=3), r["home_goals"] + r["away_goals"]))
+    return out
+
+
 def main() -> int:
     framed, _ = pilot.frame(pilot.analyse.load())
     pilot_rows = [r for r in framed if r["phase"] == "pilot"]
@@ -73,33 +107,45 @@ def main() -> int:
             return value
         return datetime.fromisoformat(str(value).replace("Z", "+00:00"))
 
-    ordered = sorted(base, key=lambda r: r["cutoff_utc"])
-    seen: list[int] = []
-    pending: list[tuple[object, int]] = []
-    for r in ordered:
-        cutoff = _dt(r["cutoff_utc"])
-        due = [(a, g) for a, g in pending if a <= cutoff]
-        pending = [(a, g) for a, g in pending if a > cutoff]
-        for _a, goals in due:
-            seen.append(goals)
-        if len(seen) >= 50:
-            m, v = statistics.mean(seen), statistics.variance(seen)
-            size = m * m / (v - m) if v > m else float("inf")
-        else:
-            size = float("inf")
+    sizes = prequential_sizes(base)
+    for r, size in zip(sorted(base, key=lambda r: r["cutoff_utc"]), sizes):
         # An infinite or enormous size is the Poisson limit, where the negative-binomial
         # formula degenerates; use the Poisson probability directly there.
         r["p_nb"] = (pm.p_over_25(r["lam_h"], r["lam_a"])
                      if not math.isfinite(size) or size > 1e6
                      else nb_over(r["lam_h"] + r["lam_a"], size))
-        pending.append((_dt(r["kickoff_utc"]) + timedelta(hours=3),
-                        r["home_goals"] + r["away_goals"]))
 
     def ll(rows, key):
         return statistics.mean(pm.logloss(r[key], r["y"]) for r in rows)
 
     def brier(rows, key):
         return statistics.mean((r[key] - r["y"]) ** 2 for r in rows)
+
+    # Conditional overdispersion: Pearson chi-square against the model's own match means.
+    # The pooled variance/mean ratio ignores that each match has a different lambda, so it can
+    # suggest overdispersion that is really just heterogeneity in the means.
+    mu = [r["lam_h"] + r["lam_a"] for r in base]
+    used = [r for r, m in zip(base, mu) if m > 0]
+    used_mu = [m for m in mu if m > 0]
+    phi = statistics.mean((r["home_goals"] + r["away_goals"] - m) ** 2 / m
+                          for r, m in zip(used, used_mu))
+    n_params = 2.0 * len({(r["home"], r["away"]) for r in used}) / max(len(used), 1)
+    phi_adj = phi * len(used) / max(len(used) - n_params, 1.0)
+
+    # Cluster interval: resample division-seasons, since fixtures within one share a lambda model.
+    by_cluster: dict[str, list[int]] = {}
+    for i, r in enumerate(used):
+        by_cluster.setdefault(r["cluster"], []).append(i)
+    cluster_keys = sorted(by_cluster)
+    rng = np.random.default_rng(20261103)
+    draws = []
+    for _ in range(500):
+        idx = [i for k in (cluster_keys[rng.integers(0, len(cluster_keys))] for _ in cluster_keys)
+               for i in by_cluster[k]]
+        draws.append(statistics.mean((used[i]["home_goals"] + used[i]["away_goals"] - used_mu[i]) ** 2
+                                     / used_mu[i] for i in idx))
+    draws.sort()
+    phi_lo, phi_hi = draws[int(0.025 * len(draws))], draws[int(0.975 * len(draws)) - 1]
 
     empirical_over = statistics.mean(r["y"] for r in pilot_rows)
     poisson_at_mean = poisson_over(mean_total / 2, mean_total / 2)
@@ -121,11 +167,17 @@ overdispersed total improves the model's forecasts against the unchanged market 
 | Variance of total goals | {var_total:.3f} |
 | Variance ÷ mean | {var_total / mean_total:.3f} |
 | Implied negative-binomial dispersion | {dispersion:.2f} |
+| Conditional Pearson dispersion (against model means) | {phi_adj:.3f} [{phi_lo:.3f}, {phi_hi:.3f}] |
+| Matches contributing | {len(used):,} |
 
-Poisson requires the ratio to be 1. It is {var_total / mean_total:.3f} — indistinguishable from 1
-at this sample size. The independent-Poisson assumption is therefore **not** materially
-misspecified for totals, contrary to the usual football folklore, and the negative-binomial
-variant has almost nothing to correct.
+Poisson requires the ratio to be 1. The **pooled** ratio is {var_total / mean_total:.3f}, which
+looks indistinguishable from 1. That is misleading: each match has a different conditional mean,
+so the pooled ratio mixes real heterogeneity in the means with the variance around them.
+
+The conditional test is the right one, and it disagrees. Against the model's own match-specific
+means, the Pearson dispersion is **{phi_adj:.3f} [{phi_lo:.3f}, {phi_hi:.3f}]** over {len(used):,}
+matches — mildly but significantly overdispersed, about six per cent excess variance. The
+independent-Poisson form *is* mildly misspecified, and the pooled statistic hid it.
 
 ## 2. Does the better family fit the marginal distribution better?
 
@@ -143,9 +195,11 @@ variant has almost nothing to correct.
 
 ## Reading
 
-The specification is not the problem. With the ratio at {var_total / mean_total:.3f} and the
-negative binomial improving log loss by a few hundredths of a thousandth of a nat, the
-independent-Poisson form is adequate for totals. Its resolution deficit is informational. If the negative binomial does not beat Poisson out of sample,
+The specification is mildly wrong, and correcting it is worth almost nothing. Overdispersion is
+real at {phi_adj:.3f}, but the negative binomial changes log loss by {ll(base, 'p_model') - ll(base, 'p_nb'):+.5f}
+nats against a 0.0246 deficit. Both statements are true and the second is the one that matters:
+a misspecified model can still be the best available one, and here fixing the distribution does
+not fix the forecast. If the negative binomial does not beat Poisson out of sample,
 the specification was not the binding constraint, and the model's resolution deficit is
 informational rather than structural. That would close the model-family line of inquiry and leave
 new data as the only remaining route to a market edge.
