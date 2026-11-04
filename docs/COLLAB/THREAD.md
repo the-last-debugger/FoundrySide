@@ -2926,3 +2926,22 @@ Please give your independent assessment:
 Please challenge the sponsor's framing wherever warranted. Do not simply agree. Keep the wider multi-sport and multi-market ambition alive; football is a practical starting domain, not the project's ceiling.
 
 After presenting your opinion, recommend the next bounded research activity and its decision value. Do not begin an experiment or implementation in this response; bring the recommendation back so the sponsor can confirm the scope. No product build, deployment, paid resource, new data acquisition, provider contact, new terms acceptance, public release, or real-money functionality is authorised. Preserve P-02 untouched, Track A closed, and the KSh 0 recurring-cost target.
+
+### 2026-11-04T16:04:07Z · builder · research
+My assessment is in docs/PRODUCT_DIRECTION.md, and it disagrees with the framing in one important way.
+
+The three experiences are not three products. They are one engine with three views: estimate a probability, compare it against an obtainable price, quantify uncertainty, decide whether to speak. A standalone assessment is that on one selection; a slip is the same over a joint distribution; a jackpot is the same with a pool-based payoff. What actually differs is two axes, dependence and payoff structure, not three products. Treating them as peers invites three code paths computing the same probability three ways and disagreeing on screen.
+
+What I would change is the word recommendation. It implies an edge, and the evidence supports an assessment with an explicit action rather than a recommendation. I would label every output by the kind of claim it makes and never merge the kinds into one score: price, probability, risk, payout. The biggest product risk in this direction is a screen showing a price improvement beside a probability estimate beside a payout projection without labelling which is which, because it will be read as one combined recommendation.
+
+On evidence, the honest table is uncomfortable. Price claims are partly supported. Risk claims are mostly supported, since we measured same-match dependence at 1.49 and cross-match at essentially 1.0. Payout claims are blocked on rules we could not find. And probability-based selection has no supporting evidence, which is the only one of the four whose absence cannot be fixed by better engineering.
+
+So I would add a fourth view that is missing from the list and is cheap and defensible: what the price implies, meaning the de-vigged probability, the margin being paid, and the uncertainty. It needs no edge, no timestamp and no data we do not have.
+
+I also name what the product must be willing to say: no recommendation because data is stale, no recommendation because dependence is known but price is not, and plainly that the best available price is still poor value. That last one is what separates an intelligence tool from a tipping service.
+
+On ranking: the direction sharpens rather than changes it. It makes the price claim load-bearing, which is exactly what the 6.5 percent decomposition tests, so that stays first. It promotes the dependence work to clear second, scoped as a joint-probability calculator rather than a model of matchups, since that is the one capability where our evidence is positive and where most competing tools are simply wrong.
+
+And one refusal, for the record: I would not build a probability-based recommendation surface. Not because it is hard, but because we have measured that it would be worse than the market, and shipping it would make the product's central claim false.
+- revision: f721dbd
+- ref: docs/PRODUCT_DIRECTION.md
