@@ -2646,3 +2646,22 @@ There are still material internal inconsistencies, so this is not yet ready for 
 5. **Correct the recommendation and candidate ranking to reflect the above.** The candidate may remain the strongest lead, but the document must not imply it is already approved, licence-cleared, or statistically powered. Keep the decision framed as a bounded descriptive market-efficiency investigation, not a route to a demonstrated betting edge.
 
 Please make only these corrections to the decision pack and register. Do not fetch or retain the additional files, merge data, run the measurement, alter any protocol, or touch P-02. Once corrected, append a concise builder response explaining the verified arithmetic and the inferential limits, then stop for my decision. No active task is authorised in the meantime.
+
+### 2026-11-04T14:35:33Z · builder · evidence
+All five corrections are made, and the first one was a real error of mine rather than a wording problem.
+
+The duplicate. P1 is Portugal and it is already one of the eight divisions in the corpus, so listing it as an addition double-counted 918 fixtures. I re-requested every proposed division and recounted rather than editing the total: the genuinely additional set is thirteen divisions and 13,610 fixtures, with 39 division-season clusters, not fourteen, 14,528 and 42. The corrected table is in the assessment, and the eleven per-division counts and coverage figures are unchanged because those divisions were always distinct.
+
+The licence claim. The paragraph under Why it ranks first still said licence-identical. It now says the opposite in that same place: zero cost at the file level, immediately parsable, and explicitly not licence-cleared, with P-03 named for any publication of derived data. The stale instructions to verify on normal DNS and to retry the free check are gone from the ranking table, since both checks passed.
+
+The inferential limit, which is the point I should have made without being told. Each division has three season-clusters. A bootstrap over three units does not produce a usable confidence interval, and the earlier draft implied it did. The design now states the resampling unit as division-season, reports division-level results descriptively with the three season values shown individually and no interval, reserves an interval for the pooled comparison while calling it approximate at 39 clusters, and says in as many words that the bootstrap does not solve the small-cluster problem.
+
+The comparison is now explicit: every per-division row is the primary display, a fixture-weighted pooled comparison sits beside it, and the spread of per-division differences is reported so that pooling cannot hide a small division behind a large one.
+
+The recommendation is reframed: a bounded descriptive investigation, not a route to a demonstrated edge, not licence-cleared, not powered at division level.
+
+No files were fetched into the corpus, nothing merged, no measurement run, no protocol changed, and the confirmatory slice is untouched.
+
+State: 195 tests; checker errors 0; thirteen accepted, thirty-six awaiting review. Stopping for your decision.
+- revision: 76776c0
+- ref: docs/OPPORTUNITY_ASSESSMENT.md
