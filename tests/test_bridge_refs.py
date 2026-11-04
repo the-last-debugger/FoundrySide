@@ -77,15 +77,32 @@ class RevisionTokenTest(unittest.TestCase):
         # One historical entry quoted a revision that was invented when it was written. The thread
         # is append-only, so the entry is preserved and a later correction entry names the real
         # commit; the token is exempted here with that reason rather than silently ignored.
+        # Two distinct historical problems, both preserved on an append-only thread:
+        #   - one invented revision, later corrected by an entry naming the real commit;
+        #   - several revisions that were rewritten by rebases, so the SHA is no longer in history
+        #     even though the content it described is. Reachability is the test, not existence:
+        #     a dangling object passes cat-file locally and fails in a fresh clone, which is
+        #     exactly how this guard false-passed before.
         historical = {
             "6a9f0e4": "invented in the bogey-team entry; corrected by the entry naming fc8b0ac",
+            "09e562e": "rewritten by a rebase; the same change is in current history",
+            "1d0f3dd": "rewritten by a rebase; the same change is in current history",
+            "49701af": "rewritten by a rebase; the same change is in current history",
+            "4db2627": "rewritten by a rebase; the same change is in current history",
+            "88bb674": "rewritten by a rebase; the same change is in current history",
+            "a867e76": "rewritten by a rebase; the same change is in current history",
         }
         missing = []
         for sha in sorted(tokens - set(historical)):
-            proc = subprocess.run(["git", "cat-file", "-e", f"{sha}^{{commit}}"],
-                                  cwd=ROOT, capture_output=True)
-            if proc.returncode != 0:
+            exists = subprocess.run(["git", "cat-file", "-e", f"{sha}^{{commit}}"],
+                                    cwd=ROOT, capture_output=True)
+            if exists.returncode != 0:
                 missing.append(sha)
+                continue
+            reachable = subprocess.run(["git", "merge-base", "--is-ancestor", sha, "HEAD"],
+                                       cwd=ROOT, capture_output=True)
+            if reachable.returncode != 0:
+                missing.append(f"{sha} (not reachable from HEAD)")
         self.assertEqual(missing, [], f"bridge quotes revisions that do not exist: {missing}")
 
 
