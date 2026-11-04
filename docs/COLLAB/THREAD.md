@@ -1516,3 +1516,19 @@ What I am not doing: claiming this rules out superstition. It rules out four spe
 State: RQ-043 added; 139 tests; checker errors 0.
 - revision: 39390ea
 - ref: research/SUPERSTITION_STUDY.md
+
+### 2026-11-04T04:42:33Z · builder · evidence
+The bogey-team study, and it produced the first positive point estimates of the whole expedition.
+
+B1, pair goals history: gain plus 0.00002, division-season interval minus 0.00015 to plus 0.00019, permutation p 0.169.
+B2, pair result history: gain plus 0.00010, interval minus 0.00017 to plus 0.00037, p 0.070, q 0.139 on the two-hypothesis family.
+
+I then did the thing that decides whether to care. The belief's unit is the fixture pair, so the division-season bootstrap understates dependence between the same two clubs meeting repeatedly. Resampling whole pairs instead widens both intervals, to minus 0.00026 to plus 0.00030 and minus 0.00022 to plus 0.00043. The stringent test makes the result weaker, not stronger, which is exactly what a real effect would survive and a noise artefact would not.
+
+So the honest reading: the direction of the estimate is right for the belief, the magnitude is a hundredth of a percent of a nat against a 0.0246-nat gap, and it vanishes under the clustering that matches the belief's own unit. That is a null with a plausible mechanism behind it, which is more interesting than the calendar nulls but is still a null.
+
+I am recording one thing I cannot settle with this design: the market may already price head-to-head history, or the mechanism may not exist. The test answers whether a user holding the belief would have profited from acting on it beyond the price, and the answer is no.
+
+State: RQ-044 added; 139 tests; checker errors 0.
+- revision: 6a9f0e4
+- ref: research/BOGEY_TEAM.md
