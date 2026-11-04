@@ -33,8 +33,22 @@ PY = sys.executable
 STAGE_TIMEOUT = 1800
 
 
+class GitError(RuntimeError):
+    """A Git inspection command failed, so provenance cannot be established."""
+
+
 def git(*args: str) -> str:
-    return subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True).stdout.strip()
+    """Run a Git command and fail loudly if it fails.
+
+    Returning stdout regardless of the return code was the fail-open hole: a broken repository
+    would yield empty strings, and two empty HEAD values compare equal, so the provenance check
+    would pass on no evidence at all.
+    """
+    proc = subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True)
+    if proc.returncode != 0:
+        raise GitError(f"git {' '.join(args)} failed ({proc.returncode}): "
+                       f"{(proc.stderr or proc.stdout).strip()}")
+    return proc.stdout.strip()
 
 
 def dirty_files() -> list[str]:
@@ -99,8 +113,13 @@ def main() -> int:
     ci = "--ci" in argv
     allow_dirty = "--allow-dirty" in argv
 
-    head_before = git("rev-parse", "HEAD")
-    dirty = dirty_files()
+    try:
+        head_before = git("rev-parse", "HEAD")
+        dirty = dirty_files()
+    except GitError as exc:
+        print("REFUSING TO RUN")
+        print(f"  cannot establish provenance: {exc}")
+        return 1
 
     ok, reason = provenance(head_before, head_before, len(dirty), allow_dirty or ci)
     if not ok:
@@ -143,7 +162,11 @@ def main() -> int:
         if not ok:
             failures += 1
 
-    head_after = git("rev-parse", "HEAD")
+    try:
+        head_after = git("rev-parse", "HEAD")
+    except GitError as exc:
+        print(f"PROVENANCE FAILURE: cannot re-read HEAD after the run: {exc}")
+        return 1
     ok, reason = provenance(head_before, head_after, len(dirty), allow_dirty or ci)
 
     print()

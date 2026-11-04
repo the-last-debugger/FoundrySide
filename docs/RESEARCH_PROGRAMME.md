@@ -95,10 +95,22 @@ whether anything adds **resolution**, not whether something improves the score.
 
 ## Where the programme stands
 
-All six workstreams have been exercised and none is open. The earlier serial ordering (segment,
-then residuals, then one new feature) described the plan before the work; it is superseded by
-the evidence, and by the sponsor's instruction that workstreams run in parallel and that the
-builder picks the next question rather than following a queue.
+**The original six workstreams are complete** — each was exercised and reported, and the table
+above records its outcome. That is not the same as the programme having nothing open: follow-on
+work is active, and it is deliberately outside the original six:
+
+| Active follow-on | Status |
+| --- | --- |
+| E15 best-price discovery, by division | measured; blocked from going further by timestamped-price access (SOURCE_TIMING.md) |
+| E16 accumulator pricing and estimability | measured; long combinations closed as not estimable here |
+| Product contingency | recorded as a fallback, not a pivot (PRODUCT_CONTINGENCY.md) |
+| Source and timing lane | blocked on access, not technique |
+| Confirmatory preparation | decision-ready, gated at P-02 (CONFIRMATORY_READINESS.md) |
+
+The earlier serial ordering (segment, then residuals, then one new feature) described the plan
+before the work; it is superseded by the evidence, and by the sponsor's instruction that
+workstreams run in parallel and that the builder picks the next question rather than following a
+queue.
 
 What this does **not** mean: that the corpus contains no exploitable information. It means no
 information was detected under the specifications tested — eight variables through a

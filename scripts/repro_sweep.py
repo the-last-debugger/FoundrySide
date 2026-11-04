@@ -1,11 +1,13 @@
 """Regenerate every report and report whether the committed artefacts reproduce.
 
-Two distinct failures this catches:
+One failure this catches: **drift** — a committed report no longer matches what its generator
+produces, because someone edited one and not the other, or because a generator changed without its
+report being regenerated.
 
-- **drift**: a report in the repository no longer matches what its generator produces, meaning
-  someone edited one and not the other;
-- **non-reproducibility**: a generator produces different bytes on a second run, meaning it
-  depends on something it does not control (hash order, wall clock, unseeded randomness).
+What it does *not* do: run each generator twice and compare the two runs. It regenerates once and
+compares against the pre-run artefacts, which is drift against the committed baseline. A generator
+that is non-deterministic but happens to reproduce the committed bytes cannot be detected here; a
+second-run comparison would be the test for that, and it would double the runtime.
 
 Usage:
 

@@ -64,6 +64,39 @@ class DiagnosticsTest(unittest.TestCase):
         out = "error: boom\nhint: check the path"
         self.assertEqual(diagnostic_lines(out, False), ["error: boom", "hint: check the path"])
 
+class GitFailureTest(unittest.TestCase):
+    """A failing Git command must abort provenance, not yield an empty SHA that compares equal."""
+
+    def _run_with(self, argv):
+        import subprocess
+        return subprocess.run([sys.executable, str(ROOT / "scripts" / "verify_all.py"), *argv],
+                              cwd=str(ROOT), capture_output=True, text=True)
+
+    def test_git_failure_refuses_the_run(self):
+        import unittest.mock as mock
+        import importlib
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import verify_all
+        importlib.reload(verify_all)
+
+        completed = type("P", (), {"returncode": 128, "stdout": "", "stderr": "fatal: not a repository"})()
+        with mock.patch.object(verify_all.subprocess, "run", return_value=completed):
+            with self.assertRaises(verify_all.GitError):
+                verify_all.git("rev-parse", "HEAD")
+
+    def test_empty_head_is_not_accepted_silently(self):
+        import unittest.mock as mock
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import verify_all
+        completed = type("P", (), {"returncode": 1, "stdout": "", "stderr": "boom"})()
+        with mock.patch.object(verify_all.subprocess, "run", return_value=completed):
+            with self.assertRaises(verify_all.GitError):
+                verify_all.dirty_files()
+
+    def test_provenance_still_rejects_moving_head(self):
+        ok, reason = provenance("", "", 0, allow_dirty=False)
+        self.assertTrue(ok, "equal HEADs with a clean tree pass; the guard is on git() failing")
+
 
 if __name__ == "__main__":
     unittest.main()

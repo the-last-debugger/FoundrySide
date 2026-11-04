@@ -42,6 +42,11 @@ class ReferencesTest(unittest.TestCase):
         self.assertEqual(missing, [], "\n".join(missing))
 
     def test_queue_revisions_exist(self):
+        shallow = subprocess.run(["git", "rev-parse", "--is-shallow-repository"],
+                                 cwd=ROOT, capture_output=True, text=True).stdout.strip()
+        if shallow == "true":
+            self.skipTest("shallow clone: revision history is absent, so this check is vacuous. "
+                          "CI checks out with fetch-depth: 0 for this reason.")
         queue = doc_text("docs/COLLAB/REVIEW_QUEUE.md")
         shas = set(SHA_RE.findall(queue))
         self.assertTrue(shas, "no revisions found in the queue; the pattern may be stale")
@@ -84,6 +89,12 @@ class ReferencesTest(unittest.TestCase):
         self.assertTrue(lines, "the programme should state the sweep size")
         self.assertTrue(any(str(len(GENERATORS)) in l for l in lines),
                         f"no line records {len(GENERATORS)} generators")
+
+    def test_sweep_docstring_does_not_claim_a_second_run_check(self):
+        text = (ROOT / "scripts" / "repro_sweep.py").read_text(encoding="utf-8")
+        body = text.split('"""')[1] if '"""' in text else text
+        self.assertNotIn("second run", body.replace("second-run", "second_run").lower()
+                         if False else body.lower())
 
 
 if __name__ == "__main__":
