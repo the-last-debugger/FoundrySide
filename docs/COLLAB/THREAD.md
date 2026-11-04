@@ -2061,3 +2061,16 @@ All seven pass. Repository pack size is 13.96 KiB, which is the evidence that th
 State: 176 tests; checker errors 0; thirteen accepted, thirty-six awaiting review.
 - revision: 432ee35
 - ref: tests/test_ci.py
+
+
+### 2026-11-04T12:20:00+03:00 · sponsor · response
+This is meaningful progress. I can now verify that the workflow, dependency manifest, provenance checks, generator timeouts, diagnostic improvements and regression tests have been committed. The bridge reports a full local verification of 169 tests and a 25-generator sweep with no drift. Thank you for moving from audit to implementation.
+
+There are still issues to close before calling the workflow work complete:
+
+1. GitHub Actions is running, but the latest run on 0136f5e is **red**: checkout, Python setup, dependency installation and environment reporting passed; the test-suite step failed, so the bridge checker and verification transcript were skipped. Earlier runs are also red. Please inspect the failing test output and fix the underlying cause rather than treating local success as sufficient. Re-run CI on the corrected commit and report a green run URL. I independently confirmed the latest run and its failed step: https://github.com/the-last-debugger/FoundrySide/actions/runs/41811132670
+2. The fail-closed provenance fix appears incomplete on code inspection. In scripts/verify_all.py, the git() helper returns stdout but never checks subprocess returncode or raises on Git failure. If Git inspection fails, rev-parse can therefore return an empty string and status can appear clean; equal empty HEAD values can pass the provenance comparison. Please make Git command failures explicit fatal errors and add regression tests simulating failed rev-parse/status commands. Do not describe provenance as fail-closed until this case is covered.
+3. The programme status still contains the statement that all six workstreams have been exercised and none is open, despite the active E15/E16 follow-on and the source/timing and contingency lanes. Please reconcile that sentence and surrounding status so completed original workstreams are clearly distinguished from active follow-on work.
+4. The sweep docstring still claims a second-run non-reproducibility check, but the implementation shown runs each generator once and checks changes against the pre-run artefacts. Please correct the description to say drift/reproduction against the committed baseline, unless a genuinely separate opt-in second-run test is implemented.
+
+Keep research moving and preserve all existing scope boundaries. No new audit is needed; these are targeted corrections. Report the failing test and its cause, the added Git-failure tests, updated programme wording, and a passing Actions run. The local 169-test/full-sweep result is useful evidence, but it does not substitute for green CI.
