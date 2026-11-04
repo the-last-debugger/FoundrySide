@@ -1,69 +1,101 @@
 # Pre-registration — is the 6.5% price improvement arithmetic or dispersion?
 
-Committed before the analysis runs. Authorised scope: method and pre-registration only.
+Committed before scoring. Revised after review; the revisions are in §2 and §3 and the earlier
+derivation errors are recorded rather than hidden.
 
-## Question
+## 1. Question
 
-The corpus shows that taking the best closing price for a selection is 6.51% better than taking the
-market average. For any set of quotes the maximum exceeds the mean **by construction**, so the
-question is how much of that 6.51% is mechanical and how much reflects genuine cross-book dispersion
-in de-vigged probabilities.
+Taking the best closing price for a selection is 6.51% better than taking the market average. For any
+set of quotes the maximum exceeds the mean by construction. How much of that gap is consistent with
+that arithmetic, and how much requires dispersion in de-vigged probabilities beyond it?
 
-## Data and fields
+## 2. Derivation — corrected
 
-Pilot and confirmatory seasons are **not** both used: this is an exploratory measurement on the
-same corpus used throughout, three pilot seasons, 1X2 closing prices. Confirmatory slice untouched.
+**My first version was wrong twice.** It treated the pairwise estimator as the marginal dispersion σ,
+and it claimed that positive correlation between books biased the excess *downward*. Both are
+incorrect.
 
-| Field | Role |
-| --- | --- |
-| `PSC*`, `B365C*` | the two books whose three-way closing prices are recorded individually — the only source of per-book de-vigged probabilities |
-| `MaxC*`, `AvgC*` | the best and mean closing price across the provider's tracked books |
-| `Bb1X2` | number of bookmakers behind each `Avg`/`Max`, i.e. `K` — observed, not assumed |
+Let each book's de-vigged logit for one outcome be `σ Z_i`, where the `Z_i` are equicorrelated with
+correlation ρ. Write `Z_i = √ρ U + √(1−ρ) ε_i` with `U, ε_i` independent standard normals. Then:
 
-## Identification — what is and is not measurable
+- `Var(Z_i − Z_j) = 2(1 − ρ)`, so `SD(Z_i − Z_j)/√2 = σ√(1−ρ)`.
+- `max_i Z_i − mean_i Z_i = σ√(1−ρ) · (max_i ε_i − mean_i ε_i)`, whose expectation is
+  `σ√(1−ρ) · E[max_K]`.
 
-**Measured:** cross-book dispersion between **two books' de-vigged** probabilities, under the
-proportional de-vig assumption, expressed as the SD of their logit difference divided by √2.
+Both quantities carry the **same** factor `σ√(1−ρ)`. So the pairwise estimator `d ≡ SD(Δ)/√2` is
+exactly the right scale for the K-book gap under equicorrelation — it is neither σ, nor a quantity
+needing a correction. Verified numerically: with σ = 1, ρ = 0.6, K = 8, the simulated pairwise
+estimator is 0.6316 against `σ√(1−ρ) = 0.6325`, and the simulated mean `max − mean` is 0.900 against
+`σ√(1−ρ)E[max_8] = 0.9004`.
 
-**Projected:** what that dispersion implies for `K` books, via order statistics,
-`σ · E[max of K standard normals]`.
+**Consequence:** there is no directional bias to claim. The projection is unbiased *if* the
+equicorrelation model holds; if correlation structure is not equicorrelated, the direction is
+unknown, and the protocol says so instead of asserting conservatism.
 
-**Not measurable with these fields:** the separation of genuine opinion differences from differences
-in margin *allocation* (which proportional de-vig only partly absorbs), dispersion across books whose
-prices are not individually recorded, and whether any price was obtainable. The report must state
-each of these where the number is used.
+## 3. A common scale
 
-## Procedure
+The earlier version subtracted a ratio of **decimal prices** from a projection in **logit
+probability** units. Those are different scales and the subtraction was invalid.
 
-1. For each fixture, de-vig Pinnacle and Bet365 separately (proportional method) and take logits.
-2. `σ₂` = SD over fixtures of `(logit_A − logit_B)/√2`, computed per division and pooled.
-3. For each fixture, `E[max_K]` from its observed `Bb1X2` (tabulated for K ≤ 20).
-4. Projected gap per fixture = `σ₂ · E[max_K]`; average it.
-5. Observed gap per fixture = `mean(log MaxC − log AvgC)` over the three outcomes.
-6. **Excess = observed − projected**, with a cluster bootstrap interval over division-seasons.
+Both sides are now in logit-probability units:
 
-## Sensitivity
+- **Observed**: de-vig `MaxC` and `AvgC` separately (both are complete three-way sets), take logits,
+  and compute `gap_z = logit(p_max) − logit(p_avg)` per outcome; average across the three outcomes
+  within a fixture; then average over fixtures.
+- **Projected**: `d · E[max_K]`, with `d` from §2 and `K` from the provider's `Bb1X2` field.
 
-- `σ₂` scaled by 0.5 and 2.0.
-- A regression of observed gap on `E[max_K]` across fixtures, whose slope should be near `σ₂` if the
-  exchangeability assumption holds. Reported as a check, not as proof.
-- Books copy each other, so the independence assumption **overstates** the projected gap and biases
-  the excess downward — conservative for the claim.
+Approximations this introduces, stated because they are not removable with these fields:
 
-## Decision rules, fixed now
+1. `AvgC` is an average of **prices**, so `logit(de-vig(AvgC))` is not the mean of the books' logits.
+   The gap is between the de-vigged best and the de-vigged average quote, not between the best and the
+   mean logit.
+2. `MaxC` may take different books for different outcomes, so `de-vig(MaxC)` is a synthetic
+   three-way quote, not one book's price.
+3. The two individually recorded books are assumed to be drawn from the same pool as the K books.
 
-| Excess | Reading | Consequence |
+## 4. Per-outcome estimation and compositional dependence
+
+`d` is estimated **separately for Home, Draw and Away**, because de-vigging redistributes margin
+differently across outcomes and the three have very different variances. Pooling happens at the
+fixture level, after per-outcome estimation.
+
+The three outcomes of one fixture are compositionally dependent — they sum to one — so they are not
+independent observations. **The fixture is the sampling unit throughout**: the bootstrap resamples
+division-season clusters, and no test treats the three outcomes as independent.
+
+## 5. Procedure
+
+1. Per fixture, per book (Pinnacle, Bet365): de-vig the three-way closing prices proportionally, take
+   logits, and compute the pairwise difference for each outcome.
+2. `d_outcome = SD(fixture-level pairwise difference)/√2`, per division and pooled.
+3. Per fixture: `E[max_K]` from observed `Bb1X2`; projected gap `d · E[max_K]` averaged across outcomes.
+4. Observed `gap_z` as in §3.
+5. **Excess = observed − projected**, with a cluster bootstrap interval over division-seasons.
+
+## 6. Sensitivity and the one internal check
+
+- `d` scaled by 0.5 and 2.0, reporting how the excess moves.
+- **Regression of observed `gap_z` on `E[max_K]`.** What it tests: whether the gap grows with the
+  number of books at the rate the projection implies. What it **cannot** test: normality, the
+  equicorrelation assumption, or that `Max`/`Avg` are computed over the same books. A slope near `d`
+  is consistent with the model; it is not a validation of it.
+- Separate reporting for fixtures where `K` is small enough that the order-statistic approximation is
+  weakest.
+
+## 7. Decision rules, fixed now
+
+| Excess (cluster interval) | Reading | Consequence |
 | --- | --- | --- |
-| Interval contains zero | consistent with arithmetic | price-shopping claim **weakened**: present as arithmetic, not advantage |
-| Interval entirely above zero | dispersion exceeds projection | claim **strengthened**, still subject to availability |
-| Interval entirely below zero | observed below projection | **integrity check first** — confirm `Max` and `Avg` cover the same books before interpreting |
+| Contains zero | consistent with arithmetic | price-shopping claim **weakened**: present as arithmetic, not advantage |
+| Entirely above zero | dispersion exceeds the projection | claim **strengthened**, subject to availability |
+| Entirely below zero | observed below projection | **integrity check first** — verify `Max` and `Avg` book sets before interpreting |
 
-## Stop condition
+## 8. Stop condition
 
-One analysis, one report. No follow-up variant without a new authorisation.
+One analysis, one report. No follow-up variant without new authorisation.
 
-## What this cannot support
+## 9. What this cannot support
 
-No expected-value, profitability or user-advantage claim. No statement about obtainable prices. No
-claim that the 6.5% is "fair-probability disagreement" — only that it is dispersion in de-vigged
-probabilities under a stated assumption.
+No expected-value, profitability or user-advantage claim. Nothing about obtainable prices. And no
+statement that dispersion reflects "true" probability disagreement: it reflects differences in
+de-vigged probabilities under proportional de-vig, with margin allocation not fully separated.
