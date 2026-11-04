@@ -204,6 +204,7 @@ produced it.
 | SHRINKAGE_POLICY.md | E19 | six shrinkage policies; none beats market-only, which is the optimum |
 | PRICE_INVENTORY.md | E20 | opening and closing snapshots across books; per-selection best price is tradeable, the Max overround is not |
 | HIT_RATE_AUDIT.md | E21 | hard-pick accuracy 54.30% vs 57.66%; the model is worse at picking too, not only at scoring |
+| MOVEMENT_STUDY.md | E22 | opening-to-closing movement adds nothing to the closing price |
 
 ## 8a. Reproducibility
 

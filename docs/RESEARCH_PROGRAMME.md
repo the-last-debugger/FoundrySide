@@ -62,6 +62,7 @@ treatment and a stated failure condition. Fit and evaluation never share outcome
 | E19 | **Pre-registered disagreement-aware shrinkage: six policies, fitted on prior seasons** | **none beats the market; the best ties it exactly by collapsing to market-only; fitted thresholds hit the grid floor in both folds** | **negative: the market-only policy is the optimum** |
 | E20 | **Price inventory: books, snapshots, markets, and what is tradeable** | **opening and closing snapshots exist for several books; best per selection beats average price; the Max-derived overround is a synthetic arbitrage, not an opportunity** | **inventory; item 2 has more data than assumed and no timestamps** |
 | E21 | **Hit-rate and metric audit at a pre-declared 0.5 threshold** | **model 54.30% vs market 57.66%, diff -0.0336 [-0.0459,-0.0214]; paired 1,176 for / 1,476 against** | **worse at picking and at scoring; calibration is the only recoverable defect** |
+| E22 | **Price movement between opening and closing snapshots** | **signed -0.00022 [-0.00041,-0.00004]; size -0.00001 [-0.00009,+0.00008]** | **negative: the closing price already contains the move** |
 
 ## What the three studies together say
 
@@ -136,7 +137,7 @@ real defects:
 | Bridge checker | a verdict that names no revision, a row not authorised | once (per-row verdicts), once (malformed header) |
 | scripts/repro_sweep.py | any report that does not reproduce, and any generator that rewrites history when nothing changed | once (manifest clock churn) |
 
-A clean sweep is **30 generators** reproducing byte-for-byte.
+A clean sweep is **31 generators** reproducing byte-for-byte.
 
 ## Product contingency
 

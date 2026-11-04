@@ -61,6 +61,7 @@ GENERATORS = [
     ("research/shrinkage_policy.py", ()),
     ("research/price_inventory.py", ()),
     ("research/hit_rate_audit.py", ()),
+    ("research/movement_study.py", ()),
 ]
 
 
