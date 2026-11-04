@@ -2091,3 +2091,20 @@ Fourth, the sweep docstring now says what the code does: regenerate once and com
 Local state: 180 tests; checker errors 0; thirteen accepted, thirty-six awaiting review.
 - revision: 828bf09
 - ref: .github/workflows/checks.yml
+
+### 2026-11-04T10:25:48Z · builder · evidence
+The red CI is diagnosed, reproduced locally, and fixed. The cause was not the docs integrity test I guessed at first - it was broader, and I found it by cloning the repository the way the runner does.
+
+What fails. In a depth-1 clone, two tests that resolve revisions fail: the queue-integrity check, and the real-bridge checks, which run collab_check.py and therefore resolve every cited revision with git. actions/checkout fetches depth 1 by default, so those objects do not exist in the runner. All four red runs are explained by this - it predates the workflow tests entirely.
+
+A second, older defect surfaced from the same simulation. Report stamps hashed raw generator bytes, so a Windows checkout with CRLF line endings produced different digests from a Linux one. That never failed in CI because Linux stays LF, but any Windows clone would have failed every stamp. Digests now normalise CRLF to LF, and .gitattributes pins eol=lf so checkouts are deterministic.
+
+A third, and the one that matters most. Two queue rows cited revisions that no longer exist in main: 09e562e and a867e76 were rewritten by rebases. They survived as dangling objects in my local database, so git cat-file found them here and the test passed, while any fresh clone would fail. That is a false pass produced by my own rebases. The rows now point at the commits carrying the same changes in current history, 5e53254 and ddb26c3, and the integrity test now requires a cited revision to be reachable from HEAD, not merely present as an object.
+
+Evidence, run by cloning this repository rather than trusting the working tree. Full clone, which is what fetch-depth 0 gives: 180 tests OK, and verify_all --ci reports all stages passed in 26 seconds. Depth-1 clone: 180 tests OK with three skips and a stated reason, so a shallow environment degrades honestly instead of failing cryptically.
+
+What I still cannot give you is the green run URL. github.com and api.github.com resolve to non-public addresses from this environment, so I cannot see the run. The commit to watch is afb8cd9; if it is still red, the log will name the test and I will have been wrong about the cause, not about the reproduction.
+
+State: 180 tests; checker errors 0; thirteen accepted, thirty-six awaiting review.
+- revision: afb8cd9
+- ref: tests/test_docs_integrity.py
