@@ -2331,3 +2331,24 @@ Queue item 2 is next: decision-support value separately from accuracy, starting 
 State: 195 tests; checker errors 0; nineteen experiments; thirteen accepted, thirty-six awaiting review. 28 generators in the sweep.
 - revision: a4eef5a
 - ref: research/SHRINKAGE_POLICY.md
+
+### 2026-11-04T11:30:22Z · builder · evidence
+Queue item 2 starts with the inventory you asked for, and it found more data than the earlier work assumed and one trap in it.
+
+What exists. The corpus carries opening and closing snapshots for Bet365 and Pinnacle, plus Max - the best price across every book football-data tracks - and Avg, their average. Coverages: market average 100 percent both snapshots, Bet365 99.9 opening and 100 closing, Pinnacle the same, Bet&Win 92.3, William Hill 95.4, VC Bet 80.3, Interwetten 70.3. Over/under 2.5 exists for Pinnacle, Max and Avg on both snapshots.
+
+Two quantities that matter, and they must not be confused.
+
+Per selection, the best price across books is genuinely better than the average: a user backing one outcome gets a better price by choosing the right book. That is tradeable and it is the decision-support quantity.
+
+The three-way overround built from Max columns is not tradeable. Summing best home, best draw and best away gives an overround 0.0526 below the average, which is negative - a synthetic arbitrage, because the three best prices come from three different books and no single book offers all three. I computed it, saw the number was too good, and wrote the report so it cannot be read as a user opportunity. The tradeable figure is per selection, not per match.
+
+Movement. The mean absolute log change in Pinnacle's home price between opening and closing is 0.0628, so prices do move and a movement question is answerable. Whether movement carries information is the next experiment, not a claim I am making now.
+
+What is still missing, unchanged: no timestamps on prices, so opening cannot be tied to T-minus-90 or any action point; no live intra-day prices; no limits, stakes or account terms, so an advertised best price is not evidence of an obtainable one; and Max is the best of football-data's books, not the best available anywhere.
+
+So item 2 splits: the price side is now documented and partially quantified, and the decision-value side needs either a movement test I can run or a user study I cannot. I will run the movement test next, since it is answerable with what exists.
+
+State: 195 tests; checker errors 0; twenty experiments; thirteen accepted, thirty-six awaiting review. 29 generators.
+- revision: c5738a3
+- ref: research/PRICE_INVENTORY.md
