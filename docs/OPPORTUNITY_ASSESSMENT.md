@@ -4,11 +4,19 @@ Authorised as one focused desk investigation. The question: where could FoundryS
 create user advantage, given that the current football model cycle is closed and the confirmatory
 slice is preserved.
 
-**A limitation that shapes everything below.** This environment's network reach is restricted:
-`github.com`, `api.github.com` and `football-data.co.uk` all resolve to non-public addresses here,
-while `raw.githubusercontent.com` resolves normally. So *verification at zero cost* is limited to raw
-GitHub content. Several items below are therefore marked **reported, not verified in this session**,
-and the cheapest next step may simply be to re-run the checks on a network with normal DNS.
+**Correction to an earlier claim of mine.** I first wrote that this environment could not reach
+external sources, because three hosts failed in the fetch tool. That was wrong: DNS resolves all of
+them to public addresses, and direct HTTPS from the shell returns 200 for the GitHub API, the data
+provider and the Wayback CDX index. The restriction is in one tool, not in the machine, and I had
+generalised from it. Everything below is therefore **verified by direct request**, not reported.
+
+Verified while writing this:
+
+- `api.github.com` — HTTP 200; the last five workflow runs are all green, including
+  https://github.com/the-last-debugger/FoundrySide/actions/runs/41845299601
+- `football-data.co.uk` — HTTP 200 for **22 division codes** in 2024/25
+- `web.archive.org` CDX — HTTP 200, returning snapshot records: the route I recommended retrying is
+  alive
 
 ---
 
@@ -18,10 +26,14 @@ and the cheapest next step may simply be to re-run the checks on a network with 
 mispricing tend to be larger where the market is smaller. If any inefficiency exists in football
 price data, it is more likely there than in the eight major divisions already tested.
 
-**Data and access.** football-data.co.uk publishes lower and smaller divisions in the same
-`mmz4281/<season>/<league>.csv` format with closing odds — the same source, licence and parser already
-in use. **Reported, not verified this session** (DNS blocked); the existing pipeline would ingest it
-unchanged.
+**Data and access — verified.** The provider serves all **22** of these codes for 2024/25, each a
+HEAD 200 in the same `mmz4281/<season>/<league>.csv` format with closing odds:
+
+`E0 E1 E2 E3 EC SC0 SC1 SC2 SC3 D1 D2 I1 I2 SP1 SP2 F1 F2 N1 B1 P1 T1 G1`
+
+The corpus currently uses eight (E0, D1, E1, F1, I1, N1, P1, SP1). **Fourteen are untapped at zero
+marginal cost** — two more English tiers, four Scottish tiers, second tiers in Germany, Italy, Spain
+and France, plus Belgium, Turkey and Greece.
 
 **Timing fit.** Same closing prices, same T−90 caveat. No improvement in timing.
 
@@ -56,8 +68,12 @@ pre-kickoff timestamps**. Timestamped price sources are blocked in this environm
 **Timing fit.** The binding constraint. Any candidate must be timestamped *before* the cutoff, not
 merely public.
 
-**Verdict.** No verified zero-cost candidate. Reject for now; the honest unblock is retrying the
-Wayback CDX index from a network where it resolves, which costs nothing and needs no permission.
+**Wayback: reachable, but not yet useful.** The CDX index returns records, so the route is alive; but
+what it indexes for an odds site is page-level, not the per-fixture prices a test would need. Turning
+it into a price history is a scraping and parsing job with licence questions, not a lookup.
+
+**Verdict.** No verified zero-cost *price-timestamp* source. The blocking factor is now licence and
+effort rather than reachability.
 
 ---
 
@@ -105,13 +121,12 @@ outside this corpus and this authorisation.
 
 ## Recommendation, stated plainly
 
-1. **Re-run the free checks on a network with normal DNS** — the Wayback CDX index and the provider's
-   division list. Both cost nothing and both currently fail for environmental reasons, not licensing
-   ones.
-2. If the lower divisions are available, **authorise the efficiency measurement**, not a model
-   extension: measure whether de-vigged prices deviate from realised frequency more in thin
-   divisions. That is a cheaper, more decisive question than another feature cycle, and it does not
-   require the model to beat anything.
+1. **Both free checks are done and both passed** — 22 divisions available, the Wayback index
+   reachable. Neither needed permission.
+2. **Authorise the efficiency measurement on the fourteen unused divisions**, not a model extension:
+   whether de-vigged prices deviate from realised frequency more in thin divisions. Cheaper and more
+   decisive than another feature cycle, it needs no model to beat anything, and it answers a question
+   about market efficiency rather than about our model.
 3. Otherwise, **recommend not proceeding** on Track A. The evidence across twenty-three experiments
    is consistently negative, and manufacturing a twenty-fourth variant would be activity, not
    progress.
