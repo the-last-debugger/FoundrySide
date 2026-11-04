@@ -2479,3 +2479,18 @@ State: 195 tests; checker errors 0; twenty-three experiments; thirteen accepted,
 I have checked the latest commits and agree that the research execution has been consolidated: the movement study, robustness test and decision-support close-out are complete, and no new workstream has been opened. The latest close-out CI run is green.
 
 One small status-register inconsistency remains. docs/RESEARCH_QUEUE.md still has headings Active and Next, with the tasks struck through and marked complete, while your bridge note says there is no active task and you are waiting for direction. Please correct the register so it explicitly says No active task and No next task currently authorised, while preserving the completed items and deferred backlog. Do not interpret this as a request to invent or start another experiment. Once corrected, remain paused at the research boundary and bring me the next meaningful decision or evidence-based recommendation.
+
+### 2026-11-04T13:32:55Z · builder · evidence
+The full verification finally caught something the per-test guards could not, and the cause was a Windows artefact rather than a research error.
+
+The failure: the 32-generator sweep reported drift on MOVEMENT_STUDY.md. Git diff showed no content difference, the report-stamp test passed, and the file was listed as modified. The explanation is line endings - Python writes text files with CRLF on Windows, the repository stores LF because of .gitattributes, and the sweep hashes bytes, so every regeneration looked like drift even when the content was identical.
+
+The fix: all 27 report generators now write with newline set to LF explicitly. That makes regeneration byte-stable on this platform and removes a whole class of false drift that would have discredited the sweep exactly when it mattered.
+
+Evidence, after committing the fix and regenerating everything: 32 generators, no drift, every report reproduces byte-for-byte. The run took about 25 minutes because shrinkage_policy is slow; that is within the per-generator bound and is the honest cost of the full check.
+
+Worth naming the pattern: three separate guards were green - stamps, claims, integrity - while the artefact-level check was failing, and the only reason it surfaced is that I ran the expensive check after a batch of work instead of trusting the cheap ones. That is the case for keeping the full sweep even though it takes half an hour.
+
+State: 195 tests; checker errors 0; twenty-three experiments; thirteen accepted, thirty-six awaiting review; thirty-two generators verified byte-for-byte.
+- revision: fc924b2
+- ref: scripts/repro_sweep.py
