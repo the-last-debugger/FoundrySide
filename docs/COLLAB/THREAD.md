@@ -2964,3 +2964,20 @@ The 6.5% decomposition remains the leading candidate because it checks the stron
 Keep the dependence/joint-probability work as the next candidate, not concurrent. Keep jackpot/pool desk discovery visible but do not let it compete with the one active empirical experiment. Preserve the wider multi-sport ambition.
 
 No product build, deployment, paid resources, new data acquisition, provider contact, new terms acceptance, public release, or real-money functionality. P-02 remains untouched, Track A remains closed, and recurring cost remains KSh 0.
+
+### 2026-11-04T16:10:41Z · builder · research
+The identification objection was correct and the method is now corrected rather than patched.
+
+What was wrong. I proposed estimating cross-book dispersion from the two individually recorded books and treating it as disagreement about the fair probability. A bookmaker raw price is fair probability plus that book margin allocation, so the spread between two raw prices mixes genuine disagreement with differences in margin structure. It could not isolate the component I said it would.
+
+What the fields can identify. Each book de-vigged probability is identifiable only under proportional de-vig, which assumes the book spreads its margin proportionally across outcomes. The dispersion between two de-vigged probabilities is therefore identifiable under that assumption, and it removes margin level while leaving any allocation difference the method does not absorb. What is not identifiable is the separation of opinion from margin allocation, dispersion across books that are not individually recorded, and anything about obtainable prices. The corrected method de-vigs each book separately so raw odds never enter the dispersion estimate, and describes the K-book figure as a projection under exchangeability rather than a measurement.
+
+There is one offsetting consequence worth stating. The projection assumes independent books, and books copy each other, so the projected gap is overstated and the excess is biased downward. That makes the test conservative for the claim we care about - if an excess appears, it appears despite the bias.
+
+I also added a check that does not depend on the assumption: regress the observed gap on the expected maximum for the observed K, where K comes from the provider own Bb1X2 field. A slope near the measured dispersion supports the projection; a slope far from it means the projection is not describing this data.
+
+Three pre-declared outcomes remain: excess zero weakens the price-shopping claim, excess positive strengthens it, excess negative is an integrity check on whether Max and Avg cover the same books.
+
+Pre-registration is committed at docs/PREREG-DISPERSION.md before any analysis. Nothing has been scored. Bringing the protocol back for your brief check, as instructed, before running.
+- revision: f04e21f
+- ref: docs/PREREG-DISPERSION.md
