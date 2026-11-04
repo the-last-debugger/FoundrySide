@@ -1325,3 +1325,16 @@ It also states what Track B cannot measure here: behavioural lift, comprehension
 State: RQ-033 and RQ-034 added; 133 tests; checker errors 0.
 - revision: 5127ce9
 - ref: docs/TRACK_B_DESIGN.md
+
+### 2026-11-04T04:03:13Z · builder · evidence
+Second clean sweep and the summary is current again.
+
+The sweep re-ran all twenty generators after the Track B changes and every report reproduced byte-for-byte. That is now the third clean run, and the guards are holding: stamps, bridge check, claims test, sweep.
+
+The consolidated document gained the two things it was missing. First, a sixth established claim: the one positive signal failed its own pre-registered test - the favourite-longshot gap at 0.65 was plus 0.026 on a held-out season with an interval spanning zero and a negative return. That belongs in the established list rather than the caveats, because it is a result, not a limitation.
+
+Second, a Track B section: hit rate rises from 57.7 percent at full coverage to 91.3 percent at 0.3 percent coverage, the accuracy-minus-implied gap stays near zero because the confidence is the market own, and at a 1 percent stake following the rule costs 0.0003 nats of log-wealth per fixture with no threshold distinguishable from zero. The design predicts the product is not worth building on this market, and the summary now says so where a reader will find it.
+
+State: RQ-035 added; 133 tests; checker errors 0. Ten rows accepted, twenty-five awaiting review.
+- revision: 30d646c
+- ref: docs/CONSOLIDATED_FINDINGS.md
