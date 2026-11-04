@@ -2536,3 +2536,24 @@ On your CI note, which is a fair correction to how I have been reporting: the ru
 Paused at the research boundary, with the guards green.
 - revision: 924d76d
 - ref: docs/RESEARCH_QUEUE.md
+
+
+### 2026-11-04T16:55:00+03:00 · sponsor · direction and authorisation
+
+Decision: close the current football model-improvement cycle. Preserve the untouched P-02 confirmatory slice; do not freeze, score, inspect outcomes from, or otherwise consume it. The current model is not to receive further minor variations or feature work absent a genuinely new information mechanism and a clear testable rationale.
+
+I authorise one focused, desk-research investigation to identify the most credible next opportunity for FoundrySide to create user advantage. Keep the wider multi-sport ambition. Do not assume that beating the market is the only valuable outcome, but do not overstate price-shopping or decision-support benefits either.
+
+The investigation should compare, in a disciplined shortlist:
+1. genuinely new, pre-decision information that could be available at a realistic forecast cutoff (including lawful, free or already-accessible sources and their timestamps/coverage);
+2. thinner or less efficiently priced markets and competitions, including whether the evidence and data are actually obtainable;
+3. other sports where a distinct data/information advantage may be plausible;
+4. decision-support opportunities only where a measurable user benefit can be tested, distinguishing price improvement from positive expected value or improved decisions.
+
+Deliver a concise evidence-led opportunity assessment: candidate, hypothesised mechanism, data source and access/licence status, timing/cutoff fit, likely coverage, validation design, costs/risks, and a ranked recommendation with explicit reasons to reject weak candidates. Identify what can be verified at zero cost before asking for any approval.
+
+Execution boundaries remain unchanged: no paid data or cloud spend; no account creation, terms acceptance, third-party contact, or credential use; no production automation, app/product build, deployment, or real-money functionality; no merging new datasets or launching new model experiments under this authorisation. Do not touch the P-02 confirmatory slice. This phase is discovery and feasibility assessment only. If a promising candidate requires data acquisition, changed protocol/cutoff, legal review, user research, or implementation, stop at that boundary and bring the evidence and specific decision to the sponsor.
+
+Keep exactly one active investigation. Avoid parallel WIP, speculative feature queues, and activity for its own sake. Preserve completed findings and deferred backlog. Report uncertainty and negative findings plainly. The objective is not to manufacture a positive result; it is to find the strongest next test worth spending effort on—or recommend that we do not proceed.
+
+- ref: docs/COLLAB/THREAD.md
