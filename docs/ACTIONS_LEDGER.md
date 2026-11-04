@@ -1,30 +1,44 @@
 # Actions resource ledger
 
-A record of workflow runs, appended by `scripts/ci_gate.py --record` at the end of each successful
-CI run. Machine-readable entries live in `docs/ci/runs.jsonl`; this file explains the scheme and
-records manual observations.
+What the workflow's resource controls actually do, and — more importantly — what they do not.
 
-## What is enforced, and by what
+## Enforced
 
-| Safeguard | Enforced by | Enforceable? |
+| Safeguard | Enforced by | Verified by |
 | --- | --- | --- |
-| One run per branch, superseded runs cancelled | `concurrency:` in the workflow | Yes, by GitHub |
-| Per-run time ceiling | `timeout-minutes:` matched to `.github/ci-policy.json` | Yes; a test asserts they agree |
-| Pause switch | `scripts/ci_gate.py` sets an output the later steps test | Yes, from inside the repo |
-| Per-day run limit | gate counts `docs/ci/runs.jsonl` for the current UTC date | Yes, for runs that complete and record |
-| Ledger of runs | `--record` step | Yes, but only when the run reaches that step |
+| One run per branch; superseded runs cancelled | `concurrency: cancel-in-progress` | workflow text test |
+| Per-run ceiling | `timeout-minutes: 15` | a test asserts it equals the policy value |
+| Policy file is valid and consistent | `scripts/ci_gate.py --advisory` | six gate tests |
 
-## What is not enforced, and is not claimed
+## Advisory, not enforced
 
-- **GitHub's own minutes accounting and billing.** Those live outside this repository. The ledger
-  counts runs this workflow recorded, not minutes GitHub billed.
-- **A limit edited in the same commit that exceeds it.** The policy is a file; anyone who can push
-  can change it. This is a guard rail against accident, not an access control.
-- **Runs that fail before the record step.** A cancelled or failed run consumes minutes but may
-  leave no ledger entry, so the daily count can understate usage.
-- **Monthly allowances or plan limits.** Not represented here at all.
+**The pause switch.** `.github/ci-policy.json` carries `paused`, and the gate reports it, but it
+does **not** gate any step. Every substantive step — dependencies, test suite, bridge consistency,
+verification transcript — is unconditional. There is currently no discretionary scheduled or
+research job for a pause to suppress, and the switch must never be able to skip essential checks.
+The gate step is named `--advisory` for that reason and always exits zero.
+
+**The per-day run limit.** This was claimed in an earlier version and has been withdrawn. The
+ledger is written into a read-only checkout, so it does not survive the runner: each run starts
+with an empty history and the count restarts at zero. A limit counted from a file that resets is
+not a limit, so the number is reported as advisory only.
+
+## Not represented at all
+
+- **GitHub's minutes accounting, billing and monthly allowances.** Outside this repository; no
+  claim is made about them.
+- **Duration and failed-run capture.** A run that fails or is cancelled records nothing, so the
+  counts understate usage.
+- **Any alerting or budget notification.** None exists.
+
+## A design that would enforce a daily cap, if it were ever wanted
+
+Persisting across runs needs either write access to the repository (a bot commit of the ledger) or
+a read-only query of the Actions API with `actions: read`, counting runs by date. Both are
+deliberate permission changes and neither is implemented. This paragraph exists so the option is
+recorded rather than rediscovered, not to imply it is active.
 
 ## Current policy
 
-From `.github/ci-policy.json`: not paused, 15 minutes per run, 20 runs per day. The job timeout is
-15 minutes, so the minute ceiling and the timeout agree; a test fails if they stop agreeing.
+`.github/ci-policy.json`: not paused, 15 minutes per run, 20 runs per day (advisory). The job
+timeout and the minute ceiling agree, and a test fails if they stop agreeing.

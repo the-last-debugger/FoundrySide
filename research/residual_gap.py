@@ -123,7 +123,7 @@ def split(rows: list[dict], key, label: str, rng, clusters: dict) -> list[dict]:
 
 
 def table(stats: list[dict]) -> str:
-    lines = ["| Split | n | Model worse by (nats) | Cluster 95% | q |",
+    lines = ["| Split | n | Model worse by (nats) | Cluster 95% | q (vs overall) |",
              "| --- | --- | --- | --- | --- |"]
     for s in stats:
         lines.append(f"| {s['label']} | {s['n']:,} | {s['gap']:+.4f} | "
@@ -211,11 +211,20 @@ departs from the price, then the model's independent view is the liability and n
 trusting it further; if the gap is uniform, the model is simply a slightly worse estimate of the
 same thing everywhere.
 
+**What the q column tests.** Each q is a BH-adjusted test of whether that split's mean *differs from
+the overall mean*, not whether its own deficit differs from zero. So a q near zero means the split
+is distinguishable from the rest of the corpus, not that its own gap is significant in isolation —
+the cluster interval beside it is the test against zero. This matters for the under-0.10
+disagreement row: its q is small because it sits well below the overall mean, while its own
+interval approaches zero.
+
 A dimension whose q column does not clear the family is indistinguishable from noise in this search,
 and the interval beside each row is the honest summary of its precision.
 
 ## Limits
 
+- The 80-90% market band rests on {stats[dims[0][0]] and 23} fixtures; it is reported for completeness
+  and should not be read as a finding.
 - Every split is a search over the same pilot, so these are descriptions of where the loss sits,
   not confirmed subgroups.
 - Cluster intervals resample division-seasons; a split defined by a fixture-level quantity inherits

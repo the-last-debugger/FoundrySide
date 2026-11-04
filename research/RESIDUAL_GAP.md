@@ -1,4 +1,4 @@
-<!-- generated-by: residual_gap.py sha256=c37db913aefa -->
+<!-- generated-by: residual_gap.py sha256=f7b425822c9b -->
 
 # Where the remaining gap sits, after forward calibration
 
@@ -7,7 +7,7 @@ a map trained on its own season or later. **Positive means the model is worse** 
 
 ## Market-probability band
 
-| Split | n | Model worse by (nats) | Cluster 95% | q |
+| Split | n | Model worse by (nats) | Cluster 95% | q (vs overall) |
 | --- | --- | --- | --- | --- |
 | 20-30% | 19 | +0.0003 | [-0.1828, +0.1516] | 0.833 |
 | 30-40% | 919 | +0.0279 | [+0.0150, +0.0401] | 0.168 |
@@ -19,7 +19,7 @@ a map trained on its own season or later. **Positive means the model is worse** 
 
 ## Division
 
-| Split | n | Model worse by (nats) | Cluster 95% | q |
+| Split | n | Model worse by (nats) | Cluster 95% | q (vs overall) |
 | --- | --- | --- | --- | --- |
 | D1 | 897 | +0.0224 | [+0.0179, +0.0306] | 0.574 |
 | E0 | 1,139 | +0.0201 | [+0.0085, +0.0362] | 0.859 |
@@ -32,7 +32,7 @@ a map trained on its own season or later. **Positive means the model is worse** 
 
 ## Season
 
-| Split | n | Model worse by (nats) | Cluster 95% | q |
+| Split | n | Model worse by (nats) | Cluster 95% | q (vs overall) |
 | --- | --- | --- | --- | --- |
 | 2021 | 2,980 | +0.0258 | [+0.0186, +0.0331] | 0.049 |
 | 2122 | 2,986 | +0.0142 | [+0.0069, +0.0223] | 0.354 |
@@ -40,21 +40,21 @@ a map trained on its own season or later. **Positive means the model is worse** 
 
 ## Was a forward map available
 
-| Split | n | Model worse by (nats) | Cluster 95% | q |
+| Split | n | Model worse by (nats) | Cluster 95% | q (vs overall) |
 | --- | --- | --- | --- | --- |
 | no (no prior season) | 2,980 | +0.0258 | [+0.0185, +0.0331] | 0.055 |
 | yes | 5,961 | +0.0138 | [+0.0100, +0.0180] | 0.055 |
 
 ## Disagreement direction
 
-| Split | n | Model worse by (nats) | Cluster 95% | q |
+| Split | n | Model worse by (nats) | Cluster 95% | q (vs overall) |
 | --- | --- | --- | --- | --- |
 | model above market | 4,172 | +0.0157 | [+0.0101, +0.0226] | 0.563 |
 | model below market | 4,769 | +0.0197 | [+0.0139, +0.0265] | 0.563 |
 
 ## Disagreement magnitude (logit)
 
-| Split | n | Model worse by (nats) | Cluster 95% | q |
+| Split | n | Model worse by (nats) | Cluster 95% | q (vs overall) |
 | --- | --- | --- | --- | --- |
 | 0.10-0.30 | 2,824 | +0.0075 | [+0.0037, +0.0120] | 0.000 |
 | 0.30-0.60 | 2,882 | +0.0132 | [+0.0052, +0.0200] | 0.231 |
@@ -72,11 +72,20 @@ departs from the price, then the model's independent view is the liability and n
 trusting it further; if the gap is uniform, the model is simply a slightly worse estimate of the
 same thing everywhere.
 
+**What the q column tests.** Each q is a BH-adjusted test of whether that split's mean *differs from
+the overall mean*, not whether its own deficit differs from zero. So a q near zero means the split
+is distinguishable from the rest of the corpus, not that its own gap is significant in isolation —
+the cluster interval beside it is the test against zero. This matters for the under-0.10
+disagreement row: its q is small because it sits well below the overall mean, while its own
+interval approaches zero.
+
 A dimension whose q column does not clear the family is indistinguishable from noise in this search,
 and the interval beside each row is the honest summary of its precision.
 
 ## Limits
 
+- The 80-90% market band rests on 23 fixtures; it is reported for completeness
+  and should not be read as a finding.
 - Every split is a search over the same pilot, so these are descriptions of where the loss sits,
   not confirmed subgroups.
 - Cluster intervals resample division-seasons; a split defined by a fixture-level quantity inherits

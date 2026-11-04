@@ -4,14 +4,20 @@ The sponsor approved resource safeguards and asked for any behaviour the workflo
 enforce to be stated plainly. This script is the enforceable part, and the docstring records the
 boundary.
 
-**Enforced here:** a pause switch, a per-run minute ceiling compared against the workflow's job
-timeout, a per-day run limit counted from a committed ledger, and an append-only record of runs.
+**Enforced here:** the consistency of the policy file with the workflow's job timeout, and an
+append-only local record of successful runs.
+
+**Not enforced:** a per-day run limit. The ledger is written into a read-only checkout, so it does
+not survive the runner; each run starts with an empty history and the count restarts at zero. A
+guard that can be defeated by the environment it runs in is not a guard, so the limit is reported
+as advisory rather than claimed as enforced.
 
 **Not enforceable here, and not claimed:** GitHub's own minutes accounting, billing state, monthly
 allowances, or anything that happens outside this repository. A limit in a file can be edited in
 the same commit that exceeds it; it is a guard rail, not an access control.
 
     python scripts/ci_gate.py            # decide whether this run should proceed
+    python scripts/ci_gate.py --advisory # report without returning a blocking code
     python scripts/ci_gate.py --record --note "..."   # append this run to the ledger
     python scripts/ci_gate.py --status   # print policy and usage without deciding
 
@@ -63,10 +69,11 @@ def decide(policy: dict, entries: list[dict], today: dt.date,
         return 1, (f"policy allows {policy['max_minutes_per_run']} minutes per run but the job "
                    f"timeout is {job_timeout_minutes}; the effective cap is the timeout")
     used = runs_today(entries, today)
-    if used >= policy["max_runs_per_day"]:
-        return 3, (f"daily run limit reached: {used} of {policy['max_runs_per_day']} already "
-                   f"recorded for {today.isoformat()}")
-    return 0, f"proceeding: run {used + 1} of at most {policy['max_runs_per_day']} today"
+    # Advisory, not enforced. The ledger lives in a read-only checkout, so it never persists
+    # between runs and this count restarts at zero every time. Reporting it as a limit would be a
+    # claim the mechanism cannot support.
+    return 0, (f"proceeding; {used} run(s) recorded locally today (advisory only: the ledger "
+               f"does not persist across workflow runs)")
 
 
 def record(note: str, minutes: float = 0.0, path: Path = LEDGER) -> dict:
@@ -88,6 +95,9 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--note", default="run", help="what this run is for")
     p.add_argument("--minutes", type=float, default=0.0, help="observed duration")
     p.add_argument("--status", action="store_true", help="print policy and usage only")
+    p.add_argument("--advisory", action="store_true",
+                   help="report the policy decision but always exit 0; used by CI so the gate "
+                        "cannot suppress essential checks")
     args = p.parse_args(argv)
 
     policy = load_policy()
@@ -106,6 +116,9 @@ def main(argv: list[str] | None = None) -> int:
 
     code, message = decide(policy, entries, today)
     print(message)
+    if args.advisory:
+        # The essential checks are not discretionary, so the gate reports and never blocks.
+        return 0
     if code == 2:
         # Signal the workflow to skip the substantive steps without failing the build. The
         # GITHUB_OUTPUT file is how a step communicates with later steps; it exists only on a

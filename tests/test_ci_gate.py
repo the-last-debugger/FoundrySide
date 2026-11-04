@@ -32,20 +32,22 @@ def entries(n: int, day: dt.date = TODAY) -> list[dict]:
 
 
 class GateTest(unittest.TestCase):
-    def test_proceeds_under_the_limit(self):
+    def test_proceeds_when_not_paused(self):
         code, message = ci_gate.decide(policy(), entries(2), TODAY)
         self.assertEqual(code, 0)
-        self.assertIn("run 3", message)
+        self.assertIn("proceeding", message)
 
     def test_pause_switch_stops_the_run(self):
         code, message = ci_gate.decide(policy(paused=True), entries(0), TODAY)
         self.assertEqual(code, 2)
         self.assertIn("paused", message)
 
-    def test_daily_limit_stops_the_run(self):
-        code, message = ci_gate.decide(policy(max_runs_per_day=3), entries(3), TODAY)
-        self.assertEqual(code, 3)
-        self.assertIn("limit reached", message)
+    def test_daily_limit_is_advisory_not_enforced(self):
+        # The ledger lives in a read-only checkout and cannot persist, so a limit counted from it
+        # would be a claim the mechanism cannot support. It reports and proceeds.
+        code, message = ci_gate.decide(policy(max_runs_per_day=3), entries(10), TODAY)
+        self.assertEqual(code, 0)
+        self.assertIn("advisory", message)
 
     def test_yesterdays_runs_do_not_count_towards_today(self):
         old = entries(10, TODAY - dt.timedelta(days=1))
@@ -79,10 +81,27 @@ class WorkflowPolicyTest(unittest.TestCase):
         self.assertIn("concurrency:", text)
         self.assertIn("cancel-in-progress: true", text)
 
-    def test_workflow_runs_the_gate_and_records_the_run(self):
+    def test_workflow_runs_the_gate_in_advisory_mode(self):
         text = (ROOT / ".github" / "workflows" / "checks.yml").read_text(encoding="utf-8")
-        self.assertIn("scripts/ci_gate.py", text)
-        self.assertIn("--record", text)
+        self.assertIn("scripts/ci_gate.py --advisory", text)
+
+    def test_pause_cannot_suppress_essential_checks(self):
+        # Every substantive step must be unconditional: the pause switch has no discretionary work
+        # to gate, and must not be able to skip the suite or the bridge check.
+        text = (ROOT / ".github" / "workflows" / "checks.yml").read_text(encoding="utf-8")
+        for step in ("Test suite", "Bridge consistency", "Verification transcript"):
+            line = [l for l in text.splitlines() if step in l][0]
+            index = text.splitlines().index(line)
+            following = text.splitlines()[index + 1]
+            self.assertFalse(following.strip().startswith("if:"),
+                             f"{step} must run unconditionally, found: {following.strip()}")
+
+    def test_ledger_is_not_committed_as_live_state(self):
+        # A runner cannot write back to a read-only checkout, so the file must not be presented as
+        # persistent state.
+        ledger = ROOT / "docs" / "ci" / "runs.jsonl"
+        self.assertFalse(ledger.exists(),
+                         "runs.jsonl should not be committed: it is runner-local and ephemeral")
 
     def test_job_timeout_does_not_exceed_the_policy(self):
         text = (ROOT / ".github" / "workflows" / "checks.yml").read_text(encoding="utf-8")
