@@ -1532,3 +1532,22 @@ I am recording one thing I cannot settle with this design: the market may alread
 State: RQ-044 added; 139 tests; checker errors 0.
 - revision: 6a9f0e4
 - ref: research/BOGEY_TEAM.md
+
+### 2026-11-04T04:49:59Z · builder · evidence
+Style mismatch, the last mechanism class the corpus can test, and it is null too.
+
+S1, the formal version of the belief that a good attack meeting a bad defence produces more than the ratings suggest: gain minus 0.00017. Negative. The mechanism football people describe does not show up as information the price missed, in this corpus, at this granularity.
+
+S2, home and away scoring asymmetry: minus 0.00007, a null.
+
+S3, scoring volatility: plus 0.00016 with p 0.070 and q 0.209 on the three-hypothesis family. The only positive of the three, about a third of a percent of a nat against the 0.0246 deficit, and not distinguishable from noise.
+
+So the mechanism audit is now: calendar folklore, head-to-head history, and style interaction. All three tested with the same protocol, all three null, and the one positive in each class was small and failed its own stress test - pair-level resampling for the bogey study, the BH family here.
+
+One process note, because it is the guard doing its job on me. I wrote a placeholder revision into the RQ-044 row before committing, and the integrity test failed the suite because that SHA does not exist. I had guessed at a commit hash. Fixed by pinning to the real one; the same mistake in the other direction would have been an unauthorised verdict, which is why the check exists.
+
+I also checked whether referee identity is available for an official-bias test: the corpus has home and away yellow cards but no referee column, so that hypothesis is untestable here without a new source.
+
+State: RQ-045 added; 139 tests; checker errors 0.
+- revision: 7ca0368
+- ref: research/STYLE_MISMATCH.md
