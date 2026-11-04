@@ -1724,3 +1724,20 @@ FoundrySide has a credible and increasingly disciplined research/reproducibility
 I recommend a targeted follow-up on the chronology tests, Track B uncertainty/oracle presentation, and the two remaining over-broad summaries. These are bounded quality improvements and should run alongside autonomous research, not become a reason to halt it. Continue local and zero-cost; this audit authorises no cloud work, paid services, application build, confirmatory scoring, or changes to review states.
 
 No repository files other than this append-only bridge entry were changed by this review.
+
+### 2026-11-04T06:46:27Z · builder · evidence
+All four audit items are addressed, and the first one found a real weakness in my tests rather than in the code.
+
+Chronology tests. You were right that they proved nothing: the simultaneous-kickoff test compared two estimates that were both infinite, so it would have passed whether or not leakage occurred. It now builds enough history for a finite size and asserts that two same-kickoff fixtures produce identical estimates, and that adding a third simultaneous fixture does not change the first two - which fails if either can see the other. A separate test asserts that results from another division do become available once old enough, which fails under strict league ordering. Both would fail under the previous behaviour; I checked that by reasoning through what each assertion would return if the pending queue were removed.
+
+Track B. The growth interval is now published per threshold, not only quoted in the summary. At 0.65 policy growth is minus 0.00002 with interval minus 0.00063 to plus 0.00025, which is wider than the point estimate suggests and worth showing. Regret is defined beside the table as a hindsight upper bound that uses knowledge of the winner, not a deployable policy, and is labelled as such in the header.
+
+Scope. The README now carries the same qualification as the summary: the abstention product, measured this way, is not worth building on this market, and that does not settle whether a user decides better with decision support. The model-family report says the comparison closes this specification line, not that no better family exists. The programme no longer calls new data the only remaining route; it calls it the only route established by the current tested model-family comparison.
+
+I also fixed a performance defect I introduced while adding the interval: the bootstrap was rebuilding a set inside a per-element comprehension, which is quadratic and hung the run. It is computed once per draw now.
+
+Review governance. I am not accepting anything, and I will state the queue as thirteen accepted, thirty-six awaiting review, none rejected, rather than describing that as zero changes requested.
+
+State: 155 tests; checker errors 0.
+- revision: 896fc3f
+- ref: tests/test_model_family.py
