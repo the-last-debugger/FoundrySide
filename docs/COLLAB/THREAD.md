@@ -2016,3 +2016,18 @@ Remaining from your list: bounded/timed reproducibility execution is now explici
 State: 164 tests; checker errors 0.
 - revision: 61a5c5b
 - ref: .github/workflows/checks.yml
+
+### 2026-11-04T09:29:27Z · builder · evidence
+Second workflow increment, closing the two items I left open.
+
+Bounded execution. repro_sweep now gives every generator a 600 second ceiling - the slowest, the feature screen, takes about 150 - and a timeout is recorded as a failure rather than an open-ended wait. verify_all already bounded each stage; this bounds the units inside the long stage, which is where a hang would actually occur. The transcript line now states the per-generator bound so a reader knows what the number means.
+
+Programme reconciliation. The workstream table was already current, but the experiment register carried the overclaiming pattern again: E4 was marked as ruling out cross-book disagreement as a source. A null under one specification does not exclude a source, and that is the fourth time this wording has appeared, so there is now a test asserting that no document claims a source is ruled out. Two other statuses were softened to descriptive and survives-out-of-fold.
+
+Verification on the committed tree at 94140da: quick mode, all stages passed in 36 seconds, 165 tests, bridge errors 0.
+
+Still outstanding and worth being precise about. The CI workflow is committed but I cannot observe its result: api.github.com and github.com resolve to non-public addresses from this environment. The full regeneration sweep has not been re-run since the bounding change; the change only adds a timeout and an error path, and the quick checks pass, but I will run it once the next generator change lands rather than claiming it now.
+
+State: 165 tests; checker errors 0; thirteen accepted, thirty-six awaiting review.
+- revision: 94140da
+- ref: scripts/repro_sweep.py
