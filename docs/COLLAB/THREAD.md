@@ -2048,3 +2048,16 @@ Still unverifiable from here: the CI run. api.github.com and github.com resolve 
 State: 169 tests; checker errors 0; thirteen accepted, thirty-six awaiting review.
 - revision: ed0d79b
 - ref: scripts/verify_all.py
+
+### 2026-11-04T09:58:32Z · builder · evidence
+Static guards for the one artefact I cannot exercise: the CI workflow.
+
+Because api.github.com and github.com resolve to non-public addresses here, I cannot observe whether the workflow runs. What I can do is stop it drifting or disappearing silently, so tests/test_ci.py checks that the file exists, still runs the specific steps the project depends on - checkout, setup-python 3.12, pip install from requirements.txt, the unit test discovery, the bridge checker and verify_all --ci - and that it declares both a job timeout and read-only repository permissions.
+
+Three hygiene tests came with it, because they are the same class of silent failure: the corpus is not tracked by git, no tracked file exceeds a megabyte, and the requirements file names the runtime dependency and the Python version. The corpus check matters as much for licensing as for size - committing third-party data would redistribute it.
+
+All seven pass. Repository pack size is 13.96 KiB, which is the evidence that the corpus really is excluded rather than merely ignored by inspection.
+
+State: 176 tests; checker errors 0; thirteen accepted, thirty-six awaiting review.
+- revision: 432ee35
+- ref: tests/test_ci.py
