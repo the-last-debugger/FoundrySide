@@ -2289,3 +2289,26 @@ On the residual q values, the label is fixed and the explanation is in the repor
 Local output: Ran 195 tests in 19.013s. Checker errors 0; thirteen accepted, thirty-six awaiting review. I have not seen the run for this commit; the previous green run covered the version before these changes.
 - revision: 0d594b1
 - ref: docs/ACTIONS_LEDGER.md
+
+
+### 2026-11-04 · sponsor · response and next work queue
+
+I have checked the latest commits, workflow, resource gate/policy, ledger documentation, gate tests, residual report, and the Actions run.
+
+**Accepted corrections:** withdrawing the unenforceable daily cap is the right decision. Keeping essential verification unconditional is also correct. The q-value explanation now makes the statistical comparison clearer. The new workflow run is green: https://github.com/the-last-debugger/FoundrySide/actions/runs/41819328748; I checked the job steps individually and the policy check, dependency install, environment report, test suite, bridge consistency and verification transcript all passed. The earlier run on my review commit is also green: https://github.com/the-last-debugger/FoundrySide/actions/runs/41818616363.
+
+The resource controls must now be described accurately: concurrency cancellation and the 15-minute job timeout are active; the policy check is advisory; there is no persistent daily cap, monthly usage monitor or alerting; and the pause switch currently gates no jobs because there are no discretionary jobs. Do not describe the 20-run figure as an operating limit.
+
+**Small consistency cleanup:** .github/ci-policy.json still contains notes saying pause skips substantive work and that the daily limit is enforced. Those notes contradict the corrected workflow and ledger. The ci_gate.py docstring/CLI help and tests also retain language about an enforced pause/gate. Please align all comments, policy notes, help text and test descriptions with the actual advisory-only behaviour. Keep essential checks unconditional. This is a documentation/test-integrity correction, not a request to reintroduce the gate.
+
+**Now queue and execute the next research work rather than stopping after the safeguards.** Please put the following into a visible, prioritised work queue and start the first experiment immediately. You have autonomy to sequence ordinary reversible, zero-cost research and code work; do not wait for another sponsor response between tasks.
+
+1. **Disagreement-aware decision policy (highest priority).** The residual result suggests the model's large independent departures are where it is most harmful. Test simple, interpretable policies that shrink the model toward the market as disagreement grows, including a market-only fallback and a few pre-declared shrinkage/abstention thresholds. Fit thresholds or shrinkage parameters only on prior data within each forward fold; evaluate on the next untouched season. Compare against market-only, current forward-calibrated model, and a fixed/simple blend. Report log loss, calibration, coverage/abstention rate, sample counts and uncertainty. Do not tune on the evaluation fold or touch the frozen confirmatory slice.
+
+2. **Decision-support value, separately from prediction accuracy.** Investigate whether a user can gain practical decision value without beating the market's aggregate log loss: best-price identification where the data permits, price disagreement, uncertainty/abstention, and simple stake/slip risk illustrations. First establish exactly which price snapshots, bookmaker coverage, timestamps and outcomes are present. Do not infer executable value from closing prices or stale/incomplete odds. No real-money execution, staking recommendation, return promise or product build is authorised.
+
+3. **Robustness and transfer.** Test whether the disagreement pattern and any successful shrinkage rule survive across forward seasons and divisions, with cluster-aware uncertainty and honest small-sample warnings. If the corpus cannot support a particular split or timestamp question, say so and identify the minimum additional evidence needed rather than manufacturing a result.
+
+For each experiment, write a short preregistered question, method, leakage controls, baselines, metrics and stop/continue criterion before running it. Keep exploratory findings separate from confirmatory evidence. Prefer small, cheap experiments that can falsify an idea quickly. Reuse existing infrastructure and avoid expanding data requests or cloud spend.
+
+Please report the queue with status/priority, begin item 1 now, and continue to the next useful task automatically when a task finishes. Send a bridge update with evidence, commit references and exact test/run results; do not stop at announcing plans. If a genuine decision, permission or data-access checkpoint is reached, explain only that specific checkpoint and continue all independent work.
