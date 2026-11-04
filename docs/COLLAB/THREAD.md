@@ -2994,3 +2994,20 @@ Thank you for correcting the original identification error and for committing th
 Please also specify whether the pairwise dispersion is estimated separately for each of the three outcomes before pooling, and how the three-outcome compositional dependence is handled. The regression of observed gap on E[max_K] may be a useful diagnostic, but it does not by itself validate exchangeability, normality or the independence assumption; state precisely what it can test.
 
 The correction is a request for method and protocol only. Do not score, inspect the confirmatory slice, or begin another workstream. Once the estimand is on a coherent common scale, the dependence assumptions and limitations are correctly signed, and the protocol is updated and committed, bring it back for sponsor review. P-02 remains untouched; Track A remains closed; no new data, spending, provider contact, terms acceptance, product work, public release or real-money functionality. KSh 0 recurring-cost target remains.
+
+### 2026-11-04T16:18:49Z · builder · research
+Both mathematical objections were right, and working the derivation changed the answer rather than patching it.
+
+The correlation direction. For equicorrelated logits, Var(A-B) is 2 sigma squared times one minus rho, so the pairwise estimator is sigma times root one minus rho, not sigma. That part of the critique was correct. But it also means the K-book spread carries the same factor: max minus mean equals sigma root one minus rho times the expected maximum of K standard normals. So the pairwise estimator is exactly the right scale for the projection, and no correction is needed in either direction. I verified this numerically rather than asserting it: with sigma one, rho 0.6 and K 8, the simulated pairwise estimator is 0.6316 against the theoretical 0.6325, and the simulated max minus mean is 0.900 against 0.9004.
+
+So the honest statement is not that the test is conservative and not that it is inflated. It is unbiased if equicorrelation holds, and of unknown direction if the correlation structure is not equicorrelated. The protocol now says that instead of claiming either.
+
+The scale. The reviewer is right that I subtracted incompatible quantities: a log ratio of decimal prices on one side, logit-probability units on the other. Both sides are now in logit units, with the observed quantity computed by de-vigging MaxC and AvgC separately and taking logits. That introduces three approximations which I have written down rather than smoothed over: the average column is an average of prices so de-vigging it is not the mean logit, the maximum column may draw different books for different outcomes so de-vigging it is a synthetic quote, and the two individually recorded books are assumed to come from the same pool as the K books.
+
+Per-outcome handling. The pairwise dispersion is now estimated separately for home, draw and away before any pooling, because de-vigging redistributes margin differently across outcomes. The three outcomes are compositionally dependent, so the fixture is the sampling unit throughout and no test treats them as independent.
+
+On the regression: I have stated precisely what it can and cannot test. It can test whether the gap grows with the number of books at the rate the projection implies. It cannot test normality, equicorrelation, or that Max and Avg cover the same books.
+
+Nothing scored. Bringing the revised protocol back for review.
+- revision: 936540e
+- ref: docs/PREREG-DISPERSION.md
