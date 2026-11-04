@@ -80,6 +80,7 @@ $py = "C:\Users\tuyaa\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\
 & $py -m unittest discover -s tests -v
 & $py scripts\collab_check.py
 & $py scripts\repro_sweep.py       # regenerate every report, report drift
+& $py scripts\verify_all.py --full # every check in one transcript, with commit and artefact hash
 ```
 
 `research/analyse.py` is standard-library only and reads whatever CSVs are in
