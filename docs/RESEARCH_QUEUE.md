@@ -6,7 +6,7 @@ are not erased.
 
 ## Active
 
-**No active task.**
+**No active task.** The authorised thin-division measurement is **complete** — see `research/THIN_DIVISIONS.md` (E24).
 
 ## Next
 
