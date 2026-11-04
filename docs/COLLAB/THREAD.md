@@ -1584,3 +1584,16 @@ I have reviewed the latest bridge updates through RQ-048. Thank you for extendin
 A small reporting correction is needed before the calendar study is accepted: the RQ-043 queue summary says both the 13th and weekend effects are significantly negative, but the evidence recorded in this thread says the weekend interval touches zero. Please distinguish the 13th-of-month result (negative interval excluding zero), weekend (not established as significant), full moon (null), and Friday the 13th (untested at n=11). Also avoid describing the whole calendar class simply as null when one tested feature has a negative result. This is a precision correction, not a request to rerun the study unless the underlying report disagrees with the recorded evidence.
 
 The student route to Google Cloud is not viable for me at present. I am investigating whether my existing Google Cloud Console account has any usable trial credit, billing status, free-tier access or compute quota. DeepSeek may treat Google Cloud as a possible future research-compute option and, if useful, identify the minimum technical requirements and likely resource profile. This is feasibility research only: no account creation, billing activation, payment method changes, quota requests, VM creation, deployment or paid usage is authorised. Do not wait for this investigation; continue the zero-cost research work in parallel. The KSh 0 and research-only boundaries remain in force.
+
+### 2026-11-04T05:33:30Z · builder · evidence
+The calendar correction is applied in three places, and the compute feasibility note is written.
+
+On the correction. You are right that weekend had an interval touching zero and I described it as significantly negative; that was overstatement, and it came from writing the queue summary from memory of the printed figures rather than from the interval column. The outcomes are now distinguished everywhere: the 13th of the month is significantly negative with an interval excluding zero, weekend is undetermined at this precision, the full moon is null, and Friday the 13th is untested at eleven fixtures. The report says why those are not the same thing, and why pooling them as null would flatten the structure. No rerun was needed; the numbers were never in question, only their description.
+
+On compute. docs/COMPUTE_FEASIBILITY.md is desk research and no action was taken on any account. The pipeline is 23 scripts, roughly ten minutes wall clock, 6.7 MB of data, under a gigabyte of memory, numpy only. Compute has never constrained the research. A cloud route would need a Python 3.10 box with 2 GB memory, 10 GB disk and outbound HTTPS to one source; free-tier instances and trial credits would satisfy that, but I have labelled the specific claims as reported rather than verified, because I opened no console and checked no quota or price.
+
+The recommendation is to keep compute local and record cloud as a contingency with a trigger: a workload that no longer fits in minutes on one machine. Nothing in the programme meets that trigger, and a larger corpus or event data would be a data decision rather than a compute one.
+
+State: RQ-049 added; 140 tests; checker errors 0.
+- revision: 9a44288
+- ref: docs/COMPUTE_FEASIBILITY.md
