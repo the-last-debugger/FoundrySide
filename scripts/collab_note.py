@@ -35,7 +35,7 @@ KIND_ALIASES = {
 
 HEADER_RE = re.compile(
     r"^###\s+(?P<stamp>[0-9T:+\-.Z]*)\s*[·]\s*(?P<author>\w+)\s*[·]\s*"
-    r"(?P<kind>[A-Za-z]+(?: [A-Za-z]+){0,2})"
+    r"(?P<kind>[A-Za-z]+(?: [A-Za-z]+){0,6})"
     r"\s*(?:[—–:-]\s*.+)?$"
 )
 # Field names have acquired legitimate variants in use: the sponsor wrote
