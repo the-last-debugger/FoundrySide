@@ -280,10 +280,14 @@ class MalformedHeaderTest(unittest.TestCase):
     def test_malformed_header_is_detected(self):
         self.assertEqual(malformed_headers(self._thread()), [self.BAD])
 
-    def test_malformed_header_is_not_counted_as_an_entry(self):
-        # Documents the fail-open behaviour that the detector exists to surface: the
-        # header is absorbed as body of the previous entry, so the count is unchanged.
-        self.assertEqual(len(parse_entries(self._thread())), 2)
+    def test_malformed_header_is_still_an_entry(self):
+        # The contract changed deliberately. A header the strict grammar cannot read is now parsed
+        # with fallback fields rather than absorbed as body text: fail-closed means "never silently
+        # swallowed", not "always an error". The old behaviour counted two entries and lost the
+        # third; the count is now three, with the third marked loose.
+        entries = parse_entries(self._thread())
+        self.assertEqual(len(entries), 3)
+        self.assertTrue(entries[-1].get("loose"))
 
     def test_malformed_header_fails_the_check(self):
         root = Path(tempfile.mkdtemp())
