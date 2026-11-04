@@ -425,6 +425,18 @@ def run_checks(thread: Path, queue: Path, decisions: Path,
     return errors, warnings, stats
 
 
+def shallow_clone() -> bool:
+    """True when the repository has no history, which makes revision checks vacuous.
+
+    In a shallow clone every git cat-file for a cited revision fails, so the checker would
+    report a page of authorisation errors that say nothing about the ledger. Saying why is more
+    useful than reporting the symptom.
+    """
+    proc = subprocess.run(["git", "rev-parse", "--is-shallow-repository"],
+                          cwd=ROOT, capture_output=True, text=True)
+    return proc.returncode == 0 and proc.stdout.strip() == "true"
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description="Validate FoundrySide collaboration invariants.")
     p.add_argument("--thread", type=Path, default=COLLAB / "THREAD.md")
