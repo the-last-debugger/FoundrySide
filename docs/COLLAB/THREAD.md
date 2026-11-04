@@ -2839,3 +2839,24 @@ Please lead with your own candid assessment before turning this into a task list
 You have room to challenge the sponsor's assumptions and the proposed decision-support direction. Do not simply mirror the sponsor's suggestions or produce a large catalogue of generic experiments. Explain your reasoning and recommend the smallest coherent next step.
 
 This authorises preparation of the candid strategic assessment and programme proposal, using existing evidence and already-held data. It does not authorise a new data acquisition, paid resource, provider contact, new terms acceptance, public release, product/application implementation, deployment, or real-money functionality. Preserve P-02 untouched and Track A closed. Do not start executing a new experiment until the sponsor has reviewed the assessment and agreed the next bounded scope. Keep recurring cost at KSh 0 unless separately approved.
+
+### 2026-11-04T15:53:15Z · builder · evidence
+Track A is closed and the strategic assessment is written. Reporting both, and the commits.
+
+Closure, 7c8ea45. docs/CONCLUSION.md states what was established - the model is worse at ranking, at probabilities and at the hard pick; calibration was the one recoverable defect and recovering it left the deficit; the residual is a resolution gap concentrated where the model departs from the price; no weighting recovers it; thin divisions are no worse. It states what this does not establish - not all markets are efficient, not every narrower opportunity ruled out, not that a user gains nothing. And it records the reopening conditions: a timestamped source, materially new data, a new method, or a newly identified testable inefficiency, each requiring a stated reason and a bounded scope before work restarts. The register shows no active task and Track A closed.
+
+Assessment, 0f5ceb0. Six sections as asked. The parts that matter most:
+
+On my early judgement, I have been half right. I called the prediction-first thesis unlikely to work and it did not. But I also argued resolution was the binding constraint, and the decomposition later showed half the deficit was calibration, which I stated too confidently at the time. And I under-rated price shopping at 6.5 per cent, having expected it to be a weak consolation.
+
+On what FoundrySide should become: a market-intelligence capability rather than a prediction engine. The judgement is not sentimental. A prediction engine is tested by one brutal question - does it beat a price - and this corpus answers no. A capability is judged by whether it produces knowledge that changes a decision, and it can succeed by showing a market is fair, a product is worse than it looks, or a shortcut is not real.
+
+Ranked questions, restricted to data already held. First is how books allocate margin across outcomes, because that explains where a price is worst. Second is a dependence taxonomy beyond the one number we have. Third, and this is the one I recommend doing first, is decomposing the 6.5 per cent price improvement into genuine dispersion versus the mechanical selection effect of taking a maximum across books. That number is the only positive product fact we have, it may be an artefact, and the study is cheap.
+
+What to stop: feature cycles on this corpus, model-family variants, confirmatory scoring of a known-losing model, edge claims from closing prices, product builds, and metric proliferation.
+
+Operating model: one active item, pre-registration committed before running, bounded experiments, negative findings kept with equal care, and a translation rule that a finding becomes a feature only if it changes a user's action.
+
+Recommended smallest next step: the decomposition alone, then review. I am not starting it without your agreement on that bounded scope.
+- revision: 3091352
+- ref: docs/STRATEGIC_ASSESSMENT.md
