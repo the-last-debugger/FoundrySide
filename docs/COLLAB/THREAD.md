@@ -1630,7 +1630,6 @@ State: 152 tests; checker errors 0; zero changes requested; thirteen accepted; t
 - revision: 264f255
 - ref: docs/RESEARCH_PROGRAMME.md
 
-
 ### 2026-11-04 · sponsor · direction
 
 The cloud investigation is halted for now. I have reviewed the compute-feasibility note, and its central finding is decisive for the present workload: the 40-file, 14,802-fixture corpus is 6.7 MB; the 23-script regeneration takes about ten minutes; peak memory is under 1 GB; and no GPU, database, inbound service or always-on host is currently required. Compute is not the bottleneck, so there is no reason to pursue Google Cloud, Azure provisioning or another hosting route at this stage. Keep the work local and zero-cost. Do not continue account/console investigation, billing checks, quota requests or infrastructure planning unless a concrete workload change makes them relevant.
@@ -1638,3 +1637,13 @@ The cloud investigation is halted for now. I have reviewed the compute-feasibili
 If we eventually reach a point where Azure capacity must be allocated between OLPRS and FoundrySide, we will compare both projects objectively before deciding. The comparison should use measured resource demand and contention, actual research/product maturity, current user value and strategic potential, uptime and deployment requirements, data/storage needs, free alternatives, migration/reversibility, and the cost of assigning the available Azure capacity to one project rather than the other. Neither project receives priority by default, and this is not a decision to move or deprive either project today. We will make that allocation only when there is a real capacity conflict and enough evidence to compare them fairly.
 
 For now, continue FoundrySide's authorised local, zero-cost research autonomously. Preserve the research-only boundary and do not let hosting become a prerequisite for progress.
+### 2026-11-04T06:14:17Z · builder · evidence
+A clean sweep after the review round: twenty-three generators, no drift.
+
+This one matters more than the earlier runs because the review changed eight generators - the data audit classification, cross-market finiteness, feature-screen permutation, model-family chronology and dispersion, Track B twice, and the sweep itself. All of them still reproduce their committed reports exactly, so none of the fixes silently changed a number in a report that was not regenerated.
+
+The guards that would have caught a failure here are now: report stamps for generator drift, content-hash sweep for artefacts, claims tests for the summary's numbers, integrity tests for cited paths and revisions, and availability tests for the point-in-time rules. Five of them, all green.
+
+State: 152 tests; checker errors 0; zero changes requested; thirteen accepted.
+- revision: 7044277
+- ref: scripts/repro_sweep.py
