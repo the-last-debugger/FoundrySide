@@ -50,11 +50,26 @@ GENERATORS = [
 
 
 
-def _artefact_state() -> list[str]:
-    """Changed paths under research/ only: the generated reports and data files."""
-    out = subprocess.run(["git", "status", "--porcelain", "--", "research"],
-                         cwd=ROOT, capture_output=True, text=True).stdout
-    return [line for line in out.splitlines() if line.strip()]
+
+def changed_artefacts(before: dict[str, str], after: dict[str, str]) -> list[str]:
+    """Names whose bytes differ. Pure, so the dirty-file case can be tested."""
+    return sorted(name for name in after if before.get(name) != after[name])
+
+
+def _artefact_state() -> dict[str, str]:
+    """Content hash of every artefact, not its git status.
+
+    A status-set comparison misses a second change to a file that was already dirty before the
+    run: the path is in both snapshots, so the difference is empty and real drift passes. Hashing
+    the bytes catches every change regardless of repository state.
+    """
+    import hashlib
+
+    state: dict[str, str] = {}
+    for pattern in ("*.md", "*.csv"):
+        for path in sorted((ROOT / "research").glob(pattern)):
+            state[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
+    return state
 
 
 def main() -> int:
@@ -72,7 +87,7 @@ def main() -> int:
         after = _artefact_state()
         if proc.returncode != 0:
             failures.append((script, proc.stderr.strip().splitlines()[-1] if proc.stderr.strip() else ""))
-        changed = set(after) - set(before)
+        changed = changed_artefacts(before, after)
         if changed:
             drift.append((script, sorted(changed)))
 

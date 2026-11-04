@@ -160,7 +160,10 @@ def check_coupling(rows, entries, verify_revisions: bool = True):
         if any(_names_row(e, row["id"]) and
                (e["revision"] == revision
                 or revision in e.get("revisions", [])
-                or e.get("row_revisions", {}).get(row["id"]) == revision)
+                or e.get("row_revisions", {}).get(row["id"]) == revision
+                or _is_ancestor(revision, e["revision"] or "")
+                or any(_is_ancestor(revision, r) for r in e.get("revisions", []))
+                or _is_ancestor(revision, e.get("row_revisions", {}).get(row["id"], "")))
                for e in reviews):
             continue
         other = sorted({e["revision"].strip() or "(none)"
@@ -204,6 +207,24 @@ def check_decisions(path: Path) -> list[str]:
     if not seen:
         errors.append("decisions file contains no decisions")
     return errors
+
+
+
+def _is_ancestor(row_sha: str, review_sha: str) -> bool:
+    """True when 
+ow_sha is contained in the tree the reviewer judged.
+
+    A verdict names the revision it reviewed. A queue row often cites the commit where its fix
+    landed, which can be an ancestor of that revision - the work was in the reviewed tree even
+    though the SHAs differ. Exact equality alone rejects that as unauthorised, which is a false
+    negative. Ancestry is the honest test of coverage; a row citing a commit *after* the review
+    is still rejected.
+    """
+    if not row_sha or not review_sha or row_sha == review_sha:
+        return row_sha == review_sha
+    proc = subprocess.run(["git", "merge-base", "--is-ancestor", row_sha, review_sha],
+                          cwd=ROOT, capture_output=True)
+    return proc.returncode == 0
 
 
 def _as_utc(stamp: str):

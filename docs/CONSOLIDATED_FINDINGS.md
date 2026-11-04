@@ -171,12 +171,13 @@ anchor string it inserted against had moved; it now discovers every stamped repo
   timestamp.
 - The closing price has no observation time, so no claim here is about information available at
   T−90 in the market.
-- Nine review rounds' worth of protocol corrections are recorded in `docs/COLLAB/THREAD.md`; the
-  queue carries 17 items awaiting review.
+- Every protocol correction is recorded in `docs/COLLAB/THREAD.md`, append-only, with the revision
+  it answers; the review queue holds the rows still outstanding, and its count changes with every
+  review round, so it is not restated here.
 
 ---
 
 **The one-sentence version.** The project built a trustworthy instrument, measured the market it
-must beat, fitted a first model, diagnosed exactly why it falls short, and eliminated every
-information source this corpus contains — so the next step is new data or a different question,
-and both are decisions rather than experiments.
+must beat, fitted a first model, diagnosed exactly why it falls short, and found no information
+source in this corpus that improves on the closing price — so the next step is new data or a
+different question, and both are decisions rather than experiments.

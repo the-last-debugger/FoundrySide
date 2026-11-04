@@ -18,12 +18,12 @@ treatment and a stated failure condition. Fit and evaluation never share outcome
 
 | # | Workstream | Hypothesis | Decision it could change | Status |
 | --- | --- | --- | --- | --- |
-| 1 | **Calibration vs information** | The gap is partly a mapping failure, not only missing information | Whether to keep this model family and recalibrate, or replace it | **first result: mixed** — Platt recovers 46% |
-| 2 | **Where and when the gap changes** | The model is less wrong in identifiable segments | Whether to segment rather than pool | **provisional: band effect only** |
-| 3 | **Residual and failure analysis** | The largest errors are systematic, not isolated | Which feature class to attack next | **provisional: descriptive** |
-| 4 | **Alternative information and model families** | Pre-cutoff data hold information the market has not fully priced | Whether an incremental feature exists at all | **running** |
-| 5 | **Market structure and segmentation** | The market is differently calibrated by band or division | Where the price is weakest, if anywhere | **first result: margins uniform** |
-| 6 | **Data and timing audit** | Undetected leakage or misalignment is inflating or deflating every number | Whether current evidence can be trusted | partially done (provenance, availability proxy) |
+| 1 | **Calibration vs information** | The gap is partly a mapping failure, not only missing information | Whether to keep this model family and recalibrate, or replace it | **done: Platt recovers 46%; rest is resolution** |
+| 2 | **Where and when the gap changes** | The model is less wrong in identifiable segments | Whether to segment rather than pool | **done: band only; divisions and seasons flat** |
+| 3 | **Residual and failure analysis** | The largest errors are systematic, not isolated | Which feature class to attack next | **done: tail is confident losses, not a class** |
+| 4 | **Alternative information and model families** | Pre-cutoff data hold information the market has not fully priced | Whether an incremental feature exists at all | **done: eight variables, six families, all null** |
+| 5 | **Market structure and segmentation** | The market is differently calibrated by band or division | Where the price is weakest, if anywhere | **done: margins uniform, 2.6-3.5%** |
+| 6 | **Data and timing audit** | Undetected leakage or misalignment is inflating or deflating every number | Whether current evidence can be trusted | **done: audit clean; availability proxy labelled** |
 
 ## What is already established
 

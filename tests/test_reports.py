@@ -58,6 +58,16 @@ class StampTest(unittest.TestCase):
         script.write_text("x = 2\n", encoding="utf-8")
         self.assertTrue(report_stamp.verify(report))
 
+    def test_sweep_detects_change_to_an_already_dirty_file(self):
+        import sys as _sys
+        _sys.path.insert(0, str(ROOT / "scripts"))
+        from repro_sweep import changed_artefacts
+        # Same path present in both snapshots, different bytes: a status-set comparison would
+        # see nothing, which is the defect this guards.
+        before = {"A.md": "h1", "B.md": "h2"}
+        after = {"A.md": "h1-CHANGED", "B.md": "h2"}
+        self.assertEqual(changed_artefacts(before, after), ["A.md"])
+
 
 if __name__ == "__main__":
     unittest.main()

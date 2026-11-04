@@ -31,23 +31,39 @@ Three things are now measured rather than argued:
   from a virtual league. That number is withdrawn; importing it would have set a bar that
   is too easy.
 - **Same-match accumulator legs cannot be multiplied**: realised joint 40.9% against a
-  product of marginals of 27.5%, a ratio of 1.49× (1.46–1.52), consistent in all eight
+  product of marginals of 27.5%, a ratio of 1.49× (1.47–1.51), consistent in all eight
   divisions.
+
+## What has been established
+
+Eleven experiments, all recorded in [CONSOLIDATED_FINDINGS.md](docs/CONSOLIDATED_FINDINGS.md):
+
+- **Calibration is recoverable.** An out-of-fold Platt map recovers 0.0114 of the 0.0246-nat
+  deficit, but the model still carries about a quarter of the market's separation (AUC 0.562
+  against 0.607). Half the gap is mapping, half is missing information.
+- **No information source tested adds anything to the closing price.** Cross-book disagreement,
+  schedule congestion, cross-market totals, recent scoring and league environment were screened
+  under one protocol with permutation nulls; all six families were null (BH q = 0.876).
+- **The one positive signal failed its own pre-registered test.** A favourite-longshot gap
+  appeared at high thresholds; pre-registered and applied to a held-out season, it was not
+  supported (gap +0.026, interval spanning zero, negative return).
+- **Track B's arithmetic is negative.** A filtered view raises hit rate but costs 0.0003 nats of
+  log-wealth per fixture at a 1% stake; [the design](docs/TRACK_B_DESIGN.md) therefore predicts
+  the product is not worth building on this market.
 
 ## What the project is waiting on
 
-A decision on the first experiment's design. The protocol now measures what it previously
-assumed: at the first pilot model's spread, the two-season window has **69.4%** power for a
-0.01-nat effect — below the 80% rule — and the 80% crossing sits at **0.0116–0.0130 nats**.
-Three options, all costing something:
+A sponsor decision, not an experiment. The corpus has been tested for information three
+independent ways and the answers agree: reaching further needs data it does not contain — faster
+pre-kickoff information, thinner markets, or a different comparison — and each costs money, time
+or legal exposure.
 
-| Option | Effect |
-| --- | --- |
-| Raise the target effect to ~0.012 | Leaves the sample as is; changes what the experiment claims |
-| Add a third confirmatory season (24 clusters) | Power rises to 84.1% |
-| Add markets to the family | Raises n, enlarges the multiple-testing family |
+The sizing question remains open for whenever a confirmatory test is authorised: at the model's
+current spread the two-season window has **70.5%** power for a 0.01-nat effect at the calibrated
+cutoff, and the 80% crossing sits at **0.0116–0.0130 nats**. A third confirmatory season (24
+clusters) would raise power to **86.6%**.
 
-No confirmatory scoring has happened, and none will without a freeze.
+No confirmatory scoring has happened, none will without a freeze, and the target is unchanged.
 
 ## Reproducing the measurements
 
