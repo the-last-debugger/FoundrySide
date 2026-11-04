@@ -36,18 +36,21 @@ OUT = ROOT / "research" / "DATA_AUDIT.md"
 def classify_price(row: dict) -> str:
     """'ok', 'missing' or 'invalid' for a complete over/under 2.5 closing pair.
 
-    Both sides are checked, and both must be finite and greater than 1.0. An earlier version
-    read only the over side, so a row with a usable over price and a broken under price passed
-    as complete.
+    Three different data-quality states are kept apart: a field that is absent or blank is
+    *missing*; a field that is present but unparseable, non-finite or not above 1.0 is *invalid*.
+    A present 'n/a' is a broken value, not an absence, and conflating the two made the audit
+    report a malformed source as merely incomplete.
     """
-    try:
-        over, under = float(row["PC>2.5"]), float(row["PC<2.5"])
-    except (KeyError, TypeError, ValueError):
-        return "missing"
-    if not (math.isfinite(over) and math.isfinite(under)):
-        return "invalid"
-    if over <= 1.0 or under <= 1.0:
-        return "invalid"
+    for key in ("PC>2.5", "PC<2.5"):
+        raw = row.get(key)
+        if raw is None or str(raw).strip() == "":
+            return "missing"
+        try:
+            value = float(raw)
+        except (TypeError, ValueError):
+            return "invalid"
+        if not math.isfinite(value) or value <= 1.0:
+            return "invalid"
     return "ok"
 
 

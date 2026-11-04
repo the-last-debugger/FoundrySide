@@ -41,8 +41,15 @@ class ClassifyTest(unittest.TestCase):
         self.assertEqual(data_audit.classify_price(row(**{"PC>2.5": "1.00"})), "invalid")
         self.assertEqual(data_audit.classify_price(row(**{"PC<2.5": "0.5"})), "invalid")
 
-    def test_unparseable_is_missing_not_invalid(self):
-        self.assertEqual(data_audit.classify_price(row(**{"PC<2.5": "n/a"})), "missing")
+    def test_blank_or_absent_is_missing(self):
+        self.assertEqual(data_audit.classify_price(row(**{"PC<2.5": ""})), "missing")
+        self.assertEqual(data_audit.classify_price(row(**{"PC<2.5": "   "})), "missing")
+        self.assertEqual(data_audit.classify_price({"PC>2.5": "1.9"}), "missing")
+
+    def test_present_but_unparseable_is_invalid(self):
+        # A present n/a is a broken value, not an absence.
+        self.assertEqual(data_audit.classify_price(row(**{"PC<2.5": "n/a"})), "invalid")
+        self.assertEqual(data_audit.classify_price(row(**{"PC>2.5": "-"})), "invalid")
 
 
 if __name__ == "__main__":

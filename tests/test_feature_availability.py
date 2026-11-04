@@ -61,6 +61,17 @@ class AvailabilityTest(unittest.TestCase):
         built = self.build(rows)
         self.assertEqual(built[0]["rest_diff"], built[1]["rest_diff"])
 
+    def test_permutation_stays_inside_the_division_season_stratum(self):
+        rows = [raw("16/08/2024", "15:00", "A", "B", 1, 0, league="E0"),
+                raw("16/08/2024", "15:00", "C", "D", 2, 0, league="E0"),
+                raw("16/08/2024", "15:00", "E", "F", 0, 0, league="D1")]
+        built = self.build(rows)
+        strata = {}
+        for r in built:
+            strata.setdefault(r["cluster"], set()).add(r["league"])
+        for cluster, leagues in strata.items():
+            self.assertEqual(len(leagues), 1, f"{cluster} mixes leagues: {leagues}")
+
 
 if __name__ == "__main__":
     unittest.main()

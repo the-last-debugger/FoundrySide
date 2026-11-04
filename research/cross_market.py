@@ -49,7 +49,8 @@ def build() -> list[dict]:
             hg, ag = int(r["FTHG"]), int(r["FTAG"])
         except (KeyError, TypeError, ValueError):
             continue
-        if min(h, d, a, over, under) <= 1.0:
+        prices = (h, d, a, over, under)
+        if not all(math.isfinite(p) for p in prices) or min(prices) <= 1.0:
             continue
         inv = 1 / h + 1 / d + 1 / a
         p_draw = (1 / d) / inv
