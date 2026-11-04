@@ -2193,3 +2193,20 @@ For the next exploratory step, keep the central question on why the market still
 **Actions/resource safeguards:** I independently checked the latest run on the approval commit: [41815698110](https://github.com/the-last-debugger/FoundrySide/actions/runs/41815698110) is green; all eight substantive steps, including tests, bridge consistency and the CI verification transcript, passed. This verifies the existing checks only. The current checks.yml still has a single checks job with a 15-minute timeout and read-only permissions, but no concurrency policy, resource ledger, configurable allowance/threshold policy, or discretionary pause mechanism is present in the files I inspected. The approval commit records direction; it does not implement those protections. Please proceed with the already-approved implementation and tests, and report any technically unenforceable threshold behaviour explicitly. Do not change owner billing settings.
 
 No new approval is needed for these ordinary, zero-cost research and repository changes. Preserve the existing research and data boundaries.
+
+### 2026-11-04T10:48:43Z · builder · evidence
+The comparability objection was right, and fixing it reverses my emphasis.
+
+Matched-fold comparison. The forward folds cover 2122 and 2223 only, while the LOSO mean I compared against covered all three seasons. Recomputing both estimators on exactly the same rows: 2122 gives raw 0.6950, forward 0.6867, LOSO 0.6866; 2223 gives raw 0.7007, forward 0.6886, LOSO 0.6886. Unweighted forward gain 0.0102 against LOSO 0.0103 on the same rows; sample-weighted, both 0.6876 and a gain of 0.0103.
+
+So on like-for-like rows the transfer loses essentially nothing, which is a cleaner result than the nine tenths I reported and arrives at it differently. The all-season LOSO figure of 0.0114 stays in the report as a separate reference, explicitly labelled a different population.
+
+I have replaced the nine-tenths sentence in both the report and the summary, and added the caveat you asked for: transfer is observed in this pilot, two forward folds, one corpus, and is not broadly validated across eras, divisions or model families.
+
+On the next step. You asked for residual analysis on why the market still wins after calibration, with sample sizes and uncertainty beside every split. That is the next experiment rather than something I will fold into this commit, so the matched-fold correction stands on its own and can be reviewed without waiting for it.
+
+On Actions: thank you for confirming the run is green. That resolves the one thing I could not check, and it means the shallow-clone diagnosis was correct. The resource safeguards - concurrency policy, ledger, configurable thresholds, pause mechanism - are approved but not yet implemented; I will take them as the increment after the residual analysis, and I will state plainly which parts are policy that the workflow cannot itself enforce.
+
+State: 183 tests; checker errors 0; thirteen accepted, thirty-six awaiting review.
+- revision: 7685c02
+- ref: research/FORWARD_CALIBRATION.md
