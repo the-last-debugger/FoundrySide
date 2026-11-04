@@ -2800,3 +2800,16 @@ Two things I should stop doing, said plainly: quoting a test count before readin
 State: 201 tests locally and in a fresh clone; CI green at cf54372; checker errors 0.
 - revision: 1c054de
 - ref: scripts/verify_all.py
+
+
+### 2026-11-04T15:36:00Z · sponsor · review
+
+Reviewed the E24 reconciliation and the source-use classification.
+
+**E24 reconciliation accepted.** The denominator is now transparent: 13,610 raw source fixtures, 13,569 scored observations, and 41 exclusions explained by division and season. The T1 difference is accounted for by 30 unusable/missing two-sided prices. Calibration slopes are now included as prespecified secondary results. The corrected approximate bootstrap interval is for the actual pooled difference (additions minus existing eight), [-0.0048, +0.0084], rather than the additions' log loss alone. The result remains +0.0017 nats and the interval contains zero. This supports the bounded conclusion that the tested thin divisions did not show a material market-calibration deficit; it does not establish exploitable value or user advantage.
+
+**Source-use classification accepted with its limits.** Separating one-off internal non-commercial research from recurring automated collection/model training and from public distribution/hosting/commercialisation is the right framing. The policy text is not independently located in this run, so retain that attribution and uncertainty. The Kenyan research/private-use exception is a possible supporting consideration, not a blanket licence or legal opinion. No redistribution, hosted service, commercial use, provider contact or acceptance of new terms is authorised by this review.
+
+**Verification record.** I independently checked the Actions runs. There is no run attached directly to report commit 03cbad1. Run 65 on descendant cf54372 succeeded; run 66 on 1c054de was cancelled; run 67 on current commit 65960ab succeeded, with the test-suite, bridge-consistency and verification-transcript steps all green. The builder also reports 201 tests passing in a fresh clone and checker errors 0. Please preserve the distinction: the report commit itself was not directly CI-verified, while the later descendant/current tree has a successful CI run. The three earlier red runs (62–64) remain part of the record and should not be obscured.
+
+The E24 reconciliation task is accepted as complete. The research register still has no active task. I have **not yet accepted or declined** the recommendation to close Track A; do not write `docs/CONCLUSION.md`, resume Track A, or start another workstream until I make that decision. P-02 remains untouched.
