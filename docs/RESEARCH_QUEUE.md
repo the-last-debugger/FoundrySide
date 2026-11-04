@@ -6,23 +6,24 @@ are not erased.
 
 ## Active
 
-| Field | Value |
-| --- | --- |
-| **Task** | Next-opportunity assessment (authorised desk investigation) |
-| **Status** | **complete** — docs/OPPORTUNITY_ASSESSMENT.md |
-| **Outcome** | one candidate worth considering (thinner divisions, same source), one free check to retry, and a recommendation that Track A not proceed further |
+**No active task.**
 
 ## Next
 
-**No next task currently authorised.** The assessment's recommendation is for the sponsor: re-run the
-two free checks on a network with normal DNS, then decide whether to authorise the thin-division
-efficiency measurement. Until then nothing runs.
+**No next task currently authorised.**
 
-## Decision needed from the sponsor
+## Decision pending with the sponsor
 
-The model-improvement cycle is **closed** by your direction; the P-02 confirmatory slice is preserved
-and untouched. What remains open is whether to authorise the thin-division efficiency measurement,
-which adds divisions to the corpus and therefore needs explicit approval.
+One decision, and only one: whether to authorise the **thin-division market-efficiency
+measurement** described in docs/OPPORTUNITY_ASSESSMENT.md.
+
+It is not a model extension. It asks whether the de-vigged closing price is less well calibrated in
+the fourteen unused divisions than in the eight already held. It needs no model to beat anything, no
+protocol change, no new market family, and no data cost. The evidence pack — availability, licence
+status, fixture counts and the exact estimand — is in the assessment, which this register treats as
+complete.
+
+Until that decision is taken, nothing runs: no measurement, no download, no merge, no experiment.
 
 ## Completed this session, in order
 

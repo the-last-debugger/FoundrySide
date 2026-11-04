@@ -26,14 +26,51 @@ Verified while writing this:
 mispricing tend to be larger where the market is smaller. If any inefficiency exists in football
 price data, it is more likely there than in the eight major divisions already tested.
 
+**Licence — not established, and the evidence points against reuse.** The provider is free to
+download and describes itself as a portal for analysis, but its footer reads "© Football-Data.
+Liability Disclaimer. All Rights Reserved." There is no licence statement, no grant of redistribution
+and no explicit permission to republish. So:
+
+- **File availability is verified** — HTTP 200, 14,528 fixtures parsed in memory;
+- **permission to redistribute or publish derived data is not established**, and "All Rights
+  Reserved" is contrary to it;
+- internal analysis of an already-held corpus is how this project has treated the source throughout,
+  and that reading is **not a legal opinion** (`PROPOSAL.md` §3; P-03 is the open item for publication).
+
+I should not have written "licence-identical" in the earlier draft. Availability and permission are
+different facts, and only the first is established.
+
 **Data and access — verified.** The provider serves all **22** of these codes for 2024/25, each a
 HEAD 200 in the same `mmz4281/<season>/<league>.csv` format with closing odds:
 
 `E0 E1 E2 E3 EC SC0 SC1 SC2 SC3 D1 D2 I1 I2 SP1 SP2 F1 F2 N1 B1 P1 T1 G1`
 
-The corpus currently uses eight (E0, D1, E1, F1, I1, N1, P1, SP1). **Fourteen are untapped at zero
-marginal cost** — two more English tiers, four Scottish tiers, second tiers in Germany, Italy, Spain
-and France, plus Belgium, Turkey and Greece.
+The corpus currently uses eight (E0, D1, E1, F1, I1, N1, P1, SP1). Fourteen are untapped. Counts are
+from files read **in memory** across the three pilot seasons; no file was stored, merged or added to
+the corpus.
+
+| Division | Fixtures (3 pilot seasons) | 1X2 odds | O/U 2.5 odds |
+| --- | --- | --- | --- |
+| E2 | 1,656 | 99.7% | 99.7% |
+| E3 | 1,656 | 99.9% | 99.9% |
+| EC | 1,535 | 99.9% | 99.9% |
+| I2 | 1,140 | 99.9% | 99.9% |
+| SP2 | 1,386 | 99.9% | 99.9% |
+| F2 | 1,140 | 100.0% | 100.0% |
+| D2 | 918 | 100.0% | 100.0% |
+| B1 | 918 | 100.0% | 100.0% |
+| P1 | 918 | 99.9% | 99.9% |
+| T1 | 1,142 | 97.4% | 97.4% |
+| SC0 | 684 | 99.9% | 99.9% |
+| SC1 | 495 | 100.0% | 100.0% |
+| SC2 | 470 | 100.0% | 100.0% |
+| SC3 | 470 | 100.0% | 100.0% |
+| **Total** | **14,528** | **99.7%** | **99.7%** |
+
+Larger than the pilot (8,941) and nearly three times the confirmatory slice (5,794), with coverage
+comparable to the existing corpus. The smallest units are the Scottish lower tiers at 470 fixtures
+across three seasons — about 157 a season, small enough that they must be reported per division and
+never pooled silently.
 
 **Timing fit.** Same closing prices, same T−90 caveat. No improvement in timing.
 
@@ -82,9 +119,10 @@ effort rather than reachability.
 **Mechanism.** A different sport may offer a data advantage football does not, or a market less
 efficiently priced.
 
-**What was checked.** No zero-cost, licensed, timestamped dataset was identified in this session, and
-the network restriction prevents verifying any candidate directly. The multi-sport ambition is
-sponsor-stated; the *data* case is unestablished.
+**What was checked.** Reachability is no longer the obstacle: direct HTTPS works for every host
+tested. What I did **not** do is search for or verify any specific multi-sport dataset, so the honest
+statement is that none was examined — not that none exists. The multi-sport ambition is
+sponsor-stated; the data case is unexamined rather than disproven.
 
 **Verdict.** Reject as a first move. It has the highest uncertainty and the largest unverified
 surface, and it would require both new data and a new evaluation design.
@@ -135,3 +173,49 @@ outside this corpus and this authorisation.
 
 No paid data, cloud spend, account creation, terms acceptance, third-party contact, automation, build
 or real-money work. Nothing here touches the confirmatory slice.
+
+## Proposed estimand and comparison
+
+This section exists so the sponsor can approve or reject a specific test rather than a direction.
+
+**Unit and data.** Division-season cluster. Fixtures from the fourteen unused divisions, three pilot
+seasons: 42 clusters, 14,528 fixtures. No confirmatory fixture is read.
+
+**The quantity.** *Market efficiency*, not model skill:
+
+- `p` — the de-vigged closing probability for Over 2.5, proportional method as used throughout:
+  `(1/over) / (1/over + 1/under)`.
+- `y` — realised Over 2.5.
+- **Primary metric**: market log loss, `−mean(y·log p + (1−y)·log(1−p))`. It involves no model. It
+  measures how good the price itself is.
+- **Secondary**: market Brier score; binned reliability and resolution of the price; and the
+  calibration slope from fitting a one-parameter logistic on the price's logit.
+
+**The comparison.** For each division, the market log loss on its fixtures, reported with the number
+of fixtures and a cluster-bootstrap interval resampling that division's three seasons. The reference
+is the eight divisions already in the corpus, evaluated on the same seasons and the same metric.
+
+**Relevance.** A difference of 0.01 nats is used as the same descriptive scale as elsewhere in the
+project — the order of magnitude of the margin. It is **not** a significance threshold here, because
+this is a descriptive measurement of price quality rather than a hypothesis about an effect.
+
+**Uncertainty.** Cluster bootstrap, 2,000 draws, resampling division-seasons. Divisions with fewer
+than 500 fixtures across three seasons (the Scottish lower tiers) are reported with their intervals
+and flagged as small; no division-level significance claim is made, and nothing is pooled across
+divisions into a single "thin market" estimate without also reporting the spread.
+
+**Dependence.** Fixtures within a division-season share a competition and a season; the cluster
+bootstrap accounts for that. Cross-division pooling would not, which is why the report keeps
+per-division rows alongside any aggregate.
+
+**What this can and cannot show.** It can show whether the price is *less well calibrated* where the
+market is thinner. It **cannot** show that a user could profit: that needs prices an individual could
+obtain, stakes, limits and a decision rule — none of which this corpus records. A difference here is
+a fact about price quality, not evidence of exploitable value or user advantage, and the report must
+say so wherever it is summarised.
+
+**Cost.** Zero data cost; the existing parser and evaluation code apply unchanged; no protocol
+change, no new market family — the same Over 2.5 market, additional competitions.
+
+**Stop condition.** If the divisions show no material difference, the result is a negative about
+market thinness and the recommendation becomes not to proceed on Track A.
