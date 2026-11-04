@@ -14,7 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from verify_all import provenance  # noqa: E402
+from verify_all import diagnostic_lines, provenance  # noqa: E402
 
 
 class ProvenanceTest(unittest.TestCase):
@@ -45,6 +45,24 @@ class ProvenanceTest(unittest.TestCase):
     def test_reason_names_the_revision(self):
         _, reason = provenance("abcdef1234567890", "abcdef1234567890", 1, allow_dirty=False)
         self.assertIn("abcdef12", reason)
+
+class DiagnosticsTest(unittest.TestCase):
+    def test_success_shows_a_short_tail(self):
+        out = "\n".join(f"line{i}" for i in range(50))
+        self.assertEqual(diagnostic_lines(out, True), ["line48", "line49"])
+
+    def test_failure_shows_enough_context_and_says_how_much_was_elided(self):
+        out = "\n".join(f"line{i}" for i in range(100))
+        shown = diagnostic_lines(out, False)
+        self.assertEqual(len(shown), 26)          # note + 25 lines
+        self.assertIn("earlier line(s) omitted", shown[0])
+
+    def test_empty_output_is_stated_not_blank(self):
+        self.assertEqual(diagnostic_lines("", False), ["(no output)"])
+
+    def test_short_failure_output_is_shown_whole_without_a_note(self):
+        out = "error: boom\nhint: check the path"
+        self.assertEqual(diagnostic_lines(out, False), ["error: boom", "hint: check the path"])
 
 
 if __name__ == "__main__":

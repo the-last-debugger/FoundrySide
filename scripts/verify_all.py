@@ -41,6 +41,23 @@ def dirty_files() -> list[str]:
     return [line for line in git("status", "--porcelain").splitlines() if line.strip()]
 
 
+
+def diagnostic_lines(output: str, ok: bool, success: int = 2, failure: int = 25) -> list[str]:
+    """How much of a stage's output to show.
+
+    A passing stage needs a line or two; a failing one needs enough context to act on. Printing
+    the tail for both is how a real failure gets summarised as a single unhelpful line.
+    """
+    lines = [line for line in output.splitlines() if line.strip()]
+    if not lines:
+        return ["(no output)"]
+    limit = success if ok else failure
+    shown = lines[-limit:]
+    if not ok and len(lines) > limit:
+        shown = [f"... {len(lines) - limit} earlier line(s) omitted"] + shown
+    return shown
+
+
 def provenance(head_before: str, head_after: str, dirty: int,
                allow_dirty: bool) -> tuple[bool, str]:
     """Decide whether a transcript may attest to a commit. Pure, so it can be tested.
@@ -119,7 +136,7 @@ def main() -> int:
     failures = 0
     for label, args in stages:
         ok, output, elapsed = run(args)
-        tail = [line for line in output.splitlines() if line.strip()][-2:]
+        tail = diagnostic_lines(output, ok)
         print(f"[{'PASS' if ok else 'FAIL'}] {label} ({elapsed:.1f}s)")
         for line in tail:
             print(f"       {line}")

@@ -99,7 +99,9 @@ def main() -> int:
             continue
         after = _artefact_state()
         if proc.returncode != 0:
-            failures.append((script, proc.stderr.strip().splitlines()[-1] if proc.stderr.strip() else ""))
+            err = [line for line in (proc.stderr or proc.stdout or "").splitlines() if line.strip()]
+            detail = " | ".join(err[-3:]) if err else "no output"
+            failures.append((script, detail))
         changed = changed_artefacts(before, after)
         if changed:
             drift.append((script, sorted(changed)))
