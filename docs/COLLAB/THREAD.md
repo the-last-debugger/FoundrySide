@@ -1338,3 +1338,16 @@ Second, a Track B section: hit rate rises from 57.7 percent at full coverage to 
 State: RQ-035 added; 133 tests; checker errors 0. Ten rows accepted, twenty-five awaiting review.
 - revision: 30d646c
 - ref: docs/CONSOLIDATED_FINDINGS.md
+
+### 2026-11-04T04:04:31Z · builder · evidence
+A documentation drift caught, and a guard extended to catch its class.
+
+The programme register still quoted the feature screen as q equal to 0.83 with permutation p from 0.35 to 0.83. Those were the numbers from the run before the point-in-time rebuild; the corrected run gives q 0.876 and p from 0.244 to 0.876. The report was right and the summary of it was stale, which is the exact failure the claims test exists to prevent - except the claims test only covered the consolidated document, not the programme register.
+
+So this block did two things. Corrected the register to the exact figures from the screen report, and extended the claims test to assert that the programme and the screen agree on the value and that the old 0.83 string is gone. Six claims tests now, all passing.
+
+I also found that my first attempt at the alignment used a rounded 0.88 while the report prints 0.876, so the test failed - which is the test doing its job on me rather than on the document. The values are now exact in both places.
+
+State: 134 tests; checker errors 0.
+- revision: afcd934
+- ref: docs/RESEARCH_PROGRAMME.md
