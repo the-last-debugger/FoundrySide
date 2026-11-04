@@ -119,6 +119,12 @@ real defects:
 
 A clean sweep is **23 generators** reproducing byte-for-byte, most recently at revision b802533.
 
+## Product contingency
+
+A fallback product direction — price discovery, slip assistance, decision support — is recorded
+in docs/PRODUCT_CONTINGENCY.md, with the evidence each capability would need. It is not a pivot
+and authorises no build.
+
 ## Stop conditions
 
 A workstream stops, and says so, when: its hypothesis is refuted on held-out seasons; the effect

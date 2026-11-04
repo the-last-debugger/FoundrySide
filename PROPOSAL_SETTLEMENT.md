@@ -359,3 +359,9 @@ The one thing it cannot leave undecided is the *rule* for the bar. The number ca
 for T0 — the sponsor is right about that — but the procedure that produces it cannot
 wait, because a project that has not fixed how success will be computed will report
 success against whatever number it happens to reach.
+
+## Contingency
+
+A separate product direction is recorded in docs/PRODUCT_CONTINGENCY.md: price discovery,
+slip assistance and decision support, which do not require beating the market. It is a fallback,
+not a pivot, and it authorises no build.
