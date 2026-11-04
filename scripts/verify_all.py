@@ -108,6 +108,34 @@ def artefact_digest() -> str:
     return h.hexdigest()[:16]
 
 
+
+def clone_stage() -> tuple[bool, str, float]:
+    """Run the suite in a fresh clone, which is the condition CI sees.
+
+    Local runs can pass on objects that only exist as dangling references in this working copy -
+    a rebased commit is reachable by `git cat-file` here and absent in a clone. That difference has
+    produced three red CI runs, so the clone is part of ordinary verification rather than a thing
+    to remember.
+    """
+    started = time.time()
+    import shutil
+    import tempfile
+
+    tmp = Path(tempfile.mkdtemp(prefix="dsh-clone-"))
+    try:
+        subprocess.run(["git", "clone", "--quiet", f"file://{ROOT.as_posix()}", str(tmp)],
+                       capture_output=True, text=True, timeout=300)
+        proc = subprocess.run([PY, "-m", "unittest", "discover", "-s", "tests"],
+                              cwd=tmp, capture_output=True, text=True, timeout=STAGE_TIMEOUT)
+        ok = proc.returncode == 0
+        output = (proc.stdout or "") + (proc.stderr or "")
+    except subprocess.TimeoutExpired:
+        ok, output = False, "clone stage timed out"
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    return ok, output, time.time() - started
+
+
 def main() -> int:
     argv = sys.argv[1:]
     ci = "--ci" in argv
@@ -134,6 +162,8 @@ def main() -> int:
          [PY, "-m", "unittest", "tests.test_reports", "tests.test_claims",
           "tests.test_docs_integrity"]),
     ]
+    if "--clone" in argv:
+        stages.append(("fresh-clone suite", "CLONE"))
     if "--full" in argv:
         stages.append(("full regeneration sweep", [PY, "scripts/repro_sweep.py"]))
 
@@ -154,7 +184,10 @@ def main() -> int:
     started = time.time()
     failures = 0
     for label, args in stages:
-        ok, output, elapsed = run(args)
+        if args == "CLONE":
+            ok, output, elapsed = clone_stage()
+        else:
+            ok, output, elapsed = run(args)
         tail = diagnostic_lines(output, ok)
         print(f"[{'PASS' if ok else 'FAIL'}] {label} ({elapsed:.1f}s)")
         for line in tail:
