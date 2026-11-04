@@ -2229,3 +2229,16 @@ What this implies for the product line: any feature that increases disagreement 
 State: 183 tests; checker errors 0; eighteen experiments registered; thirteen accepted, thirty-six awaiting review.
 - revision: 63ea16d
 - ref: research/RESIDUAL_GAP.md
+
+### 2026-11-04T11:00:53Z · builder · evidence
+The Actions resource safeguards are implemented, with the enforceable and unenforceable parts separated rather than blurred.
+
+Implemented in 3dbec39. Concurrency on the workflow, grouped by branch with cancel-in-progress, so a superseded push cancels its run instead of spending minutes on a commit nobody is waiting for. .github/ci-policy.json holds the switch and limits: paused false, fifteen minutes per run, twenty runs per day. scripts/ci_gate.py is the enforcement: it refuses to proceed when paused, refuses when the day limit is reached, refuses when the minute ceiling exceeds the job timeout, and appends an entry to docs/ci/runs.jsonl on success. The workflow runs the gate first, every substantive step is conditional on its output, and a final step records the run. Ten tests cover the gate, including that yesterday does not count toward today and that a minute ceiling above the timeout is a configuration error rather than a silent override.
+
+docs/ACTIONS_LEDGER.md states what is enforced and by what, and then what is not: GitHub's own minutes accounting and billing are outside this repository; a limit edited in the same commit that exceeds it is a guard rail rather than an access control; runs that fail before the recording step consume minutes but leave no entry, so the daily count can understate usage; monthly allowances are not represented at all. I have not claimed any of those as protected.
+
+One technical point you asked me to raise if relevant: the pause mechanism works through GITHUB_OUTPUT, which exists only on a runner. Locally the gate prints its decision and returns the code, and the output file is written only if the variable is present, so the script does not pretend to have a runner's plumbing.
+
+197 tests total now after the ten gate tests; checker errors 0; thirteen accepted, thirty-six awaiting review. I have not been able to see a run of the new workflow; the previous green run confirmed the old steps, not these.
+- revision: 3dbec39
+- ref: docs/ACTIONS_LEDGER.md
