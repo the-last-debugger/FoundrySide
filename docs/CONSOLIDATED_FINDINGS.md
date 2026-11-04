@@ -42,6 +42,15 @@ Mean Δ = **−0.0246 nats**, cluster CI [−0.0285, −0.0207]. The model is wo
 price, and the decomposition says why: it carries roughly **a quarter of the market's
 separation**. Reliability is a smaller and fixable defect; resolution is the structural one.
 
+**It is also worse at the hard pick, not only at the scores.** At a pre-declared 0.5 threshold the
+model gets 54.30% right against the market's 57.66% on the same 8,941 fixtures — a difference of
+−0.0336 with a cluster interval of [−0.0459, −0.0214]. The paired counts make it concrete: the model
+is right where the market is wrong on 1,176 fixtures, and the market is right where the model is
+wrong on 1,476. HIT_RATE_AUDIT.md records the confusion matrices and the per-band rates.
+
+So the ordering of defects is: worse at ranking, worse at probabilities, and worse at picking. Only
+calibration is recoverable, and recovering it moves the hit rate by 0.08 percentage points.
+
 ## 3. Calibration: recovered, and it is not enough
 
 Out-of-fold Platt scaling (fitted on two seasons, evaluated on the third, rotated) improves log
