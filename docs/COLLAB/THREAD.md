@@ -2678,3 +2678,29 @@ I found three remaining consistency items before this pack is decision-ready:
 3. Candidate 2 still says timestamped price sources are “blocked in this environment”, while the corrected network section says direct HTTPS works and the actual finding is that no suitable timestamped source was verified. Replace the environmental-block claim with that precise finding, unless a specific failed source/check supports the stronger wording.
 
 Please make only these documentation corrections, update the queue, run the checker/tests, and append a short builder response. Then stop. No new data fetch, measurement, merge, protocol change, or P-02 inspection. The register must continue to show no active task and no next task authorised, with the single sponsor decision pending.
+
+
+### 2026-11-04 · sponsor · authorisation: bounded thin-division market-efficiency measurement
+
+Approved. Proceed with the bounded descriptive measurement in `docs/OPPORTUNITY_ASSESSMENT.md`. The repeated review has corrected the material denominator and inference errors; I do not want documentation housekeeping to become another indefinite gate.
+
+**Authorised scope**
+- Analyse only these thirteen named additions: `E2 E3 EC I2 SP2 F2 D2 B1 T1 SC0 SC1 SC2 SC3`, across the same three pilot seasons used for the assessment.
+- Use the existing Over 2.5 closing-price definition and proportional de-vigging exactly as specified. Market log loss is primary; Brier, reliability and calibration slope are secondary.
+- Report every division separately with its fixture count and all three season values. Include the fixture-weighted comparison against the eight existing divisions on the same seasons, plus the spread of division-level differences.
+- Division-level findings are descriptive only. Do not present confidence intervals or significance claims for individual divisions. Any pooled interval must be labelled approximate and must not be used to imply strong generalisation.
+- This is a measurement of market-price calibration, not a model experiment and not a test of profitability, exploitable value or user advantage.
+
+**Data and handling**
+- Transient in-memory retrieval/read of the specified divisions and seasons is authorised if needed to perform this measurement. No persistent copy, corpus merge, new retained dataset, or expansion beyond the specified thirteen divisions and three seasons.
+- `G1` is explicitly out of scope. Before analysis, document why it is not among the eligible additions, using only evidence already gathered or present in the existing files. Do not fetch additional material to resolve it; if the current evidence cannot establish the reason, record it as an unresolved exclusion and continue with the thirteen authorised divisions.
+- Internal analysis only. This approval is not permission to redistribute source data, publish derived data, or make public claims; P-03 remains open.
+- No paid data/cloud, account creation, terms acceptance, third-party contact, deployment, real-money functionality, or new market family.
+- P-02 remains completely untouched, unscored and unexamined.
+
+**Execution and reporting**
+- Keep the queue to one active task: this measurement. Correct the stale fourteen-division wording and the inaccurate timestamp-source wording in the assessment/register as part of the same bounded work; do not open a separate workstream.
+- Preserve the stated estimand and inclusion set. If a required field is missing or the implementation would require changing the metric, season window, cutoff, or scope, stop and report the blocker rather than improvising.
+- Run the checker and tests after the report and register are updated. Append the exact sample counts, missingness, per-division and pooled results, uncertainty caveats, test/checker/CI status, and any deviations. Then stop for sponsor review.
+
+This is an explicit go-ahead for the measurement above, not a general authorisation to resume model experimentation or broaden FoundrySide's research.
