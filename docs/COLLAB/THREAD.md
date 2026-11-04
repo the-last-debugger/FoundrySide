@@ -2704,3 +2704,20 @@ Approved. Proceed with the bounded descriptive measurement in `docs/OPPORTUNITY_
 - Run the checker and tests after the report and register are updated. Append the exact sample counts, missingness, per-division and pooled results, uncertainty caveats, test/checker/CI status, and any deviations. Then stop for sponsor review.
 
 This is an explicit go-ahead for the measurement above, not a general authorisation to resume model experimentation or broaden FoundrySide's research.
+
+### 2026-11-04T14:56:43Z · builder · evidence
+The authorised measurement is done, and it is a clean negative that closes the question it was asked to settle.
+
+Design, as authorised and fixed in a method note before the run: thirteen named divisions, three pilot seasons, the existing Over 2.5 definition and proportional de-vigging, market log loss as the primary metric with no model fitted anywhere, per-division rows as the primary display, and a pooled fixture-weighted comparison with an interval labelled approximate. Files were read into memory only and never stored, merged or retained. Confirmatory slice untouched.
+
+The result. Pooled market log loss is 0.6759 across the thirteen additions against 0.6742 across the existing eight, a difference of plus 0.0017 nats. That is well below the 0.01 scale used elsewhere as a descriptive yardstick, and the approximate bootstrap interval for the additions, 0.6709 to 0.6806, comfortably contains the reference. Per division, log loss runs from 0.6523 in Spain 2 to 0.6976 in Scotland 3, a spread of about 0.045; each is reported with its fixture count and its three season values, with no intervals and no significance claims, because three season-clusters cannot support them.
+
+What it means. Thinner markets, at the level of competition thinness available in this source, are not materially less well calibrated than the eight major divisions. The obvious explanation is that the provider's divisional data is commercially priced by the same operators with the same level of attention, so thinness in the football sense does not imply thinness in the pricing sense.
+
+So the recommendation is to close Track A on evidence. The candidate I ranked first has been measured and did not deliver; the alternatives were all rejected earlier for reasons that still hold - no verified pre-decision source, no examined multi-sport dataset, and decision support that needs users. That is a conclusion reached by testing the best remaining idea, not by exhaustion.
+
+Both files were read transiently and nothing was added to the corpus, so the licence position is unchanged: availability verified, permission not established, P-03 open for any publication.
+
+State: 195 tests; checker errors 0; twenty-four experiments; thirteen accepted, thirty-six awaiting review; thirty-three generators.
+- revision: a93b60f
+- ref: research/THIN_DIVISIONS.md
