@@ -42,9 +42,10 @@ turning a losing bet into a winning one.
 None of these can be established with the current data, and feature availability is not evidence of
 benefit. Each needs an experiment of its own:
 
-1. **Best-price discovery** — a timestamped, multi-book price feed, to measure how often the best
-   price is *available when a user acts* rather than at close. Then a user study: do people find
-   and take the better price when shown it?
+1. **Best-price discovery** — **blocked on access, investigated in docs/SOURCE_TIMING.md**: no
+   route found that is free, lawful, timestamped and reachable here. The cheapest unblock is
+   retrying the Wayback index from a network where it resolves; then a free-tier API, which needs
+   a sponsor decision because registration is an approval boundary.
 2. **Slip assistance** — a dependence-aware pricing model validated out of sample, and evidence
    that users make better slip decisions with it. The current corpus can supply the first, not the
    second.
