@@ -1496,3 +1496,23 @@ The corrected picture is more interesting than the one it replaces. At a 1 perce
 State: RQ-037 to RQ-039 at ready_for_review; 139 tests; checker errors 0.
 - revision: 09e562e
 - ref: research/TRACK_B.md
+
+### 2026-11-04T04:36:02Z · builder · evidence
+The first superstition study is run, and it is negative - with one hypothesis I am refusing to call a null.
+
+The design. Calendar folklore is the right first target because it is deterministic: a full moon or a Friday the 13th is known years ahead, so there is no availability question and no look-ahead risk. Each belief is tested as an increment over the market price, so a finding would mean the price missed something a user could have known before kickoff, not merely that the calendar correlates with goals.
+
+Results, 8,941 pilot fixtures, cluster-stratified permutation nulls, BH across the four:
+
+- Full moon within a day: 667 fixtures, gain minus 0.00006, interval minus 0.0003 to plus 0.0002, p 0.49. Null.
+- Friday the 13th: 11 fixtures. Gain minus 0.00275 with an interval spanning from minus 0.007 to plus 0.0001. That is not a null, it is an untestable row - eleven matches cannot distinguish an effect from noise in either direction, and I have labelled it untested rather than counting it as evidence against the belief.
+- The 13th of any month: 336 fixtures, gain minus 0.00042 with an interval excluding zero on the negative side. Adding it actively costs accuracy.
+- Weekend kickoff: 6,414 fixtures, minus 0.00015, interval touching zero.
+
+So no calendar superstition survives, and two of them are worse than nothing. The interesting part is the shape: the effects that do appear are negative and tiny, which is what pure noise looks like when it is forced into a model.
+
+What I am not doing: claiming this rules out superstition. It rules out four specific calendar beliefs as predictors of over/under 2.5 goals against the closing price. Bogey-team effects, referee appointment patterns and anything needing information the corpus lacks are untouched, and I will take the bogey-team question next since it is the one with a real mechanism behind it - path dependence in team matchups rather than astrology.
+
+State: RQ-043 added; 139 tests; checker errors 0.
+- revision: 39390ea
+- ref: research/SUPERSTITION_STUDY.md
