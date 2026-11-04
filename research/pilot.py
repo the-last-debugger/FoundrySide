@@ -204,7 +204,7 @@ timestamp per prediction.
 - The market probability is de-vigged proportionally; no timestamp for it exists, as the
   protocol records.
 """
-    OUT.write_text(doc, encoding="utf-8")
+    OUT.write_text(doc, encoding="utf-8", newline="\n")
 
     print(f"source rows={len(rows)} framed={len(framed):,} rejected={rejected}")
     for c in CATEGORIES:

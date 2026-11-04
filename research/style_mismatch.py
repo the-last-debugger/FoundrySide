@@ -224,7 +224,7 @@ deficit is a curiosity, not a route.
 - Style is inferred from goals alone, which cannot separate a high press from a direct long-ball
   side; this tests the *interaction* that goals can express, not the tactical taxonomy.
 """
-    OUT.write_text(doc, encoding="utf-8")
+    OUT.write_text(doc, encoding="utf-8", newline="\n")
 
     for r in results:
         print(f"{r['label']}: gain={r['gain']:+.5f} ci=[{r['lo']:+.5f},{r['hi']:+.5f}] "

@@ -1,4 +1,4 @@
-<!-- generated-by: price_inventory.py sha256=ff46b54e4bd7 -->
+<!-- generated-by: price_inventory.py sha256=0e8171f869b1 -->
 
 # What the corpus actually contains
 

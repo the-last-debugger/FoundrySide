@@ -268,7 +268,7 @@ favourite question, and the 53.3% benchmark belongs to the other task.
 - Closing prices without timestamps; no claim about executable value.
 - Threshold 0.5 was pre-declared; a different threshold would trade accuracy for coverage.
 """
-    OUT.write_text(doc, encoding="utf-8")
+    OUT.write_text(doc, encoding="utf-8", newline="\n")
 
     for label, _ in cols:
         c = counts[label]

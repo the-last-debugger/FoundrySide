@@ -1,4 +1,4 @@
-<!-- generated-by: style_mismatch.py sha256=b8ad5fe61d45 -->
+<!-- generated-by: style_mismatch.py sha256=e85743d76008 -->
 
 # Style-mismatch study — do team shapes interact beyond additive ratings?
 

@@ -136,7 +136,7 @@ the cutoff audit was built to catch, one level up.
 Passing this audit means the corpus is internally consistent. It does not mean the corpus is
 complete, current, or free of selection effects in which fixtures were included.
 """
-    OUT.write_text(doc, encoding="utf-8")
+    OUT.write_text(doc, encoding="utf-8", newline="\n")
 
     for name, count, expected in checks:
         print(f"{name}: {count} (expected {expected})")

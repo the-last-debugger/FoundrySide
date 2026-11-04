@@ -236,7 +236,7 @@ probability cannot move the ranking, so an AUC gain is the signature of real sep
 - Closing prices carry no observation timestamp, so the comparison is between two prices whose
   collection times are unknown, and the T−90 caveat applies to any claim about acting on them.
 """
-    OUT.write_text(doc, encoding="utf-8")
+    OUT.write_text(doc, encoding="utf-8", newline="\n")
 
     print(f"base_ll={statistics.mean(base_ll):.4f} treat_ll={statistics.mean(treat_ll):.4f} "
           f"gain={gain:+.4f} ci=[{lo:+.4f},{hi:+.4f}]")

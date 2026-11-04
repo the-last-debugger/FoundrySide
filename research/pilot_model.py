@@ -259,7 +259,7 @@ touching the confirmatory seasons.
 - **Not the confirmatory result.** The confirmatory seasons were not predicted.
 - **Not a good model.** It is the simplest thing that produces an honest Δ.
 """
-    OUT_MD.write_text(doc, encoding="utf-8")
+    OUT_MD.write_text(doc, encoding="utf-8", newline="\n")
 
     print(f"pilot rows={len(pilot_rows)}")
     print(f"market_ll={stats_market(pilot_rows):.4f} model_ll={stats_model(pilot_rows):.4f}")

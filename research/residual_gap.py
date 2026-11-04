@@ -231,7 +231,7 @@ and the interval beside each row is the honest summary of its precision.
   the cluster structure but does not model it.
 - Closing prices without timestamps; the T−90 caveat applies to any claim about what was available.
 """
-    OUT.write_text(doc, encoding="utf-8")
+    OUT.write_text(doc, encoding="utf-8", newline="\n")
 
     for label, _ in dims:
         worst = max(stats[label], key=lambda s: s["gap"])

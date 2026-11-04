@@ -349,7 +349,7 @@ not as a discovery.
 - The closing prices carry no observation timestamp; the T−90 caveat applies to every claim about
   acting on these relationships.
 """
-    OUT.write_text(doc, encoding="utf-8")
+    OUT.write_text(doc, encoding="utf-8", newline="\n")
 
     for r in results:
         print(f"{r['name']}: gain={r['gain']:+.5f} ci=[{r['lo']:+.5f},{r['hi']:+.5f}] "

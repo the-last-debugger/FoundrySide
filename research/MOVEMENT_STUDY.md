@@ -1,4 +1,4 @@
-<!-- generated-by: movement_study.py sha256=e75326df6e4d -->
+<!-- generated-by: movement_study.py sha256=269e852fb70e -->
 
 # Does price movement carry information?
 

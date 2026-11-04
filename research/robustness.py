@@ -165,7 +165,7 @@ or not — does not create a deployable edge on this corpus.
   independent evidence about the band boundaries themselves.
 - Closing prices without timestamps throughout.
 """
-    OUT.write_text(doc, encoding="utf-8")
+    OUT.write_text(doc, encoding="utf-8", newline="\n")
 
     for s in seasons:
         n, f = season_rows[s]["near"], season_rows[s]["far"]

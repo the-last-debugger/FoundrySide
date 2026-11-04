@@ -107,7 +107,7 @@ def main() -> int:
 The selection rule required at least {MIN_N} fixtures and a positive gap. None qualified, so the
 held-out season was not examined and no claim is made about it.
 """
-        OUT.write_text(doc, encoding="utf-8")
+        OUT.write_text(doc, encoding="utf-8", newline="\n")
         print(verdict)
         return 0
 
@@ -163,7 +163,7 @@ re-specification, no threshold search on the test season, no additional exclusio
   selection seasons are not fully clean even though the test season is.
 - One book, closing prices, no quote timestamps; the T−90 caveat stands.
 """
-    OUT.write_text(doc, encoding="utf-8")
+    OUT.write_text(doc, encoding="utf-8", newline="\n")
 
     print(f"chosen={chosen:.2f} n={len(test_subset)} gap={g:+.4f} [{g_lo:+.4f},{g_hi:+.4f}] "
           f"ret={r_:+.4f} [{r_lo:+.4f},{r_hi:+.4f}] supported={supported}")

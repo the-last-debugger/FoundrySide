@@ -173,7 +173,7 @@ value*. A comparison tool that said otherwise would be misrepresenting arithmeti
 - The de-vigged fair probability is an assumption inside the expected-return calculation, not a
   measurement of the true probability.
 """
-    OUT.write_text(doc, encoding="utf-8")
+    OUT.write_text(doc, encoding="utf-8", newline="\n")
 
     print(f"differ={differ}/{n} ({differ/n:.1%}) "
           f"overround single={statistics.mean(single):.4f} best={statistics.mean(best):.4f} "

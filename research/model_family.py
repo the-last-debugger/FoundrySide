@@ -215,7 +215,7 @@ as such, not as a vindication of either family.
   distributional assumption alone.
 - The closing-price timing caveat applies to the market column.
 """
-    OUT.write_text(doc, encoding="utf-8")
+    OUT.write_text(doc, encoding="utf-8", newline="\n")
 
     print(f"mean={mean_total:.3f} var={var_total:.3f} ratio={var_total / mean_total:.3f} "
           f"dispersion={dispersion:.2f}")

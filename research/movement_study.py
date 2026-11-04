@@ -152,7 +152,7 @@ Either way this cannot establish executable value: neither snapshot records its 
 - Opening prices are football-data's first recorded price, not necessarily the market's opening.
 - One book (Pinnacle) for the movement measure; others may move differently.
 """
-    OUT.write_text(doc, encoding="utf-8")
+    OUT.write_text(doc, encoding="utf-8", newline="\n")
 
     for r in results:
         print(f"{r['label']}: gain={r['gain']:+.5f} ci=[{r['lo']:+.5f},{r['hi']:+.5f}] p={r['p']:.3f}")

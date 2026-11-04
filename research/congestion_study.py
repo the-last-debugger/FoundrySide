@@ -186,7 +186,7 @@ detail, and either way it is not the route to added resolution.
   than it looks — stated here rather than discovered later.
 - The closing price has no observation timestamp; the T−90 caveat applies.
 """
-    OUT.write_text(doc, encoding="utf-8")
+    OUT.write_text(doc, encoding="utf-8", newline="\n")
 
     print(f"base={statistics.mean(base_ll):.4f} treat={statistics.mean(treat_ll):.4f} "
           f"gain={gain:+.4f} ci=[{lo:+.4f},{hi:+.4f}] auc={auc_b:.4f}->{auc_t:.4f}")

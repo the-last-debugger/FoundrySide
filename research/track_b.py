@@ -290,7 +290,7 @@ makes it one.
 - The pricing is the recorded closing price; no quote timestamp exists, so the T−90 caveat stands.
 - Expected return assumes the user always stakes when the rule fires; a real user may not.
 """
-    OUT.write_text(doc, encoding="utf-8")
+    OUT.write_text(doc, encoding="utf-8", newline="\n")
 
     for r in table:
         print(f"tau={r['tau']:.2f} cov={r['coverage']:.3f} acc={r['acc']:.4f} "

@@ -206,7 +206,7 @@ would not have addressed them. It does not establish that the tail is patternles
 - Bins are equal-width; reliability and resolution depend on that choice.
 - One model, one market, pilot only, with the closing-price timing caveat.
 """
-    OUT.write_text(doc, encoding="utf-8")
+    OUT.write_text(doc, encoding="utf-8", newline="\n")
 
     print(f"raw={raw_ll:.4f} platt={cal_ll:.4f} market={mkt_ll:.4f}")
     for label, col in (("raw", "p_model"), ("cal", "p_cal"), ("market", "p_market")):

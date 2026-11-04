@@ -1,4 +1,4 @@
-<!-- generated-by: shrinkage_policy.py sha256=1175ed257240 -->
+<!-- generated-by: shrinkage_policy.py sha256=200b9059b122 -->
 
 # Disagreement-aware shrinkage — pre-registered test
 

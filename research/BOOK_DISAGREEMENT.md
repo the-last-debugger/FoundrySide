@@ -1,4 +1,4 @@
-<!-- generated-by: book_disagreement.py sha256=00fb56d3a46a -->
+<!-- generated-by: book_disagreement.py sha256=7900e5629f40 -->
 
 # Workstream 4, experiment 1 — does cross-book disagreement carry information?
 

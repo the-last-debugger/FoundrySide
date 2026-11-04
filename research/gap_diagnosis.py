@@ -191,7 +191,7 @@ of difference between divisions has been run.
 - The benchmark is a closing price with no recorded observation time, so this compares a
   T−90 model with a later benchmark.
 """
-    OUT.write_text(doc, encoding="utf-8")
+    OUT.write_text(doc, encoding="utf-8", newline="\n")
 
     print(f"n={len(rows)} mean_delta={statistics.mean(r['delta'] for r in rows):+.4f} "
           f"ci=[{lo:+.4f},{hi:+.4f}]")

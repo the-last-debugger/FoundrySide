@@ -220,7 +220,7 @@ show up here, its problem is not the data pipeline.
 - Multiple testing across four hypotheses is controlled within this family, not across the
   expedition's whole history.
 """
-    OUT.write_text(doc, encoding="utf-8")
+    OUT.write_text(doc, encoding="utf-8", newline="\n")
 
     for r in results:
         print(f"{r['label']}: gain={r['gain']:+.5f} ci=[{r['lo']:+.5f},{r['hi']:+.5f}] "

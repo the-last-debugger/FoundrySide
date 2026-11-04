@@ -199,7 +199,7 @@ looked at four dimensions. Some findings survive both (20–30% at q 0.006, 40�
 others do not (10–20%, q 0.077 globally). The 21+ kickoff cell rests on 3 clusters and should be
 disregarded.
 """
-    OUT.write_text(doc, encoding="utf-8")
+    OUT.write_text(doc, encoding="utf-8", newline="\n")
 
     for key in ("season", "division", "band", "slot"):
         best = min(stats[key], key=lambda s: s["mean"])

@@ -1,4 +1,4 @@
-<!-- generated-by: hit_rate_audit.py sha256=a043cb333063 -->
+<!-- generated-by: hit_rate_audit.py sha256=8e9db92704f8 -->
 
 # Hit-rate and metric audit
 

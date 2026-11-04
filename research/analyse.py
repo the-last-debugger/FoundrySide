@@ -552,7 +552,7 @@ Stated explicitly, because the two were mixed in the first version of this docum
   It bounds what multiplication can do; it says nothing about whether a combination
   is fairly priced.
 """
-    OUT.write_text(doc, encoding="utf-8")
+    OUT.write_text(doc, encoding="utf-8", newline="\n")
     print(manifest())
     print(f"rows={len(rows)} scored={len(scored)}")
     print(f"favourite={interval(sum(1 for s in scored if s['hit']), len(scored))}")

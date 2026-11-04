@@ -1,4 +1,4 @@
-<!-- generated-by: accumulator_pricing.py sha256=914fd2cd350d -->
+<!-- generated-by: accumulator_pricing.py sha256=028a3db34e14 -->
 
 # Accumulator pricing — is multiplying cross-match legs safe?
 

@@ -1,4 +1,4 @@
-<!-- generated-by: bogey_team.py sha256=3f3327d566d9 -->
+<!-- generated-by: bogey_team.py sha256=9040588ddf4f -->
 
 # Bogey-team study — does head-to-head history predict beyond the price?
 

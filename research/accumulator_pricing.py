@@ -176,7 +176,7 @@ in a user's slip.
 - One book's prices, de-vigged with proportional margin removal; the margin model matters more for
   long slips than for these.
 """
-    OUT.write_text(doc, encoding="utf-8")
+    OUT.write_text(doc, encoding="utf-8", newline="\n")
 
     for r in table:
         print(f"k={r['k']} n={r['n']} naive={r['naive']:.4f} realised={r['realised']:.4f} "

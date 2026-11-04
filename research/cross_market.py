@@ -153,7 +153,7 @@ variability of the comparison, not the uncertainty of the modelling choice.
 - The draw probability is a proxy for the goal environment, not a measurement of it.
 - No quote timestamps, so the T−90 caveat applies to any claim about acting on this.
 """
-    OUT.write_text(doc, encoding="utf-8")
+    OUT.write_text(doc, encoding="utf-8", newline="\n")
 
     print(f"base={base_ll:.4f} treat={treat_ll:.4f} gain={gain:+.4f} "
           f"ci=[{lo:+.4f},{hi:+.4f}] auc={auc_b:.4f}->{auc_t:.4f}")

@@ -393,7 +393,7 @@ large an effect can this design detect", and it is wider than the bracket, as it
 - **The type-I figure is a check, not a result.** At zero effect the test should reject
   about 5% of the time; a figure far from that would mean the simulated test is miscalibrated.
 """
-    OUT.write_text(doc, encoding="utf-8")
+    OUT.write_text(doc, encoding="utf-8", newline="\n")
 
     print(f"clusters={len(clusters)} power={power:.3f} se={se:.3f} type_one={type_one:.3f}")
     print(f"stability={[round(x, 3) for x in stability]}")

@@ -1,4 +1,4 @@
-<!-- generated-by: best_price.py sha256=f8b345472bf2 -->
+<!-- generated-by: best_price.py sha256=48d904a1ed50 -->
 
 # Best-price discovery — what a better available price is worth
 

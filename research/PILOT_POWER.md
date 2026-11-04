@@ -1,4 +1,4 @@
-<!-- generated-by: pilot_power.py sha256=e9e2805f7925 -->
+<!-- generated-by: pilot_power.py sha256=dcce231624cf -->
 
 # Sizing for the confirmatory design
 

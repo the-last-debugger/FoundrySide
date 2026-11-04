@@ -247,7 +247,7 @@ shrink everything or nothing.
 - The market baseline is the same de-vigged price used throughout; the confirmatory slice is
   untouched.
 """
-    OUT.write_text(doc, encoding="utf-8")
+    OUT.write_text(doc, encoding="utf-8", newline="\n")
 
     for n in names:
         print(f"{n}: {aggregate[n]:.4f} gain={aggregate['market'] - aggregate[n]:+.4f} "

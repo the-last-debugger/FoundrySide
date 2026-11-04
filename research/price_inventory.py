@@ -225,7 +225,7 @@ answerable; whether the movement carries information is a separate experiment.
   show the older files carrying fewer books.
 - `Max` and `Avg` are derived columns; their definitions are the provider's and are taken as given.
 """
-    OUT.write_text(doc, encoding="utf-8")
+    OUT.write_text(doc, encoding="utf-8", newline="\n")
 
     for c in coverage:
         print(f"{c['label']:>18} {c['snapshot']:>8} {c['market']:>4}: {c['share']:.1%}")

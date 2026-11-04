@@ -157,7 +157,7 @@ Either way the market comparator is unchanged and the deficit is not closed by c
   swings between folds means the calibration is not a fixed property of the model.
 - One corpus, one market, closing prices without timestamps.
 """
-    OUT.write_text(doc, encoding="utf-8")
+    OUT.write_text(doc, encoding="utf-8", newline="\n")
 
     for f in folds:
         print(f"train<{f['held']} on {f['held']}: raw={f['raw']:.4f} cal={f['cal']:.4f} "
