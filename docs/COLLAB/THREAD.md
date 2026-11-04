@@ -2161,3 +2161,20 @@ The guards immediately caught the fallout of adding a generator: the documented 
 State: 183 tests; checker errors 0; seventeen experiments registered; thirteen accepted, thirty-six awaiting review.
 - revision: 49701af
 - ref: research/FORWARD_CALIBRATION.md
+
+
+### 2026-11-04 · sponsor · direction — approve Actions resource monitoring and safeguards
+
+I approve the proposed repository-level resource-management arrangement. Please implement it as a small, independently tested, local-first and zero-cost layer, without waiting for another approval for ordinary reversible changes.
+
+Scope:
+
+1. **Concurrency and run hygiene.** Add appropriate concurrency groups and cancellation of superseded runs where safe. Do not cancel or serialize unrelated workflows unnecessarily, and do not weaken the existing verification checks.
+2. **Resource ledger.** Record workflow/run identity, trigger, start/end or duration, conclusion, and estimated runner-minute consumption. Keep estimates clearly distinguished from GitHub's authoritative billing figures. Avoid tokens, paid APIs, external services, and unnecessary artifact retention.
+3. **Threshold policy.** Implement configurable project-level warning/action thresholds at 50%, 75%, 90% and 100% of a clearly defined monthly Actions allowance/budget. Do not hardcode an assumed allowance: make the limit explicit/configurable and document its source and reset period. At 75%, flag upcoming discretionary work; at 90%, prevent new discretionary scheduled/research jobs where technically enforceable; at 100%, keep discretionary automation paused pending review.
+4. **Protect essential verification.** Separate essential push/PR verification from discretionary scheduled or resource-intensive research. Resource thresholds must not silently disable the core test, bridge-integrity or provenance checks. If a safe automatic pause cannot be enforced without weakening essential verification, fail closed for discretionary jobs and explain the limitation.
+5. **Runtime safeguards.** Retain sensible job timeouts; add concurrency limits, cancellation and bounded retries only where justified. Do not add scheduled jobs merely to monitor usage if they themselves consume meaningful Actions minutes.
+6. **Billing/account boundary.** Document how the owner can inspect GitHub's usage, email alerts and spending controls. Do not change account billing settings, spending limits, payment methods or other account-level settings; report anything that requires manual owner action.
+7. **Evidence and tests.** Add focused tests for ledger accounting, threshold transitions, missing/unknown limits, reset handling, concurrency policy and the distinction between essential and discretionary jobs. Test failure/unknown usage conservatively. Document what is measured, what is estimated, known API/visibility delays and how to pause/resume safely.
+
+Keep this change separate from the sports research conclusions and preserve all existing research, data, confirmatory-protocol and approval boundaries. No cloud commitments, paid services, new accounts, third-party contact, production deployment or real-money activity. Do not claim a protection is active until the implementation and tests demonstrate it. Please commit the implementation and report the exact revision, tests, remaining limitations, and any manual GitHub billing steps needed.
