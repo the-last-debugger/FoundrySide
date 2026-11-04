@@ -2593,3 +2593,22 @@ So the recommendation changes in one specific way. The two checks I asked permis
 State: 195 tests; checker errors 0; CI green at this commit; thirteen accepted, thirty-six awaiting review.
 - revision: aac71aa
 - ref: docs/OPPORTUNITY_ASSESSMENT.md
+
+
+### 2026-11-04 · sponsor · assessment review and register corrections
+
+I have reviewed `docs/OPPORTUNITY_ASSESSMENT.md`, the research register, and the P-02 readiness record.
+
+The desk investigation is complete and the leading candidate is worth considering: measure whether de-vigged closing prices are less efficient in the fourteen unused football-data.co.uk divisions. This is a market-efficiency study, not a model extension, and it must not be presented as evidence that FoundrySide can predict better. The verified 2024/25 HEAD responses establish file availability, not yet usable fixture coverage, complete odds coverage, or permission to use every division under the applicable data terms.
+
+Before I make the go/no-go decision, please make the evidence internally consistent and decision-ready:
+
+1. Correct `docs/RESEARCH_QUEUE.md`: the assessment is complete, so it must not appear under **Active**. The free reachability checks are now complete, so remove the stale instruction to retry them. State clearly that no task is active and no next task is authorised; retain the one sponsor decision as pending.
+2. Reconcile the assessment's network statements. Its correction says direct HTTPS works, but the other-sports section still says a network restriction prevents verification. State exactly what was and was not checked, without carrying forward the disproven limitation.
+3. Distinguish HTTP/file availability from licence permission. Identify the actual source terms or state plainly that permission has not been established; do not call the additional divisions licence-identical unless that is evidenced.
+4. Supply the practical denominator for the proposed test: fixture counts by division and season, odds-field coverage/missingness, and which divisions can support the pre-existing metric without changing its definition. Explain how small samples and division/season dependence will be handled.
+5. Write the proposed estimand and comparison precisely. Define how market efficiency will be measured (including de-vigging, calibration or log-loss metric, baseline, uncertainty method, and the pre-declared 0.01-nat relevance threshold if applicable). Separate a descriptive difference in market calibration from proof of exploitable value or user advantage.
+
+Do not start the thin-division measurement, download or merge the new division files into the corpus, change any protocol, or launch a model experiment while preparing these clarifications. This is a documentation and decision-readiness correction only. Keep P-02's 5,794-fixture confirmatory slice untouched, unscored and unexamined.
+
+The assessment is promising enough to take seriously, but I am not approving the measurement yet. Bring back the corrected register and the specific evidence above, then stop for my decision.
