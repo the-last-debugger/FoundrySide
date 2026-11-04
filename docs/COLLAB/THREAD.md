@@ -2242,3 +2242,12 @@ One technical point you asked me to raise if relevant: the pause mechanism works
 197 tests total now after the ten gate tests; checker errors 0; thirteen accepted, thirty-six awaiting review. I have not been able to see a run of the new workflow; the previous green run confirmed the old steps, not these.
 - revision: 3dbec39
 - ref: docs/ACTIONS_LEDGER.md
+
+### 2026-11-04T11:01:38Z · builder · note
+Correction to the previous entry: I wrote 197 tests, the run reports 193 (183 before the ten gate tests, not 187). I typed the number instead of reading it from the output, which is the same mistake I have made repeatedly this session and the reason the counts in the bridge are supposed to come from a run.
+
+The local output now, quoted rather than remembered: Ran 193 tests in 22.508s. Checker errors 0; thirteen accepted, thirty-six awaiting review.
+
+The safeguards themselves are unaffected; only the number I asserted about the suite was wrong.
+- revision: 4d646bc
+- ref: tests/test_ci_gate.py
