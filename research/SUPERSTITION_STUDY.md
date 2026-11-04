@@ -1,4 +1,4 @@
-<!-- generated-by: superstition_study.py sha256=d12ece2211a9 -->
+<!-- generated-by: superstition_study.py sha256=0aa58a3611e4 -->
 
 # Superstition study — calendar folklore against the price
 
@@ -22,10 +22,17 @@ fewer than a dozen such fixtures; that row cannot distinguish an effect from noi
 direction and should be treated as untested rather than as a null. The other three have enough
 cases to be informative.
 
-A gain is information the price did not have. A negative gain means the indicator adds noise —
-its inclusion costs accuracy. A gain whose interval straddles zero, whose permutation p is
-unremarkable, and whose BH q does not clear the family is a null, and the honest conclusion is
-that the belief is either already priced or not true in this corpus.
+The three outcomes are not the same and are not pooled here.
+
+- **The 13th of any month** has an interval excluding zero on the negative side: including it
+  actively costs accuracy, which is an established negative result in this corpus.
+- **Weekend kickoff** has an interval that touches zero at the boundary. It is neither established
+  as an effect nor established as harmful — it is undetermined at this precision.
+- **Full moon** is a null: the interval straddles zero and the point estimate is negligible.
+- **Friday the 13th** is untested rather than null: eleven fixtures cannot settle it either way.
+
+Calling the class simply "null" would flatten that structure, and calling both negative point
+estimates significant would overstate one of them.
 
 The permutation null shuffles the indicator within division-seasons, preserving the joint
 structure and the cluster geometry; the p-value is therefore "how often would a gain this large

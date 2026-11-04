@@ -99,8 +99,10 @@ individually earlier, which is repetition rather than replication.
 Three further **mechanism classes** were tested after the feature screen, each under the same
 protocol: calendar folklore (full moon, Friday 13th, the 13th, weekend), head-to-head history
 (bogey-team goals and results, with pair-level resampling), and style mismatch (attack/defence
-interaction, venue asymmetry, scoring volatility). All three are null. The single positive in each
-class was small — 0.0001 nats or less — and failed its own stress test.
+interaction, venue asymmetry, scoring volatility). Calendar folklore resolves to four distinct outcomes rather than one: the 13th of the month is
+significantly negative, weekend kickoff is undetermined at this precision, the full moon is null,
+and Friday the 13th is untested at eleven fixtures. Head-to-head and style are null, after
+stress testing.
 
 In the screen, all six families have permutation p between 0.388 and 0.900 and BH q = 0.900. No
 family is positive in any held-out season. A high permutation p means **a positive gain of that

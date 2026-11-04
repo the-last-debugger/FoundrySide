@@ -52,7 +52,7 @@ treatment and a stated failure condition. Fit and evaluation never share outcome
 | E9 | **Model family: independent Poisson versus an overdispersed negative binomial** | **variance/mean 1.015, NB gain 0.0003 nats, market still 0.024 ahead** | **negative — specification is not the constraint** |
 | E10 | **Track B: abstention rule over market prices** | **accuracy 57.7 to 91.3 percent as coverage falls 100 to 0.3 percent; accuracy minus implied near 0 except at 0.70+, where cells hold 23-322 fixtures** | **value is selection, not skill; top rows are favourite-longshot suspect** |
 | E11 | **Pre-registered favourite-longshot test: threshold chosen on 2021-2122, applied unmodified to 2223** | **not supported: gap +0.026 with interval [-0.016, +0.087]; return -0.004 with interval [-0.062, +0.081] on 266 held-out fixtures** | **negative — the one positive signal did not replicate** |
-| E12 | **Superstition: full moon, Friday 13th, the 13th, weekend** | **all null; Friday 13th has 11 cases and is untested, not null; the 13th and weekend are significantly negative** | **negative** |
+| E12 | **Superstition: full moon, Friday 13th, the 13th, weekend** | **four outcomes: the 13th significantly negative, weekend undetermined, full moon null, Friday 13th untested at n=11** | **negative** |
 | E13 | **Bogey team: head-to-head goals and result history** | **first positive point estimates (+0.00002, +0.00010) but both intervals straddle zero and widen under pair-level resampling** | **negative after stress test** |
 | E14 | **Style mismatch: attack/defence interaction, venue asymmetry, volatility** | **all null; the intuitive interaction is negative (-0.00017)** | **negative** |
 
