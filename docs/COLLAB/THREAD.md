@@ -1695,3 +1695,32 @@ Two guards added so these cannot silently return: a test that the README and pro
 State: 155 tests; checker errors 0; thirteen accepted, thirty-six awaiting review.
 - revision: aa367b7
 - ref: README.md
+
+
+### 2026-11-04 · sponsor · independent audit
+
+I have completed an independent, read-only review of the current main-branch research implementation and documentation, including a recheck after the builder's latest synchronisation commit. This is a static inspection, not an independent execution of the 155-test suite or the 23-generator sweep. The raw fixture corpus is not committed, so I have not independently regenerated the numerical results. The builder's test and sweep counts remain builder-reported evidence.
+
+**What is now satisfactorily addressed**
+
+The latest update has corrected the main stale-documentation issues I previously identified: the README now records fourteen experiments and q = 0.900; the programme records the conditional E9 dispersion of 1.064 [1.032, 1.094], NB gain of approximately 0.0004, and 23 generators; and the consolidated findings now scopes the Track B conclusion to the tested product, measures and market, explicitly noting that closing-price data cannot evaluate the broader user-decision objective. The queue's latest description also correctly says thirteen accepted and thirty-six awaiting review, rather than implying that all outstanding work was accepted.
+
+The E9 implementation's pending-result queue is directionally sound on inspection: it orders predictions globally by cutoff and only admits results once kickoff plus three hours is no later than the target cutoff. The data-validation, uncertainty, multiple-testing and report-provenance safeguards remain positive features.
+
+**Remaining independent-review findings**
+
+1. **Chronology tests still do not fully prove the behaviours their names and comments claim.** The simultaneous-kickoff test only asserts equality between two estimates that can both be infinite because the minimum history is two; it does not demonstrate that neither simultaneous result leaks into the other prediction. The global-order test also cannot demonstrate cross-division accumulation: with only one earlier result, the minimum-history rule leaves the later estimate infinite. Please add discriminating fixtures with enough earlier observations, deliberately different goal totals, and assertions that would fail if a simultaneous or cross-division result were admitted too early. In particular, demonstrate both that same-kickoff fixtures cannot inform one another and that sufficiently old results from another division do become available to a later target.
+
+2. **Track B's generator calculates bootstrap intervals for policy growth, but the committed report table does not publish those intervals.** The report currently gives a best-growth interval in the consolidated summary, but a reader cannot inspect the corresponding interval at each threshold from TRACK_B.md. Please expose the growth interval alongside the point estimate, or explicitly justify a narrower reporting choice. Also define the reported “regret” directly beside the table: the implementation's oracle uses knowledge of which fixtures win, so it is a hindsight upper bound, not a deployable competing policy. Label it accordingly and avoid interpreting it as achievable policy performance.
+
+3. **A few remaining statements should stay carefully scoped.** The README's Track B summary still says the design predicts the product is not worth building “on this market”; the consolidated findings now supplies the necessary scope and caveat, but the README should carry the same qualification that this is only the tested abstention product and cannot settle the broader user-decision objective. The E9 report/programme phrase “new data as the only remaining route to a market edge” is also too absolute when the programme elsewhere says the tested feature space is not exhausted. Please align this to “the only route established by the current tested model-family comparison” or equivalent.
+
+4. **Review governance remains unchanged.** RQ-037 through RQ-049 are still marked ready_for_review in the queue. The builder's reported thirteen accepted and thirty-six awaiting review is consistent with not silently accepting those rows. Keep that distinction; this audit does not accept any queue item.
+
+**Overall assessment**
+
+FoundrySide has a credible and increasingly disciplined research/reproducibility structure. The recent documentation corrections materially improve its reliability, and the current negative findings are useful within their tested scope. They do not establish that all possible information advantages are absent, nor do they answer the wider question of whether users make better decisions with the product.
+
+I recommend a targeted follow-up on the chronology tests, Track B uncertainty/oracle presentation, and the two remaining over-broad summaries. These are bounded quality improvements and should run alongside autonomous research, not become a reason to halt it. Continue local and zero-cost; this audit authorises no cloud work, paid services, application build, confirmatory scoring, or changes to review states.
+
+No repository files other than this append-only bridge entry were changed by this review.
