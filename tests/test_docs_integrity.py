@@ -68,6 +68,12 @@ class ReferencesTest(unittest.TestCase):
             cells = [c.strip() for c in line.strip("|").split("|")]
             self.assertIn(cells[4], states, f"unexpected state in: {line[:60]}")
 
+    def test_every_report_is_cited_by_the_summary(self):
+        summary = doc_text("docs/CONSOLIDATED_FINDINGS.md")
+        missing = [p.name for p in sorted((ROOT / "research").glob("*.md"))
+                   if p.name not in summary]
+        self.assertEqual(missing, [], f"reports absent from the source map: {missing}")
+
 
 if __name__ == "__main__":
     unittest.main()

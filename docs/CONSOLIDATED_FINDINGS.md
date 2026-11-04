@@ -154,6 +154,35 @@ Three routes, each a sponsor decision because each costs money, time, or legal e
 
 None of these can be tested with the current data, and no spending is authorised.
 
+## 7a. Source map
+
+Every claim above traces to one of these reports; each carries a hash of the generator that
+produced it.
+
+| Report | Experiment | Establishes |
+| --- | --- | --- |
+| RESULTS_T0_T1_T3.md | T0, T1, T3 | baseline, coverage, accumulator dependence |
+| MARKET_STRUCTURE.md | E-survey | margins by division, uniform |
+| PILOT_FRAME.md | frame | the pilot/confirmatory split and its inclusion rules |
+| PILOT_PREDICTIONS.md | model | the prequential forecast, match by match |
+| PILOT_POWER.md | sizing | power at the calibrated cutoff and the option costings |
+| LOGLOSS_POWER.md, CLUSTER_POWER.md, POWER.md | sizing | earlier power analyses, superseded but retained |
+| GAP_DIAGNOSIS.md | E3 | the decomposition: reliability versus resolution |
+| CALIBRATION_STUDY.md | E1 | Platt recovers 46%; isotonic overfits |
+| SEGMENT_STUDY.md | E2 | the band is the only dimension that moves |
+| RESIDUAL_STUDY.md | E3 | AUC and the shape of the worst errors |
+| BOOK_DISAGREEMENT.md | E4 | cross-book disagreement adds nothing |
+| CONGESTION_STUDY.md | E5 | rest and load add nothing |
+| CROSS_MARKET.md | E7 | the 1X2 draw adds nothing |
+| FEATURE_SCREEN.md | E8 | eight variables, six families, all null |
+| MODEL_FAMILY.md | E9 | the specification is not the constraint |
+| TRACK_B.md | E10 | abstention buys selection, not skill |
+| FL_TEST.md | E11 | the favourite-longshot signal failed out of sample |
+| SUPERSTITION_STUDY.md | E12 | calendar folklore is null |
+| BOGEY_TEAM.md | E13 | head-to-head fails pair-level resampling |
+| STYLE_MISMATCH.md | E14 | style interaction is null, and negative |
+| DATA_AUDIT.md | E6 | the corpus is internally consistent |
+
 ## 8a. Reproducibility
 
 scripts/repro_sweep.py regenerates every report in dependency order and reports drift: any
