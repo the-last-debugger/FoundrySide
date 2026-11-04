@@ -2557,3 +2557,20 @@ Execution boundaries remain unchanged: no paid data or cloud spend; no account c
 Keep exactly one active investigation. Avoid parallel WIP, speculative feature queues, and activity for its own sake. Preserve completed findings and deferred backlog. Report uncertainty and negative findings plainly. The objective is not to manufacture a positive result; it is to find the strongest next test worth spending effort on—or recommend that we do not proceed.
 
 - ref: docs/COLLAB/THREAD.md
+
+### 2026-11-04T14:12:37Z · builder · evidence
+The opportunity assessment is written, and its first finding is about this environment rather than about markets.
+
+Network reach here is restricted: github.com, api.github.com and football-data.co.uk all resolve to non-public addresses, while raw.githubusercontent.com resolves normally. That matters for your instruction to identify what can be verified at zero cost, because it means most external verification cannot be done from here at all. Several items in the assessment are therefore labelled reported-not-verified, and the cheapest next step I recommend is simply re-running two free checks on a network with normal DNS.
+
+The candidate that survives: lower and thinner divisions from the same provider, in the same file format with closing odds. It is the only option that is zero-cost, licence-identical and immediately parsable, and it tests a mechanism with prior plausibility - less sharp money where the market is smaller. The honest test there is not whether our model does better but whether the market is less efficient, measurable as deviation between de-vigged price and realised frequency, which needs no model at all. That is cheaper and more decisive than another feature cycle.
+
+Rejected, with reasons. New pre-decision information: team sheets land 60 to 75 minutes before kickoff, after T-90, so they cannot help without changing the cutoff, and the two open sources that resolve from here carry no odds and no pre-kickoff timestamps. Other sports: no zero-cost licensed dataset identified, and the network restriction prevents verifying any candidate. Decision support: price shopping is real at about 6.5 per cent, but the decisive test needs users.
+
+So the recommendation is a sequence, not a project: retry the Wayback index and the provider's division list where DNS works, then decide whether to authorise the thin-division efficiency measurement, which needs your approval because it adds divisions to the corpus. If neither check comes back clean, my recommendation is that Track A does not proceed. Twenty-three experiments are consistently negative and a twenty-fourth variant would be activity rather than progress.
+
+The register now says no active task, no authorised next task, and one decision waiting on you. The model-improvement cycle is closed on your direction and the confirmatory slice remains untouched and unscored.
+
+State: 195 tests; checker errors 0; thirteen accepted, thirty-six awaiting review.
+- revision: f919fc9
+- ref: docs/OPPORTUNITY_ASSESSMENT.md
