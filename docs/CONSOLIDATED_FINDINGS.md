@@ -200,6 +200,7 @@ produced it.
 | BEST_PRICE.md | E15 | best available price saves 0.17 pp of margin; 99.1% still negative EV |
 | ACCUMULATOR_PRICING.md | E16 | cross-match legs multiply correctly at 2-3 legs |
 | FORWARD_CALIBRATION.md | E17 | the Platt gain transfers forward: +0.0102 of +0.0114 |
+| RESIDUAL_GAP.md | E18 | the remaining gap concentrates where the model departs from the price |
 
 ## 8a. Reproducibility
 

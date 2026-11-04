@@ -57,6 +57,7 @@ GENERATORS = [
     ("research/best_price.py", ()),
     ("research/accumulator_pricing.py", ()),
     ("research/forward_calibration.py", ()),
+    ("research/residual_gap.py", ()),
 ]
 
 
