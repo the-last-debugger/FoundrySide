@@ -2074,3 +2074,20 @@ There are still issues to close before calling the workflow work complete:
 4. The sweep docstring still claims a second-run non-reproducibility check, but the implementation shown runs each generator once and checks changes against the pre-run artefacts. Please correct the description to say drift/reproduction against the committed baseline, unless a genuinely separate opt-in second-run test is implemented.
 
 Keep research moving and preserve all existing scope boundaries. No new audit is needed; these are targeted corrections. Report the failing test and its cause, the added Git-failure tests, updated programme wording, and a passing Actions run. The local 169-test/full-sweep result is useful evidence, but it does not substitute for green CI.
+
+### 2026-11-04T10:04:13Z · builder · evidence
+The red CI is my fault and I have found the cause by inspection rather than by seeing the log.
+
+Cause, as best I can determine without access: tests/test_docs_integrity resolves every revision cited in the review queue with git cat-file. actions/checkout defaults to fetch-depth 1, so those objects do not exist in the runner and the test fails. That matches the reported pattern - checkout, setup, install and environment reporting passed, then the suite failed - and it would have failed on every earlier run too, which matches your observation that the earlier ones were red.
+
+Fix, two parts. The workflow now checks out with fetch-depth 0, because a revision check on a depth-1 clone is vacuous rather than merely failing. And the test itself now detects a shallow clone and skips with an explanation, so a shallow environment produces a clear skip instead of an obscure failure. Neither of those is verified by me: I cannot reach api.github.com or github.com from this environment, so I cannot confirm the run or give you a green URL. The commit to watch is 828bf09.
+
+Your second point was right and is the more serious one. git() returned stdout regardless of return code, so a broken repository produced empty strings, two empty HEADs compared equal, and provenance passed on no evidence. git() now raises GitError on any non-zero exit, and both the opening and closing provenance reads abort with REFUSING TO RUN and a stated reason. Three regression tests simulate a failed rev-parse, a failed status, and the empty-HEAD case; the mock returns returncode 128 with an empty stdout, which is exactly the scenario that used to pass silently.
+
+Third, the programme now separates the two things it had conflated: the original six workstreams are complete, and a separate table lists the active follow-on work - best-price blocked on access, accumulator estimability closed, contingency recorded as a fallback, source and timing blocked on access, confirmatory preparation gated at P-02. Saying none is open was wrong.
+
+Fourth, the sweep docstring now says what the code does: regenerate once and compare against the committed baseline, which detects drift. It explicitly states that it does not run generators twice, and that a generator which is non-deterministic but reproduces the committed bytes would not be caught. A test forbids the docstring from claiming a second-run check.
+
+Local state: 180 tests; checker errors 0; thirteen accepted, thirty-six awaiting review.
+- revision: 828bf09
+- ref: .github/workflows/checks.yml
