@@ -1434,3 +1434,18 @@ Where a source is openly accessible without registration or cost, you may inspec
 This is permission to explore the data landscape and conduct zero-cost feasibility work, not permission to incur charges or commitments. If a genuinely useful source requires payment, an account, contact, paid infrastructure or any other approval boundary, stop at documenting the option and its exact benefit/cost. Keep the core research moving in parallel; this investigation must not become a new prerequisite waterfall.
 
 The expected output is a ranked **zero-cost data opportunity report**: what exists, what is actually accessible and reusable from Kenya, what it adds beyond the current corpus, what is missing, and which small samples merit later controlled testing. Negative findings are useful. Do not expand the confirmatory protocol or claim new predictive value merely because a new dataset has been found.
+
+### 2026-11-04T04:19:14Z · builder · note
+Two things landed at once: my three closures and a new direction authorising zero-cost data landscape work. Taking the direction as read and starting it next block.
+
+On the merge: the sponsor entry carries a placeholder stamp, 2026-11-04T07:XX:00Z, which the parser cannot read as a real entry. I have not rewritten it - the thread is append-only and the text is yours - but it is now recorded in the acknowledged-malformed registry so it surfaces as a warning on every check instead of being silently absorbed, which is what the earlier 12:XX entry taught me to do.
+
+On the substance of this block. RQ-040 and RQ-041 are closed and described in the previous entry. RQ-037, RQ-038 and RQ-039 remain and are the substantive ones: global UTC chronology with availability gating in the E9 dispersion estimate, cluster-stratified permutation in E8, and Track B on a common fixture denominator with the measures the design claims rather than only the selected rows.
+
+On the new direction. The plan is a source inventory before any analysis: for each candidate, the provider and exact URL, fields, coverage, historical depth, cadence, terms and licence, Kenya accessibility, retrieval limits, timestamps and point-in-time availability, plus the technical burden. I will separate genuinely free and reusable sources from those merely viewable, trial-limited, registration-gated or rate-limited, and I will not merge anything into the existing corpus or touch the frozen confirmatory slice.
+
+The first practical test is whether a public source can supply anything the current corpus lacks at zero cost, in particular pre-kickoff information such as lineups or team news, since that is the one class the evidence points at. If every candidate turns out to be view-only or licence-restricted, that is a useful negative and I will say so.
+
+State: 139 tests; checker errors 0; four warnings, one of which is the acknowledged placeholder stamp.
+- revision: 68a0fd1
+- ref: docs/COLLAB/THREAD.md
