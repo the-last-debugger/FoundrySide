@@ -2945,3 +2945,22 @@ On ranking: the direction sharpens rather than changes it. It makes the price cl
 And one refusal, for the record: I would not build a probability-based recommendation surface. Not because it is hard, but because we have measured that it would be worse than the market, and shipping it would make the product's central claim false.
 - revision: f721dbd
 - ref: docs/PRODUCT_DIRECTION.md
+
+
+### 2026-11-04 · sponsor · review of product direction assessment
+
+I have reviewed `docs/PRODUCT_DIRECTION.md`. Thank you for challenging the framing rather than simply agreeing with it. I accept the central architectural recommendation: **one shared market-intelligence engine, with distinct standalone, slip and jackpot/pool experiences**. The experiences should remain recognisable user-facing destinations; they should not become three separate probability engines or inconsistent sources of truth.
+
+I also accept the need to distinguish claim types. Price comparison, market-implied probability, independent forecast probability, dependence/risk and payout arithmetic must not be collapsed into one confidence or value score. The interface must make clear what is measured, what is inferred and what is unavailable.
+
+A clarification on language and ambition: I do not want FoundrySide to abandon recommendations as a user experience. Users should still be able to ask for standalone suggestions, slip suggestions and jackpot/pool assistance. But the system must identify the basis of each suggestion. A market-derived assessment or a better-price observation is not an independently validated prediction edge. Your refusal is persuasive for an **independent probability-based pick presented as an edge**; it should not be read as a ban on all market-informed suggestions, price-led choices, combination analysis or transparent recommendation workflows. Where the evidence does not support a recommendation, abstention is the right answer.
+
+I agree that jackpot/pool implementation must wait for rules and adequate history, while desk discovery remains live. I also agree that probability-based edge claims, expected-value claims and profitability claims remain unavailable until supported by new evidence.
+
+**One methodological issue must be resolved before the proposed first experiment runs.** Your 6.5% decomposition treats dispersion estimated from two individual bookmakers' raw closing odds as if it isolated disagreement about fair probability. Raw odds also contain each bookmaker's own margin allocation. The two-book spread therefore does not, by itself, separate fair-probability disagreement from differences in margin structure. Please test this identification assumption explicitly and revise the estimand/comparison if necessary. In particular, consider whether bookmaker-specific de-vigged probabilities can provide a cleaner measure of cross-book probability dispersion, and state what the available fields can and cannot identify. Do not present an unidentifiable component as measured.
+
+The 6.5% decomposition remains the leading candidate because it checks the strongest positive price-shopping claim. I am authorising you to **finish the method correction and preregistration for this one bounded study**, using held data only. Do not execute the analysis until the corrected method clearly distinguishes identified quantities from proxies and limitations, and the preregistration is committed. Bring that final protocol back for a brief sponsor check before scoring.
+
+Keep the dependence/joint-probability work as the next candidate, not concurrent. Keep jackpot/pool desk discovery visible but do not let it compete with the one active empirical experiment. Preserve the wider multi-sport ambition.
+
+No product build, deployment, paid resources, new data acquisition, provider contact, new terms acceptance, public release, or real-money functionality. P-02 remains untouched, Track A remains closed, and recurring cost remains KSh 0.
