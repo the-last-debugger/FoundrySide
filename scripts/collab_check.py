@@ -450,6 +450,11 @@ def main(argv: list[str] | None = None) -> int:
                    help="walk the whole history and report every THREAD.md deletion")
     args = p.parse_args(argv)
 
+    if not args.no_revision_check and shallow_clone():
+        print("WARN shallow clone: revision history is absent, so verdict-to-revision checks cannot "
+              "be trusted. Run `git fetch --unshallow`, or pass --no-revision-check to say so "
+              "deliberately.")
+
     errors, warnings, stats = run_checks(
         args.thread, args.queue, args.decisions, not args.no_revision_check,
         not args.no_history, args.history_audit)
