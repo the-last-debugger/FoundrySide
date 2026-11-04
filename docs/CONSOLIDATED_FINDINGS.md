@@ -193,6 +193,7 @@ produced it.
 | BOGEY_TEAM.md | E13 | head-to-head fails pair-level resampling |
 | STYLE_MISMATCH.md | E14 | style interaction is null, and negative |
 | DATA_AUDIT.md | E6 | the corpus is internally consistent |
+| BEST_PRICE.md | E15 | best available price saves 0.17 pp of margin; 99.1% still negative EV |
 
 ## 8a. Reproducibility
 

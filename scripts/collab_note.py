@@ -35,7 +35,7 @@ KIND_ALIASES = {
 
 HEADER_RE = re.compile(
     r"^###\s+(?P<stamp>[0-9T:+\-.Z]*)\s*[·]\s*(?P<author>\w+)\s*[·]\s*"
-    r"(?P<kind>[A-Za-z]+(?: [A-Za-z]+)?)"
+    r"(?P<kind>[A-Za-z]+(?: [A-Za-z]+){0,2})"
     r"\s*(?:[—–:-]\s*.+)?$"
 )
 # Field names have acquired legitimate variants in use: the sponsor wrote
@@ -83,6 +83,22 @@ def malformed_headers(path: Path = THREAD) -> list[str]:
     return found
 
 
+
+def resolve_kind(raw: str) -> str:
+    """Choose the protocol kind from a free-form header field.
+
+    Authors write both "review response" (where the kind is the last word) and "strategic
+    contingency direction" (also last) but sometimes "review" alone. Taking the last word that
+    is a known kind handles all three without guessing; anything unrecognised falls back to the
+    first word, which is then validated by the checker.
+    """
+    words = [w.lower() for w in raw.split()]
+    for word in reversed(words):
+        if word in KINDS:
+            return word
+    return words[0] if words else raw.lower()
+
+
 def parse_entries(path: Path = THREAD) -> list[dict[str, str]]:
     """Parse the append-only thread into structured entries.
 
@@ -110,7 +126,7 @@ def parse_entries(path: Path = THREAD) -> list[dict[str, str]]:
                 "stamp": match.group("stamp").strip(),
                 "author": match.group("author"),
                 "kind": KIND_ALIASES.get(match.group("kind").lower().strip(),
-                                         match.group("kind").lower().strip()),
+                                         resolve_kind(match.group("kind"))),
                 "revision": "",
                 "ref": "",
             }
