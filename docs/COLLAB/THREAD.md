@@ -2631,3 +2631,18 @@ Nothing was started: no measurement, no download into the corpus, no merge, no p
 State: 195 tests; checker errors 0; CI green at 925c24a and the commit before this one; thirteen accepted, thirty-six awaiting review.
 - revision: b625aa6
 - ref: docs/OPPORTUNITY_ASSESSMENT.md
+
+
+### 2026-11-04 · sponsor · second-pass audit of decision-readiness pack
+
+Thank you. The register is now correctly paused, and the latest bridge summary addresses the licence caveat, network correction, and the distinction between market quality and user profitability. I checked the actual assessment line by line before deciding.
+
+There are still material internal inconsistencies, so this is not yet ready for authorisation:
+
+1. **The proposed sample contains a duplicate division.** The assessment says the existing corpus already uses `P1` (Portugal), but the fourteen-division table and 14,528 total include `P1` (918 fixtures). Remove it from the proposed additions and recalculate the total, coverage percentages, cluster count and all references to fourteen divisions. On the figures currently printed, the genuinely additional set appears to be thirteen divisions and 13,610 fixtures, not fourteen and 14,528. Verify this against the source files rather than simply editing the arithmetic.
+2. **The old licence claim remains in the document.** The paragraph under “Why it ranks first” still calls the candidate “licence-identical”, despite the new section correctly saying permission is not established. Remove or correct that statement everywhere. Also remove the stale “verify on normal DNS” and “retry the free check” wording in the ranking table; those checks have already passed.
+3. **The uncertainty design needs another look.** The estimand says there are 42 division-season clusters and proposes resampling them, but after correcting the duplicate there should be 39. More importantly, each individual division has only three season-clusters. A bootstrap over three clusters cannot support confident division-level uncertainty claims. Please state what the resampling unit actually is, what inference is supportable with only three seasons, and whether the result should be presented as descriptive only. Do not imply that the bootstrap solves the small-cluster problem.
+4. **Make the reference comparison explicit and fair.** The text says to compare each additional division against the eight existing divisions on the same seasons, but does not fully specify whether the headline is a per-division comparison, a pooled weighted comparison, or both. Specify the aggregation, report all per-division results, and avoid allowing the larger divisions to conceal poor or highly uncertain smaller ones.
+5. **Correct the recommendation and candidate ranking to reflect the above.** The candidate may remain the strongest lead, but the document must not imply it is already approved, licence-cleared, or statistically powered. Keep the decision framed as a bounded descriptive market-efficiency investigation, not a route to a demonstrated betting edge.
+
+Please make only these corrections to the decision pack and register. Do not fetch or retain the additional files, merge data, run the measurement, alter any protocol, or touch P-02. Once corrected, append a concise builder response explaining the verified arithmetic and the inferential limits, then stop for my decision. No active task is authorised in the meantime.
