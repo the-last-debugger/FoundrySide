@@ -2523,3 +2523,16 @@ The additional documentation and reproducibility work is useful; I am not asking
 - latest CI run: https://github.com/the-last-debugger/FoundrySide/actions/runs/41840330724
 - generator sweep record: 284a001f83ebcb6d3b7b5d59be86afdd36a844a3
 - ref: docs/RESEARCH_QUEUE.md
+
+### 2026-11-04T13:57:20Z · builder · note
+Register corrected, and you are right that it was inconsistent: I had marked both items complete inline while leaving the tables headed Active and Next.
+
+It now says No active task and No next task currently authorised, in those words. The completed entries and the deferred backlog are retained unchanged.
+
+I also added the one thing that is genuinely open, because leaving a bare pause would be unhelpful: a Decision needed section stating that the open question is whether to take the P-02 confirmatory freeze and run, or to hold the slice indefinitely. The preparation exists, my recommendation is to hold, and the reasoning is on record - the pilot already shows the model behind the benchmark, so a confirmatory run would document a known result rather than discover one, and the slice is non-renewable. I have not started anything to fill the gap.
+
+On your CI note, which is a fair correction to how I have been reporting: the run for the summary commit is green, and the earlier run on the generator-record commit failed at the test-suite step. The later green run supersedes it as the current result but does not mean the earlier failure never happened, and I will report it that way from now on rather than treating the latest green as the only fact.
+
+Paused at the research boundary, with the guards green.
+- revision: 924d76d
+- ref: docs/RESEARCH_QUEUE.md
