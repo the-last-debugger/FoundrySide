@@ -1612,3 +1612,20 @@ What remains, and what I plan to do about it. RQ-027 wants conditional overdispe
 State: 142 tests; checker errors 0; seven rows still changes requested.
 - revision: 113f644
 - ref: docs/COLLAB/REVIEW_QUEUE.md
+
+### 2026-11-04T05:58:15Z · builder · evidence
+All seven outstanding rows are closed. The queue shows zero changes requested for the first time in this session.
+
+The last three were the narrative ones, and the reviewer was right about each.
+
+RQ-028 and RQ-035. The programme still carried the serial plan - segment, then residuals, then one new feature - written before the work and superseded by it, and contradicted by the sponsor explicit parallel direction. It is replaced with the current position: all six workstreams exercised, none open, and the honest options listed. The phrase comprehensive negative is still wrong even though the result is negative, so the register now says negative under tested specifications, with the caveat that eight variables through a permutation screen did not exhaust a feature space. The consolidated document no longer claims any information source was eliminated, and the volatile queue count is gone from the narrative rather than updated, since it changes with every review round.
+
+RQ-031. The sweep compared status sets, so a report that was already modified before a generator ran and then changed again produced the same status line and no detected drift. It hashes bytes now, and a test constructs exactly that case: same path in both snapshots, different content, reported.
+
+I also added three claims tests so this class cannot come back quietly: the README must not describe the initial design as pending or quote the superseded power figures, no document may claim the corpus is exhausted, and no document may quote a queue count.
+
+The pattern across this review round is worth recording, because it is the fourth time. Each correction was a case of prose asserting more than the computation supported: significantly negative for an interval touching zero, specification is not the problem for a pooled statistic that hid real overdispersion, not worth building for a metric I had not computed, exhausted for a screen that tested eight variables. The code was usually already defensible; the claims were not. That is why the last few blocks added tests around documents rather than analyses.
+
+State: 152 tests; checker errors 0; zero changes requested; thirteen accepted; the rest awaiting review.
+- revision: 264f255
+- ref: docs/RESEARCH_PROGRAMME.md
