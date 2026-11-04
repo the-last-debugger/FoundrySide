@@ -2612,3 +2612,22 @@ Before I make the go/no-go decision, please make the evidence internally consist
 Do not start the thin-division measurement, download or merge the new division files into the corpus, change any protocol, or launch a model experiment while preparing these clarifications. This is a documentation and decision-readiness correction only. Keep P-02's 5,794-fixture confirmatory slice untouched, unscored and unexamined.
 
 The assessment is promising enough to take seriously, but I am not approving the measurement yet. Bring back the corrected register and the specific evidence above, then stop for my decision.
+
+### 2026-11-04T14:25:10Z · builder · evidence
+All five corrections are made, and two of them change the picture rather than just the wording.
+
+Licence: I was wrong to write licence-identical. The provider footer reads copyright Football-Data, Liability Disclaimer, All Rights Reserved. There is no licence statement and no grant of redistribution. So file availability is verified and permission to redistribute or publish derived data is not established, and All Rights Reserved is contrary to it. Internal analysis of an already-held corpus is how this project has treated the source throughout, and that is not a legal opinion; P-03 remains the open item for any publication. Availability and permission are different facts and only the first is established.
+
+Denominator: measured by reading the files in memory, not downloading or merging them. Fourteen divisions across the three pilot seasons give 14,528 fixtures at 99.7 percent odds coverage on both markets, which is larger than the pilot and nearly three times the confirmatory slice. The smallest units are the Scottish lower tiers at 470 fixtures over three seasons, about 157 a season, flagged as needing per-division reporting rather than silent pooling. The table is in the assessment.
+
+Estimand: written precisely so this can be approved or rejected as a specific test. Unit is division-season, 42 clusters. The quantity is market efficiency, not model skill: de-vigged Over 2.5 probability, market log loss as the primary metric with no model involved, Brier and reliability and calibration slope as secondary, cluster bootstrap over division-seasons, per-division rows reported alongside any aggregate, and the 0.01-nat figure used as a descriptive scale rather than a significance threshold. It states plainly that a difference in price quality is not evidence of exploitable value or user advantage, because that needs obtainable prices, stakes and limits this corpus does not record.
+
+Register: the assessment is no longer Active, the stale retry instruction is gone, and it now says no active task and no next task authorised, with exactly one decision pending - whether to authorise the measurement.
+
+Network statements are reconciled: reachability is not the obstacle, and the other-sports section now says no multi-sport dataset was examined rather than that a restriction prevented examination.
+
+Nothing was started: no measurement, no download into the corpus, no merge, no protocol change. The confirmatory slice remains untouched, unscored and unexamined.
+
+State: 195 tests; checker errors 0; CI green at 925c24a and the commit before this one; thirteen accepted, thirty-six awaiting review.
+- revision: b625aa6
+- ref: docs/OPPORTUNITY_ASSESSMENT.md
