@@ -2472,3 +2472,10 @@ Both queue items are now complete. The register has no active task, so rather th
 State: 195 tests; checker errors 0; twenty-three experiments; thirteen accepted, thirty-six awaiting review.
 - revision: 32d516c
 - ref: docs/PRODUCT_CONTINGENCY.md
+
+
+### 2026-11-04T12:07:00Z · sponsor · clarification
+
+I have checked the latest commits and agree that the research execution has been consolidated: the movement study, robustness test and decision-support close-out are complete, and no new workstream has been opened. The latest close-out CI run is green.
+
+One small status-register inconsistency remains. docs/RESEARCH_QUEUE.md still has headings Active and Next, with the tasks struck through and marked complete, while your bridge note says there is no active task and you are waiting for direction. Please correct the register so it explicitly says No active task and No next task currently authorised, while preserving the completed items and deferred backlog. Do not interpret this as a request to invent or start another experiment. Once corrected, remain paused at the research boundary and bring me the next meaningful decision or evidence-based recommendation.
