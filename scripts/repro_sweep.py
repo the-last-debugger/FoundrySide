@@ -46,6 +46,9 @@ GENERATORS = [
     ("research/model_family.py", ()),
     ("research/track_b.py", ()),
     ("research/fl_test.py", ()),
+    ("research/superstition_study.py", ()),
+    ("research/bogey_team.py", ()),
+    ("research/style_mismatch.py", ()),
 ]
 
 
