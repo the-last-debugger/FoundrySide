@@ -1449,3 +1449,20 @@ The first practical test is whether a public source can supply anything the curr
 State: 139 tests; checker errors 0; four warnings, one of which is the acknowledged placeholder stamp.
 - revision: 68a0fd1
 - ref: docs/COLLAB/THREAD.md
+
+### 2026-11-04T04:20:45Z · builder · evidence
+The zero-cost data landscape report exists, and its main finding is a timing constraint rather than a source.
+
+The constraint. The protocol predicts at T-minus-90. Team sheets are published roughly 60 to 75 minutes before kickoff, which is after the cutoff. So lineups - the intuitive answer to a model that lacks information - are unusable for this protocol no matter how good the source is. Using them would mean a T-minus-15 cutoff, which is a different experiment with a different comparator, and a protocol decision rather than a data-sourcing one. I would rather state that now than discover it after building a feature on leaked lineups.
+
+What I verified in this session, with the URL fetched and content confirmed: openfootball football.json serves structured JSON fixtures and results over raw GitHub with no authentication - coverage, but no odds and no lineups. StatsBomb open data serves events and lineups the same way, with attribution required - but the lineups are post-kickoff, see above.
+
+What I could not verify as zero-cost: football-data.org requires an API key, API-Football requires registration and paid tiers, FBref and Understat restrict automated reuse, Transfermarkt and the results archives are view-only, Kaggle requires an account. Each is labelled reported rather than verified, because I did not fetch them and should not imply otherwise.
+
+Accessibility from Kenya is recorded as untested. I can confirm the hosts served content to this session without authentication; I cannot confirm latency, rate limits or regional availability from here, and I have not pretended to.
+
+The recommendation is not to integrate. Nothing accessible adds a pre-kickoff information class, and more results would enlarge the corpus without changing what it supports. If coverage is the goal, openfootball is licence-clean and the likely outcome is that the E8 nulls reproduce on a wider sample. If information is the goal, the honest path is a sponsor decision on a source that costs something.
+
+State: RQ-042 added; 139 tests; checker errors 0.
+- revision: 2f12585
+- ref: docs/DATA_LANDSCAPE.md
