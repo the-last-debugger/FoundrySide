@@ -1914,3 +1914,30 @@ Both are recorded in the register and the source map, and the contingency docume
 State: 157 tests; checker errors 0; sixteen experiments registered; thirteen accepted, thirty-six awaiting review, none rejected.
 - revision: 4db2627
 - ref: research/ACCUMULATOR_PRICING.md
+
+### 2026-11-04T09:00:00Z · sponsor · direction
+
+I approved the deeper workflow engineering audit. I inspected the current repository tree, verification scripts, bridge helpers, programme and recent commits. This is an implementation request based on verified findings, not another planning phase. Keep all existing research moving.
+
+**What the audit actually found**
+
+1. There is no `.github/workflows/` directory, no visible automated CI workflow, and no dependency manifest (`requirements.txt`, `pyproject.toml` or equivalent). The repository is public, so investigate a minimal GitHub Actions setup using standard public-repository runners; do not introduce paid services or cloud infrastructure. First make the Python/dependency environment explicit and reproducible.
+2. `scripts/repro_sweep.py` now contains **25 generators**, not 23. The programme still says 23 generators and cites the older sweep revision. Update stale counts and references, and make the generator inventory auditable so the script list and documentation cannot silently diverge.
+3. The sweep runs every generator sequentially and has no per-generator timeout. Preserve dependency order where required, but map actual dependencies before attempting parallelism. Add bounded timeouts and identify the exact generator on failure. Do not parallelise dependent generators merely to make the number look faster.
+4. The sweep's description says it catches non-reproducibility on a second run, but the implementation runs each generator once and compares its outputs with the pre-run artefacts. That is a drift/reproduction check against the committed baseline, not an independent second-run determinism test. Correct the claim or add a separately opt-in determinism check; do not double the routine verification cost without a reason.
+5. `scripts/verify_all.py` reports the commit/branch/dirty state through a helper that ignores Git's exit code. A failed Git inspection can therefore print empty metadata and still proceed. Make provenance inspection fail closed. Also preserve useful stage output on failure: currently only the final two non-empty lines are shown, which can hide the cause.
+6. The research programme still says all six workstreams are closed and none is open, while E15/E16, the contingency evidence and current source/jackpot investigations are active. Reconcile programme status with the work actually underway; distinguish completed original workstreams from active follow-on lanes. Keep the existing three-lane operating model, not a new project-management system.
+7. The bridge helpers already provide meaningful validation; do not replace them or add process for its own sake. Retain append-only history and exact-revision verdict rules.
+
+**Implementation order**
+
+- First add a minimal, free CI path for quick checks on pushes and pull requests: tests, bridge checker, report/claim/document integrity. Ensure the workflow does not run the expensive full sweep on every documentation-only edit.
+- Add a separate full reproducibility job with sensible path triggers for research generators/data/reports, plus manual dispatch. Use concurrency cancellation for superseded runs where safe. Keep the full job ordered and bounded.
+- Add a small dependency/environment manifest and document the supported Python version and install/test commands.
+- Fix the fail-open Git metadata issue, improve failure diagnostics and add regression tests for the verified defects.
+- Correct the 23/25 generator count and programme status. Derive or validate the inventory from one source of truth.
+- Measure actual elapsed time per stage/generator and report where time is spent before proposing caching or parallel execution. Only implement caching if a repeatable expensive step and safe cache key are demonstrated.
+
+Keep this incremental: make the smallest useful changes, run quick checks, then the full sweep only when its inputs change. Report actual workflow run links/status, Python/dependency versions, test counts, elapsed time, and any remaining limitation. If GitHub Actions cannot be configured within existing permissions or free limits, explain the exact obstacle and continue with local verification.
+
+This authorises only zero-cost workflow automation and research-support improvements. It does not authorise paid services, cloud deployment, app development, accounts, third-party contact, public product claims or real-money execution. Do not alter review verdicts or queue states. Keep the research moving.
