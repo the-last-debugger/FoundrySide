@@ -48,7 +48,7 @@ treatment and a stated failure condition. Fit and evaluation never share outcome
 | E5 | **Schedule congestion (rest difference, days between matches, 14-day load)** | **gain −0.0012 nats, cluster CI [−0.0024, −0.0002], AUC 0.6070 → 0.6055** | **negative — degrades; not the route** |
 | E6 | Data and timing audit: duplicates, double headers, misses, extreme kickoffs | 0 duplicates, 0 double headers, 0 missing scores, 67 missing O/U prices, 0 implausible times | clean |
 | E7 | **Cross-market: 1X2 draw probability as information for totals** | **gain −0.0002 nats, cluster CI [−0.0004, +0.0000], AUC 0.6070 → 0.6066** | **negative — the two prices agree** |
-| E8 | **Feature screen: six families under one protocol, permutation nulls, BH across families** | **all six null; q = 0.900; permutation p 0.388–0.900; no family positive in any season** | **comprehensive negative** |
+| E8 | **Feature screen: six families under one protocol, permutation nulls, BH across families** | **all six null; q = 0.900; permutation p 0.388–0.900; no family positive in any season** | **negative under tested specifications; feature space not exhausted** |
 | E9 | **Model family: independent Poisson versus an overdispersed negative binomial** | **variance/mean 1.015, NB gain 0.0003 nats, market still 0.024 ahead** | **negative — specification is not the constraint** |
 | E10 | **Track B: abstention rule over market prices** | **accuracy 57.7 to 91.3 percent as coverage falls 100 to 0.3 percent; accuracy minus implied near 0 except at 0.70+, where cells hold 23-322 fixtures** | **value is selection, not skill; top rows are favourite-longshot suspect** |
 | E11 | **Pre-registered favourite-longshot test: threshold chosen on 2021-2122, applied unmodified to 2223** | **not supported: gap +0.026 with interval [-0.016, +0.087]; return -0.004 with interval [-0.062, +0.081] on 266 held-out fixtures** | **negative — the one positive signal did not replicate** |
@@ -91,15 +91,20 @@ The trap this result sets is worth naming: a model that is merely shrunk toward 
 will look better calibrated and still carry almost no information. The next study must test
 whether anything adds **resolution**, not whether something improves the score.
 
-## Next actions, in order
+## Where the programme stands
 
-1. **Workstream 2** — segment the residual by season, probability band, division and kickoff
-   hour, with clustered intervals and a multiplicity note. Cheap, uses held data.
-2. **Workstream 1, second half** — re-run the decomposition on the Platt-calibrated forecast:
-   how much of the reliability term survives, and what resolution it has.
-3. **Workstream 3** — the 200 highest-loss pilot fixtures: are they a pattern or a tail?
-4. **Workstream 4** — one genuinely new pre-cutoff feature, chosen after 2 and 3 say where the
-   errors are. Not before.
+All six workstreams have been exercised and none is open. The earlier serial ordering (segment,
+then residuals, then one new feature) described the plan before the work; it is superseded by
+the evidence, and by the sponsor's instruction that workstreams run in parallel and that the
+builder picks the next question rather than following a queue.
+
+What this does **not** mean: that the corpus contains no exploitable information. It means no
+information was detected under the specifications tested — eight variables through a
+permutation-tested screen, three mechanism classes, and two cross-source and cross-market checks.
+The feature space is not exhausted, and the pilot screen was not designed to exhaust it.
+
+The honest remaining options are the three recorded in the consolidated findings: new information
+with a timelier cutoff, thinner markets, or a different comparison. Each is a sponsor decision.
 
 ## Verification, not experiment
 

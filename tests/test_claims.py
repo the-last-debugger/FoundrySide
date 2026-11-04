@@ -62,6 +62,23 @@ class ClaimsTest(unittest.TestCase):
         self.assertIn("0.900", programme)
         self.assertNotIn("q = 0.83", programme)
 
+    def test_readme_does_not_describe_the_initial_design_as_pending(self):
+        readme = read("README.md")
+        for stale in ("waiting on a decision about the first experiment", "69.4", "84.1"):
+            self.assertNotIn(stale, readme, stale)
+        self.assertIn("70.5", readme)
+
+    def test_no_document_claims_the_corpus_is_exhausted(self):
+        for name in ("docs/CONSOLIDATED_FINDINGS.md", "docs/RESEARCH_PROGRAMME.md"):
+            text = read(name).lower()
+            self.assertNotIn("eliminated every information source", text, name)
+
+    def test_no_volatile_queue_count_is_quoted(self):
+        # The queue count changes with every review round, so the narrative must not quote one.
+        import re as _re
+        for name in ("docs/CONSOLIDATED_FINDINGS.md", "README.md"):
+            self.assertIsNone(_re.search(r"\b\d+ items awaiting review", read(name)), name)
+
 
 if __name__ == "__main__":
     unittest.main()
