@@ -1,0 +1,13 @@
+{
+  "_comment": "Resource policy for GitHub Actions. Read by scripts/ci_gate.py at the start of every run.",
+  "paused": false,
+  "max_minutes_per_run": 15,
+  "max_runs_per_day": 20,
+  "notes": [
+    "paused: when true, the workflow runs the gate step only and skips the substantive work.",
+    "max_minutes_per_run must not exceed the job's timeout-minutes; the gate warns if it does.",
+    "max_runs_per_day counts entries in docs/ci/runs.jsonl for the current UTC date.",
+    "These limits are enforced by the workflow from files in the repository. GitHub's own billing",
+    "and minutes accounting are outside this repository's control and are not claimed here."
+  ]
+}
