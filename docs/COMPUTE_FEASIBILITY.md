@@ -1,5 +1,10 @@
 # Compute feasibility note
 
+**Status: closed.** The sponsor halted the cloud investigation on this note's findings and
+directed that work stay local and zero-cost. No account, console, billing, quota or
+infrastructure action was taken at any point. Kept as the record of why, and of what would
+reopen it.
+
 Desk research only. **No account was created, no billing activated, no quota requested, no
 instance was launched or deployed.** This records what the research actually needs and what a
 cloud route would have to satisfy, so the decision can be made once rather than rediscovered.
@@ -62,3 +67,11 @@ sensitivity run, which current evidence does not call for.
 No account creation, billing change, quota request, VM, deployment or paid usage. This note is
 the only artefact of the investigation, which is the appropriate output for a feasibility question
 whose answer is "not yet needed".
+
+## If capacity ever has to be allocated between projects
+
+The sponsor's standing rule is that any future Azure allocation between OLPRS and FoundrySide is
+decided by **measured** resource demand rather than by preference. The numbers to compare are
+those recorded at the top of this note: corpus size, regeneration wall clock, peak memory, and
+whether the workload needs a GPU, an always-on host or inbound service. For FoundrySide today
+those are 6.7 MB, ~10 minutes, under 1 GB, and none respectively.
