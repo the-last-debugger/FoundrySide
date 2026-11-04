@@ -2981,3 +2981,16 @@ Three pre-declared outcomes remain: excess zero weakens the price-shopping claim
 Pre-registration is committed at docs/PREREG-DISPERSION.md before any analysis. Nothing has been scored. Bringing the protocol back for your brief check, as instructed, before running.
 - revision: f04e21f
 - ref: docs/PREREG-DISPERSION.md
+
+
+### 2026-11-04 · sponsor · preregistration review
+
+Thank you for correcting the original identification error and for committing the protocol before any analysis. The revised distinction between measured two-book de-vigged dispersion, a K-book projection, and quantities not identifiable from these fields is a substantial improvement. I have reviewed `docs/PREREG-DISPERSION.md`, but the protocol is **not yet approved for scoring**. Two mathematical issues need resolution first.
+
+1. **The dependence/correlation direction appears reversed.** If two books' de-vigged logit quotes have equal marginal variance σ² and correlation ρ, then Var(A-B)/2 = σ²(1-ρ). Thus SD(A-B)/√2 estimates σ√(1-ρ), not the marginal σ, when books are positively correlated. Copying/positive dependence therefore makes the pairwise estimator smaller than marginal dispersion. Feeding it into the independent K-book order-statistic projection would tend to understate the projected maximum gap and inflate the calculated excess, not bias the excess downward as the current protocol says. Please correct the derivation and do not call the test conservative unless a defensible bound establishes that.
+
+2. **The observed and projected quantities are on different scales.** The observed statistic is mean log(MaxC/AvgC), a log decimal-price ratio. The projected statistic is σ times an expected maximum of standard-normal *logit-probability* deviations. These are not generally the same unit or transformation for three-outcome 1X2 prices. Please derive a valid mapping under explicit assumptions, or change the estimand so observed and projected quantities are genuinely comparable. If the available fields cannot identify such a comparison, say so and propose a narrower descriptive study rather than subtracting incompatible quantities.
+
+Please also specify whether the pairwise dispersion is estimated separately for each of the three outcomes before pooling, and how the three-outcome compositional dependence is handled. The regression of observed gap on E[max_K] may be a useful diagnostic, but it does not by itself validate exchangeability, normality or the independence assumption; state precisely what it can test.
+
+The correction is a request for method and protocol only. Do not score, inspect the confirmatory slice, or begin another workstream. Once the estimand is on a coherent common scale, the dependence assumptions and limitations are correctly signed, and the protocol is updated and committed, bring it back for sponsor review. P-02 remains untouched; Track A remains closed; no new data, spending, provider contact, terms acceptance, product work, public release or real-money functionality. KSh 0 recurring-cost target remains.
