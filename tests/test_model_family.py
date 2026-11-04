@@ -33,19 +33,29 @@ class ChronologyTest(unittest.TestCase):
         self.assertEqual(sizes[1], float("inf"))
 
     def test_simultaneous_kickoffs_do_not_inform_each_other(self):
-        rows = [row(16, 15, 4), row(16, 15, 4), row(17, 15, 1)]
-        sizes = prequential_sizes(rows, min_history=0)
-        # The two 15:00 fixtures share a cutoff, so neither sees the other; the next day's
-        # fixture sees both.
-        self.assertEqual(sizes[0], sizes[1])
+        # Two fixtures at the same kickoff, with enough prior history that a finite size is
+        # possible. If either could see the other's result, its size would differ from the
+        # pair's shared prior state; both must equal the size computed from that state alone.
+        history = [row(10, 12, 0), row(11, 12, 6)]
+        pair = history + [row(16, 15, 4), row(16, 15, 9)]
+        sizes = prequential_sizes(pair, min_history=2)
+        self.assertNotEqual(sizes[2], float("inf"), "history should permit a finite size")
+        self.assertEqual(sizes[2], sizes[3], "same-kickoff fixtures must share one state")
 
-    def test_global_order_not_league_order(self):
-        # A D1 fixture earlier in the day precedes an E0 fixture later; ordering by league would
-        # let the E0 rows be processed first and leak backwards.
-        rows = [row(16, 20, 1, league="E0"), row(16, 12, 3, league="D1")]
-        sizes = prequential_sizes(rows, min_history=0)
-        self.assertEqual(len(sizes), 2)
-        self.assertEqual(sizes[0], float("inf"))
+        # A third simultaneous fixture must not change the first two estimates either.
+        triple = history + [row(16, 15, 4), row(16, 15, 9), row(16, 15, 1)]
+        sizes3 = prequential_sizes(triple, min_history=2)
+        self.assertEqual(sizes3[2], sizes[2])
+        self.assertEqual(sizes3[3], sizes[3])
+
+    def test_results_cross_divisions_once_they_are_old_enough(self):
+        # Two E0 results, then a D1 target two days later: the cross-division history must be
+        # available. Ordering strictly by league would deny it.
+        rows = [row(10, 12, 0, league="E0"), row(11, 12, 6, league="E0"),
+                row(13, 20, 1, league="D1")]
+        sizes = prequential_sizes(rows, min_history=2)
+        self.assertNotEqual(sizes[2], float("inf"),
+                            "a later division must see older results from another division")
 
     def test_history_accumulates_once_available(self):
         # 12:00 on the 16th is available at 15:00; 20:00 on the 17th is available at 23:00, which

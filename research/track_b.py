@@ -132,7 +132,8 @@ def main() -> int:
         bhi = draws[int(0.975 * len(draws)) - 1]
 
         returns = [rows[i]["return"] for i in selected]
-        gap_draws, ret_draws, growth_draws = [], [], []
+        selected_set = set(selected)
+        gap_draws, ret_draws, growth_draws, policy_draws = [], [], [], []
         rng2 = np.random.default_rng(SEED + 1)
         for _ in range(BOOTSTRAPS):
             pick = [by_cluster[keys[rng2.integers(0, len(keys))]] for _ in keys]
@@ -142,7 +143,11 @@ def main() -> int:
             gap_draws.append(statistics.mean(rows[i]["correct"] - rows[i]["p_side"] for i in idx))
             ret_draws.append(statistics.mean(rows[i]["return"] for i in idx))
             growth_draws.append(statistics.mean(rows[i]["growth"] for i in idx))
-        gap_draws.sort(); ret_draws.sort(); growth_draws.sort()
+            chosen_here = set(idx)
+            policy_draws.append(statistics.mean(
+                rows[i]["growth"] if i in chosen_here and i in selected_set else 0.0
+                for i in idx))
+        gap_draws.sort(); ret_draws.sort(); growth_draws.sort(); policy_draws.sort()
         policy = [rows[i]["growth"] if i in set(selected) else 0.0 for i in range(n)]
         # Calibration of what the rule would show, by quintile of the selected probabilities.
         calib = []
@@ -169,6 +174,8 @@ def main() -> int:
                       "ev": statistics.mean(returns),
                       "ev_lo": ret_draws[int(0.025 * len(ret_draws))],
                       "ev_hi": ret_draws[int(0.975 * len(ret_draws)) - 1],
+                      "policy_lo": policy_draws[int(0.025 * len(policy_draws))],
+                      "policy_hi": policy_draws[int(0.975 * len(policy_draws)) - 1],
                       "growth": statistics.mean(rows[i]["growth"] for i in selected),
                       "growth_lo": growth_draws[int(0.025 * len(growth_draws))],
                       "growth_hi": growth_draws[int(0.975 * len(growth_draws)) - 1]})
@@ -180,13 +187,18 @@ def main() -> int:
 Pilot seasons only, {n:,} fixtures with a complete totals price. The rule shows the favourite side
 of the totals market only when its de-vigged probability clears the threshold.
 
-| Threshold | n | Coverage | Accuracy | Shown calibration gap | Policy growth | Raw board | Policy − raw | Regret | Growth at 0.5%/2% |
+| Threshold | n | Coverage | Accuracy | Shown calibration gap | Policy growth (95%) | Raw board | Policy − raw | Oracle regret* | Growth at 0.5%/2% |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 """ + "\n".join(
         f"| {r['tau']:.2f} | {r['n']:,} | {r['coverage']:.1%} | {r['acc']:.1%} | "
-        f"{r['calib']:.3f} | {r['policy']:+.5f} | {raw_growth:+.5f} | {r['delta']:+.5f} | "
-        f"{r['regret']:.5f} | {r['sens'][0.005]:+.5f} / {r['sens'][0.02]:+.5f} |"
+        f"{r['calib']:.3f} | {r['policy']:+.5f} [{r['policy_lo']:+.5f}, {r['policy_hi']:+.5f}] | "
+        f"{raw_growth:+.5f} | {r['delta']:+.5f} | {r['regret']:.5f} | "
+        f"{r['sens'][0.005]:+.5f} / {r['sens'][0.02]:+.5f} |"
         for r in table) + f"""
+
+*Oracle regret* is the gap to a policy that always stakes on the winning side. That policy uses
+knowledge of the outcome, so it is a **hindsight upper bound**, not a deployable competitor; it
+measures how much headroom any filter leaves, not what could have been earned.
 
 ## Reading
 

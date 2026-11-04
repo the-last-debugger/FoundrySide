@@ -50,9 +50,12 @@ Fourteen experiments, all recorded in [CONSOLIDATED_FINDINGS.md](docs/CONSOLIDAT
 - **The one positive signal failed its own pre-registered test.** A favourite-longshot gap
   appeared at high thresholds; pre-registered and applied to a held-out season, it was not
   supported (gap +0.026, interval spanning zero, negative return).
-- **Track B's arithmetic is negative.** A filtered view raises hit rate but costs 0.0003 nats of
-  log-wealth per fixture at a 1% stake; [the design](docs/TRACK_B_DESIGN.md) therefore predicts
-  the product is not worth building on this market.
+- **Track B's arithmetic is negative for the tested product.** A filtered view raises hit rate but
+  costs 0.0003 nats of log-wealth per fixture at a 1% stake, and filtering makes the displayed
+  probability less accurate, not more. [The design](docs/TRACK_B_DESIGN.md) therefore concludes
+  that this abstention product, measured this way, is not worth building on this market — it does
+  not settle the broader question of whether a user decides better with decision support, which
+  closing-price data cannot evaluate.
 
 ## What the project is waiting on
 
