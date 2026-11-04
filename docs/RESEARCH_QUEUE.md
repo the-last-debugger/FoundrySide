@@ -18,7 +18,7 @@ One decision, and only one: whether to authorise the **thin-division market-effi
 measurement** described in docs/OPPORTUNITY_ASSESSMENT.md.
 
 It is not a model extension. It asks whether the de-vigged closing price is less well calibrated in
-the fourteen unused divisions than in the eight already held. It needs no model to beat anything, no
+the thirteen authorised divisions than in the eight already held. It needs no model to beat anything, no
 protocol change, no new market family, and no data cost. The evidence pack — availability, licence
 status, fixture counts and the exact estimand — is in the assessment, which this register treats as
 complete.

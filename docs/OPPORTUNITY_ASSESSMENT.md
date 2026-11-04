@@ -43,7 +43,15 @@ different facts, and only the first is established.
 **Data and access — verified.** The provider serves all **22** of these codes for 2024/25, each a
 HEAD 200 in the same `mmz4281/<season>/<league>.csv` format with closing odds:
 
-`E0 E1 E2 E3 EC SC0 SC1 SC2 SC3 D1 D2 I1 I2 SP1 SP2 F1 F2 N1 B1 P1 T1 G1`
+`E0 E1 E2 E3 EC SC0 SC1 SC2 SC3 D1 D2 I1 I2 SP1 SP2 F1 F2 N1 B1 P1 T1 G1
+
+**G1 is a separate question, and it is excluded unresolved.** Twenty-two codes respond, eight are
+already held, so fourteen are not held - but the proposed set is thirteen. The missing one is G1
+(Greece), and the honest account is that it was omitted from the coverage probe rather than judged
+unsuitable: no odds-coverage measurement exists for it, and availability alone (HTTP 200) does not
+establish that it can support the metric. It is recorded as an **unresolved exclusion**, and the
+authorisation puts it explicitly out of scope. Not in the corpus and eligible for this test are
+different claims, and only the first is established for G1.`
 
 The corpus currently uses eight (E0, D1, E1, F1, I1, N1, P1, SP1). Thirteen are untapped. Counts are
 from files read **in memory** across the three pilot seasons; no file was stored, merged or added to
@@ -104,7 +112,7 @@ because it adds divisions to the corpus, which the protocol forbids without appr
 **What was checked.** Team sheets are published 60–75 minutes before kickoff — **after** a T−90
 cutoff, so lineups cannot help without changing the cutoff. The two open sources that resolve from
 here (openfootball, StatsBomb) carry fixtures, results, events and lineups but **no odds and no
-pre-kickoff timestamps**. Timestamped price sources are blocked in this environment
+pre-kickoff timestamps**. No suitable timestamped price source was verified; an earlier draft said such sources were blocked in this environment, which was wrong - direct HTTPS works, so the finding is absence of a verified source, not of network access.
 (`SOURCE_TIMING.md`).
 
 **Timing fit.** The binding constraint. Any candidate must be timestamped *before* the cutoff, not
