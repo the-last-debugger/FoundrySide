@@ -72,6 +72,20 @@ clusters) would raise power to **86.6%**.
 
 No confirmatory scoring has happened, none will without a freeze, and the target is unchanged.
 
+## Environment
+
+Python 3.12 with numpy; nothing else is imported. 
+equirements.txt pins nothing beyond
+
+umpy>=2.0 deliberately — the code is standard-library otherwise, and a lock file would rot
+faster than the dependency moves. The test suite runs without the corpus: the tests build their
+own fixtures, and the corpus is third-party data that is retrieved rather than committed.
+
+Continuous integration runs the data-free checks on every push (.github/workflows/checks.yml):
+the suite, the bridge checker, and a verification transcript. It does not regenerate reports —
+that needs the corpus and about fifteen minutes, and runs locally with
+python scripts/verify_all.py --full.
+
 ## Reproducing the measurements
 
 ```powershell
