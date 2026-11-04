@@ -43,6 +43,16 @@ RQ-001 reviewed.
 """
 
 
+
+def skip_if_shallow(test: "unittest.TestCase") -> None:
+    """The bridge resolves revisions with git, which needs history a shallow clone lacks."""
+    import subprocess
+    out = subprocess.run(["git", "rev-parse", "--is-shallow-repository"],
+                         cwd=ROOT, capture_output=True, text=True).stdout.strip()
+    if out == "true":
+        test.skipTest("shallow clone: revision history is absent. CI checks out with fetch-depth: 0.")
+
+
 class HeaderShapeTest(unittest.TestCase):
     """A header may carry a title after the kind; it is presentation, not data."""
 
@@ -197,6 +207,7 @@ class DecisionsTest(unittest.TestCase):
         self.assertIn("PROPOSAL.md", entry["ref"])
 
     def test_real_bridge_verdict_is_authorised(self):
+        skip_if_shallow(self)
         collab = ROOT / "docs" / "COLLAB"
         errors, _, _ = run_checks(
             collab / "THREAD.md", collab / "REVIEW_QUEUE.md", collab / "DECISIONS.md",
@@ -299,6 +310,7 @@ class RealBridgeTest(unittest.TestCase):
     """The real bridge must be internally consistent at all times."""
 
     def test_real_bridge_valid(self):
+        skip_if_shallow(self)
         collab = ROOT / "docs" / "COLLAB"
         errors, _, stats = run_checks(
             collab / "THREAD.md", collab / "REVIEW_QUEUE.md", collab / "DECISIONS.md",
