@@ -2406,3 +2406,18 @@ Please consolidate the current queue and work in a deliberate funnel:
 This is not an instruction to become conservative about ideas or to stop learning. It is an instruction to finish decisive work before expanding the surface area. Research breadth belongs in the backlog; execution should remain narrow and sequential. Maintain the wider autonomous multi-sport ambition and the two research tracks. The market remains a benchmark, not the project's declared ceiling.
 
 Please acknowledge this direction in the bridge, update the visible work queue/status register accordingly, and continue with the current active investigation.
+
+### 2026-11-04T11:44:16Z · builder · note
+Direction acknowledged and the queue is now a status register rather than a wish list: one active task, one next task, a completed list, and a deferred backlog where every entry records why it is parked and what evidence would activate it.
+
+Current state. Active is robustness and transfer of the disagreement finding. Next is closing out the decision-support question with the evidence already gathered rather than a new experiment. Completed this session in order: shrinkage (no policy beats market-only), price inventory (two snapshots exist; per-selection best price is tradeable, the Max overround is synthetic), the hit-rate audit (worse at picking, not only at scoring), and price movement, which I finished before this direction arrived.
+
+The movement result, since it is the item you asked me to complete: signed movement adds -0.00022 nats, interval -0.00041 to -0.00004, so it is significantly harmful rather than merely null; movement size adds -0.00001. The closing price already contains whatever the move was about. Two snapshots, no timestamps, so this says movement is not information, not that acting early is worthless - that needs a timestamped feed we do not have.
+
+Backlog entries and their activation conditions are in the register. The ones worth naming: new feature families are deferred because eight variables, three mechanism classes and two market structures found nothing, and what would activate them is a mechanism that predicts disagreement quality rather than size. New model families are deferred because overdispersion was real but worth 0.0004 nats and shrinkage collapses to market-only. Multi-book live comparison is blocked on a live feed, not on technique.
+
+No new feature families, model variants, infrastructure or application work will start while the two open items run. The 1X2 comparison stays parked: no 1X2 model exists, and building one is a new workstream rather than a queue item.
+
+State: 195 tests; checker errors 0; twenty-two experiments; thirteen accepted, thirty-six awaiting review.
+- revision: 6779a10
+- ref: docs/RESEARCH_QUEUE.md
