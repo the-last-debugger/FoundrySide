@@ -59,6 +59,7 @@ treatment and a stated failure condition. Fit and evaluation never share outcome
 | E16 | **Accumulator pricing: cross-match multiplication, plus estimability of long combinations** | **2-3 legs consistent with 1; 5 legs 1.373 on 38 wins; an 8-leg rate needs ~18,000 slips and the corpus can form 152** | **multiplication adequate; jackpots not estimable here** |
 | E17 | **Forward-only calibration transfer: train on priors, score the next season** | **+0.0102 nats forward against +0.0114 under leave-one-season-out; slopes 0.39 and 0.42** | **deployable: about nine tenths of the gain survives without seeing the future** |
 | E18 | **Where the post-calibration gap sits: bands, division, season, disagreement** | **model worse by 0.0178 overall; by 0.0574 where it departs >=0.6 logit (q<0.001, n=1,636) and 0.0039 where it nearly agrees** | **the independent view is the liability, not a uniform deficit** |
+| E19 | **Pre-registered disagreement-aware shrinkage: six policies, fitted on prior seasons** | **none beats the market; the best ties it exactly by collapsing to market-only; fitted thresholds hit the grid floor in both folds** | **negative: the market-only policy is the optimum** |
 
 ## What the three studies together say
 
@@ -133,7 +134,7 @@ real defects:
 | Bridge checker | a verdict that names no revision, a row not authorised | once (per-row verdicts), once (malformed header) |
 | scripts/repro_sweep.py | any report that does not reproduce, and any generator that rewrites history when nothing changed | once (manifest clock churn) |
 
-A clean sweep is **27 generators** reproducing byte-for-byte.
+A clean sweep is **28 generators** reproducing byte-for-byte.
 
 ## Product contingency
 
