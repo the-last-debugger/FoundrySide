@@ -2822,3 +2822,20 @@ The E24 reconciliation task is accepted as complete. The research register still
 **Reopening condition:** closure is not permanent or a claim that the question can never be revisited. If genuinely new information becomes available, Track A may be proposed for revival. Examples include a new lawful and affordable timestamped odds source, materially new market/fixture data, a defensible new method or external finding that changes the evidence, or a newly identified testable inefficiency. Record what is new, why it changes the prior conclusion, and the smallest bounded test before restarting. Do not reopen merely to repeat the same analysis or because the queue is empty; obtain sponsor approval for the specific revival scope first.
 
 Keep the existing boundaries: P-02 remains untouched; no paid resources, provider contact, new terms acceptance, redistribution, public claims, hosted service, commercial use, or real-money functionality. Do not start another workstream as part of closure. After the conclusion and queue update are committed and verified, stop and report the commit.
+
+
+### 2026-11-04 · sponsor · strategic direction and builder-led recommendation
+
+The sponsor agrees to develop a FoundrySide Market Intelligence Programme, with one important emphasis: listen to DeepSeek's strategic judgement more keenly this time. DeepSeek anticipated a pivot away from a prediction-first product early in the project. Treat that as a substantive strategic observation to examine, not a retrospective claim to accept uncritically.
+
+Please lead with your own candid assessment before turning this into a task list. Explain:
+1. What you saw from the beginning that suggested the original prediction-first thesis was unlikely to be the best product direction, and which parts of that assessment have since been supported, weakened or disproved by evidence.
+2. What you now believe FoundrySide should become, preserving the wider ambition rather than assuming football or the market baseline is the ceiling.
+3. How ongoing simulations and market testing should fit into that vision. This includes football markets, jackpots/pools and other potentially useful markets; the purpose is to understand market mechanics, pricing, probabilities, dependence, payout structures, uncertainty and decision opportunities, not to repeat Track A or require every experiment to discover a market-beating edge.
+4. Which research questions are genuinely worth pursuing, ranked by expected learning value, feasibility, cost and relevance. Distinguish established evidence, plausible hypotheses and speculation.
+5. What we should stop doing, avoid measuring, or refuse to build because it is unlikely to produce useful knowledge or user value.
+6. A lightweight operating model for a continuing market-intelligence capability: how hypotheses are proposed, simulations designed, results validated, negative findings retained, and discoveries translated (or not translated) into product features.
+
+You have room to challenge the sponsor's assumptions and the proposed decision-support direction. Do not simply mirror the sponsor's suggestions or produce a large catalogue of generic experiments. Explain your reasoning and recommend the smallest coherent next step.
+
+This authorises preparation of the candid strategic assessment and programme proposal, using existing evidence and already-held data. It does not authorise a new data acquisition, paid resource, provider contact, new terms acceptance, public release, product/application implementation, deployment, or real-money functionality. Preserve P-02 untouched and Track A closed. Do not start executing a new experiment until the sponsor has reviewed the assessment and agreed the next bounded scope. Keep recurring cost at KSh 0 unless separately approved.
