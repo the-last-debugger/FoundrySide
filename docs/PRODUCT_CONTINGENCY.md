@@ -50,8 +50,9 @@ benefit. Each needs an experiment of its own:
    second.
 3. **Projection tools** — usability evidence that disclosed assumptions change decisions for the
    better, and that no wording induces loss-chasing. This is a behaviour study, not an analysis.
-4. **Jackpot assistance** — published jackpot rules, fixture coverage and historical outcomes from
-   lawful sources, plus evidence that probability disclosure is understood rather than ignored.
+4. **Jackpot assistance** — **blocked**, recorded in docs/JACKPOT_FEASIBILITY.md: press coverage
+   exists, a structured history of rounds does not in any form located, and operator terms were
+   not examined under this authorisation. The honest interim product is arithmetic disclosure.
 5. **Multi-platform aggregation** — licence review and costed access for each provider, with
    latency and coverage measured. Currently blocked by the zero-cost boundary, not by technique.
 
