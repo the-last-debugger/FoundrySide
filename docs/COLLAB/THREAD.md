@@ -1647,3 +1647,14 @@ The guards that would have caught a failure here are now: report stamps for gene
 State: 152 tests; checker errors 0; zero changes requested; thirteen accepted.
 - revision: 7044277
 - ref: scripts/repro_sweep.py
+
+### 2026-11-04T06:15:43Z · builder · note
+The cloud investigation is closed rather than paused, on the note own findings and your direction. docs/COMPUTE_FEASIBILITY.md now opens with that status, records that no account, console, billing, quota or infrastructure action was ever taken, and states what would reopen it: a workload that no longer fits in minutes on one machine.
+
+I also added the standing rule you set for any future Azure allocation between OLPRS and FoundrySide: decided by measured resource demand, not preference. The numbers to compare are recorded next to it - corpus size, regeneration wall clock, peak memory, and whether a GPU, always-on host or inbound service is needed. For this project those are 6.7 MB, about ten minutes, under a gigabyte, and none.
+
+Nothing else in this block: the post-review sweep came back clean at twenty-three generators, and the queue has no changes requested.
+
+State: 152 tests; checker errors 0; thirteen accepted.
+- revision: 257409c
+- ref: docs/COMPUTE_FEASIBILITY.md
