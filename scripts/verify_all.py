@@ -1,14 +1,23 @@
-"""One command that produces independently checkable evidence.
+"""One command that produces independently checkable evidence, and refuses to fake it.
 
-The independent audit noted that the test and sweep counts are "builder-reported evidence". They
-are, because the reviewer has to trust a message rather than run something. This script exists so
-that is no longer necessary: it runs every check, records what it ran, and prints a transcript
-with the commit it applies to.
+The independent audit noted that the test and sweep counts are "builder-reported evidence". This
+script exists so a reviewer can run one command and see the counts come from the runs.
 
-    python scripts/verify_all.py
+Fail-closed provenance. An earlier version printed the commit and the number of dirty files and
+then reported PASS regardless, which is the defect this version fixes: a transcript that says
+"all stages passed" while the working tree does not match the commit it names is worse than no
+transcript. Now:
 
-Exit code is zero only if every stage passes. Nothing here is recorded by hand; the counts come
-from the runs.
+- a dirty tree fails the run, because the evidence would not correspond to any commit;
+- a HEAD that moves during the run fails it, for the same reason;
+- each stage has an explicit timeout, so a hang is a failure rather than a wait.
+
+    python scripts/verify_all.py            # quick: tests, bridge, claims
+    python scripts/verify_all.py --full     # adds the regeneration sweep
+    python scripts/verify_all.py --ci       # data-free, no sweep, for CI
+    python scripts/verify_all.py --allow-dirty   # explicit opt-out, labelled in the transcript
+
+Exit code is zero only if every stage passes and provenance holds.
 """
 
 from __future__ import annotations
@@ -21,22 +30,46 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PY = sys.executable
-
-
-def run(label: str, args: list[str], timeout: int = 1800) -> tuple[bool, str, float]:
-    started = time.time()
-    proc = subprocess.run(args, cwd=ROOT, capture_output=True, text=True, timeout=timeout)
-    elapsed = time.time() - started
-    output = (proc.stdout or "") + (proc.stderr or "")
-    return proc.returncode == 0, output, elapsed
+STAGE_TIMEOUT = 1800
 
 
 def git(*args: str) -> str:
     return subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True).stdout.strip()
 
 
+def dirty_files() -> list[str]:
+    return [line for line in git("status", "--porcelain").splitlines() if line.strip()]
+
+
+def provenance(head_before: str, head_after: str, dirty: int,
+               allow_dirty: bool) -> tuple[bool, str]:
+    """Decide whether a transcript may attest to a commit. Pure, so it can be tested.
+
+    Fails closed: an uncommitted tree or a moving HEAD means the evidence does not correspond to
+    the revision named at the top of the transcript.
+    """
+    if head_before != head_after:
+        return False, f"HEAD moved during the run ({head_before[:8]} -> {head_after[:8]})"
+    if dirty and not allow_dirty:
+        return False, (f"{dirty} uncommitted change(s): the transcript would attest to "
+                       f"{head_before[:8]} but describe a tree that is not that commit. "
+                       f"Commit them, or pass --allow-dirty to label the run as unattested.")
+    return True, ""
+
+
+def run(args: list[str], timeout: int = STAGE_TIMEOUT) -> tuple[bool, str, float]:
+    started = time.time()
+    try:
+        proc = subprocess.run(args, cwd=ROOT, capture_output=True, text=True, timeout=timeout)
+        ok = proc.returncode == 0
+        output = (proc.stdout or "") + (proc.stderr or "")
+    except subprocess.TimeoutExpired:
+        ok = False
+        output = f"timed out after {timeout}s"
+    return ok, output, time.time() - started
+
+
 def artefact_digest() -> str:
-    """One hash over every generated report, so a reader can compare two runs."""
     h = hashlib.sha256()
     for path in sorted((ROOT / "research").glob("*.md")):
         h.update(path.name.encode())
@@ -45,30 +78,47 @@ def artefact_digest() -> str:
 
 
 def main() -> int:
+    argv = sys.argv[1:]
+    ci = "--ci" in argv
+    allow_dirty = "--allow-dirty" in argv
+
+    head_before = git("rev-parse", "HEAD")
+    dirty = dirty_files()
+
+    ok, reason = provenance(head_before, head_before, len(dirty), allow_dirty or ci)
+    if not ok:
+        print("REFUSING TO RUN")
+        print(f"  {reason}")
+        return 1
+
     stages = [
         ("test suite", [PY, "-m", "unittest", "discover", "-s", "tests"]),
         ("bridge checker", [PY, "scripts/collab_check.py"]),
-        ("report stamps and claims", [PY, "-m", "unittest", "tests.test_reports",
-                                      "tests.test_claims", "tests.test_docs_integrity"]),
+        ("report stamps, claims, integrity",
+         [PY, "-m", "unittest", "tests.test_reports", "tests.test_claims",
+          "tests.test_docs_integrity"]),
     ]
-    if "--full" in sys.argv:
-        # The sweep regenerates every report and takes about twelve minutes; it is opt-in so
-        # this command stays usable while working.
+    if "--full" in argv:
         stages.append(("full regeneration sweep", [PY, "scripts/repro_sweep.py"]))
 
     print("FoundrySide verification transcript")
-    print("=" * 60)
-    print(f"commit      {git('rev-parse', '--short', 'HEAD')}")
+    print("=" * 62)
+    print(f"commit      {head_before[:12]}")
     print(f"branch      {git('rev-parse', '--abbrev-ref', 'HEAD')}")
-    print(f"dirty files {len([l for l in git('status', '--porcelain').splitlines() if l.strip()])}")
-    print(f"artefacts   sha256:{artefact_digest()} over {len(list((ROOT / 'research').glob('*.md')))} reports")
-    if "--full" not in sys.argv:
-        print("scope       quick checks only; pass --full to include the 23-generator sweep")
+    print(f"dirty files {len(dirty)}"
+          + ("  (ALLOWED: --allow-dirty, run is unattested)" if dirty else ""))
+    print(f"artefacts   sha256:{artefact_digest()} over "
+          f"{len(list((ROOT / 'research').glob('*.md')))} reports")
+    if ci:
+        print("scope       CI mode: data-free checks only")
+    elif "--full" not in argv:
+        print("scope       quick checks only; pass --full to include the regeneration sweep")
     print()
 
+    started = time.time()
     failures = 0
     for label, args in stages:
-        ok, output, elapsed = run(label, args)
+        ok, output, elapsed = run(args)
         tail = [line for line in output.splitlines() if line.strip()][-2:]
         print(f"[{'PASS' if ok else 'FAIL'}] {label} ({elapsed:.1f}s)")
         for line in tail:
@@ -76,13 +126,19 @@ def main() -> int:
         if not ok:
             failures += 1
 
+    head_after = git("rev-parse", "HEAD")
+    ok, reason = provenance(head_before, head_after, len(dirty), allow_dirty or ci)
+
     print()
-    print("=" * 60)
-    if failures:
-        print(f"RESULT: {failures} stage(s) failed")
+    print("=" * 62)
+    if not ok:
+        print(f"PROVENANCE FAILURE: {reason}")
         return 1
-    print("RESULT: all stages passed")
-    print("This transcript is produced by running the commands above; nothing in it is hand-entered.")
+    if failures:
+        print(f"RESULT: {failures} stage(s) failed after {time.time() - started:.0f}s")
+        return 1
+    print(f"RESULT: all stages passed in {time.time() - started:.0f}s")
+    print("Nothing in this transcript is hand-entered; every count comes from the run above.")
     return 0
 
 

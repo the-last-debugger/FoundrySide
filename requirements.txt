@@ -1,0 +1,9 @@
+# Runtime dependencies for the FoundrySide research repository.
+#
+# The analysis is standard-library Python plus numpy; nothing else is imported anywhere in
+# research/, scripts/ or tests/. The corpus itself is not committed (it is third-party data,
+# retrieved by research/analyse.py and recorded in research/data_manifest.csv), and the test
+# suite runs without it.
+#
+# Python: 3.12 (developed and verified on 3.12.14).
+numpy>=2.0
