@@ -96,6 +96,12 @@ individually earlier, which is repetition rather than replication.
 | E9 | Negative-binomial totals | +0.0004 | prequential dispersion | not a material gain |
 | E11 | Favourite-longshot (pre-registered, held-out season) | gap +0.026, return −0.004 | interval spans zero | not supported |
 
+Three further **mechanism classes** were tested after the feature screen, each under the same
+protocol: calendar folklore (full moon, Friday 13th, the 13th, weekend), head-to-head history
+(bogey-team goals and results, with pair-level resampling), and style mismatch (attack/defence
+interaction, venue asymmetry, scoring volatility). All three are null. The single positive in each
+class was small — 0.0001 nats or less — and failed its own stress test.
+
 In the screen, all six families have permutation p between 0.388 and 0.900 and BH q = 0.900. No
 family is positive in any held-out season. A high permutation p means **a positive gain of that
 size was not detected**; it is not evidence that no information exists.
