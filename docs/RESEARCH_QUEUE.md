@@ -17,7 +17,7 @@ activating it. Historical records are not erased; completed items stay listed wi
 
 | Field | Value |
 | --- | --- |
-| **Task** | Close out decision-support value (queue item 2) |
+| **Task** | ~~Close out decision-support value~~ — **complete**, see the close-out section in PRODUCT_CONTINGENCY.md |
 | **Question** | Given that movement adds nothing (E22) and per-selection best price is tradeable but small (E15, E20), is there any decision-support claim the corpus supports? |
 | **Deliverable** | a closing section in `PRODUCT_CONTINGENCY.md`, not a new experiment |
 

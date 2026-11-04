@@ -76,3 +76,41 @@ Any **two** of the following, on evidence:
 3. lawful, affordable access to a timestamped multi-book feed.
 
 Until then this stays on the ladder as a recorded option, and the research continues as it is.
+
+## Decision support: what the corpus actually supports
+
+This closes queue item 2. Everything below is measured on this corpus; nothing is inferred from
+feature availability.
+
+### Established
+
+| Claim | Evidence | Strength |
+| --- | --- | --- |
+| Shopping improves the price paid, by about 6.5% per selection against the market average | E20 (PRICE_INVENTORY.md) | measured across 44,406 selection-snapshots |
+| Two books' closing prices differ on 93% of fixtures; taking the better saves 0.17 pp of overround | E15 (BEST_PRICE.md) | measured |
+| At the better price, 99.1% of fixtures still have negative expected value | E15 | measured |
+| Opening-to-closing movement adds nothing to the closing price | E22 (MOVEMENT_STUDY.md) | pre-registered, negative |
+| Filtering to confident picks makes the displayed probability less accurate, not more | E10 (TRACK_B.md) | measured |
+| A higher hit rate does not imply better decisions | E21 (HIT_RATE_AUDIT.md) | measured |
+
+### Not established, and why
+
+- **That price shopping creates positive expected value.** The apparent 56.6% of selections with
+  positive value at the best price is inflated by a mechanical selection effect: for a single
+  selection, the maximum across books is the least pessimistic quote, which sits below the fair
+  probability by construction. The corpus can show that shopping improves the price; it cannot
+  observe the fair probability that would decide whether the price is good.
+- **That a better price is obtainable when a user acts.** No timestamp on any price; no limits,
+  stakes or account terms.
+- **That any decision-support feature improves user decisions.** That needs a user study, not this
+  corpus.
+
+### Recommendation
+
+The only decision-support claim this project can make honestly is: **price comparison reduces what a
+user pays, by a measurable amount, and that is not the same as making a bet profitable.** A product
+built on that claim should say exactly that, and should not present a better price as value, a hit
+rate as an edge, or an abstention rule as skill.
+
+Everything else in the contingency plan — slip assistance, projections, jackpots, multi-platform
+aggregation — remains blocked on evidence or access, as recorded above.

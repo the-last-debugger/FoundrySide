@@ -1,4 +1,4 @@
-<!-- generated-by: price_inventory.py sha256=e147b2e95334 -->
+<!-- generated-by: price_inventory.py sha256=ff46b54e4bd7 -->
 
 # What the corpus actually contains
 
@@ -44,6 +44,26 @@ corpus actually supports a market-wide best-price question and a movement questi
 6.51% on average across 44,406 selection-snapshots: a user
 backing one outcome can get a better price by choosing the right book. That is the tradeable
 quantity.
+
+**Whether that better price beats the margin is the decision-relevant question.** Treating the
+de-vigged average price as the fair probability, backing one selection at the best available price
+returns a mean expected value of **+0.0160** per unit across 44,406
+selection-snapshots, and **56.6%** of them are positive. That is the whole
+price-shopping case: the average price carries the margin, and the best price sometimes beats it.
+
+**This must not be read as evidence of profit, and the reason is mechanical.** For a *single*
+selection, the maximum across several books is a maximum of noisy quotes: where books allocate their
+margin differently across outcomes, the highest price for one outcome comes from the book that is
+least pessimistic about it, which sits below the fair probability by construction. Taking a maximum
+therefore beats a de-vigged average partly because of selection, not because information exists.
+
+The de-vigged average is also an assumption rather than a measurement, and no timestamp means the
+price may not be obtainable when a user acts.
+
+So the supported claim is narrower: **shopping improves the price a user pays**, by about six and a
+half per cent on average. Whether it improves expected value depends on the fair probability, which
+this corpus cannot observe, and the positive share above should be treated as an upper bound
+inflated by the selection effect rather than as an edge.
 
 **The three-way overround from Max columns is not tradeable.** Summing the best home, best draw
 and best away price across books gives an overround 0.0526 lower than the average —

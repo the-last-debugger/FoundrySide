@@ -60,6 +60,29 @@ def usable(value) -> bool:
     return math.isfinite(v) and v > 1.0
 
 
+
+def ev_at_best(rows: list[dict]) -> dict:
+    """Per-selection expected value if the de-vigged average price is treated as fair.
+
+    This is the decision-relevant quantity behind price shopping: if the market average already
+    carries the margin, the best available price for one selection may or may not beat it. The
+    average is de-vigged across the three outcomes, so it is the best available estimate of the
+    fair probability in this corpus - an assumption, stated as such.
+    """
+    evs = []
+    for r in rows:
+        cols = (("AvgCH", "MaxCH"), ("AvgCD", "MaxCD"), ("AvgCA", "MaxCA"))
+        if not all(usable(r.get(a)) and usable(r.get(b)) for a, b in cols):
+            continue
+        inv = sum(1 / float(r[a]) for a, _ in cols)
+        for avg_col, best_col in cols:
+            fair = (1 / float(r[avg_col])) / inv
+            evs.append(fair * float(r[best_col]) - 1)
+    positive = sum(1 for e in evs if e > 0)
+    return {"n": len(evs), "mean": statistics.mean(evs) if evs else float("nan"),
+            "share_positive": positive / len(evs) if evs else float("nan")}
+
+
 def main() -> int:
     rows = analyse.load()
     n = len(rows)
@@ -112,6 +135,8 @@ def main() -> int:
         moved.append(abs(math.log(float(r["PSH"]) / float(r["PSCH"]))))
     move_mean = statistics.mean(moved) if moved else float("nan")
 
+    ev = ev_at_best(rows)
+
     doc = f"""{report_stamp.stamp(Path(__file__))}
 
 # What the corpus actually contains
@@ -146,6 +171,26 @@ corpus actually supports a market-wide best-price question and a movement questi
 {per_selection_mean * 100:.2f}% on average across {len(per_selection):,} selection-snapshots: a user
 backing one outcome can get a better price by choosing the right book. That is the tradeable
 quantity.
+
+**Whether that better price beats the margin is the decision-relevant question.** Treating the
+de-vigged average price as the fair probability, backing one selection at the best available price
+returns a mean expected value of **{ev['mean']:+.4f}** per unit across {ev['n']:,}
+selection-snapshots, and **{ev['share_positive']:.1%}** of them are positive. That is the whole
+price-shopping case: the average price carries the margin, and the best price sometimes beats it.
+
+**This must not be read as evidence of profit, and the reason is mechanical.** For a *single*
+selection, the maximum across several books is a maximum of noisy quotes: where books allocate their
+margin differently across outcomes, the highest price for one outcome comes from the book that is
+least pessimistic about it, which sits below the fair probability by construction. Taking a maximum
+therefore beats a de-vigged average partly because of selection, not because information exists.
+
+The de-vigged average is also an assumption rather than a measurement, and no timestamp means the
+price may not be obtainable when a user acts.
+
+So the supported claim is narrower: **shopping improves the price a user pays**, by about six and a
+half per cent on average. Whether it improves expected value depends on the fair probability, which
+this corpus cannot observe, and the positive share above should be treated as an upper bound
+inflated by the selection effect rather than as an edge.
 
 **The three-way overround from Max columns is not tradeable.** Summing the best home, best draw
 and best away price across books gives an overround {saving_mean:.4f} lower than the average —
