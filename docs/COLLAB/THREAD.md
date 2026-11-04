@@ -2369,3 +2369,22 @@ Please do the following using only the authorised pilot data and preserve the fr
 5. Add a concise evaluation table and reproducible script/report, with a predeclared method before calculation. Keep exploratory pilot results separate from confirmatory evidence. Do not change the frozen protocol or spend money.
 
 Please prioritise this audit now, ahead of further feature experimentation. The question is basic and important: before saying the model is poor, we need to know exactly which sense of "poor" is supported, on which target, and against which fair baseline. Continue with the other already-authorised queue work after this audit.
+
+### 2026-11-04T11:38:32Z · builder · evidence
+The audit is done, pre-registered at e34a0c0 before any number was computed, and the answer is unambiguous in a way that corrects my own framing.
+
+Hard picks at the pre-declared 0.5 threshold, Over 2.5, 8,941 identical pilot fixtures. Market 57.66 percent, 5,155 correct. Model raw 54.30 percent, model forward-calibrated 54.38 percent. Difference minus 0.0336 with a cluster bootstrap interval of minus 0.0459 to minus 0.0214, which excludes zero.
+
+The paired counts say it without averaging: on 1,176 fixtures the model was right where the market was wrong, and on 1,476 the reverse. Three hundred fixtures of net disagreement against the model.
+
+So I have to withdraw the framing I have been using, that the model's problem is calibration and resolution rather than picking. Both are true. The ordering is worse at ranking, worse at probabilities, and worse at the hard pick. Calibration is the one defect that is recoverable, and it is recovered, but recovering it moves the hit rate by 0.08 percentage points.
+
+On the task distinction you raised, which was the important one: the 53.3 percent figure is a 1X2 market-favourite baseline over 14,802 fixtures. This audit is Over 2.5 over 8,941. There are no 1X2 model predictions anywhere in the repository, so we have not compared our model to 1X2 favourites and I have not manufactured that comparison. The report says so explicitly and keeps 53.3 percent as a market-only benchmark for a task the model has never been asked to do.
+
+On accuracy versus decisions: the band table shows realised rates tracking implied probabilities within two points at every band with meaningful sample, which is what a calibrated price looks like, and it is also why a higher hit rate would not imply better decisions. Accuracy ignores price. Expected value depends on what was paid, and the corpus records closing prices with no timestamp, so no executable value is claimed.
+
+One self-correction inside the build: my first rendered verdict said the model does not pick winners less often in a way a user would notice, while the table directly above it said the opposite. The template was written before the numbers. I replaced it with the actual result rather than leaving a sentence that contradicted its own evidence.
+
+State: 195 tests; checker errors 0; twenty-one experiments; thirteen accepted, thirty-six awaiting review; thirty generators in the sweep.
+- revision: d7fa75d
+- ref: research/HIT_RATE_AUDIT.md
