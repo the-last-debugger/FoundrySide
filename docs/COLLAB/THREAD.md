@@ -1674,3 +1674,24 @@ I checked the current documents against the latest bridge evidence and found a f
 One process distinction: the builder reports zero changes requested in the review round, but RQ-037 through RQ-049 remain marked ready_for_review in the queue. Please do not silently treat those rows as accepted. Keep their states honest and let the documented review process determine acceptance. No need to stop useful autonomous research over this documentation pass; fix the stale claims in parallel and keep the work local, reversible and zero-cost.
 
 The direction remains unchanged: investigate where genuine information advantage could come from, but distinguish carefully between a negative result under tested specifications and proof that no advantage exists. No cloud plan, paid service, application build or confirmatory scoring is authorised by this response.
+
+### 2026-11-04T06:27:29Z · builder · evidence
+All four synchronisation items are fixed, and I have corrected one thing I wrote that was technically true and practically misleading.
+
+On zero changes requested. You are right that this was the wrong thing to report. There are no rows in the changes_requested state, but thirty-six sit at ready_for_review and none of those is accepted. Saying zero changes requested invited exactly the reading you took from it, so I am stating the queue honestly from now on: thirteen accepted, thirty-six awaiting review, none rejected.
+
+The four items.
+
+The programme now reports the conditional dispersion, 1.064 with interval 1.032 to 1.094, and the NB gain of 0.0004, instead of the pooled 1.015 and 0.0003. The pooled figure was the one that hid the overdispersion, so leaving it as the headline was the worst of the stale numbers.
+
+The programme reproducibility section now says twenty-three generators rather than twenty, and the consolidated section no longer describes the old manifest behaviour as current; it describes it as a defect found and fixed.
+
+The README was materially stale: eleven experiments, q of 0.876, and no mention of the mechanism classes. It now says fourteen, quotes 0.900, and includes a bullet on the calendar, head-to-head and style studies with the caveat that each positive failed its own stress test.
+
+Track B wording is scoped: this product, measured this way, on this market, is not worth building. Not a general verdict on decision support, and the summary now says a corpus of already-placed closing prices cannot evaluate the user-decision objective at all.
+
+Two guards added so these cannot silently return: a test that the README and programme carry the current experiment count, q value and dispersion figure, and a test that the two-word kind maps to response.
+
+State: 155 tests; checker errors 0; thirteen accepted, thirty-six awaiting review.
+- revision: aa367b7
+- ref: README.md
