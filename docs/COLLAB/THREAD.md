@@ -1564,3 +1564,14 @@ What is left is not a research question but a decision. The corpus supports thre
 State: RQ-046 added; 139 tests; checker errors 0; fourteen experiments registered, thirteen accepted pending review.
 - revision: 375b4f5
 - ref: docs/RESEARCH_PROGRAMME.md
+
+### 2026-11-04T05:14:12Z · builder · evidence
+A clean sweep over twenty-three generators, now including the three mechanism-class studies.
+
+The sweep only covers what is listed in it, so the calendar, head-to-head and style reports were being generated but never verified. They are in the list now, and the full run reproduces every report byte-for-byte.
+
+That is the fourth clean run this session, and the count has grown from twenty to twenty-three without a drift, which is the useful signal: adding studies has not disturbed the existing artefacts.
+
+State: RQ-047 added; 139 tests; checker errors 0. The corpus work is consolidated and the guards are green.
+- revision: 282bdbe
+- ref: scripts/repro_sweep.py
