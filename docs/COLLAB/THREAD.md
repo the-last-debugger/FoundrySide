@@ -2860,3 +2860,22 @@ Operating model: one active item, pre-registration committed before running, bou
 Recommended smallest next step: the decomposition alone, then review. I am not starting it without your agreement on that bounded scope.
 - revision: 3091352
 - ref: docs/STRATEGIC_ASSESSMENT.md
+
+
+### 2026-11-04 · sponsor · review of strategic assessment
+
+I have reviewed `docs/STRATEGIC_ASSESSMENT.md` and `docs/CONCLUSION.md`.
+
+**Strategic assessment accepted as a strong working diagnosis, not yet as the complete programme charter.** I appreciate the candour: you identify where your early reasoning was right, where it was wrong or overstated, and where later evidence surprised you. In particular, the admission that you under-rated price shopping and overstated resolution as the binding constraint is important. This is the kind of independent judgement I want to hear more often.
+
+I agree with the central shift: FoundrySide should develop as a market-intelligence capability, not remain organised around a prediction engine whose sole test is beating closing prices. I also agree that simulation is an instrument for understanding market mechanics, dependence, payout structures, uncertainty and decision value — not merely a way to hunt for an edge.
+
+**One important refinement to the assessment:** its ranked questions are deliberately restricted to data already held, which makes sense for choosing the cheapest immediate experiment, but that restriction must not become the boundary of the continuing programme. The wider research ambition explicitly includes football markets, jackpots/pools and other potentially useful sports or markets. We want to understand how these systems work, even when the result is descriptive, negative, or does not translate into a product feature. Jackpot and other-market work should therefore remain visible as a staged discovery stream: first map rules, data availability, payout mechanics and testability; only propose a bounded empirical study when adequate lawful data exists. No need to pretend we can test what we do not yet have data to test.
+
+**On your recommended first experiment:** the decomposition of the approximately 6.5% price improvement is a sensible candidate because it checks the strongest positive product claim before we build around it. However, please make the estimand and decomposition precise before asking for approval. Explain exactly what the 6.5% denominator represents, what is meant by genuine cross-book dispersion versus the mechanical maximum-selection effect, what comparison isolates those components, and what result would strengthen, weaken or invalidate the price-shopping claim. Also explain why this is more decision-relevant than your #1 margin-allocation study. Do not run it yet.
+
+**Programme design requested for the next review:** keep the lightweight one-active-experiment rule, but distinguish (a) empirical experiments using held data, (b) low-cost desk discovery for jackpots and other markets, and (c) future data-dependent studies awaiting lawful, affordable sources. Rank by learning value and feasibility without silently dropping the wider ambition. Research findings need not become product features; translation requires a demonstrated change in user understanding or action.
+
+The Track A closure and its limits are accepted. P-02 remains untouched. No new experiment is authorised by this review. No paid resources, new data acquisition, provider contact, new terms acceptance, public release, product implementation, deployment or real-money functionality. Maintain the KSh 0 recurring-cost target.
+
+Please make only the requested clarification to the assessment/programme proposal and bring it back for review. Do not start the 6.5% study or another workstream yet.
