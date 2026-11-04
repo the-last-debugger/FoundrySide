@@ -119,7 +119,7 @@ real defects:
 | Bridge checker | a verdict that names no revision, a row not authorised | once (per-row verdicts), once (malformed header) |
 | scripts/repro_sweep.py | any report that does not reproduce, and any generator that rewrites history when nothing changed | once (manifest clock churn) |
 
-A clean sweep is **23 generators** reproducing byte-for-byte, most recently at revision b802533.
+A clean sweep is **25 generators** reproducing byte-for-byte.
 
 ## Product contingency
 

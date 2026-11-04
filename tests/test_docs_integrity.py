@@ -74,6 +74,17 @@ class ReferencesTest(unittest.TestCase):
                    if p.name not in summary]
         self.assertEqual(missing, [], f"reports absent from the source map: {missing}")
 
+    def test_documented_generator_count_matches_the_sweep(self):
+        # A hand-written count drifted from the real inventory twice (23 vs 25). The number in the
+        # programme must equal the number of generators the sweep actually runs.
+        sys.path.insert(0, str(ROOT / "scripts"))
+        from repro_sweep import GENERATORS
+        programme = doc_text("docs/RESEARCH_PROGRAMME.md")
+        lines = [l for l in programme.splitlines() if "generator" in l.lower()]
+        self.assertTrue(lines, "the programme should state the sweep size")
+        self.assertTrue(any(str(len(GENERATORS)) in l for l in lines),
+                        f"no line records {len(GENERATORS)} generators")
+
 
 if __name__ == "__main__":
     unittest.main()
