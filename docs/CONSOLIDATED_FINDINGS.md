@@ -134,6 +134,21 @@ Three routes, each a sponsor decision because each costs money, time, or legal e
 
 None of these can be tested with the current data, and no spending is authorised.
 
+## 8a. Reproducibility
+
+scripts/repro_sweep.py regenerates every report in dependency order and reports drift: any
+committed artefact that changes when its generator is rerun. Two defects it was written to catch
+were both live.
+
+The manifest stamped every row with the current clock, so a rerun against byte-identical data
+rewrote all eighty rows and every report quoting the snapshot hash churned with it. It now keeps
+a file's first-seen time unless its bytes changed, and the reports derive their provenance from
+the manifest rather than from 
+ow().
+
+The report-stamp test carried a hand-maintained list that silently stopped growing because the
+anchor string it inserted against had moved; it now discovers every stamped report.
+
 ## 9. Open items
 
 - The protocol is not frozen; the sizing says a 0.01-nat effect needs about 0.0116–0.0130 nats at

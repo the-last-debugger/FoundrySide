@@ -57,6 +57,7 @@ $py = "C:\Users\tuyaa\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\
 & $py research\analyse.py          # regenerates RESULTS_T0_T1_T3.md and the manifest
 & $py -m unittest discover -s tests -v
 & $py scripts\collab_check.py
+& $py scripts\repro_sweep.py       # regenerate every report, report drift
 ```
 
 `research/analyse.py` is standard-library only and reads whatever CSVs are in

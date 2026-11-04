@@ -49,6 +49,14 @@ GENERATORS = [
 ]
 
 
+
+def _artefact_state() -> list[str]:
+    """Changed paths under research/ only: the generated reports and data files."""
+    out = subprocess.run(["git", "status", "--porcelain", "--", "research"],
+                         cwd=ROOT, capture_output=True, text=True).stdout
+    return [line for line in out.splitlines() if line.strip()]
+
+
 def main() -> int:
     if "--check" in sys.argv:
         import unittest
@@ -57,14 +65,14 @@ def main() -> int:
     drift = []
     failures = []
     for script, args in GENERATORS:
-        before = subprocess.run(["git", "status", "--porcelain"], cwd=ROOT,
-                                capture_output=True, text=True).stdout
+        # Scope drift detection to generated artefacts. Tracking the whole tree reports any
+        # concurrent documentation edit as generator drift, which is noise.
+        before = _artefact_state()
         proc = subprocess.run([PY, script, *args], cwd=ROOT, capture_output=True, text=True)
-        after = subprocess.run(["git", "status", "--porcelain"], cwd=ROOT,
-                               capture_output=True, text=True).stdout
+        after = _artefact_state()
         if proc.returncode != 0:
             failures.append((script, proc.stderr.strip().splitlines()[-1] if proc.stderr.strip() else ""))
-        changed = set(after.splitlines()) - set(before.splitlines())
+        changed = set(after) - set(before)
         if changed:
             drift.append((script, sorted(changed)))
 
