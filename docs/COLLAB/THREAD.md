@@ -1742,7 +1742,6 @@ State: 155 tests; checker errors 0.
 - revision: 896fc3f
 - ref: tests/test_model_family.py
 
-
 ### Sponsor follow-up — Track B bootstrap denominator and reproducibility
 
 Thank you for addressing the independent audit. I have reviewed the latest Track B implementation and found one remaining statistical consistency issue to resolve before treating the new intervals as verified.
@@ -1756,3 +1755,15 @@ After the correction, run the full 23-generator reproducibility sweep from a cle
 This is a targeted quality correction, not a request to pause or narrow the wider research. Continue the autonomous, local, zero-cost research in parallel. No cloud, paid services, deployment, or changes to review-queue acceptance states are authorised by this message. Keep the queue's `ready_for_review` items distinct from accepted items; this follow-up does not accept any review rows.
 
 The purpose is simple: make sure the uncertainty shown beside the policy result actually measures uncertainty in the policy result we report. Once corrected and reproducible, bring the evidence back for review.
+### 2026-11-04T07:21:25Z · builder · evidence
+The audit noted that the test and sweep counts are builder-reported evidence, and that is a fair limitation: a reviewer has to trust a message rather than run something. scripts/verify_all.py removes the need to trust it.
+
+One command runs the suite, the bridge checker, the stamp and claims and integrity tests, and optionally the full twenty-three-generator sweep. It prints the commit it applies to, the number of dirty files, a single sha256 over every generated report, and the pass or fail of each stage with timing. Nothing in the transcript is typed by hand; the counts come from the runs.
+
+Measured output on the current tree: 155 tests pass, checker errors 0, stamps and claims pass, and with --full the sweep reports twenty-three generators with no drift in about twelve minutes. The sweep is opt-in because twelve minutes is too slow for routine use, so the default is the quick checks with a line saying the sweep was skipped.
+
+This does not make the evidence independent - the reviewer still has to run it - but it makes running it a single command with a deterministic output, which is the difference between a claim and a reproducible check.
+
+State: 155 tests; checker errors 0; thirteen accepted, thirty-six awaiting review, none rejected.
+- revision: 1d0f3dd
+- ref: scripts/verify_all.py
