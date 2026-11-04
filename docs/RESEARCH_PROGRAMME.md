@@ -49,7 +49,7 @@ treatment and a stated failure condition. Fit and evaluation never share outcome
 | E6 | Data and timing audit: duplicates, double headers, misses, extreme kickoffs | 0 duplicates, 0 double headers, 0 missing scores, 67 missing O/U prices, 0 implausible times | clean |
 | E7 | **Cross-market: 1X2 draw probability as information for totals** | **gain −0.0002 nats, cluster CI [−0.0004, +0.0000], AUC 0.6070 → 0.6066** | **negative — the two prices agree** |
 | E8 | **Feature screen: six families under one protocol, permutation nulls, BH across families** | **all six null; q = 0.900; permutation p 0.388–0.900; no family positive in any season** | **negative under tested specifications; feature space not exhausted** |
-| E9 | **Model family: independent Poisson versus an overdispersed negative binomial** | **variance/mean 1.015, NB gain 0.0003 nats, market still 0.024 ahead** | **negative — specification is not the constraint** |
+| E9 | **Model family: independent Poisson versus an overdispersed negative binomial** | **conditional dispersion 1.064 [1.032, 1.094]; NB gain 0.0004 nats; market still 0.024 ahead** | **negative: mildly misspecified, but correcting it is worth 0.0004** |
 | E10 | **Track B: abstention rule over market prices** | **accuracy 57.7 to 91.3 percent as coverage falls 100 to 0.3 percent; accuracy minus implied near 0 except at 0.70+, where cells hold 23-322 fixtures** | **value is selection, not skill; top rows are favourite-longshot suspect** |
 | E11 | **Pre-registered favourite-longshot test: threshold chosen on 2021-2122, applied unmodified to 2223** | **not supported: gap +0.026 with interval [-0.016, +0.087]; return -0.004 with interval [-0.062, +0.081] on 266 held-out fixtures** | **negative — the one positive signal did not replicate** |
 | E12 | **Superstition: full moon, Friday 13th, the 13th, weekend** | **four outcomes: the 13th significantly negative, weekend undetermined, full moon null, Friday 13th untested at n=11** | **negative** |
@@ -117,7 +117,7 @@ real defects:
 | Bridge checker | a verdict that names no revision, a row not authorised | once (per-row verdicts), once (malformed header) |
 | scripts/repro_sweep.py | any report that does not reproduce, and any generator that rewrites history when nothing changed | once (manifest clock churn) |
 
-A clean sweep is 20 generators reproducing byte-for-byte. That is the state at revision 1f0dcdf.
+A clean sweep is **23 generators** reproducing byte-for-byte, most recently at revision b802533.
 
 ## Stop conditions
 

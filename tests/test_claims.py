@@ -79,6 +79,20 @@ class ClaimsTest(unittest.TestCase):
         for name in ("docs/CONSOLIDATED_FINDINGS.md", "README.md"):
             self.assertIsNone(_re.search(r"\b\d+ items awaiting review", read(name)), name)
 
+    def test_current_experiment_count_and_screen_figures(self):
+        readme = read("README.md")
+        programme = read("docs/RESEARCH_PROGRAMME.md")
+        self.assertIn("Fourteen experiments", readme)
+        self.assertNotIn("Eleven experiments", readme)
+        self.assertIn("0.900", readme)
+        self.assertNotIn("0.876", readme)
+        self.assertIn("23 generators", programme)
+
+    def test_programme_reports_conditional_dispersion(self):
+        programme = read("docs/RESEARCH_PROGRAMME.md")
+        self.assertIn("1.064", programme)
+        self.assertNotIn("1.015", programme)
+
 
 if __name__ == "__main__":
     unittest.main()

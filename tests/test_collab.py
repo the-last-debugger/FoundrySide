@@ -61,6 +61,13 @@ class HeaderShapeTest(unittest.TestCase):
         path.write_text("### 2026-11-03T10:00:00Z · builder · note\nBody.\n", encoding="utf-8")
         self.assertEqual(parse_entries(path)[0]["kind"], "note")
 
+    def test_two_word_kind_is_aliased(self):
+        path = Path(tempfile.mkdtemp()) / "THREAD.md"
+        path.write_text("### 2026-11-04 · sponsor · review response\nBody.\n", encoding="utf-8")
+        entries = parse_entries(path)
+        self.assertEqual(len(entries), 1)
+        self.assertEqual(entries[0]["kind"], "response")
+
 
 class ParseEntriesTest(unittest.TestCase):
     def _thread(self, text=FIXTURE_THREAD) -> Path:

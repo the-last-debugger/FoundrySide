@@ -132,7 +132,10 @@ of log-wealth per fixture, and no threshold produces growth distinguishable from
 
 `docs/TRACK_B_DESIGN.md` fixes the success criteria before scoring. Criterion 2 — non-negative
 log-growth with an interval excluding a 0.001-nat loss — fails on current evidence, so the design
-predicts that this product is **not worth building on this market**.
+predicts that **this product, measured this way, on this market, is not worth building**. That is a
+result under the tested measures and scope, not a general verdict on decision-support products: the
+broader objective includes a user deciding better, which a corpus of already-placed closing prices
+cannot evaluate.
 
 ## 7. What this does not establish
 

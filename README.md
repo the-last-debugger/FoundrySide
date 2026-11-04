@@ -36,14 +36,17 @@ Three things are now measured rather than argued:
 
 ## What has been established
 
-Eleven experiments, all recorded in [CONSOLIDATED_FINDINGS.md](docs/CONSOLIDATED_FINDINGS.md):
+Fourteen experiments, all recorded in [CONSOLIDATED_FINDINGS.md](docs/CONSOLIDATED_FINDINGS.md):
 
 - **Calibration is recoverable.** An out-of-fold Platt map recovers 0.0114 of the 0.0246-nat
   deficit, but the model still carries about a quarter of the market's separation (AUC 0.562
   against 0.607). Half the gap is mapping, half is missing information.
 - **No information source tested adds anything to the closing price.** Cross-book disagreement,
   schedule congestion, cross-market totals, recent scoring and league environment were screened
-  under one protocol with permutation nulls; all six families were null (BH q = 0.876).
+  under one protocol with permutation nulls; all six families were null (BH q = 0.900).
+- **Three further mechanism classes were tested and none survived.** Calendar folklore, head-to-head
+  history and style mismatch were each tested against the price; every positive point estimate
+  failed its own stress test, and the intuitively plausible attack/defence interaction was negative.
 - **The one positive signal failed its own pre-registered test.** A favourite-longshot gap
   appeared at high thresholds; pre-registered and applied to a held-out season, it was not
   supported (gap +0.026, interval spanning zero, negative return).

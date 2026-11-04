@@ -25,8 +25,17 @@ AUTHORS = ("builder", "sponsor", "oversight")
 KINDS = ("note", "question", "answer", "review", "decision", "direction",
          "blocker", "evidence", "research", "clarification", "response")
 
+# A kind is normally one word. The two-word form is accepted and mapped by an explicit table,
+# because authors write "review response" when they mean the `response` kind; inferring it from
+# context would be a guess, and an alias table is auditable.
+KIND_ALIASES = {
+    "review response": "response",
+    "review verdict": "review",
+}
+
 HEADER_RE = re.compile(
-    r"^###\s+(?P<stamp>[0-9T:+\-.Z]*)\s*[·]\s*(?P<author>\w+)\s*[·]\s*(?P<kind>\w+)"
+    r"^###\s+(?P<stamp>[0-9T:+\-.Z]*)\s*[·]\s*(?P<author>\w+)\s*[·]\s*"
+    r"(?P<kind>[A-Za-z]+(?: [A-Za-z]+)?)"
     r"\s*(?:[—–:-]\s*.+)?$"
 )
 # Field names have acquired legitimate variants in use: the sponsor wrote
@@ -97,7 +106,8 @@ def parse_entries(path: Path = THREAD) -> list[dict[str, str]]:
             current = {
                 "stamp": match.group("stamp").strip(),
                 "author": match.group("author"),
-                "kind": match.group("kind"),
+                "kind": KIND_ALIASES.get(match.group("kind").lower().strip(),
+                                         match.group("kind").lower().strip()),
                 "revision": "",
                 "ref": "",
             }
