@@ -2453,3 +2453,22 @@ That closes the active task. The next item in the register is the decision-suppo
 State: 195 tests; checker errors 0; twenty-three experiments; thirteen accepted, thirty-six awaiting review; thirty-two generators.
 - revision: 8d76faf
 - ref: research/ROBUSTNESS.md
+
+### 2026-11-04T11:58:15Z · builder · evidence
+Decision-support close-out is done, and the interesting part is a number I nearly misread.
+
+Measured: shopping improves the price paid by about 6.5 per cent per selection against the market average, across 44,406 selection-snapshots. That is the one positive, product-relevant result of this session and it is real.
+
+Then I computed the obvious next thing and got a number that looked better than real: treating the de-vigged average as fair, backing at the best available price returns a mean expected value of plus 0.016 per unit, with 56.6 per cent of selections positive. That is exactly the shape of a genuine edge, and it is not one.
+
+The reason is mechanical and I have written it into the report. For a single selection, the maximum across several books is the maximum of noisy quotes: where books allocate their margin differently across outcomes, the highest price for one outcome comes from whichever book is least pessimistic about it, which sits below the fair probability by construction. Taking a maximum beats a de-vigged average partly because of selection rather than because information exists. The 56.6 per cent is an upper bound inflated by that effect, not an edge.
+
+So the close-out states one claim and one refusal. The claim: price comparison reduces what a user pays, by a measurable amount. The refusal: it does not establish that the price is good, because the fair probability is unobservable in this corpus and the selection effect biases the estimate upward.
+
+Everything else in the contingency plan stays blocked on evidence or access: slip assistance needs a dependence-aware pricing model we have not built, projections need users, jackpots need published rules and a history we could not find, and live multi-book needs a timestamped feed.
+
+Both queue items are now complete. The register has no active task, so rather than invent one I will wait for the next direction, keeping the guards green.
+
+State: 195 tests; checker errors 0; twenty-three experiments; thirteen accepted, thirty-six awaiting review.
+- revision: 32d516c
+- ref: docs/PRODUCT_CONTINGENCY.md
