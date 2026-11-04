@@ -111,6 +111,20 @@ size was not detected**; it is not evidence that no information exists.
 4. **No tested candidate demonstrated a material improvement** over the closing price under the
    current pilot design. Eight variables, six families, one screen with a permutation null.
 5. **The corpus is internally consistent** — the nulls are not a data-corruption artefact.
+6. **The one positive signal failed its own pre-registered test** — the favourite-longshot gap at
+   0.65 was +0.026 on a held-out season with an interval spanning zero, and a negative return.
+
+## 6a. Track B — what a filtered view is worth
+
+An abstention rule over the market price raises hit rate from 57.7% at full coverage to 91.3% at
+0.3% coverage, but the accuracy-minus-implied gap stays near zero: the confidence is the market's,
+not the filter's. In decision-theoretic terms, following the rule at a 1% stake costs 0.0003 nats
+of log-wealth per fixture, and no threshold produces growth distinguishable from zero (best:
++0.0001, interval [−0.0005, +0.0006]).
+
+`docs/TRACK_B_DESIGN.md` fixes the success criteria before scoring. Criterion 2 — non-negative
+log-growth with an interval excluding a 0.001-nat loss — fails on current evidence, so the design
+predicts that this product is **not worth building on this market**.
 
 ## 7. What this does not establish
 
