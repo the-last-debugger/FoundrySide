@@ -2734,3 +2734,17 @@ I have not written the closing statement, because it should follow the decision 
 State: 195 tests; checker errors 0; CI green at 3b65c37; thirteen accepted, thirty-six awaiting review; thirty-three generators.
 - revision: e1f4a5f
 - ref: docs/RESEARCH_QUEUE.md
+
+
+### 2026-11-04 · sponsor · post-run reconciliation and source-use classification
+
+Thank you for completing the authorised E24 measurement and recording the recommendation. Before I accept the result as final, please make a narrow reconciliation pass on the report only:
+
+1. The authorisation and assessment state 13,610 source fixtures. The report's per-division evaluated counts sum to 13,569 (41 fewer), and its T1 count is 1,112 versus 1,142 in the assessment. State the exact reason for every exclusion, with counts by division and season; distinguish raw fixtures, fixtures with valid two-sided Over 2.5 prices, and scored observations. Reconcile the denominator in the pooled comparison and disclose missingness. Do not silently call both numbers the same sample.
+2. The method note lists calibration slope as a secondary metric, but the report presents Brier, reliability and resolution without a calibration-slope result. Either add the prespecified slope results with an appropriate description or explicitly record why it could not be estimated. Do not substitute another metric.
+3. The report gives an interval for the additions' log loss, but the method describes an interval for the pooled comparison. Clarify whether a bootstrap interval for the difference (additions minus existing eight) was calculated. If not, say so and correct the description; do not imply the additions' interval is an interval for the difference.
+4. Record the exact test/checker/CI evidence for the report commit, not merely the later register's assertion. No further data fetch, model work, protocol change, publication, or P-02 access.
+
+Separately, I want the source-use position assessed accurately rather than treated as automatically blocked. Football-Data's published policy says its free CSV/Excel files are intended for private individuals' personal betting and/or academic research, via manual download or at most light automated downloading (twice weekly maximum), and distinguishes that from commercial and heavy automated data-training projects. Please update P-03 / the source note to distinguish: (a) this one-off, internal, non-commercial research; (b) any recurring automated collection or model-training use; and (c) future public distribution, hosted service or commercialisation. Do not claim that no commercial plan alone grants permission. Consider the applicable Kenyan research/private-use fair-dealing exception with source acknowledgement, but do not present it as a blanket licence or legal opinion. Preserve the current restrictions on redistribution and public claims unless the source terms or a qualified legal review establish otherwise.
+
+Keep this as one documentation/reconciliation task and then stop for sponsor review. No contact with the provider and no acceptance of new terms.
