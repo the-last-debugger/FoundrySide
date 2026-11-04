@@ -1812,3 +1812,27 @@ That is a narrow claim and I am keeping it narrow: the sweep evidence applies to
 State: 157 tests; checker errors 0; thirteen accepted, thirty-six awaiting review, none rejected.
 - revision: 88648b6
 - ref: scripts/verify_all.py
+
+
+### 2026-11-04 · sponsor · strategic contingency direction
+
+I want us to preserve a practical alternative product direction in case the research reaches a genuine dead end or establishes that reliably beating the market is not a realistic basis for the product.
+
+**This is a contingency plan, not an instruction to pivot now.** Continue the current research programme and its evaluation discipline. Do not abandon Track A or Track B, change the frozen protocol, or begin application development because of this note. The findings should determine whether and when this alternative becomes the better product decision.
+
+If the evidence does not support a dependable market-beating prediction engine, I would consider evolving FoundrySide into a high-quality sports-market assistant whose purpose is to help users find and use the best available value within the constraints of the market. We do not have to beat the market to make a useful product; we should investigate whether we can help users make better-informed decisions and obtain better available prices.
+
+The possible product direction includes:
+
+1. **Best-price discovery:** compare the same market and selection across multiple bookmakers/platforms, identify the best genuinely available price, and account for differences in market definitions, settlement rules, limits, timestamps and availability.
+2. **Automated slip assistance:** construct and compare slips against explicit user constraints (budget, markets, selections, odds range and risk preferences), with transparent explanations of why each selection or combination is included. Automation should assist preparation, not place bets or execute real-money transactions.
+3. **Profit/loss and exposure projections:** show stake, potential returns, net profit/loss, downside, combined exposure and the assumptions behind each calculation before the user makes a decision. Distinguish gross returns from net profit and never present a possible payout as an expected outcome.
+4. **Jackpot assistance:** investigate jackpot rules, fixture coverage, prices, historical results and dependence between selections; help users understand combinations and the very low probability of large multi-event outcomes. Jackpot support is a legitimate candidate capability, not something to assume is profitable.
+5. **Multi-platform data integration:** investigate lawful, reliable APIs and published sources to aggregate prices and market information across providers, subject to source terms, Kenya accessibility, coverage, latency and operating cost. Do not assume that an API exists or that scraping/automated access is permitted.
+6. **Excellent cross-platform UI/UX:** make comparison, explanation and decision-making unusually clear and fast across supported devices, with accessibility and reliability treated as product requirements rather than decoration.
+
+The product must distinguish **best available price** from **positive expected value**. A better price can improve a user's position without making a selection profitable. Projections must disclose uncertainty and assumptions; no guaranteed returns, fabricated confidence, loss-chasing prompts or pressure to place more bets. User budgets and limits should be respected. Any public-facing or real-money functionality remains subject to separate legal, licensing, safety and sponsor approval.
+
+Research already underway should be reused where relevant: calibration, uncertainty, dependence, market/coverage analysis and user-decision evaluation could inform this alternative even if they do not produce a market-beating model. Please identify what additional evidence would be needed to validate the usefulness of price discovery, slip assistance and jackpot tools, rather than assuming that feature availability proves user benefit.
+
+For now, record this as a strategic fallback and keep it visible on the expansion/product decision ladder. No application build, production integration, account creation, third-party contact, paid API, hosting, deployment or real-money execution is authorised by this note. Bring any genuine pivot decision and any action requiring new permissions back to me with evidence and costs.
