@@ -98,6 +98,19 @@ whether anything adds **resolution**, not whether something improves the score.
 4. **Workstream 4** — one genuinely new pre-cutoff feature, chosen after 2 and 3 say where the
    errors are. Not before.
 
+## Verification, not experiment
+
+Three guards now protect the artefacts rather than the hypotheses, and all three have caught
+real defects:
+
+| Guard | Catches | Times it fired |
+| --- | --- | --- |
+| Report stamps | a report edited apart from its generator | twice (drift), once (PILOT_PREDICTIONS after a signature change) |
+| Bridge checker | a verdict that names no revision, a row not authorised | once (per-row verdicts), once (malformed header) |
+| scripts/repro_sweep.py | any report that does not reproduce, and any generator that rewrites history when nothing changed | once (manifest clock churn) |
+
+A clean sweep is 20 generators reproducing byte-for-byte. That is the state at revision 1f0dcdf.
+
 ## Stop conditions
 
 A workstream stops, and says so, when: its hypothesis is refuted on held-out seasons; the effect
