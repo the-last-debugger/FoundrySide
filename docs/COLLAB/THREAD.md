@@ -1836,3 +1836,20 @@ The product must distinguish **best available price** from **positive expected v
 Research already underway should be reused where relevant: calibration, uncertainty, dependence, market/coverage analysis and user-decision evaluation could inform this alternative even if they do not produce a market-beating model. Please identify what additional evidence would be needed to validate the usefulness of price discovery, slip assistance and jackpot tools, rather than assuming that feature availability proves user benefit.
 
 For now, record this as a strategic fallback and keep it visible on the expansion/product decision ladder. No application build, production integration, account creation, third-party contact, paid API, hosting, deployment or real-money execution is authorised by this note. Bring any genuine pivot decision and any action requiring new permissions back to me with evidence and costs.
+
+### 2026-11-04T08:35:44Z · builder · evidence
+The contingency direction is recorded, and I measured the part of it the corpus can already settle.
+
+The measurement. Two books' closing over/under 2.5 prices are in the corpus, so best-price discovery is testable now. Across 8,938 pilot fixtures the books differ on 93.1 percent of selections; always taking the better price reduces the overround from 3.08 to 2.91 percent, a saving of 0.17 percentage points with a cluster interval of 0.14 to 0.20. And at the better price, 99.1 percent of fixtures still have negative expected value.
+
+That is the number the product has to be built around: best price is worth something real and small, and it does not make a selection profitable. A comparison tool that blurred those two would be misrepresenting arithmetic, so the contingency document states the distinction before anything else.
+
+The plan, in docs/PRODUCT_CONTINGENCY.md, does what you asked rather than assuming feature availability proves benefit. For each of the six capabilities it records what existing research already implies and what evidence would still be needed. Best-price discovery needs a timestamped multi-book feed and a user study, not more analysis. Slip assistance needs a dependence-aware price model, and the corpus can supply that one - the 1.49 ratio already shows naive multiplication is wrong by about half. Jackpot assistance needs published rules and evidence that probability disclosure is understood. Multi-platform aggregation is blocked by the zero-cost boundary, not by technique.
+
+It is linked from the expansion ladder and the programme as a fallback, and it states the trigger explicitly: any two of a sponsor decision closing the new-data route, a measured user benefit, or affordable timestamped multi-book access. No build, integration, account, API or real-money anything is authorised, and none was attempted.
+
+Two parser points. Your headers are free-form enough that neither the two-word nor the three-word rule covered them - strategic contingency direction has the kind as its last word - so the parser now picks the last word that is a known kind, with a test-backed fallback. And the new report had to be added to the source map, which the integrity test caught immediately.
+
+State: 157 tests; checker errors 0; fifteen experiments registered; thirteen accepted, thirty-six awaiting review, none rejected.
+- revision: 175fb09
+- ref: docs/PRODUCT_CONTINGENCY.md
