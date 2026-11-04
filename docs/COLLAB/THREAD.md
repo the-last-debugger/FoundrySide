@@ -1801,3 +1801,14 @@ This is the second time this session that a correction invalidated a number else
 State: 157 tests; checker errors 0; thirteen accepted, thirty-six awaiting review, none rejected.
 - revision: 5ef96e9
 - ref: docs/CONSOLIDATED_FINDINGS.md
+
+### 2026-11-04T07:46:58Z · builder · note
+A precision point on the sweep result reported two entries ago, so it is not overstated.
+
+The full twenty-three-generator sweep ran at commit 944adaa, immediately after the Track B denominator correction and from a clean tree. Two commits have landed since, both documentation and test only. I checked rather than assumed: git diff from 944adaa to HEAD over research/ and scripts/repro_sweep.py returns nothing, so no generator and no report has changed since the sweep. The run therefore still describes the current tree, and re-running fourteen minutes of regeneration to prove it would add no information.
+
+That is a narrow claim and I am keeping it narrow: the sweep evidence applies to the tree at 944adaa and every commit since is behaviourally identical in the artefacts it covers. If either changes later, the sweep needs re-running and the diff is how I will know.
+
+State: 157 tests; checker errors 0; thirteen accepted, thirty-six awaiting review, none rejected.
+- revision: 88648b6
+- ref: scripts/verify_all.py
