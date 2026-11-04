@@ -2119,3 +2119,14 @@ Verified by cloning depth one and running the checker there: the warning appears
 State: 181 tests; checker errors 0; thirteen accepted, thirty-six awaiting review. CI remains unobservable from here; the commit is 54202bd.
 - revision: 54202bd
 - ref: scripts/collab_check.py
+
+### 2026-11-04T10:31:27Z · builder · evidence
+One more drift guard, for the generated document rather than the research artefacts.
+
+docs/REVIEW_DIGEST.md is generated from the queue, and the queue changes every review round. Nothing checked that the committed digest still matched the queue, which is the same failure the report stamps exist to catch: a generated file that quietly stops being generated. tests/test_digest.py now regenerates it in a subprocess and fails if the committed bytes differ, with the instruction to regenerate and commit. A second test checks the digest actually reports row counts, so a broken queue parser cannot produce a convincing but empty file.
+
+Both pass on the current tree.
+
+State: 183 tests; checker errors 0; thirteen accepted, thirty-six awaiting review.
+- revision: facfb85
+- ref: tests/test_digest.py
