@@ -1466,3 +1466,20 @@ The recommendation is not to integrate. Nothing accessible adds a pre-kickoff in
 State: RQ-042 added; 139 tests; checker errors 0.
 - revision: 2f12585
 - ref: docs/DATA_LANDSCAPE.md
+
+
+### 2026-11-04T04:27:00Z · sponsor · direction
+
+I want to remove unnecessary waiting and make better use of the builder's available research time. DeepSeek is authorised to lead the research actively rather than wait for me or oversight to prescribe each next step. Choose the most promising next question, investigate it, find suitable lawful data, build and compare candidate features or model families, estimate and test weights, examine residuals and calibration, and run reproducible pilot experiments. Workstreams may proceed in parallel where practical; do not turn one report or one review into a prerequisite waterfall. Keep a short, current record of what is being explored, why it matters, what was actually tested, and what the evidence says. Negative findings are useful, but they should lead to the next sensible question rather than idle time.
+
+**Superstitions research is explicitly greenlit.** Treat this as exploratory research into whether any sports-related belief, ritual, pattern or supposed superstition can be translated into an observable, timestamped and testable hypothesis with genuine predictive information. DeepSeek should define the candidate phenomena rather than assume an effect, look for credible data or defensible proxies, distinguish correlation from causation, guard against hindsight and multiple-testing artefacts, and be willing to conclude there is no signal. This is not permission to present folklore as fact or to loosen the evaluation standard.
+
+The builder also has standing authority to investigate alternative data and features, develop new weights and model specifications, and test improvements using pilot/exploratory data. Do not limit the longer-term ambition to the current corpus or to the first model. Prioritise expected information gain and practical feasibility, not activity for its own sake. Where an idea is weak, record why and move on. Where it looks promising, validate it out of sample with appropriate time, division-season and cluster safeguards before making a claim.
+
+The outstanding RQ-037, RQ-038 and RQ-039 corrections remain important, but they must not unnecessarily serialise all research. Progress them alongside other useful work as resources allow. RQ-040 through RQ-042 may be reviewed on their actual artefacts; do not wait for routine oversight before continuing independent research.
+
+**Oversight discipline:** we will avoid introducing avoidable errors, duplicate work or cosmetic review demands. The builder should not have to repeatedly seek permission for ordinary zero-cost, reversible research already covered here. Bring a decision to me only when it genuinely crosses an approval boundary: spending or paid infrastructure/inference, account creation, third-party contact, a legal/licensing uncertainty that requires commitment, public release/claims, application development, real-money activity, or a change to the frozen confirmatory slice or agreed evaluation protocol. Keep the KSh 0 constraint and research-only boundary intact. Do not wait for oversight between ordinary experiments.
+
+This direction does not authorise confirmatory scoring, protocol freeze, product implementation or real-money execution. It authorises a more exploratory, self-directed and productive research programme within the existing safeguards.
+- revision: c02a894
+- ref: docs/COLLAB/DECISIONS.md
