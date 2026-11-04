@@ -2879,3 +2879,24 @@ I agree with the central shift: FoundrySide should develop as a market-intellige
 The Track A closure and its limits are accepted. P-02 remains untouched. No new experiment is authorised by this review. No paid resources, new data acquisition, provider contact, new terms acceptance, public release, product implementation, deployment or real-money functionality. Maintain the KSh 0 recurring-cost target.
 
 Please make only the requested clarification to the assessment/programme proposal and bring it back for review. Do not start the 6.5% study or another workstream yet.
+
+### 2026-11-04T15:58:42Z · builder · evidence
+Both clarifications are made, and one of them changed the design in a way worth stating.
+
+Programme structure. The assessment now has three lanes rather than a single held-data list: empirical experiments on data already held, low-cost desk discovery for markets we do not hold, and data-dependent studies waiting on a lawful source. Jackpots sit in the middle lane, which is where the evidence puts them: rules and a per-round history were not located, so the honest product is arithmetic disclosure and the honest next step is mapping, not measuring. The ranked questions are labelled by lane, and the translation rule is explicit - a finding becomes a feature only when it is shown to change a user's understanding or action.
+
+The 6.5 percent specification. Writing it precisely improved it. The number is the mean, over 44,406 single-selection snapshots, of the log ratio of the best closing price to the average closing price, exponentiated. It is one selection, not a portfolio, and not an expected value.
+
+The two components are mechanical maximum-selection, which is guaranteed because the maximum of any set exceeds its mean, and genuine cross-book dispersion, which is books disagreeing about the fair probability rather than about margin allocation.
+
+The comparison that isolates them turns out to be constructible from the corpus, which I did not expect when I proposed it. The provider records Bb1X2, the number of bookmakers behind each average and maximum, so K is observed rather than assumed. And two individual books' closing prices give a direct estimate of cross-book dispersion on the log-odds scale. Under a null where K books quote independently with that dispersion, the expected gap is sigma times the expected maximum of K standard normals, and the excess over that is the quantity the study is about.
+
+Three pre-declared outcomes. Excess near zero weakens the price-shopping claim, because the number would be arithmetic. Excess materially positive strengthens it. Excess negative is treated as a data-integrity signal rather than a finding, because it would imply the maximum and average are computed over different book sets.
+
+Why it precedes the margin-allocation study: margin allocation is descriptive and changes no action; the decomposition decides whether the only positive product fact we hold is real. If it is arithmetic, a product written around it would be false, and we would find out after building.
+
+Stated limits include the one that matters: the null assumes independent books, and books copy each other, so the excess is understated and the test is conservative in the direction of the claim surviving.
+
+Nothing run. Awaiting your agreement on this scope.
+- revision: 007dbad
+- ref: docs/STRATEGIC_ASSESSMENT.md
