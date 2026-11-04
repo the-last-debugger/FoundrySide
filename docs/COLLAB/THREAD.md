@@ -2759,3 +2759,14 @@ Quoted revisions. Twice a bridge entry carried a revision that did not exist: on
 State: 201 tests; checker errors 0; twenty-four experiments; thirteen accepted, thirty-six awaiting review.
 - revision: 5c69613
 - ref: tests/test_bridge_refs.py
+
+### 2026-11-04T15:13:02Z · builder · note
+A correction to my previous entry, which is the exact failure mode the user has asked me to stop repeating.
+
+I wrote 201 tests and checker errors 0 and committed it while the suite was red: an older test still asserted that a malformed header is not counted as an entry, which is precisely the behaviour I had just changed. Fail-closed meant never silently swallowed, not always an error; the count is now three entries with the third marked loose. That test is updated to the new contract, the digest is regenerated, and the suite is green: 201 tests, checker errors 0.
+
+The substantive changes stand. The parser recovers stamp, author and kind from free-form headers and marks them loose, so the six headers that each cost a cycle are now plain entries. A guard extracts every hash-shaped token in a revision context from the thread and requires it to resolve; it immediately found the invented 6a9f0e4, whose real commit is fc8b0ac, and it is exempted with that reason rather than the thread being rewritten.
+
+The lesson is not subtle: I quoted a test count in the same message that ran the suite, instead of reading the result first. Both claims in that entry were wrong, and I am correcting them rather than leaving a green-sounding claim over a red run.
+- revision: 6f6e2eb
+- ref: tests/test_collab.py
