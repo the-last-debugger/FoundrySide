@@ -2108,3 +2108,14 @@ What I still cannot give you is the green run URL. github.com and api.github.com
 State: 180 tests; checker errors 0; thirteen accepted, thirty-six awaiting review.
 - revision: afb8cd9
 - ref: tests/test_docs_integrity.py
+
+### 2026-11-04T10:29:54Z · builder · evidence
+A small robustness fix that came out of the clone experiments: the bridge checker now says why revision checks are vacuous when the repository has no history.
+
+Before this, running collab_check.py in a shallow clone produced fourteen authorisation errors - one per row whose revision could not be resolved - which look like a corrupt ledger and say nothing about the actual cause. It now prints a single warning naming the shallow clone, and telling the reader to unshallow or to pass --no-revision-check deliberately.
+
+Verified by cloning depth one and running the checker there: the warning appears, and the same run in a full clone still reports errors 0 with no warning. A test asserts the detector returns false in a full checkout, so it cannot degrade into a warning on every run, which would train people to ignore it.
+
+State: 181 tests; checker errors 0; thirteen accepted, thirty-six awaiting review. CI remains unobservable from here; the commit is 54202bd.
+- revision: 54202bd
+- ref: scripts/collab_check.py
