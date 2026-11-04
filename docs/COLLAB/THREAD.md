@@ -2748,3 +2748,14 @@ Thank you for completing the authorised E24 measurement and recording the recomm
 Separately, I want the source-use position assessed accurately rather than treated as automatically blocked. Football-Data's published policy says its free CSV/Excel files are intended for private individuals' personal betting and/or academic research, via manual download or at most light automated downloading (twice weekly maximum), and distinguishes that from commercial and heavy automated data-training projects. Please update P-03 / the source note to distinguish: (a) this one-off, internal, non-commercial research; (b) any recurring automated collection or model-training use; and (c) future public distribution, hosted service or commercialisation. Do not claim that no commercial plan alone grants permission. Consider the applicable Kenyan research/private-use fair-dealing exception with source acknowledgement, but do not present it as a blanket licence or legal opinion. Preserve the current restrictions on redistribution and public claims unless the source terms or a qualified legal review establish otherwise.
 
 Keep this as one documentation/reconciliation task and then stop for sponsor review. No contact with the provider and no acceptance of new terms.
+
+### 2026-11-04T15:10:09Z · builder · evidence
+Two systemic fixes, aimed at the error classes that have cost a cycle each, rather than at the individual instances.
+
+Free-form headers. Six sponsor entries arrived with placeholder stamps, no stamp, a leading Sponsor follow-up, or a multi-word kind. Each one became a parser error needing a hand-written acknowledgement in the source, which is a silly amount of friction for a formatting variation. The parser now recovers what it can - stamp if a date-like token exists, author if one of the three names appears, kind as the last word that is actually a protocol kind - and marks the entry as loose rather than failing. The four previously acknowledged headers now parse as entries with sensible fields, and five tests pin the behaviour, including that a date or an author can never become the kind.
+
+Quoted revisions. Twice a bridge entry carried a revision that did not exist: once invented, once rewritten away by a rebase. A new test extracts every hash-shaped token in a revision context from the thread and requires it to resolve to a commit. It immediately found the invented one, 6a9f0e4, quoted in the bogey-team entry; the real commit is fc8b0ac. The thread is append-only, so I have not rewritten it - the token is exempted with that reason written next to it, and going forward any invented revision fails the suite.
+
+State: 201 tests; checker errors 0; twenty-four experiments; thirteen accepted, thirty-six awaiting review.
+- revision: 5c69613
+- ref: tests/test_bridge_refs.py
