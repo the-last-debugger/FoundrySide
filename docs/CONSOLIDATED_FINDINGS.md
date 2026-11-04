@@ -211,6 +211,7 @@ produced it.
 | FORWARD_CALIBRATION.md | E17 | the Platt gain transfers forward: +0.0102 of +0.0114 |
 | RESIDUAL_GAP.md | E18 | the remaining gap concentrates where the model departs from the price |
 | ROBUSTNESS.md | E23 | that ordering reproduces in both forward seasons and all eight divisions |
+| THIN_DIVISIONS.md | E24 | thirteen thin divisions are +0.0017 nats worse, not materially |
 | SHRINKAGE_POLICY.md | E19 | six shrinkage policies; none beats market-only, which is the optimum |
 | PRICE_INVENTORY.md | E20 | opening and closing snapshots across books; per-selection best price is tradeable, the Max overround is not |
 | HIT_RATE_AUDIT.md | E21 | hard-pick accuracy 54.30% vs 57.66%; the model is worse at picking too, not only at scoring |
