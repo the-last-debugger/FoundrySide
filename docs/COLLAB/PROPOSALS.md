@@ -37,8 +37,50 @@ record.
 **Decision needed:** items 1–4, or a stated alternative. Nothing is scored until the
 freeze record in protocol §8 is complete.
 
-## P-03 — publishing derived data *(open, legal)*
+## P-03 — source use and publication *(open, legal)*
 
-If any derived dataset, model output or board is published beyond internal research, the
-reuse terms of the source need a proper review rather than the reading recorded in
-`PROPOSAL.md` §3. Not urgent, and flagged now so it is not discovered late.
+The earlier wording treated source use as one question. It is three, and they have different answers.
+
+### (a) This project's own use so far — one-off, internal, non-commercial
+
+Transient reads and internal analysis for a research exercise, no redistribution, no hosted service,
+no commercial use. The provider offers its CSV/Excel files free for personal and academic analysis.
+**This is the category every analysis in this repository falls into**, including the E24 thin-division
+measurement, which read files into memory and retained nothing.
+
+### (b) Recurring automated collection or model training
+
+A different question. Automated collection at scale, or training models for distribution, is not
+covered by a personal-use reading and would need the provider's terms examined properly.
+
+**The provider's stated policy, as reported by the sponsor and not independently located here:**
+free access is intended for private individuals' personal betting and/or academic research, via
+manual download or at most light automated download (twice weekly), and is distinguished from
+commercial and heavy automated data-training use. My own checks could not find that text: `terms.php`
+and `terms.txt` return 404, and `disclaimer.php`, `data.php` and `notes.txt` contain liability and
+column documentation but no reuse policy. The site footer does assert "© Football-Data. Liability
+Disclaimer. All Rights Reserved."
+
+So the position is: the *policy as described* supports (a); it does not obviously support (b); and it
+was not verified from the source in this session.
+
+### (c) Public distribution, hosted service or commercialisation
+
+Not established. The footer's "All Rights Reserved" is contrary to redistribution, and no licence
+grants it. Any publication of derived data stays blocked until either the provider's terms are
+reviewed properly or a qualified legal opinion is obtained.
+
+### The Kenyan research/private-use exception
+
+Kenyan copyright law provides fair-dealing-style exceptions for research and private use, which may
+support category (a) with source acknowledgement. It is **not** a blanket licence, it is not a legal
+opinion, and it does not reach (b) or (c). Recorded because the sponsor asked for it to be considered
+explicitly, not as a conclusion.
+
+### What this changes in practice
+
+Nothing about the current restrictions: no redistribution, no public claims, no hosted service, no
+commercial use. What it changes is the framing — a one-off internal research read is a materially
+different act from a standing automated pipeline, and the document now says so instead of treating use
+as automatically blocked.
+

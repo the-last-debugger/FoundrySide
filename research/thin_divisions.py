@@ -46,24 +46,34 @@ def usable(*vals) -> bool:
         return False
 
 
-def fetch(season: str, league: str) -> list[dict]:
-    """Read one division-season into memory. Nothing is written to disk."""
+def fetch(season: str, league: str) -> tuple[list[dict], dict]:
+    """Read one division-season into memory. Nothing is written to disk.
+
+    Returns the scored rows and the accounting that explains every excluded row: raw fixtures,
+    those with a usable two-sided Over 2.5 price, those also carrying a result, and the two
+    exclusion reasons separately.
+    """
+    counts = {"raw": 0, "no_price": 0, "no_result": 0, "scored": 0}
     try:
         raw = urllib.request.urlopen(URL.format(season=season, league=league), timeout=30)
         text = raw.read().decode("latin-1")
     except Exception:
-        return []
+        return [], counts
     out = []
     for row in csv.DictReader(io.StringIO(text)):
+        counts["raw"] += 1
         if not usable(row.get("PC>2.5"), row.get("PC<2.5")):
+            counts["no_price"] += 1
             continue
         try:
             hg, ag = int(row["FTHG"]), int(row["FTAG"])
         except (TypeError, ValueError):
+            counts["no_result"] += 1
             continue
         p = devig(float(row["PC>2.5"]), float(row["PC<2.5"]))
         out.append({"p": p, "y": 1 if hg + ag >= 3 else 0, "season": season})
-    return out
+        counts["scored"] += 1
+    return out, counts
 
 
 def logloss(rows: list[dict]) -> float:
@@ -90,12 +100,23 @@ def decomposition(rows: list[dict]) -> tuple[float, float]:
     return rel, res
 
 
+
+def slope(rows: list[dict]) -> float:
+    """One-parameter logistic calibration slope on the price's logit."""
+    import calibration_study as cs
+    a, _b = cs.fit_platt([{"p": r["p"], "y": r["y"]} for r in rows])
+    return a
+
+
 def main() -> int:
     data: dict[str, list[dict]] = {}
+    accounting: dict[tuple[str, str], dict] = {}
     for league in ADDED + EXISTING:
         rows = []
         for season in SEASONS:
-            rows.extend(fetch(season, league))
+            part, counts = fetch(season, league)
+            accounting[(league, season)] = counts
+            rows.extend(part)
         data[league] = rows
 
     added_rows = [r for lg in ADDED for r in data[lg]]
@@ -114,7 +135,7 @@ def main() -> int:
         rel, res = decomposition(rows)
         per_division.append({"league": league, "n": len(rows), "ll": logloss(rows),
                              "brier": brier(rows), "rel": rel, "res": res,
-                             "seasons": seasons})
+                             "slope": slope(rows), "seasons": seasons})
 
     ref_ll = logloss(existing_rows)
     added_ll = logloss(added_rows)
@@ -137,6 +158,26 @@ def main() -> int:
             draws.append(logloss(flat))
     draws.sort()
     lo, hi = draws[int(0.025 * len(draws))], draws[int(0.975 * len(draws)) - 1]
+
+    # Interval for the *difference*, which is the comparison the method describes. Each set's
+    # clusters are resampled independently, so the interval reflects both sampling errors.
+    ref_clusters = {}
+    for league in EXISTING:
+        for season in SEASONS:
+            part = [r for r in data[league] if r["season"] == season]
+            if part:
+                ref_clusters[f"{league}_{season}"] = part
+    ref_keys = sorted(ref_clusters)
+    diffs = []
+    for _ in range(BOOTSTRAPS):
+        add_pick = [clusters[keys[rng.integers(0, len(keys))]] for _ in keys]
+        ref_pick = [ref_clusters[ref_keys[rng.integers(0, len(ref_keys))]] for _ in ref_keys]
+        add_flat = [r for g in add_pick for r in g]
+        ref_flat = [r for g in ref_pick for r in g]
+        if add_flat and ref_flat:
+            diffs.append(logloss(add_flat) - logloss(ref_flat))
+    diffs.sort()
+    d_lo, d_hi = diffs[int(0.025 * len(diffs))], diffs[int(0.975 * len(diffs)) - 1]
 
     diff = added_ll - ref_ll
     spread = [d["ll"] - ref_ll for d in per_division if d["n"]]
@@ -165,6 +206,33 @@ season-clusters, and a bootstrap over three units would not support one.
 | --- | --- |
 """ + "\n".join(f"| {d['league']} | {cell(d)} |" for d in per_division) + f"""
 
+## Denominator accounting — where every document's number comes from
+
+The assessment counts **source fixtures**; this report counts **scored observations**. They are not
+the same sample and the difference is disclosed here rather than reconciled by assertion.
+
+| Division | Raw | No usable two-sided O/U | No result | Scored |
+| --- | --- | --- | --- | --- |
+""" + "\n".join(
+        f"| {d['league']} | {sum(accounting[(d['league'], s)]['raw'] for s in SEASONS):,} | "
+        f"{sum(accounting[(d['league'], s)]['no_price'] for s in SEASONS):,} | "
+        f"{sum(accounting[(d['league'], s)]['no_result'] for s in SEASONS):,} | "
+        f"{sum(accounting[(d['league'], s)]['scored'] for s in SEASONS):,} |"
+        for d in per_division) + f"""
+
+| Season | Raw | No price | No result | Scored |
+| --- | --- | --- | --- | --- |
+""" + "\n".join(
+        f"| {s} | {sum(accounting[(lg, s)]['raw'] for lg in ADDED):,} | "
+        f"{sum(accounting[(lg, s)]['no_price'] for lg in ADDED):,} | "
+        f"{sum(accounting[(lg, s)]['no_result'] for lg in ADDED):,} | "
+        f"{sum(accounting[(lg, s)]['scored'] for lg in ADDED):,} |"
+        for s in SEASONS) + f"""
+
+Every exclusion is a missing or unusable two-sided Over 2.5 price, or a missing result; no row is
+dropped for any other reason. Turkey 1 accounts for the largest single loss, consistent with its
+lower price coverage in the assessment.
+
 ## Pooled comparison
 
 | Set | Fixtures | Market log loss |
@@ -173,8 +241,10 @@ season-clusters, and a bootstrap over three units would not support one.
 | Thirteen additions | {len(added_rows):,} | {added_ll:.4f} |
 | Difference (additions − existing) | — | **{diff:+.4f}** |
 
-Approximate division-season bootstrap interval for the additions' log loss:
-**[{lo:.4f}, {hi:.4f}]**. It is labelled approximate because 39 clusters is few.
+Approximate division-season bootstrap interval for the **difference** (additions − existing),
+resampling each set's clusters independently: **[{d_lo:+.4f}, {d_hi:+.4f}]**. The earlier version of
+this report gave an interval for the additions' log loss alone, which is a different quantity; that
+figure was [{lo:.4f}, {hi:.4f}] and it is retained only as context.
 
 **Spread of division-level differences** against the existing eight: minimum {min(spread):+.4f},
 maximum {max(spread):+.4f}, median {statistics.median(spread):+.4f}. The pooled figure alone would
@@ -182,10 +252,10 @@ conceal that range, which is why both are reported.
 
 ## Secondary metrics
 
-| Division | Brier | Reliability | Resolution |
-| --- | --- | --- | --- |
+| Division | Brier | Reliability | Resolution | Calibration slope |
+| --- | --- | --- | --- | --- |
 """ + "\n".join(
-        f"| {d['league']} | {d['brier']:.4f} | {d['rel']:.4f} | {d['res']:.4f} |"
+        f"| {d['league']} | {d['brier']:.4f} | {d['rel']:.4f} | {d['res']:.4f} | {d['slope']:.3f} |"
         for d in per_division if d["n"]) + f"""
 
 ## What this says and does not say
