@@ -6,24 +6,23 @@ are not erased.
 
 ## Active
 
-**No active task.** Both authorised queue items are complete and reported, and no new experiment is
-running.
+| Field | Value |
+| --- | --- |
+| **Task** | Next-opportunity assessment (authorised desk investigation) |
+| **Status** | **complete** — docs/OPPORTUNITY_ASSESSMENT.md |
+| **Outcome** | one candidate worth considering (thinner divisions, same source), one free check to retry, and a recommendation that Track A not proceed further |
 
 ## Next
 
-**No next task currently authorised.** The next move is a sponsor decision, not a queued
-experiment: see *Decision needed* below rather than a task.
+**No next task currently authorised.** The assessment's recommendation is for the sponsor: re-run the
+two free checks on a network with normal DNS, then decide whether to authorise the thin-division
+efficiency measurement. Until then nothing runs.
 
 ## Decision needed from the sponsor
 
-One question is open and it is not mine to answer: **whether to take the P-02 confirmatory freeze
-and run, or to hold the confirmatory slice indefinitely.** The preparation is done
-(CONFIRMATORY_READINESS.md), the recommendation on record is to hold — the pilot already shows the
-model behind the benchmark, so a confirmatory run would document a known result rather than discover
-one, and the slice is non-renewable.
-
-It is not recommended to start further experiments in the meantime. The evidence has been negative
-across every authorised avenue, and another variant would be activity rather than progress.
+The model-improvement cycle is **closed** by your direction; the P-02 confirmatory slice is preserved
+and untouched. What remains open is whether to authorise the thin-division efficiency measurement,
+which adds divisions to the corpus and therefore needs explicit approval.
 
 ## Completed this session, in order
 
