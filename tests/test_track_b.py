@@ -78,6 +78,20 @@ class WilsonTest(unittest.TestCase):
                   else (m.log(1 - stake) if i in selected else 0.0) for i in range(len(rows))]
         self.assertAlmostEqual(policy[1], 0.0, places=12)
 
+    def test_policy_bootstrap_uses_the_full_denominator(self):
+        # Two fixtures, one selected, equal weights. The full-denominator mean is half the
+        # selected-only mean; a regression to the selected denominator would double it.
+        import numpy as np
+        from research.track_b import policy_growth
+        values = np.array([0.10, -0.20])
+        mask = np.array([1.0, 0.0])
+        weights = np.ones((1, 2))
+        wsum = weights.sum(axis=1)
+        full = policy_growth(values, mask, weights, wsum)[0]
+        selected_only = 0.10
+        self.assertAlmostEqual(full, 0.05, places=12)
+        self.assertNotAlmostEqual(full, selected_only, places=6)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,19 +1,23 @@
-<!-- generated-by: track_b.py sha256=82b521a78a3e -->
+<!-- generated-by: track_b.py sha256=cff50d235099 -->
 
 # E10 — what an abstention rule over market prices is worth
 
 Pilot seasons only, 8,941 fixtures with a complete totals price. The rule shows the favourite side
 of the totals market only when its de-vigged probability clears the threshold.
 
-| Threshold | n | Coverage | Accuracy | Shown calibration gap | Policy growth (95%) | Raw board | Policy − raw | Oracle regret* | Growth at 0.5%/2% |
+| Threshold | n | Coverage | Accuracy | Shown calibration gap | Policy growth, full denominator (95%) | Raw board | Policy − raw | Oracle regret* | Growth at 0.5%/2% |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 0.50 | 8,941 | 100.0% | 57.7% | 0.016 | -0.00032 [-0.00044, -0.00018] | -0.00032 | +0.00000 | 0.00730 | -0.00015 / -0.00071 |
-| 0.55 | 5,472 | 61.2% | 60.8% | 0.018 | -0.00021 [-0.00051, -0.00016] | -0.00032 | +0.00012 | 0.00719 | -0.00010 / -0.00045 |
-| 0.60 | 2,545 | 28.5% | 64.0% | 0.031 | -0.00013 [-0.00071, -0.00024] | -0.00032 | +0.00019 | 0.00712 | -0.00007 / -0.00028 |
-| 0.65 | 893 | 10.0% | 71.1% | 0.052 | -0.00002 [-0.00063, +0.00025] | -0.00032 | +0.00030 | 0.00700 | -0.00001 / -0.00004 |
-| 0.70 | 322 | 3.6% | 77.6% | 0.094 | +0.00000 [-0.00053, +0.00058] | -0.00032 | +0.00033 | 0.00698 | +0.00000 / +0.00001 |
-| 0.75 | 77 | 0.9% | 83.1% | nan | +0.00000 [-0.00073, +0.00086] | -0.00032 | +0.00032 | 0.00698 | +0.00000 / +0.00000 |
-| 0.80 | 23 | 0.3% | 91.3% | nan | +0.00000 [-0.00043, +0.00170] | -0.00032 | +0.00032 | 0.00698 | +0.00000 / +0.00000 |
+| 0.55 | 5,472 | 61.2% | 60.8% | 0.017 | -0.00021 [-0.00032, -0.00010] | -0.00032 | +0.00012 | 0.00719 | -0.00010 / -0.00045 |
+| 0.60 | 2,545 | 28.5% | 64.0% | 0.033 | -0.00013 [-0.00021, -0.00007] | -0.00032 | +0.00019 | 0.00712 | -0.00007 / -0.00028 |
+| 0.65 | 893 | 10.0% | 71.1% | 0.052 | -0.00002 [-0.00006, +0.00003] | -0.00032 | +0.00030 | 0.00700 | -0.00001 / -0.00004 |
+| 0.70 | 322 | 3.6% | 77.6% | 0.094 | +0.00000 [-0.00002, +0.00003] | -0.00032 | +0.00033 | 0.00698 | +0.00000 / +0.00001 |
+| 0.75 | 77 | 0.9% | 83.1% | nan | +0.00000 [-0.00000, +0.00001] | -0.00032 | +0.00032 | 0.00698 | +0.00000 / +0.00000 |
+| 0.80 | 23 | 0.3% | 91.3% | nan | +0.00000 [-0.00000, +0.00000] | -0.00032 | +0.00032 | 0.00698 | +0.00000 / +0.00000 |
+
+*Policy growth* is measured over every fixture: the rule takes its selected side and abstains
+elsewhere, with abstentions scoring zero. Its interval resamples division-seasons and recomputes
+that same full-denominator mean in each replicate.
 
 *Oracle regret* is the gap to a policy that always stakes on the winning side. That policy uses
 knowledge of the outcome, so it is a **hindsight upper bound**, not a deployable competitor; it

@@ -62,6 +62,9 @@ ACKNOWLEDGED_MALFORMED = {
         "sponsor wrote a placeholder timestamp; the entry is parsed as body of the "
         "preceding builder entry and is restated by the builder answer entry of "
         "2026-11-03T12:20Z",
+    "### Sponsor follow-up — Track B bootstrap denominator and reproducibility":
+        "sponsor wrote a free-form header with no stamp; the body is preserved verbatim and the "
+        "request is answered by the builder's Track B correction entry",
     "### 2026-11-04T07:XX:00Z · sponsor · direction":
         "sponsor wrote a placeholder timestamp for the zero-cost data-landscape direction; "
         "the body is preserved verbatim and the direction is answered by the builder's "

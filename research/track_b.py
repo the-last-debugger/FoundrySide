@@ -90,6 +90,19 @@ def wilson(hits: int, n: int) -> tuple[float, float]:
     return (max(0.0, centre - half), min(1.0, centre + half))
 
 
+
+def policy_growth(values, mask, weights, weight_totals):
+    """Policy growth over the FULL resampled population, abstentions scoring zero.
+
+    alues is per-fixture growth, mask marks the fixtures the rule would take, weights is a
+    (replicates x fixtures) resampling-weight matrix. The denominator is the total weight, not the
+    weight of selected fixtures only - using the selected denominator would describe a different
+    estimand from the full-population point estimate.
+    """
+    weighted = (values * mask) * weights
+    return weighted.sum(axis=1) / weight_totals
+
+
 def main() -> int:
     rows = load()
     n = len(rows)
@@ -111,74 +124,89 @@ def main() -> int:
     oracle_growth = statistics.mean(
         math.log(1 + STAKE * (r["price"] - 1)) for r in rows)
 
+    # Vectorised cluster bootstrap via resampling weights: a fixture's weight is the number of
+    # times its division-season was drawn. Weighted means are the same estimator as resampling
+    # rows, without the ragged-array problem.
+    n = len(rows)
+    correct = np.array([r["correct"] for r in rows], dtype=float)
+    p_side = np.array([r["p_side"] for r in rows], dtype=float)
+    price = np.array([r["price"] for r in rows], dtype=float)
+    growth = np.array([r["growth"] for r in rows], dtype=float)
+    ret = np.array([r["return"] for r in rows], dtype=float)
+    cluster_index = np.array([keys.index(r["cluster"]) for r in rows])
+    K = len(keys)
+
+    rng2 = np.random.default_rng(SEED + 1)
+    picks = rng2.integers(0, K, size=(BOOTSTRAPS, K))
+    counts = np.zeros((BOOTSTRAPS, K), dtype=np.float32)
+    for b in range(BOOTSTRAPS):
+        counts[b] = np.bincount(picks[b], minlength=K)
+    weights = counts[:, cluster_index]              # (B, n)
+    wsum = weights.sum(axis=1)
+
     table = []
     for tau in THRESHOLDS:
-        selected = [i for i, r in enumerate(rows) if r["p_side"] >= tau]
-        if not selected:
+        mask = p_side >= tau
+        selected = np.flatnonzero(mask)
+        if selected.size == 0:
             continue
-        acc = statistics.mean(rows[i]["correct"] for i in selected)
-        implied = statistics.mean(rows[i]["p_side"] for i in selected)
-        price = statistics.mean(rows[i]["price"] for i in selected)
-        lo, hi = wilson(sum(rows[i]["correct"] for i in selected), len(selected))
+        n_sel = selected.size
+        acc = float(correct[selected].mean())
+        implied = float(p_side[selected].mean())
+        mean_price = float(price[selected].mean())
+        lo, hi = wilson(int(correct[selected].sum()), n_sel)
 
-        draws = []
-        for _ in range(BOOTSTRAPS):
-            flat = [i for k in (keys[rng.integers(0, len(keys))] for _ in keys)
-                    for i in by_cluster[k] if rows[i]["p_side"] >= tau]
-            if flat:
-                draws.append(statistics.mean(rows[i]["correct"] for i in flat))
-        draws.sort()
-        blo = draws[int(0.025 * len(draws))]
-        bhi = draws[int(0.975 * len(draws)) - 1]
+        wsel = weights * mask                        # (B, n)
+        wsel_sum = wsel.sum(axis=1)
+        valid = wsel_sum > 0
 
-        returns = [rows[i]["return"] for i in selected]
-        selected_set = set(selected)
-        gap_draws, ret_draws, growth_draws, policy_draws = [], [], [], []
-        rng2 = np.random.default_rng(SEED + 1)
-        for _ in range(BOOTSTRAPS):
-            pick = [by_cluster[keys[rng2.integers(0, len(keys))]] for _ in keys]
-            idx = [i for group in pick for i in group if rows[i]["p_side"] >= tau]
-            if not idx:
-                continue
-            gap_draws.append(statistics.mean(rows[i]["correct"] - rows[i]["p_side"] for i in idx))
-            ret_draws.append(statistics.mean(rows[i]["return"] for i in idx))
-            growth_draws.append(statistics.mean(rows[i]["growth"] for i in idx))
-            chosen_here = set(idx)
-            policy_draws.append(statistics.mean(
-                rows[i]["growth"] if i in chosen_here and i in selected_set else 0.0
-                for i in idx))
-        gap_draws.sort(); ret_draws.sort(); growth_draws.sort(); policy_draws.sort()
-        policy = [rows[i]["growth"] if i in set(selected) else 0.0 for i in range(n)]
-        # Calibration of what the rule would show, by quintile of the selected probabilities.
+        def cond_mean(values):
+            return (values * wsel).sum(axis=1)[valid] / wsel_sum[valid]
+
+        acc_draws = np.sort(cond_mean(correct))
+        gap_draws = np.sort(cond_mean(correct - p_side))
+        ret_draws = np.sort(cond_mean(ret))
+
+        # The policy measure keeps the FULL resampled population; abstentions score zero.
+        policy_draws = np.sort(policy_growth(growth, mask.astype(float), weights, wsum))
+
+        blo, bhi = acc_draws[int(0.025 * acc_draws.size)], acc_draws[int(0.975 * acc_draws.size) - 1]
+
         calib = []
-        chosen = sorted(selected, key=lambda i: rows[i]["p_side"])
+        order = selected[np.argsort(p_side[selected])]
         for part in range(5):
-            chunk = chosen[part * len(chosen) // 5:(part + 1) * len(chosen) // 5]
-            if len(chunk) >= 20:
-                calib.append(statistics.mean(rows[i]["p_side"] for i in chunk)
-                             - statistics.mean(rows[i]["correct"] for i in chunk))
+            chunk = order[part * order.size // 5:(part + 1) * order.size // 5]
+            if chunk.size >= 20:
+                calib.append(float(p_side[chunk].mean() - correct[chunk].mean()))
         calib_gap = max((abs(c) for c in calib), default=float("nan"))
-        sensitivity = {s: statistics.mean(
-            growth_at(s, rows[i]["correct"], rows[i]["price"]) if i in set(selected) else 0.0
-            for i in range(n)) for s in STAKES}
 
-        table.append({"tau": tau, "n": len(selected), "coverage": len(selected) / n,
+        growth_sel_draws = np.sort(cond_mean(growth))
+        policy = float((growth * mask).mean())
+
+        def policy_at(stake):
+            g = np.where(correct == 1, np.log(1 + stake * (price - 1)), np.log(1 - stake))
+            return float((g * mask).mean())
+
+        sensitivity = {s: policy_at(s) for s in (0.005, 0.01, 0.02)}
+
+        table.append({"tau": tau, "n": int(n_sel), "coverage": n_sel / n,
                       "calib": calib_gap, "sens": sensitivity,
-                      "policy": statistics.mean(policy),
-                      "delta": statistics.mean(policy) - raw_growth,
-                      "regret": oracle_growth - statistics.mean(policy),
-                      "acc": acc, "lo": lo, "hi": hi, "blo": blo, "bhi": bhi,
-                      "implied": implied, "gap": acc - implied,
-                      "gap_lo": gap_draws[int(0.025 * len(gap_draws))],
-                      "gap_hi": gap_draws[int(0.975 * len(gap_draws)) - 1],
-                      "ev": statistics.mean(returns),
-                      "ev_lo": ret_draws[int(0.025 * len(ret_draws))],
-                      "ev_hi": ret_draws[int(0.975 * len(ret_draws)) - 1],
-                      "policy_lo": policy_draws[int(0.025 * len(policy_draws))],
-                      "policy_hi": policy_draws[int(0.975 * len(policy_draws)) - 1],
-                      "growth": statistics.mean(rows[i]["growth"] for i in selected),
-                      "growth_lo": growth_draws[int(0.025 * len(growth_draws))],
-                      "growth_hi": growth_draws[int(0.975 * len(growth_draws)) - 1]})
+                      "acc": acc, "implied": implied, "price": mean_price,
+                      "lo": lo, "hi": hi, "blo": blo, "bhi": bhi,
+                      "policy": policy,
+                      "policy_lo": float(policy_draws[int(0.025 * policy_draws.size)]),
+                      "policy_hi": float(policy_draws[int(0.975 * policy_draws.size) - 1]),
+                      "delta": policy - raw_growth,
+                      "regret": oracle_growth - policy,
+                      "growth": float(growth[selected].mean()),
+                      "growth_lo": float(growth_sel_draws[int(0.025 * growth_sel_draws.size)]),
+                      "growth_hi": float(growth_sel_draws[int(0.975 * growth_sel_draws.size) - 1]),
+                      "return": float(ret[selected].mean()),
+                      "ev_lo": float(ret_draws[int(0.025 * ret_draws.size)]),
+                      "ev_hi": float(ret_draws[int(0.975 * ret_draws.size) - 1]),
+                      "gap": acc - implied,
+                      "gap_lo": float(gap_draws[int(0.025 * gap_draws.size)]),
+                      "gap_hi": float(gap_draws[int(0.975 * gap_draws.size) - 1])})
 
     doc = f"""{report_stamp.stamp(Path(__file__))}
 
@@ -187,7 +215,7 @@ def main() -> int:
 Pilot seasons only, {n:,} fixtures with a complete totals price. The rule shows the favourite side
 of the totals market only when its de-vigged probability clears the threshold.
 
-| Threshold | n | Coverage | Accuracy | Shown calibration gap | Policy growth (95%) | Raw board | Policy − raw | Oracle regret* | Growth at 0.5%/2% |
+| Threshold | n | Coverage | Accuracy | Shown calibration gap | Policy growth, full denominator (95%) | Raw board | Policy − raw | Oracle regret* | Growth at 0.5%/2% |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 """ + "\n".join(
         f"| {r['tau']:.2f} | {r['n']:,} | {r['coverage']:.1%} | {r['acc']:.1%} | "
@@ -195,6 +223,10 @@ of the totals market only when its de-vigged probability clears the threshold.
         f"{raw_growth:+.5f} | {r['delta']:+.5f} | {r['regret']:.5f} | "
         f"{r['sens'][0.005]:+.5f} / {r['sens'][0.02]:+.5f} |"
         for r in table) + f"""
+
+*Policy growth* is measured over every fixture: the rule takes its selected side and abstains
+elsewhere, with abstentions scoring zero. Its interval resamples division-seasons and recomputes
+that same full-denominator mean in each replicate.
 
 *Oracle regret* is the gap to a policy that always stakes on the winning side. That policy uses
 knowledge of the outcome, so it is a **hindsight upper bound**, not a deployable competitor; it
@@ -262,7 +294,7 @@ makes it one.
 
     for r in table:
         print(f"tau={r['tau']:.2f} cov={r['coverage']:.3f} acc={r['acc']:.4f} "
-              f"implied={r['implied']:.4f} gap={r['gap']:+.4f} ev={r['ev']:+.3f}")
+              f"implied={r['implied']:.4f} gap={r['gap']:+.4f} ev={r['return']:+.3f}")
     print(f"wrote {OUT.relative_to(ROOT)}")
     return 0
 
