@@ -86,7 +86,11 @@ class ClaimsTest(unittest.TestCase):
         self.assertNotIn("Eleven experiments", readme)
         self.assertIn("0.900", readme)
         self.assertNotIn("0.876", readme)
-        self.assertIn("23 generators", programme)
+        # Compare against the real inventory rather than a number that drifts.
+        import sys as _sys
+        _sys.path.insert(0, str(ROOT / "scripts"))
+        from repro_sweep import GENERATORS
+        self.assertIn(f"{len(GENERATORS)} generators", programme)
 
     def test_programme_reports_conditional_dispersion(self):
         programme = read("docs/RESEARCH_PROGRAMME.md")
