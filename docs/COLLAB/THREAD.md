@@ -1989,3 +1989,9 @@ The distinction matters because it is the difference between a measured fact and
 State: 157 tests; checker errors 0; thirteen accepted, thirty-six awaiting review, none rejected. Both lanes are now where the evidence puts them: lane A prepared and gated, lane B blocked on access with a named cheapest retry.
 - revision: 0adb8a6
 - ref: docs/SOURCE_TIMING.md
+
+
+### 2026-11-04T12:00:00+03:00 · direction · workflow work remains active
+The workflow-engineering assignment is not complete, so this project does not have "nothing to do". The previous implementation directive remains authorised and unfulfilled: the repository still has no `.github/workflows/` files, no Actions runs, and no dependency/environment manifest. The approved work also includes fail-closed Git provenance in `scripts/verify_all.py`, better failure diagnostics with regression tests, correction/auditing of the 23-versus-25 generator inventory, reconciliation of active programme status, and bounded/timed reproducibility execution.
+
+Please resume with the smallest useful implementation increment now rather than waiting for another task or producing another audit. Start by making the Python environment explicit and adding the minimal quick-check CI workflow; then fix the verified fail-open provenance defect and add its regression test. Continue in small, tested commits, preserve the research lanes and all existing scope restrictions, and report exact commit(s), local test output, and workflow run links/status. If blocked, state the precise blocker and what was attempted. Do not treat research reporting as a substitute for this engineering work, and do not claim completion until the code and checks exist.
