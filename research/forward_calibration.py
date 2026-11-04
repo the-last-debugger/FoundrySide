@@ -65,7 +65,21 @@ def main() -> int:
         folds.append({"held": held, "n": len(test), "a": a, "b": b,
                       "raw": raw_ll, "cal": cal_ll, "market": mkt_ll})
 
-    # The LOSO figure, for comparison - the same aggregate the calibration study reports.
+    # Matched-fold comparison. The forward folds cover 2122 and 2223 only, so comparing their mean
+    # against an all-season LOSO mean compares different populations. These are the LOSO figures
+    # recomputed on exactly the rows the forward folds scored.
+    matched = []
+    for f in folds:
+        held = f["held"]
+        train = [{"p": r["p"], "y": r["y"]} for r in rows if r["season"] != held]
+        a, b = cs.fit_platt(train)
+        test = [r for r in rows if r["season"] == held]
+        matched.append({"held": held, "n": len(test),
+                        "loso": statistics.mean(cs.logloss(cs.sigmoid(a * cs.logit(r["p"]) + b), r["y"])
+                                                 for r in test),
+                        "raw": statistics.mean(cs.logloss(r["p"], r["y"]) for r in test)})
+
+    # All-season LOSO, kept as a separate reference rather than the comparison.
     loso = []
     for held in seasons:
         train = [{"p": r["p"], "y": r["y"]} for r in rows if r["season"] != held]
@@ -94,23 +108,44 @@ training only on seasons that precede the target.
         f"{f['cal']:.4f} | {f['market']:.4f} | {f['raw'] - f['cal']:+.4f} |"
         for f in folds) + f"""
 
-## The comparison that matters
+## Matched-fold comparison
 
-| Estimator | Mean log loss |
-| --- | --- |
-| Raw model, all pilot rows | {raw_all:.4f} |
-| Platt under leave-one-season-out | {statistics.mean(loso):.4f} |
-| Platt under forward-only transfer | {statistics.mean(f['cal'] for f in folds):.4f} |
+The forward folds cover two seasons, so comparing their mean against an all-season LOSO mean
+compares different populations. These are the same rows under both estimators.
 
-Forward gain: **{statistics.mean(forward_gains):+.4f} nats** per fold on average; LOSO gain over the
-same raw baseline: **{raw_all - statistics.mean(loso):+.4f}**.
+| Season | n | Raw | Platt, LOSO | Platt, forward | Forward gain | LOSO gain |
+| --- | --- | --- | --- | --- | --- | --- |
+""" + "\n".join(
+        f"| {m['held']} | {m['n']:,} | {m['raw']:.4f} | {m['loso']:.4f} | "
+        f"{[f for f in folds if f['held'] == m['held']][0]['cal']:.4f} | "
+        f"{m['raw'] - [f for f in folds if f['held'] == m['held']][0]['cal']:+.4f} | "
+        f"{m['raw'] - m['loso']:+.4f} |" for m in matched) + f"""
+
+| Estimator, matched folds | Unweighted fold mean | Sample-weighted |
+| --- | --- | --- |
+| Raw | {statistics.mean(m['raw'] for m in matched):.4f} | {sum(m['raw'] * m['n'] for m in matched) / sum(m['n'] for m in matched):.4f} |
+| Platt, forward | {statistics.mean(f['cal'] for f in folds):.4f} | {sum(f['cal'] * f['n'] for f in folds) / sum(f['n'] for f in folds):.4f} |
+| Platt, LOSO on the same rows | {statistics.mean(m['loso'] for m in matched):.4f} | {sum(m['loso'] * m['n'] for m in matched) / sum(m['n'] for m in matched):.4f} |
+
+Forward gain on matched rows: **{statistics.mean(forward_gains):+.4f} nats** unweighted,
+{sum((m['raw'] - [f for f in folds if f['held'] == m['held']][0]['cal']) * m['n'] for m in matched) / sum(m['n'] for m in matched):+.4f}
+weighted. LOSO gain on the same rows:
+{statistics.mean(m['raw'] - m['loso'] for m in matched):+.4f} unweighted,
+{sum((m['raw'] - m['loso']) * m['n'] for m in matched) / sum(m['n'] for m in matched):+.4f} weighted.
+
+All-season reference (a different population): raw {raw_all:.4f}, LOSO {statistics.mean(loso):.4f},
+gain {raw_all - statistics.mean(loso):+.4f}.
 
 ## Reading
 
-The forward gain is the only one a user could actually have had. If it is close to the LOSO gain,
-recalibration is deployable: a calibrator fitted on completed seasons transferred to the next one
-without needing to see it. If it is materially smaller, part of the LOSO gain came from information
-that was not available at the time, and the honest product claim is the smaller number.
+On the matched rows the two estimators agree almost exactly: forward transfers lose essentially
+nothing against a leave-one-season-out fit on the same seasons. That is the result to quote, and it
+is narrower than the earlier "nine tenths" reading, which compared a two-season forward mean with
+a three-season LOSO mean and was not like-for-like.
+
+**Transfer is observed in this pilot, not broadly validated.** Two forward folds from one corpus is
+a demonstration that the map transfers here, not a guarantee that it transfers across eras,
+divisions or a different model family.
 
 Either way the market comparator is unchanged and the deficit is not closed by calibration alone.
 

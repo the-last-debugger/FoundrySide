@@ -53,10 +53,11 @@ loss in every held-out season:
 | Platt (out-of-fold) | **0.6874** |
 | Isotonic | 0.7637 (overfits) |
 
-Forward-only transfer, which is what a product would do, keeps **+0.0102** of that +0.0114: about
-nine tenths of the gain survives when the calibrator is fitted only on seasons that precede the one
-it is scored on (FORWARD_CALIBRATION.md). The gain **0.0114 nats** is therefore close to
-deployable, and about 46% of the deficit — with a fitted slope of **0.40**, meaning the raw
+Forward-only transfer, which is what a product would do, is computed on **matched rows**: forward
++0.0102 and leave-one-season-out +0.0103 on the same two seasons, so the transfer loses essentially
+nothing (FORWARD_CALIBRATION.md). The all-season LOSO figure of +0.0114 covers an extra season and
+is a different population, not a comparison. The gain is **0.0102 nats** deployable in this pilot —
+observed here, not validated across eras — and about 46% of the deficit — with a fitted slope of **0.40**, meaning the raw
 model's logits are two and a half times too spread. After calibration, reliability falls to
 0.0000 and AUC is unchanged by construction (0.5623): **a monotone map cannot create
 separation**, and about half the deficit is exactly that.
