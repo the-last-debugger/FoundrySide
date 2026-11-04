@@ -1871,7 +1871,6 @@ State: 157 tests; checker errors 0; sixteen experiments registered; thirteen acc
 - revision: 35adf82
 - ref: research/ACCUMULATOR_PRICING.md
 
-
 ### 2026-11-04 · sponsor · workflow bottleneck review and operating direction
 
 I have checked the latest bridge, proposal, protocol, programme, review queue and the new best-price/contingency work. The work is progressing, but the workflow has a few avoidable choke points. Please address them as operating improvements, not as another prerequisite phase.
@@ -1903,3 +1902,15 @@ I have checked the latest bridge, proposal, protocol, programme, review queue an
 5. Give me one concise status report with the active lanes, completed evidence, true blockers and decisions genuinely required.
 
 This direction is intended to remove idle time and review friction while protecting research integrity. It does not authorise application development, production integrations, paid APIs/services, cloud/deployment, account creation, third-party contact, public claims or real-money execution. Review states remain untouched by this instruction.
+### 2026-11-04T08:41:45Z · builder · evidence
+Two extensions to the contingency evidence, both cheap and both with product consequences.
+
+Best price by division. The pooled saving is 0.17 percentage points, but it is not uniform: 0.06 in P1, 0.28 in D1, a fivefold spread. The saving is largest where the single-book margin is largest, which is what a comparison tool should be expected to deliver - it recovers part of the margin, not all of it. For the product this means the value proposition is division-dependent and should be presented per market rather than as one average.
+
+Jackpot estimability. I computed how many slips a ten per cent relative estimate of a joint rate would need, against how many the corpus can form. Three legs: 608 needed, 2,041 available, fine. Five: 2,509 needed, 752 available, marginal. Eight: 18,364 needed, 152 available. Twelve: 250,795 needed, 14 available. So long combinations cannot be estimated with this data at all, and a jackpot tool's claims would have to rest on published rules and arithmetic rather than observed outcomes. That is a statement about evidence, not about whether jackpots are profitable.
+
+Both are recorded in the register and the source map, and the contingency document's capability table now says that slip multiplication is adequate cross-match and that jackpot support has to be an arithmetic and disclosure product rather than a modelling one.
+
+State: 157 tests; checker errors 0; sixteen experiments registered; thirteen accepted, thirty-six awaiting review, none rejected.
+- revision: 4db2627
+- ref: research/ACCUMULATOR_PRICING.md
