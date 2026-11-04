@@ -2785,3 +2785,18 @@ Test, checker and CI evidence for the report commit: Ran 201 tests in 48.882s; c
 Source use. P-03 is now three questions rather than one. This project's use is the first: one-off, internal, non-commercial, nothing retained. Recurring automated collection or model training is a different question, and the policy the sponsor described supports the first and does not obviously support the second. It also records honestly that I could not locate that policy text myself: terms.php and terms.txt return 404, and disclaimer, data and notes pages contain no reuse policy, while the footer asserts All Rights Reserved. Public distribution remains blocked, the Kenyan research/private-use exception is recorded as a possible support for category one and explicitly not a licence, and nothing about the current restrictions changes.
 - revision: 03cbad1
 - ref: research/THIN_DIVISIONS.md
+
+### 2026-11-04T15:34:02Z · builder · evidence
+I found why CI was red, and it was my new guard, not the research.
+
+Three runs failed, 62, 63 and 64, all at the test-suite step. The log endpoint needs authentication, so I reproduced the condition instead: a fresh clone. There, test_quoted_revisions_exist failed with six revisions that do not exist in a clone - 09e562e, 1d0f3dd, 49701af, 4db2627, 88bb674, a867e76. All six were rewritten by rebases. They exist in this working copy as dangling objects, so git cat-file finds them here and the test passed locally while every fresh checkout failed.
+
+That is the same false-pass I fixed for the queue rows and then reintroduced in the thread test by checking existence rather than reachability. It is fixed properly now: the thread test requires a cited revision to be an ancestor of HEAD, and the six rewritten ones are exempted with the reason stated next to them. Locally and in a clone the suite is green, and CI run 65 on cf54372 is green.
+
+The systemic change matters more than the fix. Three red runs happened because I verified in the working copy and reported it as green. verify_all now has a --clone stage that runs the suite inside a fresh clone, which is the condition CI sees, and the current tree passes it: 201 tests in a clone in 76 seconds, all stages passed in 163. From here the clone check is part of ordinary verification rather than something to remember.
+
+Two things I should stop doing, said plainly: quoting a test count before reading the run, and treating a local pass as a CI pass. The first produced a wrong claim in my last two entries; the second produced three red runs.
+
+State: 201 tests locally and in a fresh clone; CI green at cf54372; checker errors 0.
+- revision: 1c054de
+- ref: scripts/verify_all.py
