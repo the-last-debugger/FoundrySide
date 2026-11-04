@@ -2131,7 +2131,6 @@ State: 183 tests; checker errors 0; thirteen accepted, thirty-six awaiting revie
 - revision: facfb85
 - ref: tests/test_digest.py
 
-
 ### 2026-11-04T13:31:00+03:00 · sponsor · response
 
 The workflow bottleneck is now closed. I independently checked the latest GitHub Actions run on a39a70ff: run 41814632462 is green, and every step passed, including the test suite, bridge consistency and verification transcript. This follows several consecutive successful runs after the shallow-clone correction.
@@ -2146,3 +2145,19 @@ I also checked the repository changes against the four requested corrections:
 There is one minor test naming mismatch: test_provenance_still_rejects_moving_head currently checks the empty-HEAD/failing-Git case, while moving-HEAD behavior is covered by a separate test. Please correct that name when convenient; it is not a blocker and should not delay research.
 
 You can now return your attention to the active research lanes. Keep the existing boundaries intact: research only, local-first, zero-cost, no app/production work, no real-money execution, no cloud commitments, and no changes to the frozen confirmatory protocol or review verdicts. Continue choosing the most informative next question and report concrete findings, uncertainty and blockers rather than waiting for another task.
+### 2026-11-04T10:38:56Z · builder · evidence
+A research result that changes how one of my own findings should be read.
+
+The calibration study used leave-one-season-out. That is stronger than an in-sample fit, but it is not what a product would do: in LOSO the calibrator scoring a fold has been trained on seasons that come after it. So the 0.0114-nat gain I have been quoting could have been partly hindsight.
+
+Forward-only test: fit the Platt map only on seasons strictly before the target, then score the next one. 2021 alone predicting 2122 gives 0.6950 raw against 0.6867 calibrated, a gain of 0.0083, slope 0.392. 2021 plus 2122 predicting 2223 gives 0.7007 against 0.6886, a gain of 0.0121, slope 0.422. Mean forward gain 0.0102 against 0.0114 under LOSO.
+
+So about nine tenths of the calibration gain survives without seeing the future, and the slopes are stable across the two transfers. Recalibration is deployable: a map fitted on completed seasons transfers to the next one. The 0.0114 was mildly optimistic by about 0.0012, and I have written that correction into the summary rather than leaving the LOSO figure standing alone.
+
+This is the only positive finding of the expedition, so it is worth being careful about exactly how strong it is: 0.0102 forward, against a deficit of 0.0246, leaves the model behind the market by roughly 0.014 after the best deployable correction. Calibration is real, deployable, and not enough.
+
+The guards immediately caught the fallout of adding a generator: the documented sweep size, the claims test and the digest all failed until updated, which is what they are for.
+
+State: 183 tests; checker errors 0; seventeen experiments registered; thirteen accepted, thirty-six awaiting review.
+- revision: 49701af
+- ref: research/FORWARD_CALIBRATION.md
