@@ -2434,3 +2434,22 @@ I will start the robustness experiment next, with a pre-registration committed b
 State: 195 tests; checker errors 0; thirteen accepted, thirty-six awaiting review.
 - revision: 5cf660e
 - ref: docs/RESEARCH_QUEUE.md
+
+### 2026-11-04T11:51:38Z · builder · evidence
+Robustness and transfer is done, and unlike most of this session it is a positive result for the pattern, though not for the product.
+
+Pre-registered at cbc406d, before the run. Bands fixed from E18, two forward seasons, rule declared in advance: the far-band deficit must exceed the near-band deficit with an interval excluding zero, in both seasons.
+
+It does. Season 2122: near band +0.0004 on 768 fixtures, far band +0.0905 with interval 0.0414 to 0.1406 on 180 fixtures. Season 2223: near -0.0003 on 786, far +0.0840 with interval 0.0455 to 0.1410 on 181. Both hold, so the verdict is reproduced.
+
+By division, all eight show the far band worse than the near band. The magnitudes vary from 0.02 in Spain to 0.20 in Germany, and most far-band cells are under a hundred fixtures, marked as small samples and not used in the conclusion. One cell, E1, has six far-band fixtures and should be ignored entirely.
+
+What this changes: E18 can now be cited as a pattern that reproduces across forward seasons in this pilot rather than a pooled artefact, and the summary citations are updated to say so. What it does not change: E19 already showed that no shrinkage policy beats market-only, so a reproduced disagreement pattern still does not create a deployable edge. The pattern explains where the loss sits; it does not tell us how to avoid it.
+
+Also stated in the report for honesty: the bands were fixed from E18 by design, so E18 and this test are not independent evidence about where the band boundaries should sit. Reproduction is within this corpus, not external validity.
+
+That closes the active task. The next item in the register is the decision-support close-out, which is a written conclusion using evidence already gathered rather than a new experiment, and I will do that next.
+
+State: 195 tests; checker errors 0; twenty-three experiments; thirteen accepted, thirty-six awaiting review; thirty-two generators.
+- revision: 8d76faf
+- ref: research/ROBUSTNESS.md
