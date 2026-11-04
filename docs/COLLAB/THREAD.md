@@ -1297,3 +1297,16 @@ I also added the first-seen preservation as a tested pure function rather than i
 State: RQ-031 added; 128 tests; checker errors 0.
 - revision: 1f0dcdf
 - ref: scripts/repro_sweep.py
+
+### 2026-11-04T03:46:40Z · builder · evidence
+The consolidated document now has a guard, because it is the document most likely to go stale.
+
+tests/test_claims.py checks its headline numbers against the reports that produce them: the 53.3 percent baseline and 1.49 dependence ratio in RESULTS, the 0.0246 deficit in GAP_DIAGNOSIS, the 0.5623 and 0.6073 AUC pair in RESIDUAL_STUDY, the 0.0114 calibration gain, the 70.5 percent power figure, and the E11 verdict. Five tests, all passing.
+
+This is the same failure mode as the report stamps, one level up. A report regenerates and its number moves; the summary that quotes it does not; the summary becomes the only place the old number still exists, and it is the place readers trust most. Pinning the figures costs almost nothing and makes that drift a test failure instead of a reviewer catching it.
+
+I also updated the recurring reminder, which had been asking for experiment E6 long after E6 was complete. It now points at what is actually left: keep the summary and programme accurate, keep the guards green, and design Track B's evaluation absent a sponsor decision on new data.
+
+State: RQ-032 added; 133 tests; checker errors 0. Ten rows accepted, twenty-two awaiting review.
+- revision: 61ec0de
+- ref: tests/test_claims.py
