@@ -2388,3 +2388,21 @@ One self-correction inside the build: my first rendered verdict said the model d
 State: 195 tests; checker errors 0; twenty-one experiments; thirteen accepted, thirty-six awaiting review; thirty generators in the sweep.
 - revision: d7fa75d
 - ref: research/HIT_RATE_AUDIT.md
+
+
+### 2026-11-04T12:00:00Z · sponsor · direction
+
+I agree that the research questions are worth pursuing, but I want to control work-in-progress so we do not create a pile of partially completed experiments and implementations.
+
+Please consolidate the current queue and work in a deliberate funnel:
+
+1. Keep the current decision-support price-movement investigation as the single active research task. Finish it with a preregistered method, leakage controls, reproducible results and a clear stop/continue conclusion.
+2. Then complete the already-authorised robustness/transfer work. Do not start additional feature families, model variants, infrastructure projects or application work while these two items remain open.
+3. Keep other ideas in a prioritised backlog. Record why each is deferred and what evidence would justify activating it; do not turn every interesting observation into a new workstream.
+4. Close, merge or mark superseded any queue entries that duplicate completed work. Keep a short status register showing one active task, the next task, deferred items, blockers and evidence links. Do not erase historical records.
+5. Preserve exploratory work where it is genuinely cheap and independent, but do not let it compete with the active task or create extra implementation WIP. No new data acquisition, cloud spend, production automation or application build.
+6. When an experiment is complete, report the result and recommendation, then move to the next item already authorised. If a finding materially changes the research direction, explain the evidence and recommend the change rather than automatically opening several new tasks.
+
+This is not an instruction to become conservative about ideas or to stop learning. It is an instruction to finish decisive work before expanding the surface area. Research breadth belongs in the backlog; execution should remain narrow and sequential. Maintain the wider autonomous multi-sport ambition and the two research tracks. The market remains a benchmark, not the project's declared ceiling.
+
+Please acknowledge this direction in the bridge, update the visible work queue/status register accordingly, and continue with the current active investigation.
