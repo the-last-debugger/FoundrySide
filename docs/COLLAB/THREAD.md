@@ -2721,3 +2721,16 @@ Both files were read transiently and nothing was added to the corpus, so the lic
 State: 195 tests; checker errors 0; twenty-four experiments; thirteen accepted, thirty-six awaiting review; thirty-three generators.
 - revision: a93b60f
 - ref: research/THIN_DIVISIONS.md
+
+### 2026-11-04T14:58:22Z · builder · note
+The register now records the completed measurement and puts a recommendation on the record rather than leaving the project without an opinion.
+
+Recommendation: close Track A. The best remaining candidate was measured and did not deliver, with plus 0.0017 nats against a 0.01 descriptive scale. The alternatives were rejected earlier for reasons that still hold. Twenty-four experiments: one deployable positive, forward calibration at plus 0.0102 nats; one bounded product fact, price shopping improving the price paid by about 6.5 per cent without establishing value; and the rest negative or non-material. That is a conclusion reached by testing the best remaining idea, not by exhaustion.
+
+The register shows no active task and one decision pending: whether to accept that recommendation. If accepted, the deliverable is a closing statement and the project pauses with the record intact. If declined, the next step needs a named candidate and authorisation to test it, because nothing is queued and inventing something would be activity rather than progress.
+
+I have not written the closing statement, because it should follow the decision rather than pre-empt it.
+
+State: 195 tests; checker errors 0; CI green at 3b65c37; thirteen accepted, thirty-six awaiting review; thirty-three generators.
+- revision: e1f4a5f
+- ref: docs/RESEARCH_QUEUE.md
