@@ -107,76 +107,83 @@ it decides whether the only positive product fact we have is real.
 
 ## Specification of the proposed first experiment — the 6.5% decomposition
 
-Not authorised yet, and not run. This is the precision the review asked for.
+Authorised only to the point of method and pre-registration; not executed.
 
 ### What the 6.5% is
 
 Across 44,406 selection-snapshots (14,802 fixtures × three 1X2 outcomes), for each *single*
-selection:
+selection: `g = log(best price / average price)`, where **best** is `MaxC*` (the highest closing price
+the provider tracked for that outcome) and **average** is `AvgC*` (their mean). The reported 6.51% is
+`exp(mean g) − 1` — the average relative improvement from taking the best of the books rather than the
+market average, for one selection. Not a portfolio, not a slip, not an expected value.
 
-`g = log(best price / average price)`, where **best** is the provider's `MaxC*` column — the highest
-closing price among the bookmakers it tracks for that outcome — and **average** is `AvgC*`, their
-mean. The reported 6.51% is `exp(mean g) − 1`: the average relative improvement from taking the best
-of the books over taking the market average, *for one selection*. It is not a portfolio return, not
-a slip, and not an expected value.
+### The identification problem in my first version
 
-### The two components
+I proposed estimating cross-book dispersion from the two books whose prices are recorded
+individually, and treating that as disagreement about the fair probability. **That was wrong.** A
+bookmaker's raw price is fair probability *plus that book's margin allocation*, so the spread between
+two raw prices mixes two things: genuine disagreement about the probability, and differences in how
+the two books structure their margin. The two-book spread therefore does not, on its own, isolate the
+quantity the study needs.
 
-- **Mechanical maximum-selection.** For any set of bookmaker quotes of the same selection,
-  `max ≥ mean` by construction. If every book priced the same fair probability and differed only in
-  how it allocated its margin across outcomes, the max would still sit above the mean, and 6.51%
-  could be entirely arithmetic. Nothing about this component is actionable.
-- **Genuine cross-book dispersion.** Books also disagree about the *fair* probability — different
-  information, different models, different clientele. To the extent the observed gap exceeds what
-  margin allocation alone produces, the excess is real disagreement, and a product that surfaced it
-  would be exposing information rather than restating arithmetic.
+### What the available fields can identify
 
-### The comparison that isolates them
+| Quantity | Identified? | How, or why not |
+| --- | --- | --- |
+| Each book's **de-vigged** probability, per selection | **Yes, assumptionally** | Proportional de-vig on one book's three-way prices. Assumes the book spreads its margin proportionally across outcomes |
+| Dispersion between two books' **de-vigged** probabilities | **Yes, assumptionally** | Logit difference of the two de-vigged probabilities. Removes *margin level*; leaves any difference in margin *allocation* that proportional de-vig does not absorb, plus de-vig method error |
+| Dispersion across **all K** books | **No** — projected | Only two books are recorded individually; the rest contribute only to `Max` and `Avg` |
+| Separation of opinion from margin-allocation differences | **No** | Would need each book's own allocation, which the corpus does not record |
+| Whether the best price is **obtainable** | **No** | No timestamps, no account or limit data |
 
-The corpus supplies the two ingredients a null needs:
+So the honest claim structure changes: the study identifies **cross-book dispersion in de-vigged
+probabilities, under a proportional-de-vig assumption**, and *projects* that to K books under an
+exchangeability assumption. It does **not** measure "disagreement about the true probability", and it
+must not be described as doing so.
 
-1. **`Bb1X2`** — the number of bookmakers the provider used for the averages and maximums, per
-   fixture. So `K` is observed, not assumed.
-2. **Two individual books' closing prices** (Pinnacle `PSC*`, Bet365 `B365C*`), which give a direct
-   estimate of cross-book dispersion `σ` on the log-odds scale for the same selection.
+### The comparison, restated with that limit
 
-Under a null in which `K` books quote independent log-odds with common mean and standard deviation
-`σ`, the expected gap is `σ · E[max of K standard normals]`. The test compares the observed mean gap
-against that expectation, per division and pooled, using `K` from `Bb1X2` and `σ` estimated from the
-two books.
+1. **De-vig each book separately** — Pinnacle's and Bet365's closing 1X2 prices — to probabilities per
+   selection. This is the correction the review required: raw odds never enter the dispersion estimate.
+2. **Pairwise dispersion** `σ₂`: the standard deviation of the logit difference between the two books'
+   de-vigged probabilities, divided by √2 under an equal-variance assumption. Per division and pooled.
+3. **Projected gap for K books**: `σ₂ · E[max of K standard normals]`, with `K` taken from the
+   provider's own `Bb1X2` field — observed per fixture, not assumed.
+4. **Observed gap**: the mean log ratio of `MaxC` to `AvgC` for the same selections.
+5. **Excess = observed − projected.** That is the quantity, and it is a comparison between a measured
+   quantity and a projection, not a decomposition into true components.
 
-**Excess = observed − expected.** That is the quantity the study is about.
+### Sensitivity, because the projection is an assumption
+
+- `σ₂` varied by a factor of two in each direction, reporting how the excess moves.
+- The exchangeability assumption tested where `K` varies: regress the observed gap on
+  `E[max_K]`; a slope consistent with `σ₂` supports the projection, a slope far from it does not.
+- Books copy each other, so independent draws overstate the projected gap; that biases the excess
+  **downward**, making the test conservative in the direction of the price-shopping claim surviving.
 
 ### Decision rules, fixed in advance
 
-| Result | Interpretation | Consequence for the price-shopping claim |
+| Result | Interpretation | Consequence |
 | --- | --- | --- |
-| Excess ≈ 0 within interval | The 6.5% is mechanical | **Claim weakened**: shopping always beats the average by construction; the product may not present it as an advantage |
-| Excess materially > 0 | Genuine disagreement exists | **Claim strengthened**, with the availability caveat; a comparison product gains a defensible basis |
-| Excess < 0 | Observed gap smaller than the null | Suspicious: suggests `Max`/`Avg` are computed over different book sets, or that dispersion is overstated. Treated as a data-integrity finding and investigated before any conclusion |
+| Excess ≈ 0 within interval | The 6.5% is consistent with arithmetic | **Claim weakened** — present as price arithmetic, not advantage |
+| Excess materially > 0 | Dispersion exceeds what the projection explains | **Claim strengthened**, still subject to availability |
+| Excess < 0 | Observed gap smaller than projected | **Data-integrity signal** — check that `Max` and `Avg` cover the same book set before concluding anything |
 
-The interval is a cluster bootstrap over division-seasons. The 0.01-nat scale is not the unit here;
-the decision is about whether excess is distinguishable from zero and how large it is, so the
-interval is the criterion.
+Cluster bootstrap over division-seasons for the interval; the criterion is the interval, not the
+0.01-nat scale, which is the wrong unit here.
 
-### Why this before the margin-allocation study
+### Why this before margin allocation
 
-Margin allocation is descriptive: it says where the price is worst, and does not change any action by
-itself. The decomposition decides whether the **only positive product fact** we hold is real or is
-arithmetic. If it is arithmetic, a product claim written around it would be false, and we would find
-out after building. That ordering — test the claim before building on it — is why it goes first.
+Margin allocation is descriptive: it says where a price is worst and changes no action. This decides
+whether the only positive product fact is real, and therefore what the product may say. Testing the
+claim before building on it is the ordering that matters.
 
-### Limits, stated before the result
+### Limits, before the result
 
-- `E[max of K normals]` assumes independence across books. Books copy each other, so the true
-  expected gap is smaller and the excess is correspondingly *understated*; the test is conservative
-  in the direction of the claim surviving.
-- `σ` comes from two books; if those two are unusually similar or dissimilar, the null shifts. A
-  sensitivity analysis using the observed spread of `Max − Avg` across fixtures with different `K`
-  is reported alongside.
-- Closing prices, no timestamps: whatever is found is a property of closing quotes, not of prices a
-  user could obtain.
-- This remains a fact about price quality, not evidence of profit.
+- Identified only under proportional de-vig, and only for two books' de-vigged probabilities.
+- The K-book projection assumes exchangeability; the `K`-slope test is the check, not a proof.
+- Closing prices without timestamps: a property of quotes, not of obtainable prices.
+- A fact about price quality, never about profit.
 
 ## 5. What to stop doing
 
