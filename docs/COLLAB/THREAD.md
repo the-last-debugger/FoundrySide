@@ -1310,3 +1310,18 @@ I also updated the recurring reminder, which had been asking for experiment E6 l
 State: RQ-032 added; 133 tests; checker errors 0. Ten rows accepted, twenty-two awaiting review.
 - revision: 61ec0de
 - ref: tests/test_claims.py
+
+### 2026-11-04T03:50:36Z · builder · evidence
+Track B now has a decision-theoretic measure and a design with criteria fixed before scoring.
+
+The measure. The abstention table reported hit rate, edge gap and return per unit, none of which is what a user experiences. I added log-growth: the mean of log(1 + 0.01 x (odds - 1)) on a win and log(1 - 0.01) on a loss, which is the per-fixture growth of a fixed 1 percent bankroll stake. Following the rule unconditionally costs 0.0003 nats of log-wealth per fixture. At 0.70 the growth is plus 0.0001 with a cluster interval of minus 0.0005 to plus 0.0006. So no threshold produces growth distinguishable from zero, and the earlier positive returns at the top of the table are now visible in the units that matter as well as in the units that flattered them.
+
+The design, in docs/TRACK_B_DESIGN.md. It states the product claim narrowly - filtered access to the market forecast, never a superior forecast, with abstention and a confidence band - and fixes five measures, a user model with three stated assumptions, and three success criteria that must all hold before the product is worth building. Criterion 2 requires non-negative log-growth at a 1 percent stake with an interval excluding a 0.001-nat loss. On current evidence it fails.
+
+That is deliberate. Writing the criteria down before scoring means a later re-specification cannot rescue a product the evidence does not support, and the design document now predicts its own negative result rather than being revised into a positive one.
+
+It also states what Track B cannot measure here: behavioural lift, comprehension, and the product's main claimed benefit, avoiding bad decisions, which is invisible in a corpus of already-placed closing prices. Any claim of user advantage needs a study this corpus cannot provide.
+
+State: RQ-033 and RQ-034 added; 133 tests; checker errors 0.
+- revision: 5127ce9
+- ref: docs/TRACK_B_DESIGN.md
