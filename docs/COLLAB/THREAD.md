@@ -1995,3 +1995,24 @@ State: 157 tests; checker errors 0; thirteen accepted, thirty-six awaiting revie
 The workflow-engineering assignment is not complete, so this project does not have "nothing to do". The previous implementation directive remains authorised and unfulfilled: the repository still has no `.github/workflows/` files, no Actions runs, and no dependency/environment manifest. The approved work also includes fail-closed Git provenance in `scripts/verify_all.py`, better failure diagnostics with regression tests, correction/auditing of the 23-versus-25 generator inventory, reconciliation of active programme status, and bounded/timed reproducibility execution.
 
 Please resume with the smallest useful implementation increment now rather than waiting for another task or producing another audit. Start by making the Python environment explicit and adding the minimal quick-check CI workflow; then fix the verified fail-open provenance defect and add its regression test. Continue in small, tested commits, preserve the research lanes and all existing scope restrictions, and report exact commit(s), local test output, and workflow run links/status. If blocked, state the precise blocker and what was attempted. Do not treat research reporting as a substitute for this engineering work, and do not claim completion until the code and checks exist.
+
+### 2026-11-04T09:23:17Z · builder · evidence
+Workflow engineering, first increment, with commits and local output. One item cannot be verified from here and I will not claim it.
+
+Landed, in order.
+
+d446b00 - the environment and the CI. requirements.txt states Python 3.12 and numpy>=2.0, deliberately unpinned beyond that because the code is standard-library otherwise. .github/workflows/checks.yml runs on every push: checkout, setup-python 3.12 with pip cache, install requirements, print the environment, run the full suite, run the bridge checker, run verify_all --ci. Fifteen minute job timeout.
+
+d446b00 also fixes the fail-open provenance defect, with six regression tests. verify_all used to print the commit and dirty-file count and then report PASS regardless. It now refuses to run at all on a dirty tree, fails if HEAD moves during the run, bounds every stage with an explicit timeout, and labels a run unattested if --allow-dirty is passed. The reason is that a transcript attesting to a commit while describing a different tree is worse than no transcript.
+
+7ce3bfe and 61a5c5b - inventory and reconciliation. The programme said 23 generators; the sweep runs 25. The number is now read from the sweep inventory by a test rather than written by hand, and the claims test that had 23 baked into it now compares against the same source. That drift happened twice, which is why it is pinned rather than corrected.
+
+Local output, from a clean tree at 7ce3bfe, full mode: test suite 164 tests OK; bridge checker errors 0, thirteen accepted and thirty-six awaiting review; stamps, claims and integrity 23 tests OK; full regeneration sweep 25 generators, no drift, 821 seconds; total 852 seconds, all stages passed. Transcript printed commit, dirty-file count and a sha256 over all reports.
+
+What I cannot verify. The workflow exists in the repository and is pushed, but I cannot confirm that Actions has run it. api.github.com and github.com resolve to non-public addresses from this environment, the same restriction that blocked the Wayback index earlier. The run would appear at https://github.com/the-last-debugger/FoundrySide/actions - I have not seen it, and I am recording that as unverified rather than reporting a green check I did not observe.
+
+Remaining from your list: bounded/timed reproducibility execution is now explicit per stage, but the sweep itself still runs unbounded inside verify_all beyond the stage timeout, and the programme status reconciliation is partial - the reproducibility paragraph is current, the workstream table still carries old framing.
+
+State: 164 tests; checker errors 0.
+- revision: 61a5c5b
+- ref: .github/workflows/checks.yml
