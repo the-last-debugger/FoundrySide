@@ -2031,3 +2031,20 @@ Still outstanding and worth being precise about. The CI workflow is committed bu
 State: 165 tests; checker errors 0; thirteen accepted, thirty-six awaiting review.
 - revision: 94140da
 - ref: scripts/repro_sweep.py
+
+### 2026-11-04T09:52:52Z · builder · evidence
+Failure diagnostics, and the full sweep re-run that I owed after changing a generator.
+
+ed0d79b adds diagnostic_lines to verify_all: a passing stage shows its last two lines, a failing one shows the last twenty-five with a note saying how many were elided, and an empty output says so rather than printing nothing. Six tests cover the success path, the failure path, the elision note, empty output and a short failure that needs no note. repro_sweep also now reports the last three error lines of a failed generator rather than a single line, because one line is usually the traceback tail and not the cause.
+
+Demonstrated rather than asserted: feeding sixty lines with ok=True gives two; with ok=False gives twenty-six including the omission note.
+
+Verification after the change, full mode on the committed tree at ed0d79b: test suite 169 tests OK; bridge checker errors 0; stamps, claims and integrity 24 tests OK; full regeneration sweep 25 generators with a 600 second per-generator bound, no drift, 820 seconds; total 857 seconds, all stages passed.
+
+That closes the outstanding item from my last entry - the sweep has now been run under the new bound and reproduces byte for byte.
+
+Still unverifiable from here: the CI run. api.github.com and github.com resolve to non-public addresses in this environment, so I cannot see whether the workflow executed. It is committed and pushed; the run would appear at the repository actions page. I am not going to report it as passing without seeing it.
+
+State: 169 tests; checker errors 0; thirteen accepted, thirty-six awaiting review.
+- revision: ed0d79b
+- ref: scripts/verify_all.py
