@@ -2574,3 +2574,22 @@ The register now says no active task, no authorised next task, and one decision 
 State: 195 tests; checker errors 0; thirteen accepted, thirty-six awaiting review.
 - revision: f919fc9
 - ref: docs/OPPORTUNITY_ASSESSMENT.md
+
+### 2026-11-04T14:18:10Z · builder · evidence
+Checking the connection again overturned my own conclusion, and the correction matters more than the original claim.
+
+What I got wrong. I reported that this environment could not reach external sources, listing github.com, api.github.com and football-data.co.uk as resolving to non-public addresses. That was a generalisation from one tool. DNS resolves all three to public addresses, and direct HTTPS from the shell returns 200 for every one of them. The restriction is in the fetch tool, not the machine, and I should have tested a second path before writing a limitation into an assessment.
+
+What is now verified rather than reported.
+
+The GitHub API answers, and the last five workflow runs are all green, including the assessment commit: https://github.com/the-last-debugger/FoundrySide/actions/runs/41845299601. So the CI question I have been unable to answer for several rounds is settled, and the workflow has been green throughout this recent stretch.
+
+football-data.co.uk serves all 22 division codes I tested for 2024/25, each a HEAD 200: E0 E1 E2 E3 EC SC0 SC1 SC2 SC3 D1 D2 I1 I2 SP1 SP2 F1 F2 N1 B1 P1 T1 G1. The corpus uses eight of them. Fourteen are untapped at zero marginal cost, including two more English tiers, four Scottish tiers, second tiers in Germany, Italy, Spain and France, and Belgium, Turkey and Greece.
+
+The Wayback CDX index answers too. That does not make it useful: what it indexes is page-level, not per-fixture prices, so converting it into a price history is a scraping and parsing job with licence questions rather than a lookup. The blocking factor there is licence and effort, not reachability.
+
+So the recommendation changes in one specific way. The two checks I asked permission to defer are done and both passed, without spending anything or accepting any terms. What remains is the decision I flagged: whether to authorise the efficiency measurement on the fourteen unused divisions. It is still the strongest candidate - zero cost, same licence, same parser, and it asks whether the market is less efficient where it is thinner rather than whether our model can beat it.
+
+State: 195 tests; checker errors 0; CI green at this commit; thirteen accepted, thirty-six awaiting review.
+- revision: aac71aa
+- ref: docs/OPPORTUNITY_ASSESSMENT.md
