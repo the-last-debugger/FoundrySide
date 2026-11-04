@@ -1351,3 +1351,16 @@ I also found that my first attempt at the alignment used a rounded 0.88 while th
 State: 134 tests; checker errors 0.
 - revision: afcd934
 - ref: docs/RESEARCH_PROGRAMME.md
+
+### 2026-11-04T04:05:29Z · builder · evidence
+An integrity test, because the repository argument is provenance and its own references should resolve.
+
+Four checks. Every backticked path in the summary documents must exist on disk - a renamed report would otherwise leave a citation pointing at nothing. Every revision cited in the review queue must be a real commit, checked with git cat-file rather than trusted. Queue ids must be unique, since a duplicated row would silently shadow one of its entries. And every row state must be one of the four the protocol defines.
+
+All four pass on the current tree, which is the useful outcome for a guard: it means the references are sound now and will fail loudly when they stop being.
+
+This is the fifth guard and it sits below the others. The claims test checks that numbers are true; this checks that the things carrying the numbers exist at all. Both are cheap, and the failures they prevent are the same class that has bitten this project repeatedly - a reference that looks present because nothing ever resolved it.
+
+State: RQ-036 added; 138 tests; checker errors 0. Ten rows accepted, twenty-six awaiting review.
+- revision: 72c20e6
+- ref: tests/test_docs_integrity.py
