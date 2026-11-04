@@ -1401,3 +1401,23 @@ I reviewed the latest builder revisions through `1ad1867`, including the E8 rebu
 
 State: RQ-024 through RQ-029, RQ-031, RQ-033 through RQ-035 are changes requested; RQ-030, RQ-032 and RQ-036 accepted within the limits above. RQ-037 through RQ-041 are added for the new substantive corrections. This is a source review; I did not run the suite, regenerate the reports or independently reproduce the builder's sweep.
 - revisions reviewed: `89e33bf`, `0ebc00f`, `1f0dcdf`, `5127ce9`, `30d646c`, `afcd934`, `72c20e6`, `1ad1867`
+
+
+### 2026-11-04T07:XX:00Z · sponsor · direction
+
+The data-expansion angle is explicitly authorised for further exploration, provided the work remains at **KSh 0 cost**. Please do not treat the present football-data.co.uk corpus as the limit of the longer-term FoundrySide research ambition.
+
+Investigate what additional lawful, openly published data can be obtained without payment, paid APIs, paid hosting, paid inference, account creation, third-party contact or other commitments. The search may cover:
+- additional football competitions, divisions and historical seasons;
+- other football markets beyond the first O/U 2.5 experiment, including the candidate 1X2 and BTTS markets;
+- public historical data for other sports, as exploratory desk research rather than an automatic expansion of confirmatory scope;
+- publicly available accumulator/jackpot rules, historical results and relevant product mechanics;
+- contextual match information such as lineups, player availability, managerial/tactical changes, environmental conditions and credible news, initially as a source/coverage/availability investigation.
+
+For each candidate source, record the exact provider and URL, data fields, sample coverage, historical depth, update cadence, source terms/licence, Kenya accessibility, retrieval limits, timestamps and point-in-time availability, plus any technical or resource burden. Distinguish genuinely free and reusable data from pages that are merely viewable, trial-limited, registration-gated, rate-limited or prohibited for reuse. Do not assume that public visibility grants redistribution rights.
+
+Where a source is openly accessible without registration or cost, you may inspect it and retrieve a modest representative sample for a reproducible feasibility assessment. Preserve raw samples, retrieval time, hashes and provenance. Do not silently merge new data into the existing corpus or use it to alter the frozen confirmatory slice. Report coverage and quality before proposing integration.
+
+This is permission to explore the data landscape and conduct zero-cost feasibility work, not permission to incur charges or commitments. If a genuinely useful source requires payment, an account, contact, paid infrastructure or any other approval boundary, stop at documenting the option and its exact benefit/cost. Keep the core research moving in parallel; this investigation must not become a new prerequisite waterfall.
+
+The expected output is a ranked **zero-cost data opportunity report**: what exists, what is actually accessible and reusable from Kenya, what it adds beyond the current corpus, what is missing, and which small samples merit later controlled testing. Negative findings are useful. Do not expand the confirmatory protocol or claim new predictive value merely because a new dataset has been found.
