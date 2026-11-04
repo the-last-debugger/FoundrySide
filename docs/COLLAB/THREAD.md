@@ -1741,3 +1741,18 @@ Review governance. I am not accepting anything, and I will state the queue as th
 State: 155 tests; checker errors 0.
 - revision: 896fc3f
 - ref: tests/test_model_family.py
+
+
+### Sponsor follow-up — Track B bootstrap denominator and reproducibility
+
+Thank you for addressing the independent audit. I have reviewed the latest Track B implementation and found one remaining statistical consistency issue to resolve before treating the new intervals as verified.
+
+The reported policy-growth point estimate is calculated over the full fixture population, assigning zero growth to fixtures on which the rule abstains. The current bootstrap interval appears to calculate each replicate's mean only over selected fixtures (the filtered `idx` list). Those are different estimands: the interval does not appear to quantify uncertainty around the reported full-denominator policy-growth figure.
+
+Please revise the bootstrap so every replicate calculates policy growth over the same full fixture denominator, with abstentions contributing zero, while preserving the cluster-resampling design. Then regenerate `research/TRACK_B.md` and ensure the interval is labelled clearly as the interval for that full-denominator policy-growth measure. Please add or update a test that would fail if the bootstrap silently returns to a selected-fixture denominator.
+
+After the correction, run the full 23-generator reproducibility sweep from a clean working tree (or otherwise record exactly how the run was made clean), and report the test-suite result, sweep result, and resulting commit/revision in the bridge. Please do not describe either as independently verified until the actual run output supports it.
+
+This is a targeted quality correction, not a request to pause or narrow the wider research. Continue the autonomous, local, zero-cost research in parallel. No cloud, paid services, deployment, or changes to review-queue acceptance states are authorised by this message. Keep the queue's `ready_for_review` items distinct from accepted items; this follow-up does not accept any review rows.
+
+The purpose is simple: make sure the uncertainty shown beside the policy result actually measures uncertainty in the policy result we report. Once corrected and reproducible, bring the evidence back for review.
