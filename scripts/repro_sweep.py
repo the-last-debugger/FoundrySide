@@ -49,6 +49,8 @@ GENERATORS = [
     ("research/superstition_study.py", ()),
     ("research/bogey_team.py", ()),
     ("research/style_mismatch.py", ()),
+    ("research/best_price.py", ()),
+    ("research/accumulator_pricing.py", ()),
 ]
 
 

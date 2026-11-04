@@ -194,6 +194,7 @@ produced it.
 | STYLE_MISMATCH.md | E14 | style interaction is null, and negative |
 | DATA_AUDIT.md | E6 | the corpus is internally consistent |
 | BEST_PRICE.md | E15 | best available price saves 0.17 pp of margin; 99.1% still negative EV |
+| ACCUMULATOR_PRICING.md | E16 | cross-match legs multiply correctly at 2-3 legs |
 
 ## 8a. Reproducibility
 
