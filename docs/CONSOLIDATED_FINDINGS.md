@@ -202,6 +202,7 @@ produced it.
 | FORWARD_CALIBRATION.md | E17 | the Platt gain transfers forward: +0.0102 of +0.0114 |
 | RESIDUAL_GAP.md | E18 | the remaining gap concentrates where the model departs from the price |
 | SHRINKAGE_POLICY.md | E19 | six shrinkage policies; none beats market-only, which is the optimum |
+| PRICE_INVENTORY.md | E20 | opening and closing snapshots across books; per-selection best price is tradeable, the Max overround is not |
 
 ## 8a. Reproducibility
 

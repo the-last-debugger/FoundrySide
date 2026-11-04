@@ -59,6 +59,7 @@ GENERATORS = [
     ("research/forward_calibration.py", ()),
     ("research/residual_gap.py", ()),
     ("research/shrinkage_policy.py", ()),
+    ("research/price_inventory.py", ()),
 ]
 
 
