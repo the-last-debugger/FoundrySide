@@ -1,8 +1,7 @@
-"""Gate and ledger for GitHub Actions resource use.
+"""Advisory policy report and local run register for GitHub Actions.
 
-The sponsor approved resource safeguards and asked for any behaviour the workflow cannot itself
-enforce to be stated plainly. This script is the enforceable part, and the docstring records the
-boundary.
+This script reports policy and can block a caller that asks it to, but the workflow uses it with
+--advisory: it always exits zero and gates nothing. Essential checks run unconditionally.
 
 **Enforced here:** the consistency of the policy file with the workflow's job timeout, and an
 append-only local record of successful runs.
@@ -16,12 +15,12 @@ as advisory rather than claimed as enforced.
 allowances, or anything that happens outside this repository. A limit in a file can be edited in
 the same commit that exceeds it; it is a guard rail, not an access control.
 
-    python scripts/ci_gate.py            # decide whether this run should proceed
-    python scripts/ci_gate.py --advisory # report without returning a blocking code
+    python scripts/ci_gate.py            # evaluate the policy and return a decision code
+    python scripts/ci_gate.py --advisory # report only; always exit 0 (what CI uses)
     python scripts/ci_gate.py --record --note "..."   # append this run to the ledger
     python scripts/ci_gate.py --status   # print policy and usage without deciding
 
-Exit codes: 0 proceed, 2 paused, 3 over budget, 1 bad configuration.
+Exit codes: 0 proceed, 2 paused (reported, not blocking under --advisory), 1 bad configuration.
 """
 
 from __future__ import annotations

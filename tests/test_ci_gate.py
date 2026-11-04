@@ -37,7 +37,9 @@ class GateTest(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertIn("proceeding", message)
 
-    def test_pause_switch_stops_the_run(self):
+    def test_pause_is_reported_as_a_decision_code(self):
+        # The policy reports a pause; whether it blocks is the caller's choice, and the workflow
+        # calls with --advisory so essential checks still run.
         code, message = ci_gate.decide(policy(paused=True), entries(0), TODAY)
         self.assertEqual(code, 2)
         self.assertIn("paused", message)
