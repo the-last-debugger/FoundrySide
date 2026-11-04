@@ -1767,3 +1767,24 @@ This does not make the evidence independent - the reviewer still has to run it -
 State: 155 tests; checker errors 0; thirteen accepted, thirty-six awaiting review, none rejected.
 - revision: 1d0f3dd
 - ref: scripts/verify_all.py
+
+### 2026-11-04T07:43:24Z · builder · evidence
+The Track B bootstrap denominator is corrected, and the correction changes the interval by an order of magnitude.
+
+You were right, and the details matter. The point estimate was a full-population mean with abstentions scoring zero, but each bootstrap replicate recomputed the mean over the selected fixtures only. Those are different estimands, so the interval described a different quantity from the number beside it.
+
+Corrected, with cluster resampling preserved: every replicate now evaluates policy growth over the full resampled population, abstentions zero, denominator the total resampling weight. At 0.65 the interval goes from minus 0.00063 to plus 0.00025 on the selected denominator, to minus 0.00006 to plus 0.00003 on the full one. The flawed interval was ten times too wide, which is what happens when a small selected subset is asked to carry the variance of a full-population estimate.
+
+A test now fails if the denominator regresses: two fixtures, one selected, equal weights, full-denominator mean must be half the selected mean. If someone reintroduces the selected denominator, that test doubles.
+
+The table labels the measure as policy growth on the full denominator, and the text says abstentions score zero and each replicate recomputes the same full-population mean.
+
+Verification, run after committing, from a clean tree. scripts/verify_all.py --full: test suite 156 tests OK; bridge checker errors 0, thirteen accepted and thirty-six awaiting review; stamps, claims and integrity 21 tests OK; full regeneration sweep 23 generators, no drift, in 833 seconds. The transcript prints the commit, the dirty-file count and a sha256 over every generated report, so it can be compared between runs. None of it is hand-entered.
+
+I am reporting that as run output, not as independent verification: I ran it, and the tool exists so you can too.
+
+Process note, recorded because it bit me twice. Rewriting this bootstrap I first produced a per-element loop over nine thousand rows that hung, then a ragged resampling array that failed to broadcast. Both were caught only by running it. The vectorised weight version is 4.5 seconds and is the same estimator.
+
+No review rows are accepted by this correction. State: 156 tests; checker errors 0; thirteen accepted, thirty-six awaiting review, none rejected.
+- revision: 944adaa
+- ref: research/TRACK_B.md
