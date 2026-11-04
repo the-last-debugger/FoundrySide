@@ -7,7 +7,7 @@ activating it. Historical records are not erased; completed items stay listed wi
 
 | Field | Value |
 | --- | --- |
-| **Task** | Robustness and transfer of the disagreement finding (queue item 3) |
+| **Task** | ~~Robustness and transfer~~ — **complete** (ROBUSTNESS.md, E23): reproduced in both seasons |
 | **Question** | Does "the model loses most where it departs furthest from the price" survive across forward seasons and divisions, with cluster-aware uncertainty? |
 | **Evidence so far** | E18: ≥0.60 logit departure loses 0.0574 nats [0.0389, 0.0799]; <0.10 loses 0.0039 |
 | **Stop criterion** | If the pattern does not reproduce in both forward seasons, it is a pilot description and must be labelled as such everywhere it is cited |

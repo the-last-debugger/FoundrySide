@@ -62,6 +62,7 @@ GENERATORS = [
     ("research/price_inventory.py", ()),
     ("research/hit_rate_audit.py", ()),
     ("research/movement_study.py", ()),
+    ("research/robustness.py", ()),
 ]
 
 
