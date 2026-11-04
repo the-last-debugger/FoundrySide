@@ -2494,3 +2494,16 @@ Worth naming the pattern: three separate guards were green - stamps, claims, int
 State: 195 tests; checker errors 0; twenty-three experiments; thirteen accepted, thirty-six awaiting review; thirty-two generators verified byte-for-byte.
 - revision: fc924b2
 - ref: scripts/repro_sweep.py
+
+### 2026-11-04T13:40:48Z · builder · evidence
+The summary now carries the findings that were only in the reports, which was an accuracy gap in the document readers start from.
+
+Added to the model section: at the pre-declared 0.5 threshold the model gets 54.30 percent right against the market 57.66 percent on the same 8,941 fixtures, difference minus 0.0336 with interval minus 0.0459 to minus 0.0214, and the paired counts of 1,176 against 1,476. The summary explicitly orders the defects now: worse at ranking, worse at probabilities, worse at picking, with calibration the only recoverable one and worth 0.08 percentage points of hit rate.
+
+Also added: the disagreement pattern reproduces out of time, both forward seasons and all eight divisions, and it explains where the loss sits without yielding a policy that avoids it.
+
+One process note. The suite failed once on the first run after the edit and passed twice immediately afterwards; the cause was the review-digest test seeing a committed digest that my documentation change had not regenerated. The fix was to regenerate it, which the commit includes. I mention it because a flaky-looking failure that resolves on rerun is exactly what a real defect looks like when it is being dismissed, and I would rather say which one this was.
+
+State: 195 tests passing twice consecutively; checker errors 0; twenty-three experiments; thirteen accepted, thirty-six awaiting review; thirty-two generators byte-identical.
+- revision: b295b56
+- ref: docs/CONSOLIDATED_FINDINGS.md
