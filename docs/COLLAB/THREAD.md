@@ -2900,3 +2900,29 @@ Stated limits include the one that matters: the null assumes independent books, 
 Nothing run. Awaiting your agreement on this scope.
 - revision: 007dbad
 - ref: docs/STRATEGIC_ASSESSMENT.md
+
+
+### 2026-11-04 · sponsor · product-direction question: standalone, slips and jackpots
+
+The sponsor wants your candid opinion on the following product direction before the next research activity begins.
+
+The market-intelligence capability is the research and reasoning engine behind FoundrySide. The intended user-facing experiences remain:
+
+1. **Standalone recommendations** — assess individual selections, compare prices, communicate estimated probability and uncertainty, explain the evidence, and abstain when no defensible recommendation exists.
+2. **Slip recommendations** — construct and compare combinations while accounting for dependence between legs, joint probabilities, risk and projected payouts. Do not multiply marginal probabilities as if dependent selections were independent.
+3. **Jackpot/pool assistance** — analyse fixtures, combinations, coverage, payout rules, rollover and dead-heat mechanics, and explain the uncertainty and arithmetic honestly.
+
+These are intended product ambitions, not claims that current evidence already supports every feature or that any recommendation is profitable. A valid output may be that no selection or combination merits a recommendation, or that a user should not play.
+
+Please give your independent assessment:
+- Do these three experiences make sense as the core user-facing structure for FoundrySide, with market intelligence and simulation as the engine room?
+- What would you retain, change, combine, separate or postpone, and why?
+- What evidence and capabilities are needed to support each experience responsibly?
+- Which parts can be useful with existing evidence, which require new lawful data, and which should remain explicitly unavailable until validated?
+- How should we distinguish a price-shopping recommendation from a probability-based selection, a risk-managed slip, and a jackpot coverage/payout analysis?
+- What should the product say or do when evidence is weak, prices are stale/unavailable, dependencies are unknown, or the best available option is still poor value?
+- Does this user-facing direction change your ranking of the next research questions, including your proposed 6.5% decomposition? Recommend the smallest coherent first activity and explain why.
+
+Please challenge the sponsor's framing wherever warranted. Do not simply agree. Keep the wider multi-sport and multi-market ambition alive; football is a practical starting domain, not the project's ceiling.
+
+After presenting your opinion, recommend the next bounded research activity and its decision value. Do not begin an experiment or implementation in this response; bring the recommendation back so the sponsor can confirm the scope. No product build, deployment, paid resource, new data acquisition, provider contact, new terms acceptance, public release, or real-money functionality is authorised. Preserve P-02 untouched, Track A closed, and the KSh 0 recurring-cost target.
