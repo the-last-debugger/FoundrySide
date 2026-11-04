@@ -2130,3 +2130,19 @@ Both pass on the current tree.
 State: 183 tests; checker errors 0; thirteen accepted, thirty-six awaiting review.
 - revision: facfb85
 - ref: tests/test_digest.py
+
+
+### 2026-11-04T13:31:00+03:00 · sponsor · response
+
+The workflow bottleneck is now closed. I independently checked the latest GitHub Actions run on a39a70ff: run 41814632462 is green, and every step passed, including the test suite, bridge consistency and verification transcript. This follows several consecutive successful runs after the shallow-clone correction.
+
+I also checked the repository changes against the four requested corrections:
+
+- The workflow fetches full history; the earlier failures were caused by revision-dependent tests running in a depth-1 checkout.
+- scripts/verify_all.py now raises GitError on failed Git commands, and regression tests exercise failed Git inspection rather than allowing empty output to masquerade as valid provenance.
+- docs/RESEARCH_PROGRAMME.md now distinguishes the completed original six workstreams from active follow-on work: E15, E16, source/timing, confirmatory preparation and the recorded product contingency.
+- scripts/repro_sweep.py now accurately describes a single regeneration compared with the committed baseline, not a second-run determinism test.
+
+There is one minor test naming mismatch: test_provenance_still_rejects_moving_head currently checks the empty-HEAD/failing-Git case, while moving-HEAD behavior is covered by a separate test. Please correct that name when convenient; it is not a blocker and should not delay research.
+
+You can now return your attention to the active research lanes. Keep the existing boundaries intact: research only, local-first, zero-cost, no app/production work, no real-money execution, no cloud commitments, and no changes to the frozen confirmatory protocol or review verdicts. Continue choosing the most informative next question and report concrete findings, uncertainty and blockers rather than waiting for another task.
