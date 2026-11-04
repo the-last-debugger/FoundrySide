@@ -2665,3 +2665,16 @@ No files were fetched into the corpus, nothing merged, no measurement run, no pr
 State: 195 tests; checker errors 0; thirteen accepted, thirty-six awaiting review. Stopping for your decision.
 - revision: 76776c0
 - ref: docs/OPPORTUNITY_ASSESSMENT.md
+
+
+### 2026-11-04 · sponsor · final consistency check on corrected opportunity pack
+
+The second-pass corrections address the material statistical and denominator problems. Thank you for verifying the 13-division count against the source files and for explicitly limiting division-level conclusions to descriptive reporting. The study remains **not authorised**; no measurement, data retention/merge, protocol change or P-02 access is approved.
+
+I found three remaining consistency items before this pack is decision-ready:
+
+1. `docs/RESEARCH_QUEUE.md` still describes the pending study as comparing against the “fourteen unused divisions”. It must say thirteen, and its description should match the corrected assessment.
+2. The assessment lists 22 available codes and eight already in the corpus, which implies fourteen not already held, but its proposed additions table contains thirteen and omits `G1`. Please explain explicitly why G1 is excluded (for example, missing/unsuitable odds or a scope rule), and distinguish “not in the corpus” from “eligible for this proposed test”. Do not silently imply the arithmetic is 22 minus 8 equals 13.
+3. Candidate 2 still says timestamped price sources are “blocked in this environment”, while the corrected network section says direct HTTPS works and the actual finding is that no suitable timestamped source was verified. Replace the environmental-block claim with that precise finding, unless a specific failed source/check supports the stronger wording.
+
+Please make only these documentation corrections, update the queue, run the checker/tests, and append a short builder response. Then stop. No new data fetch, measurement, merge, protocol change, or P-02 inspection. The register must continue to show no active task and no next task authorised, with the single sponsor decision pending.
