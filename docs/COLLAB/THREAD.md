@@ -2251,3 +2251,26 @@ The local output now, quoted rather than remembered: Ran 193 tests in 22.508s. C
 The safeguards themselves are unaffected; only the number I asserted about the suite was wrong.
 - revision: 4d646bc
 - ref: tests/test_ci_gate.py
+
+
+### 2026-11-04 · sponsor · review — safeguards and research verification
+
+I reviewed the matched-fold report, residual-gap report and code, Actions gate/policy/ledger, workflow, and Actions runs through the latest commit.
+
+**Research:** the matched-fold correction is accepted. On the same 2122/2223 rows, forward Platt gain is +0.0102 nats and matched LOSO gain +0.0103; all-season +0.0114 remains a separate population. The report correctly limits this to two forward folds from one corpus.
+
+The residual result is important: the >=0.60 absolute-logit disagreement band has a +0.0574-nat model deficit on 1,636 fixtures, with cluster interval [+0.0389,+0.0799] and reported q<0.001. This supports investigating why independent departures are harmful rather than adding features that merely create more disagreement. Keep it exploratory, not a validated subgroup or product claim.
+
+One statistical presentation clarification: in residual_gap.py, each q-value is calculated from the subgroup mean's distance from the overall mean, not from a null of zero subgroup deficit. Please label that explicitly (BH-adjusted test of difference from overall) so q=0.000 for the <0.10 disagreement group is not read as evidence that its own positive deficit is significant; its reported interval crosses zero. The 80–90% market band (n=23) also remains too small for a strong conclusion.
+
+**Actions:** the new safeguards are a meaningful first implementation, and the latest run on e93503c is green: https://github.com/the-last-debugger/FoundrySide/actions/runs/41818136361. The preceding run on 4d646bc failed at the test-suite step; subsequent correction commit e93503c then passed. The successful run demonstrates the new workflow can execute, including gate, tests, bridge check and verification transcript.
+
+However, two material gaps mean the daily cap and pause arrangement are not yet operating as approved:
+
+1. **The ledger is runner-local and ephemeral.** The workflow has only read-only contents permission, and the repository tree contains no committed docs/ci/runs.jsonl. The --record step writes into the temporary runner checkout; it does not persist the file back to the repository. Each new runner therefore starts with no history, so max_runs_per_day can repeatedly see zero and does not enforce a cross-run daily limit. Do not solve this by silently granting write permissions. Propose a safe zero-cost persistence design (or clearly downgrade/remove the claimed daily cap if no safe design is available). Include tests demonstrating state survives separate workflow runs, not merely a local file round-trip.
+
+2. **Pause currently suppresses essential verification.** All substantive steps (dependencies, test suite, bridge consistency and verification transcript) are conditional on the same paused output. That means the pause switch can skip the essential push/PR checks I explicitly asked to preserve. Separate essential verification from discretionary jobs. If there are no discretionary scheduled/research jobs yet, the pause switch should not disable essential checks; document that it currently has nothing discretionary to pause. Do not weaken core checks to save minutes.
+
+There is a further accounting limitation: the ledger records minutes as 0.0 by default and only records after success, so it is not a reliable duration ledger and cannot count failed/cancelled runs. Please call it a successful-run register unless duration and failed-run capture are genuinely implemented. The 15-minute timeout and concurrency cancellation are useful safeguards, but they do not create a monthly billing monitor or alert system. Keep those boundaries explicit.
+
+Please address the two material gaps, add focused tests, update the ledger documentation and bridge with exact evidence, and rerun Actions. No new approval is needed for these reversible zero-cost repository corrections. Do not change account billing settings, grant broader permissions without explaining the design, or weaken essential verification.
