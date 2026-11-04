@@ -1870,3 +1870,36 @@ Product consequence, recorded in docs/PRODUCT_CONTINGENCY.md: a slip tool can mu
 State: 157 tests; checker errors 0; sixteen experiments registered; thirteen accepted, thirty-six awaiting review, none rejected. The sweep now covers both new studies.
 - revision: 35adf82
 - ref: research/ACCUMULATOR_PRICING.md
+
+
+### 2026-11-04 · sponsor · workflow bottleneck review and operating direction
+
+I have checked the latest bridge, proposal, protocol, programme, review queue and the new best-price/contingency work. The work is progressing, but the workflow has a few avoidable choke points. Please address them as operating improvements, not as another prerequisite phase.
+
+**What is actually blocked**
+
+1. **Confirmatory Track A scoring is legitimately gated by P-02.** The evaluation protocol is still open and the freeze record is incomplete. Do not score the confirmatory slice, tune against it or imply that it has been authorised. Prepare the decision-ready protocol summary and the pilot evidence, then leave this one explicit sponsor gate visible.
+2. **That gate must not block other work.** D-14 already authorises reversible, local, zero-cost exploratory research in parallel. Continue it without waiting for P-02. Internal research is not blocked by P-03; P-03 concerns publication/redistribution of derived data.
+3. **The current best-price result is a closing-price result, not proof of live availability.** The two-book study is useful and should stand, but do not let the lack of a timestamped multi-book feed freeze all work. Investigate lawful, free, publicly accessible sources at desk-research level; record source, terms, Kenya availability, market coverage, timestamp/latency and limitations. No account creation, contact, integration or paid access.
+4. **The jackpot feasibility check is still an obvious low-cost item to close.** Complete the bounded desk investigation already contemplated: identify whether rules, fixture lists, historical results and settlement information are publicly available from lawful sources. If not, record exactly what is missing and close it as blocked rather than leaving it indefinitely in “not started”.
+5. **The review queue is a growing oversight backlog, not a build gate.** Work lands directly on main, so ready_for_review does not prevent the next authorised task. Do not wait for every row to be accepted before progressing. Equally, do not silently accept or relabel any row. Prepare a compact, logically grouped review digest for the outstanding items, prioritising the most recent and consequential changes and identifying superseded rows where applicable. Keep each verdict tied to the exact revision reviewed.
+
+**Workflow changes requested**
+
+- Keep three active lanes moving in parallel: (A) the P-02-gated confirmatory preparation plus authorised exploratory research; (B) zero-cost source/timing and jackpot feasibility; (C) contingency evidence for price discovery, slip/dependence and decision-support usefulness. The contingency remains a fallback, not a pivot or build authorisation.
+- Maintain a short, current “now / next / blocked / decision needed” status in the existing programme or bridge. Do not create a large project-management system or another approval waterfall.
+- Make the true blockers explicit and narrow. Each blocker must name the exact decision or missing evidence, what work it blocks, and what can continue in parallel. Avoid broad statements such as “waiting on a sponsor decision” when only confirmatory scoring is gated.
+- Batch related documentation and report changes. Keep the generator/report as the source of truth, propagate derived numbers once, and let the existing claims/stamp/integrity tests catch drift. Avoid repeated documentation-only commits that do not change evidence or resolve a real defect.
+- Run quick verification after relevant changes. Run the full 23-generator sweep only when a generator or generated report changes; the existing verify_all.py --full transcript is sufficient evidence. Do not spend another fourteen minutes proving an unchanged tree.
+- Bridge updates should be concise and evidence-led: what changed, why it matters, exact revision, tests/commands and observed output, remaining blocker, next action. Combine routine progress into meaningful checkpoints rather than sending a separate entry for every tiny edit.
+- Do not ask me to approve routine reversible zero-cost research choices. Bring me only the explicit P-02 freeze decision, legal/data-access boundaries, costs, account/contact actions, or irreversible scope changes.
+
+**Immediate next sequence**
+
+1. Correct any programme/README wording that makes the whole project sound blocked by P-02; state that only confirmatory scoring is gated and autonomous exploratory work continues.
+2. Finish and report the bounded jackpot/public-source feasibility check.
+3. Produce a short, evidence-backed inventory of free timestamped multi-book price sources and their actual limitations; if none qualifies, say so plainly and identify the precise missing capability.
+4. Continue the highest-information zero-cost research in parallel, with no confirmatory scoring before the freeze.
+5. Give me one concise status report with the active lanes, completed evidence, true blockers and decisions genuinely required.
+
+This direction is intended to remove idle time and review friction while protecting research integrity. It does not authorise application development, production integrations, paid APIs/services, cloud/deployment, account creation, third-party contact, public claims or real-money execution. Review states remain untouched by this instruction.
