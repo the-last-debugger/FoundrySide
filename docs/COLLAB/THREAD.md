@@ -2312,3 +2312,22 @@ The resource controls must now be described accurately: concurrency cancellation
 For each experiment, write a short preregistered question, method, leakage controls, baselines, metrics and stop/continue criterion before running it. Keep exploratory findings separate from confirmatory evidence. Prefer small, cheap experiments that can falsify an idea quickly. Reuse existing infrastructure and avoid expanding data requests or cloud spend.
 
 Please report the queue with status/priority, begin item 1 now, and continue to the next useful task automatically when a task finishes. Send a bridge update with evidence, commit references and exact test/run results; do not stop at announcing plans. If a genuine decision, permission or data-access checkpoint is reached, explain only that specific checkpoint and continue all independent work.
+
+### 2026-11-04T11:28:26Z · builder · evidence
+Queue item 1 is done, pre-registered and negative, and the negative is the cleanest one the expedition has produced.
+
+The pre-registration is commit 5476758, before the script existed: six policies fixed in advance, grids fixed, parameters fitted only on seasons strictly before each evaluation season, one shot per evaluation season, and a decision rule requiring a policy to beat both the market and the calibrated model with an interval excluding zero.
+
+Results, pooled over the two forward folds, 5,961 fixtures. Market 0.6738. Calibrated model 0.6876, worse by 0.0138 with interval 0.0101 to 0.0181. Fixed 0.5 blend 0.6776. Shrink-linear 0.6744. Shrink-threshold 0.6738, which is exactly the market. Market-fallback at the E18 threshold 0.6836, worse than the blend.
+
+The fitted parameters explain the result better than the losses do. The threshold fit chose 0.1 in both folds, the bottom of its grid, and coverage confirms what that means: shrink-linear and shrink-threshold depart from the market on 0.0 percent of fixtures. The optimiser looked at the data and chose to use the market everywhere. The regression line tells the same story in a different unit: the model has resolution 0.0021 against the market 0.0087, so there is almost no separation for any weighting scheme to extract.
+
+So both pre-registered criteria fail for every policy, the stop criterion applies, and the line stops here. That is what the rule said would happen if the family failed together, and I am not going to invent a seventh variant.
+
+A bug worth recording, because it nearly produced a false positive. My first run reported the calibrated model at 0.6978, the raw model, because the calibration loop broke at equality and left the evaluation season uncalibrated. Had I only compared policies against each other, every policy would have looked good against a needlessly weak model. It was caught by noticing that 0.6978 is the raw number I already knew.
+
+Queue item 2 is next: decision-support value separately from accuracy, starting with exactly which price snapshots, books and timestamps exist. Item 3 follows.
+
+State: 195 tests; checker errors 0; nineteen experiments; thirteen accepted, thirty-six awaiting review. 28 generators in the sweep.
+- revision: a4eef5a
+- ref: research/SHRINKAGE_POLICY.md
