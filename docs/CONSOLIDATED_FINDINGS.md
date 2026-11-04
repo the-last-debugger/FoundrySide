@@ -126,9 +126,15 @@ size was not detected**; it is not evidence that no information exists.
 
 An abstention rule over the market price raises hit rate from 57.7% at full coverage to 91.3% at
 0.3% coverage, but the accuracy-minus-implied gap stays near zero: the confidence is the market's,
-not the filter's. In decision-theoretic terms, following the rule at a 1% stake costs 0.0003 nats
-of log-wealth per fixture, and no threshold produces growth distinguishable from zero (best:
-+0.0001, interval [−0.0005, +0.0006]).
+not the filter's. In decision-theoretic terms, over every fixture with abstentions scoring zero,
+following the raw board at a 1% stake costs 0.0003 nats of log-wealth per fixture, and filtering at
+0.65 recovers most of that cost: policy growth −0.00002 with a cluster interval of
+[−0.00006, +0.00003]. The filter is worth roughly what the margin costs, which is to say it
+breaks even rather than pays.
+
+That interval is a full-denominator measure and was corrected once: an earlier version
+recomputed the bootstrap mean over the selected fixtures only, which produced an interval ten
+times too wide for a different estimand.
 
 `docs/TRACK_B_DESIGN.md` fixes the success criteria before scoring. Criterion 2 — non-negative
 log-growth with an interval excluding a 0.001-nat loss — fails on current evidence, so the design

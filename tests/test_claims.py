@@ -93,6 +93,14 @@ class ClaimsTest(unittest.TestCase):
         self.assertIn("1.064", programme)
         self.assertNotIn("1.015", programme)
 
+    def test_track_b_policy_interval_matches_the_report(self):
+        report = read("research/TRACK_B.md")
+        summary = read("docs/CONSOLIDATED_FINDINGS.md")
+        self.assertIn("-0.00006", report)
+        self.assertIn("-0.00006", summary)
+        # The superseded selected-denominator interval must not survive anywhere.
+        self.assertNotIn("0.0005, +0.0006", summary)
+
 
 if __name__ == "__main__":
     unittest.main()
