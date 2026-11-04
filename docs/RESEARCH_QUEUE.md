@@ -1,25 +1,29 @@
 # Research status register
 
-One active task, one next task, everything else deferred with the evidence that would justify
-activating it. Historical records are not erased; completed items stay listed with their report.
+Nothing is active and nothing is queued behind it. Everything finished is listed with its report;
+everything else is deferred with the evidence that would justify activating it. Historical records
+are not erased.
 
 ## Active
 
-| Field | Value |
-| --- | --- |
-| **Task** | ~~Robustness and transfer~~ — **complete** (ROBUSTNESS.md, E23): reproduced in both seasons |
-| **Question** | Does "the model loses most where it departs furthest from the price" survive across forward seasons and divisions, with cluster-aware uncertainty? |
-| **Evidence so far** | E18: ≥0.60 logit departure loses 0.0574 nats [0.0389, 0.0799]; <0.10 loses 0.0039 |
-| **Stop criterion** | If the pattern does not reproduce in both forward seasons, it is a pilot description and must be labelled as such everywhere it is cited |
-| **Report** | `research/ROBUSTNESS.md` |
+**No active task.** Both authorised queue items are complete and reported, and no new experiment is
+running.
 
 ## Next
 
-| Field | Value |
-| --- | --- |
-| **Task** | ~~Close out decision-support value~~ — **complete**, see the close-out section in PRODUCT_CONTINGENCY.md |
-| **Question** | Given that movement adds nothing (E22) and per-selection best price is tradeable but small (E15, E20), is there any decision-support claim the corpus supports? |
-| **Deliverable** | a closing section in `PRODUCT_CONTINGENCY.md`, not a new experiment |
+**No next task currently authorised.** The next move is a sponsor decision, not a queued
+experiment: see *Decision needed* below rather than a task.
+
+## Decision needed from the sponsor
+
+One question is open and it is not mine to answer: **whether to take the P-02 confirmatory freeze
+and run, or to hold the confirmatory slice indefinitely.** The preparation is done
+(CONFIRMATORY_READINESS.md), the recommendation on record is to hold — the pilot already shows the
+model behind the benchmark, so a confirmatory run would document a known result rather than discover
+one, and the slice is non-renewable.
+
+It is not recommended to start further experiments in the meantime. The evidence has been negative
+across every authorised avenue, and another variant would be activity rather than progress.
 
 ## Completed this session, in order
 
