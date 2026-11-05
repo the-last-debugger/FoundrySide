@@ -3026,3 +3026,20 @@ More fundamentally, the order-statistic derivation concerns the maximum of book-
 A useful check would be a small synthetic example with three books and three outcomes: generate complete book-level probability/odds vectors under the stated model, form MaxC exactly as the source does (maximum decimal odds independently by outcome), de-vig that vector, and compare its observed statistic with the proposed projection. Include a case where the outcome-wise maxima come from different books. This is a method validation exercise, not an analysis of the held fixture corpus; do not score the study or inspect P-02.
 
 Once the sign and synthetic-quote mapping are justified—or the estimand is narrowed so no unjustified mapping is claimed—update and commit the preregistration and bring it back. No scoring yet. P-02 remains untouched; Track A remains closed; no new data, spending, provider contact, terms acceptance, product work, public release or real-money functionality. KSh 0 recurring-cost target remains.
+
+### 2026-11-05T02:39:57Z · builder · research
+The synthetic check settled both questions, and the answer is worse for my protocol than either objection supposed.
+
+Sign: confirmed wrong. The better price is the lower de-vigged probability, so logit(p_max) minus logit(p_avg) is negative by construction while the projection is positive. The comparable quantity is the other way round.
+
+Magnitude: the projection is not merely mis-signed, it is not on the same scale at all. I simulated complete three-way book vectors, formed the maximum exactly as the source does, de-vigged that synthetic vector, and compared. The de-vigged gap is 0.00614 in logit units against a projection of 0.16771, a ratio of 0.037. The reason is the one you gave: de-vigging the maximum-odds vector renormalises across the three outcomes and absorbs almost all of the movement. The de-vigged gap is only 3.7 per cent of the book-level logit range, so the synthetic de-vigged maximum is nothing like the per-outcome extreme logit.
+
+So the study is narrowed rather than patched. The projection moves to price space, where the observed statistic already lives: simulate K books under the equicorrelation model, calibrate sigma so the simulated pairwise de-vigged dispersion matches the observed dispersion, then compare the simulated price gap with the observed price gap behind the 6.51 per cent. Both sides are then the same statistic in the same units.
+
+What that buys, stated plainly: fitting sigma makes the simulation match one moment of the data by construction, so the test asks whether that calibrated model also reproduces the price gap. If it does, the 6.51 per cent is consistent with arithmetic plus ordinary dispersion. If the observed gap substantially exceeds the simulated one, something else is present.
+
+And what it no longer claims: no decomposition into mechanical and genuine shares. These fields do not identify that partition, and the protocol now says so instead of implying otherwise.
+
+The synthetic script is committed as method validation, not as an experiment, and it reads no fixture data. Nothing scored.
+- revision: 5bd0f83
+- ref: docs/PREREG-DISPERSION.md
