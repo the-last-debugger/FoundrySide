@@ -32,28 +32,61 @@ estimator is 0.6316 against `σ√(1−ρ) = 0.6325`, and the simulated mean `ma
 equicorrelation model holds; if correlation structure is not equicorrelated, the direction is
 unknown, and the protocol says so instead of asserting conservatism.
 
-## 3. A common scale
+## 3. Synthetic check — the logit-space projection is not comparable
 
-The earlier version subtracted a ratio of **decimal prices** from a projection in **logit
-probability** units. Those are different scales and the subtraction was invalid.
+The review asked for a synthetic test of the common-scale statistic, and it fails. `research/dispersion_check.py`
+simulates complete three-way book vectors under the stated model, forms the maximum exactly as the
+source does (highest decimal odds per outcome), de-vigs that synthetic vector, and compares.
 
-Both sides are now in logit-probability units:
+| Quantity | Value |
+| --- | --- |
+| mean `logit(p_max) − logit(p_avg)` | **−0.00614** |
+| mean `logit(p_avg) − logit(p_max)` | +0.00614 |
+| projection `d · E[max_K]` | 0.16771 |
+| ratio observed / projection | **0.037** |
 
-- **Observed**: de-vig `MaxC` and `AvgC` separately (both are complete three-way sets), take logits,
-  and compute `gap_z = logit(p_max) − logit(p_avg)` per outcome; average across the three outcomes
-  within a fixture; then average over fixtures.
-- **Projected**: `d · E[max_K]`, with `d` from §2 and `K` from the provider's `Bb1X2` field.
+Two conclusions, both of which change the protocol.
 
-Approximations this introduces, stated because they are not removable with these fields:
+**The sign was wrong**, as the review suspected: the better *price* is the lower de-vigged
+*probability*, so `logit(p_max) − logit(p_avg)` is negative by construction while the projection is
+positive. The comparable quantity is `logit(p_avg) − logit(p_max)`.
 
-1. `AvgC` is an average of **prices**, so `logit(de-vig(AvgC))` is not the mean of the books' logits.
-   The gap is between the de-vigged best and the de-vigged average quote, not between the best and the
-   mean logit.
-2. `MaxC` may take different books for different outcomes, so `de-vig(MaxC)` is a synthetic
-   three-way quote, not one book's price.
-3. The two individually recorded books are assumed to be drawn from the same pool as the K books.
+**More seriously, the magnitudes are not comparable.** De-vigging the synthetic maximum odds vector
+renormalises across the three outcomes, and that renormalisation removes almost all of the movement:
+the de-vigged gap is 3.7% of the book-level logit range, and 27 times smaller than the projection.
+So the synthetic de-vigged maximum is *not* the per-outcome extreme logit, exactly as the review
+argued, and a logit-space projection cannot be subtracted from it.
 
-## 4. Per-outcome estimation and compositional dependence
+## 4. Narrowed estimand — the projection moves to price space
+
+The question the study exists to answer is about the **price gap**, which is measurable directly:
+`mean log(MaxC / AvgC)` — the quantity behind the 6.51%. Both the observed statistic and the
+projection are therefore computed in price space, where the comparison is like-for-like.
+
+Procedure:
+
+1. Estimate the pairwise de-vigged dispersion `d` per outcome from the two individually recorded
+   books — the one quantity these fields identify.
+2. Simulate K books under the equicorrelation model, **calibrating σ so that the simulated `d`
+   matches the observed `d`**. The margin is set to the corpus-observed overround.
+3. From the same simulation, compute the price gap `mean log(max odds / mean odds)` — the model's
+   prediction for the statistic the corpus reports.
+4. Compare the **simulated price gap** with the **observed price gap**, with a cluster bootstrap on
+   the observed side.
+5. **Excess = observed price gap − simulated price gap.**
+
+This is a model-based projection, not a decomposition, and it is stated as such. Its virtue is that
+both sides are the same statistic in the same units.
+
+## 3b. What the calibration buys
+
+Fitting σ to the observed dispersion means the simulation matches one moment of the data by
+construction. The comparison then asks whether that calibrated model also reproduces the *price* gap.
+If it does, the 6.5% is consistent with arithmetic plus ordinary dispersion. If the observed price
+gap substantially exceeds the simulated one, something else is present — and that something is what
+the product claim would rest on.
+
+## 5. Per-outcome estimation and compositional dependence
 
 `d` is estimated **separately for Home, Draw and Away**, because de-vigging redistributes margin
 differently across outcomes and the three have very different variances. Pooling happens at the
@@ -63,7 +96,7 @@ The three outcomes of one fixture are compositionally dependent — they sum to 
 independent observations. **The fixture is the sampling unit throughout**: the bootstrap resamples
 division-season clusters, and no test treats the three outcomes as independent.
 
-## 5. Procedure
+## 6. Procedure
 
 1. Per fixture, per book (Pinnacle, Bet365): de-vig the three-way closing prices proportionally, take
    logits, and compute the pairwise difference for each outcome.
@@ -72,7 +105,7 @@ division-season clusters, and no test treats the three outcomes as independent.
 4. Observed `gap_z` as in §3.
 5. **Excess = observed − projected**, with a cluster bootstrap interval over division-seasons.
 
-## 6. Sensitivity and the one internal check
+## 7. Sensitivity and the one internal check
 
 - `d` scaled by 0.5 and 2.0, reporting how the excess moves.
 - **Regression of observed `gap_z` on `E[max_K]`.** What it tests: whether the gap grows with the
@@ -82,20 +115,24 @@ division-season clusters, and no test treats the three outcomes as independent.
 - Separate reporting for fixtures where `K` is small enough that the order-statistic approximation is
   weakest.
 
-## 7. Decision rules, fixed now
+## 8. Decision rules, fixed now
 
-| Excess (cluster interval) | Reading | Consequence |
+| Observed vs simulated price gap | Reading | Consequence |
 | --- | --- | --- |
-| Contains zero | consistent with arithmetic | price-shopping claim **weakened**: present as arithmetic, not advantage |
-| Entirely above zero | dispersion exceeds the projection | claim **strengthened**, subject to availability |
-| Entirely below zero | observed below projection | **integrity check first** — verify `Max` and `Avg` book sets before interpreting |
+| Interval overlaps the simulated gap | consistent with arithmetic under calibrated dispersion | price-shopping claim **weakened**: present as arithmetic, not advantage |
+| Observed entirely above simulated | observed price gap exceeds what dispersion explains | claim **strengthened**, subject to availability |
+| Observed entirely below simulated | observed gap smaller than the model predicts | **integrity check first** — verify `Max` and `Avg` book sets before interpreting |
 
-## 8. Stop condition
+## 9. Stop condition
 
 One analysis, one report. No follow-up variant without new authorisation.
 
-## 9. What this cannot support
+## 10. What this cannot support
 
-No expected-value, profitability or user-advantage claim. Nothing about obtainable prices. And no
+No expected-value, profitability or user-advantage claim. Nothing about obtainable prices. No
 statement that dispersion reflects "true" probability disagreement: it reflects differences in
 de-vigged probabilities under proportional de-vig, with margin allocation not fully separated.
+
+And no claim of decomposition. The study compares an observed price gap against a calibrated
+simulation of it; it does not partition the 6.5% into "mechanical" and "genuine" shares, because these
+fields do not identify that partition.
