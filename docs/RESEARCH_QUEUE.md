@@ -13,6 +13,21 @@ are not erased.
 **No next task authorised.** The next item is the sponsor's review of the candid strategic
 assessment, which is a proposal rather than an experiment.
 
+## Queued by the sponsor — not started
+
+**Market-companion assessment and architecture.** Queued 2026-11-05 for the next cycle, explicitly
+not to run concurrently with the dispersion study.
+
+Scope when it opens: how market modelling, standalone/slip/jackpot workflows, target-multiplier
+construction and long-run selection monitoring fit together; which capabilities are supportable with
+held data versus needing method validation, timestamped data or nothing at all; metrics that keep hit
+rate, calibration, price improvement, expected value and profitability separate; how favourites are
+used without being called safe; and how jackpot discovery sits beside the wider ambition. The smallest
+coherent next steps and their dependencies are part of the ask.
+
+**Status: blocked on the sponsor gate for the dispersion study**, because the instruction was to
+finish the current bounded task first. Nothing has been drafted.
+
 ## Decision pending with the sponsor
 
 Whether to accept the strategic assessment and authorise its proposed first bounded scope. No
