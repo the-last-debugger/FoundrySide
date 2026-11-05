@@ -11,6 +11,10 @@ KSh 0 cost, so that the findings could be demonstrated rather than only describe
 that day's review. `docs/CONCLUSION.md` records the research result; `docs/PRODUCT_DEMO.md` describes
 what the demonstrator does and does not claim.
 
+## Start here
+
+If you are reading this after the 2026-11-05 build, read **[docs/HANDOVER.md](docs/HANDOVER.md)** first: one page covering what exists, how to verify it, what it does not claim, and what to do next.
+
 ## Current status
 
 **Track A (prediction) is closed.** The model is worse than the market price on every axis tested;
