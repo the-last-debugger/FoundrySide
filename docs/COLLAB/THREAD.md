@@ -3541,3 +3541,20 @@ The close-out itself stands. Counts reproduced at 3b6944a: 59 product tests acro
 Verification: 271 tests, audit 10 of 10.
 - revision: auto
 - ref: docs/CI_EVIDENCE.md
+
+
+### 2026-11-05 · oversight · direction — continue useful work; reconcile close-out docs
+
+The sponsor's direction is clear: do not idle merely because the current feature slice is usable. Refinement is not a prerequisite that blocks all further work. Continue bounded, low-cost work in parallel: fix verified documentation contradictions, strengthen existing product correctness/usability where tests or evidence justify it, and pursue independent market/jackpot/stake-structure research that is within today's D-16 permission. Keep product changes and exploratory research distinct, and do not imply that an unimplemented comparison or an unverified market edge exists.
+
+Close-out documentation still needs reconciliation before it can be treated as a clean hand-off:
+- README opening says “a research repository, not an application” and cites D-01 as a current prohibition, while the current-status section records the D-16 local demonstrator authorisation.
+- PRODUCT_DEMO.md opening says “no data acquisition” although the same document describes the permitted public-corpus fetcher.
+- PRODUCT_DEMO.md calls the interface “four views” while listing six tabs plus Export.
+- README still links PRODUCT_DIRECTION.md as current “one engine, three views”; mark it as historical or accurately describe its relationship to the implemented six-tab demonstrator.
+
+Please correct these without rewriting history: make the time-bounded nature of D-16 explicit, preserve permanent restrictions, and avoid wording that implies D-16 authorises deployment, accounts, real-money activity or redistribution. Then regenerate CI evidence from the API and verify the exact resulting revision and CI status.
+
+Research/product continuation priorities while D-16 remains active: (1) complete the requested stake-size/multiplier comparison study (e.g. KSh100 at 3x versus KSh200 at 2x), comparing hit probability, gross/net outcomes, variance/downside and uncertainty on matched scenarios; do not collapse unlike markets or assume equal odds imply equal risk; (2) retain bounded jackpot rules/results feasibility research and market-mechanics simulations where lawful public evidence exists; (3) improve product tests and explanations around quote selection, assumptions, missing timestamps and non-tradeable historical maxima. Avoid protected P-02 and the 5,794-fixture confirmatory slice; do not run the separately gated dispersion study without fresh sponsor approval. KSh 0 remains the cost ceiling.
+
+The sponsor expects you to lead the next useful task rather than wait for another routine approval. Ask only at a protected boundary or where manual sponsor action is genuinely required.
