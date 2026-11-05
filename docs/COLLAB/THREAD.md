@@ -3117,3 +3117,23 @@ Register: it now distinguishes no corpus scoring authorised from no active task,
 Verification: verify_all with the clone stage passed, 201 tests in the working copy and 201 in a fresh clone, all stages in 107 seconds.
 - revision: f1d834a
 - ref: docs/PREREG-DISPERSION.md
+
+### 2026-11-05 · sponsor · second review of revised dispersion protocol
+
+Thank you for the substantial correction. I accept the removal of the stale logit-space estimand, the reconciliation of the 6.51% arithmetic mean with the inventory script, the explicit statement that the model is calibrated rather than validated, and the correction of the inventory's use of “tradeable”. Actions run 92 on the bridge-record commit is green. That is repository verification only.
+
+**The protocol is improved, but it is not yet approved for scoring.** Please make the following final wording and method clarifications, then return it for review:
+
+1. **Remove the false dichotomy in §1.** The question currently says the result decides whether the 6.51% is “arithmetic” or “genuine dispersion”, while §2 and §8 correctly withdraw any mechanical/genuine partition. A maximum exceeds a mean arithmetically by construction; the proposed simulation can assess whether one assumed dispersion model is consistent with the observed statistic. It cannot establish a residual “genuine” component or decide what the product may claim. Rewrite the question and interpretation accordingly.
+
+2. **Do not turn sensitivity compatibility into a conclusion.** §7 says that if the observed statistic falls inside the sensitivity range, the claim should be presented “as arithmetic”. The sensitivity grid is assumption-dependent, and the model is calibrated on one moment. Compatibility means only that the observed statistic is not surprising under the specified calibrated model/grid; it does not establish that the whole difference is explained by arithmetic or that a user benefit exists. Make all three decision outcomes descriptive, not product-claim permissions. “Above every simulated value” in a finite sensitivity grid is not proof of genuine dispersion.
+
+3. **Make the 24-cluster uncertainty procedure credible and transparent.** The observed interval resamples 24 division-season clusters. State the resampling scheme precisely (including whether it is a pairs/cluster bootstrap and how repeated clusters are sampled), report the limitation of only 24 clusters, and include an appropriate small-cluster sensitivity/check if feasible using the same held data. If not feasible, say so and qualify the interval rather than presenting it as definitive. Keep simulation randomness, calibration uncertainty and structural sensitivity distinct.
+
+4. **Clarify the model's covariance construction.** In the equicorrelated deviation formula, specify exactly which indices the common and independent draws carry (book, outcome, fixture), which draws are shared, and what dependence exists across outcomes after de-vigging. Confirm that the simulated margin, K and missingness are applied in the same order and at the same unit as the provider's Max/Avg construction. The protocol should make the implementation reproducible from its description, not just name an equicorrelation model.
+
+5. **Correct the remaining inventory overclaim.** Although “tradeable quantity” has been removed, PRICE_INVENTORY.md still says a user “could have got a better price” and that “shopping improves the price a user pays”. With no timestamps, account availability or limits, those are not established. Please describe this strictly as a historical quoted-price difference in the held snapshots; do not imply the user could obtain it or that price shopping is already demonstrated as a user benefit.
+
+The register also still opens with “Nothing is active and nothing is queued behind it”, which contradicts the explicit queued market-companion item below. Please correct that top-level sentence so the register consistently says the dispersion protocol is awaiting sponsor review, no corpus scoring is authorised, and the market-companion assessment is queued for the next cycle but not started.
+
+No fixture scoring or further analysis is authorised while these corrections are made. P-02 remains untouched. Track A remains closed. The market-companion assessment must remain queued and must not start concurrently. No new data, paid resources, provider contact, terms acceptance, product implementation, public release, deployment, hosted service, commercial use or real-money functionality is authorised. KSh 0 recurring-cost target remains.
