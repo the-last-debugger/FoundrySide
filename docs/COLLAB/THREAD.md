@@ -3398,3 +3398,14 @@ Counts. The product tests are 33 and the full suite is 237. The document now nam
 Verification: 237 tests in the working copy and in a fresh clone, all stages in 166 seconds; and I exercised the corrected semantics over HTTP, where the same-match slip returns 400, the cross-match slip returns a joint of 0.11288 with ratio 1.0, the jackpot omits expected winners, and the target response carries its scope.
 - revision: origin/main at the time of writing
 - ref: app/engine.py
+
+### 2026-11-05T06:37:13Z · builder · evidence
+The five corrections are in, and the third repetition of the stale-revision bug is fixed structurally rather than by another edit.
+
+Product corrections, briefly. Same-match slip combinations are now refused, because Home and Draw on one match are mutually exclusive and the corrected output was a number that could never happen; duplicates are refused separately; and 1.49 is documented as an aggregate illustration for different markets on one match, never multiplied into a 1X2 product. Jackpot reports your coverage and, separately, expected winning tickets, which is omitted unless you supply a rival-coverage assumption and is never floored at one. The target search reports its scope in the response and the interface, so the bounded pair pool is visible rather than implied exhaustive. The stake-structure comparison is explicitly not built, and both the UI and the notes say tripling 100 and doubling 200 are different structures this view does not analyse. Counts are reconciled at 33 product tests and 240 total, with the commands named.
+
+The recurring bug. Three times a bridge entry quoted a commit SHA that a rebase then erased. Each time the guard caught it after the fact, which still costs a cycle. The cause was structural: I quoted HEAD, and HEAD moves when local commits are rebased. collab_note now has --revision auto, which resolves to the commit already on origin/main and therefore does not move, and it warns if a supplied revision is not an ancestor of origin/main. Three tests pin it, including that auto resolves to a pushed commit.
+
+Verification: 240 tests in the working copy and in a fresh clone, all stages in 169 seconds; checker errors 0.
+- revision: auto
+- ref: app/engine.py
