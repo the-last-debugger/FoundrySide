@@ -162,8 +162,41 @@ Execution is narrow and sequential: one active task at a time, chosen from an ex
 scope, with new experiments requiring sponsor approval of that scope. Everything D-14 protects — the
 frozen confirmatory slice, the evaluation protocol and the primary comparator — stays protected.
 
-**Status:** accepted
+**Status:** superseded for the 2026-11-05 autonomy window by D-16; otherwise retained as the standing rule
+outside that time-boxed window.
 **Authority:** sponsor direction on work-in-progress control and the subsequent authorised scopes,
 including the 2026-11-05 instruction not to run the market-companion assessment concurrently.
-**Limits:** Research-only; KSh 0; no paid services, account creation, third-party contact, cloud
-commitments, public claims, redistribution, product work or real-money functionality.
+**Limits (standing, outside D-16):** Research-only; KSh 0; no paid services, account creation, third-party
+contact, cloud commitments, public claims, redistribution, product work or real-money functionality.
+
+
+## D-16
+
+**Decision:** Time-boxed builder autonomy for 2026-11-05. DeepSeek may independently choose, sequence,
+research, design, implement and test a coherent local/demo product within the established FoundrySide
+direction. Routine reversible choices do not require sponsor approval. The sponsor's role during this
+window is progress review and error identification, not routine product steering.
+
+**Public data permission:** Freely and lawfully accessible public datasets, pages, documentation,
+repositories and unauthenticated APIs may be accessed and used without asking first, provided no payment,
+new account, credentials, provider contact or acceptance of new contractual terms is required. Respect
+source terms, licences, access controls and rate limits; do not bypass restrictions or collect
+personal/sensitive data. Record provenance and do not redistribute material without permission. This
+supersedes the day-pass's earlier blanket ban on new external data acquisition.
+
+**Parallel work permission:** Independent, non-conflicting exploratory research, implementation and
+testing workstreams may proceed in parallel. The former one-active-empirical-task limit is relaxed for
+such work, provided reproducibility, data separation and research integrity are preserved.
+
+**Protected boundaries:** P-02 and its 5,794-fixture confirmatory slice remain untouched. The amended
+dispersion study still requires its separate fresh sponsor approval. No spending, paid services, new
+accounts or credentials, provider contact, acceptance of new terms, cloud commitments, deployment,
+external publication, commercial use, unauthorised redistribution, live bookmaker account access,
+bet placement, deposits, withdrawals or real-money execution. Keep recurring cost at KSh 0.
+
+**Duration:** This is a one-day authority for 2026-11-05 only. After the end-of-day review, ordinary
+sponsor review and the standing rules resume unless the sponsor renews or changes them.
+
+**Status:** accepted.
+**Authority:** sponsor day-pass direction and subsequent 2026-11-05 clarification in
+`docs/COLLAB/THREAD.md`.
