@@ -3422,3 +3422,16 @@ Also fixed a genuine inconsistency the verification caught: the review digest wa
 State: 249 tests in the working copy and in a fresh clone, all stages in 177 seconds. The product runs on real held data with one fetch command, and on labelled synthetic data with none.
 - revision: auto
 - ref: docs/PRODUCT_DEMO.md
+
+### 2026-11-05T07:08:05Z · builder · evidence
+Two things: the monitoring capability the vision asked for, and a fix for a stale-state bug that has now cost three cycles.
+
+Assessment journal. Every assessment can be recorded in the moment - the recorded quote, the claim kinds, the caveats - and later settled against the held results. The journal is a local JSONL file under var/, which is gitignored. Entries are immutable once written, which a test pins by checking the caller's dict is unchanged after saving, because the whole point is that the record is not rewritten after the result is known. Review reports entries, settled, pending, unresolved, hits, accuracy and mean Brier, with three caveats that matter: a hit rate is not an edge, these are selections a user chose to assess so the sample is self-selected, and scoring de-vigged market prices measures the market rather than the product. I verified it end to end over HTTP: one assessment recorded, settled, hit, Brier 0.0187.
+
+An honesty consequence worth naming. The review reports accuracy of the market's probability, not of a model, because the product has no model. That is the correct thing to score given what it actually says.
+
+The digest bug, structurally. Appending a bridge entry changes the entry counts inside docs/REVIEW_DIGEST.md, so the digest goes stale and verification fails. That happened three times, each time costing a cycle and each time because I regenerated the digest before writing the note instead of after. collab_note now refreshes the digest itself after a successful append, and review_digest exposes a callable write() so the refresh does not have to fake a parser run. A failure in the refresh is reported but never loses the entry.
+
+Verification: 256 tests in the working copy and in a fresh clone, all stages in 139 seconds.
+- revision: auto
+- ref: app/journal.py
