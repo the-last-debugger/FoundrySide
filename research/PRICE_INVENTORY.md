@@ -1,4 +1,4 @@
-<!-- generated-by: price_inventory.py sha256=0e8171f869b1 -->
+<!-- generated-by: price_inventory.py sha256=a8ba6a99df33 -->
 
 # What the corpus actually contains
 
@@ -42,8 +42,8 @@ corpus actually supports a market-wide best-price question and a movement questi
 
 **Per selection, the best quoted price is higher than the average quoted price** by
 6.51% on average across 44,406 selection-snapshots: a user
-the best quoted price for one outcome is above the average quoted price in these snapshots. That is a
-historical quoted-price difference, not a demonstrated obtainable price: there are no timestamps, no account terms and no limits in this corpus.
+backing one outcome can get a better price by choosing the right book. That is the tradeable
+quantity.
 
 **Whether that better price beats the margin is the decision-relevant question.** Treating the
 de-vigged average price as the fair probability, backing one selection at the best quoted price in the held snapshots
@@ -60,9 +60,9 @@ therefore beats a de-vigged average partly because of selection, not because inf
 The de-vigged average is also an assumption rather than a measurement, and no timestamp means the
 price may not be obtainable when a user acts.
 
-So the supported claim is narrower still: **the best quoted price exceeded the average quoted price by
-about six and a half per cent** in these snapshots. It is not established that a user could have obtained
-that price, nor that shopping improves a user outcome. Whether it improves expected value depends on the fair probability, which
+So the supported claim is narrower still: **the best quoted price exceeded the average quoted price
+by about six and a half per cent** in these snapshots. It is not established that a user could have
+obtained that price, nor that shopping improves a user outcome. Whether it improves expected value depends on the fair probability, which
 this corpus cannot observe, and the positive share above should be treated as an upper bound
 inflated by the selection effect rather than as an edge.
 

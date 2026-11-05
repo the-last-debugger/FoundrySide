@@ -167,13 +167,13 @@ books, plus `Max` (best price across the books football-data tracks) and `Avg` (
 earlier best-price study used two books' closing prices because that is what it looked for; the
 corpus actually supports a market-wide best-price question and a movement question.
 
-**Per selection, the best price is genuinely better than the average** by
+**Per selection, the best quoted price is higher than the average quoted price** by
 {per_selection_mean * 100:.2f}% on average across {len(per_selection):,} selection-snapshots: a user
 backing one outcome can get a better price by choosing the right book. That is the tradeable
 quantity.
 
 **Whether that better price beats the margin is the decision-relevant question.** Treating the
-de-vigged average price as the fair probability, backing one selection at the best available price
+de-vigged average price as the fair probability, backing one selection at the best quoted price in the held snapshots
 returns a mean expected value of **{ev['mean']:+.4f}** per unit across {ev['n']:,}
 selection-snapshots, and **{ev['share_positive']:.1%}** of them are positive. That is the whole
 price-shopping case: the average price carries the margin, and the best price sometimes beats it.
@@ -187,8 +187,9 @@ therefore beats a de-vigged average partly because of selection, not because inf
 The de-vigged average is also an assumption rather than a measurement, and no timestamp means the
 price may not be obtainable when a user acts.
 
-So the supported claim is narrower: **shopping improves the price a user pays**, by about six and a
-half per cent on average. Whether it improves expected value depends on the fair probability, which
+So the supported claim is narrower still: **the best quoted price exceeded the average quoted price
+by about six and a half per cent** in these snapshots. It is not established that a user could have
+obtained that price, nor that shopping improves a user outcome. Whether it improves expected value depends on the fair probability, which
 this corpus cannot observe, and the positive share above should be treated as an upper bound
 inflated by the selection effect rather than as an edge.
 
