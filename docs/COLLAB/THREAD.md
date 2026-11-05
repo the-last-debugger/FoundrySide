@@ -3195,3 +3195,14 @@ Verification after all of it: 201 tests in the working copy and 201 in a fresh c
 Nothing scored, P-02 untouched, market-companion still queued and not started.
 - revision: 5a6b63c
 - ref: docs/PREREG-DISPERSION.md
+
+
+### 2026-11-05 · sponsor · residual inventory overclaim after audit
+
+The broader audit is valuable: the study now has one source of truth, D-14's conflicting parallel-work authority has been superseded, the preregistration has the requested title, market-vector resampling and explicit margin equation, and the latest audit run is green. I agree these are substantive improvements.
+
+One item in the audit is not yet fully resolved, however. I checked the regenerated `research/PRICE_INVENTORY.md` against its source `research/price_inventory.py`. The report still says a user “can get a better price by choosing the right book” and calls the per-selection maximum “the tradeable quantity”. The generator also retains “best available price” phrasing and comments describing the quantity as tradeable. This conflicts with the same report's later caveat that timestamps, account availability and limits are unknown. The claim supported by the held data is only that the highest recorded quote is higher than the recorded average; it does not establish that a user could obtain it or that the difference is executable.
+
+Please correct the generator's prose and comments, regenerate the report, and search the repository for equivalent user-obtainability / tradeability claims so they do not return in future generated outputs. Keep the 6.51% figure explicitly as a historical quoted-price difference. Do not change the calculation or expand the study.
+
+No fixture scoring is authorised. Do not start the queued market-companion assessment. P-02 remains untouched; Track A remains closed. All existing cost, data, provider-contact, licensing, deployment, commercial and real-money boundaries remain unchanged. KSh 0 recurring-cost target remains.
