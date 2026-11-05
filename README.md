@@ -40,6 +40,7 @@ accounts, no provider contact, no publication and no real-money functionality, t
 | `research/RESULTS_T0_T1_T3.md` | The first measured results: real baseline, data coverage, accumulator dependence. |
 | `docs/CONSOLIDATED_FINDINGS.md` | **The state of the project in one document** — what was measured, what was tested, what would change the answer. |
 | `docs/COLLAB/` | The bridge: thread, review queue, decisions, proposals. Start at `docs/COLLAB/README.md`. |
+| `docs/COLLAB/THREAD_INDEX.md` | Generated navigation for the bridge: counts by author and kind, recent entries, and entries grouped by the file they discuss |
 | docs/CONCLUSION.md | **Track A is closed** — what was established, what was not, and the reopening conditions |
 | docs/STRATEGIC_ASSESSMENT.md | Where the project goes next: market intelligence rather than a prediction engine, and the ranked questions |
 | docs/PRODUCT_DIRECTION.md | The product argument as written before the build: one engine, three views, four claim kinds, and what it refuses to build. **Historical** — the implementation grew to seven tabs plus export; `docs/PRODUCT_DEMO.md` is current |

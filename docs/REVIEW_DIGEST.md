@@ -1,5 +1,5 @@
 <!-- generated-by: review_digest.py -->
-<!-- as-of: df2de1c -->
+<!-- as-of: 6ef8745 -->
 
 # Review digest
 
@@ -98,11 +98,11 @@ current revision, or the row should be updated first.
 
 | Row | Cited | Files changed since |
 | --- | --- | --- |
-| RQ-001 | 0e05653 | 8 |
+| RQ-001 | 0e05653 | 9 |
 | RQ-003 | 0e05653 | 1 |
 | RQ-004 | 0e05653 | 1 |
 | RQ-005 | 0e05653 | 3 |
-| RQ-016 | 2c6199d | 33 |
+| RQ-016 | 2c6199d | 34 |
 | RQ-017 | 2c6199d | 1 |
 | RQ-018 | 2c6199d | 2 |
 | RQ-020 | 600c1b8 | 2 |
