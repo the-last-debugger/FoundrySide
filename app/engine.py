@@ -347,6 +347,71 @@ def explanations() -> dict:
 
 
 
+
+def compare_structures(target_net: float, odds_levels: list[float],
+                       margin: float = 0.05) -> dict:
+    """Compare structures matched on the same net upside.
+
+    A structure is (stake, odds). Matching on net profit means `stake = target / (odds - 1)`. The
+    comparison then asks what the same upside costs in stake at risk, hit probability and variance.
+
+    Evidence behind the interpretation is E25 in `research/STAKE_STRUCTURES.md`: realised hit rates
+    tracked market-implied probabilities in four of five price bands, and where they departed the
+    departure did not survive the margin.
+    """
+    if target_net <= 0:
+        raise ValueError("target_net must be positive")
+    if not odds_levels:
+        raise ValueError("provide at least one odds level")
+    if any(o <= 1.0 for o in odds_levels):
+        raise ValueError("odds must exceed 1.0")
+    if not 0 <= margin < 1:
+        raise ValueError("margin must be in [0,1)")
+
+    rows = []
+    for odds in sorted(odds_levels):
+        stake = target_net / (odds - 1.0)
+        prob = 1.0 / (odds * (1.0 + margin))
+        gross = stake * odds
+        ev = prob * target_net - (1.0 - prob) * stake
+        rows.append({
+            "odds": round(odds, 2),
+            "stake": round(stake, 2),
+            "gross": round(gross, 2),
+            "net": round(target_net, 2),
+            "market_implied": round(prob, 4),
+            "expected_loss": round(-ev, 2),
+            "variance": round(prob * (1.0 - prob) * gross ** 2, 2),
+        })
+
+    return {
+        "target_net": target_net,
+        "margin": margin,
+        "structures": rows,
+        "claims": {
+            "stake": "hypothetical arithmetic — target net over (odds − 1)",
+            "market_implied": "estimated — proportional de-vig at the given margin",
+            "expected_loss": "arithmetic under the margin assumption — proportional to stake, "
+                             "not to odds",
+        },
+        "verdict": (
+            "Matched on the same net upside, structures differ in what they cost to hold, not in "
+            "value: the higher-odds row risks less, wins less often, and has a smaller expected loss, "
+            "while the lower-odds row has smaller variance and a larger downside. Choosing between "
+            "them is a preference over distributions."
+        ),
+        "caveats": [
+            "Expected loss is negative for every row: a quoted price carries a margin.",
+            "Market-implied probabilities are an assumption about how the margin is spread, not a "
+            "forecast.",
+            "Stake arithmetic ignores limits, account terms and whether the price is obtainable.",
+            "E25 found realised hit rates consistent with these probabilities in four of five bands; "
+            "the exception did not survive the margin, so no row is an opportunity.",
+        ],
+        "explanations": {k: EXPLANATIONS[k] for k in ("gross_return", "market_implied")},
+    }
+
+
 def target_search(stake: float, target_multiplier: float, tolerance: float = 0.15,
                   fixtures: list[Fixture] | None = None, max_legs: int = 2,
                   pair_pool_limit: int = 400) -> dict:

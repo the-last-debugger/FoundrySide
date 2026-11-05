@@ -48,6 +48,7 @@ open) and the fact that files are stored as received. It does not overwrite exis
 | **Market** | Every book we hold a quote for, with its own margin and de-vigged probabilities, plus the price spread per outcome. A negative margin on the Max row is labelled a synthetic artefact, not an arbitrage | observed, estimated |
 | **Slip** | A combination across **different matches**: joint probability, gross return, net result and full-stake loss. Same-match and duplicate selections are refused, because 1X2 outcomes of one match are mutually exclusive | estimated, hypothetical |
 | **Stake & target** | Searches recorded quotes for single or two-leg combinations approaching a requested multiplier, within a tolerance, and reports the search scope. A target search, **not** a stake-structure comparison | observed, estimated, hypothetical |
+| **Structures** | Two or more structures matched on the same net profit: stake at risk, gross, market-implied hit rate, expected loss and variance side by side. Backed by E25 | observed, estimated, hypothetical |
 | **Jackpot arithmetic** | Pool size, your coverage, and expected winning tickets only if you supply a rival-coverage assumption | hypothetical |
 | **Export** | Any assessment can be copied as a JSON or plain-text card that carries its claim kinds and caveats | — |
 | **Journal** | Record an assessment as it was made, then settle recorded assessments against held results: accuracy and mean Brier, with the caveat that a hit rate is not an edge | observed |
@@ -58,7 +59,7 @@ constant applied to observed inputs), **hypothetical** (arithmetic over user-sup
 ## Interface
 
 Single page, no build step, no external assets. A header carries the product and a **mode badge** that
-says whether you are looking at the held corpus or synthetic demo data. Six tabs: Assess, Market, Slip,
+says whether you are looking at the held corpus or synthetic demo data. Seven tabs: Assess, Market, Slip, Structures,
 Stake &amp; target, Jackpot, Journal.
 
 Design choices that serve the honesty requirement rather than decoration:
@@ -112,15 +113,15 @@ Reproduced at the revision named in the CI line below, not copied from a previou
 ```bash
 python -m unittest tests.test_app_engine tests.test_app_server tests.test_app_export \
                    tests.test_fetch_corpus tests.test_app_journal tests.test_app_market \
-                   tests.test_app_explanations
-# Ran 66 tests … OK
+                   tests.test_app_explanations tests.test_app_structures
+# Ran 75 tests … OK
 
 python -m unittest discover -s tests
-# Ran 287 tests … OK
+# Ran 296 tests … OK
 ```
 
-The 66 product tests break down as: **23** engine, **12** server, **5** export, **4** fetcher,
-**11** journal, **4** market, **7** explanations. The remaining 221 are the research suite that
+The 75 product tests break down as: **23** engine, **12** server, **5** export, **4** fetcher,
+**11** journal, **4** market, **7** explanations, **9** structures. The remaining 221 are the research suite that
 predates the product (report stamps, claims, bridge, audit, reproducibility and the studies
 themselves).
 

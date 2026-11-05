@@ -84,6 +84,16 @@ class Handler(BaseHTTPRequestHandler):
             by_key = {f.key: f for f in FIXTURES}
             return json_response(self, journal.review(by_key))
 
+        if path == "/api/structures":
+            try:
+                target = float((query.get("target") or ["200"])[0])
+                raw = (query.get("odds") or ["1.5,2,3,4,6"])[0]
+                levels = [float(x) for x in raw.split(",") if x.strip()]
+                margin = float((query.get("margin") or ["0.05"])[0])
+                return json_response(self, engine.compare_structures(target, levels, margin))
+            except ValueError as exc:
+                return error(self, f"target, odds and margin must be numbers: {exc}")
+
         if path == "/api/explanations":
             return json_response(self, {"explanations": engine.explanations()})
 

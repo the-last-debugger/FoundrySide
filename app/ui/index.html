@@ -157,6 +157,7 @@
   <button data-view="market" role="tab" aria-selected="false">Market</button>
   <button data-view="slip" role="tab" aria-selected="false">Slip</button>
   <button data-view="target" role="tab" aria-selected="false">Stake &amp; target</button>
+  <button data-view="structures" role="tab" aria-selected="false">Structures</button>
   <button data-view="jackpot" role="tab" aria-selected="false">Jackpot</button>
   <button data-view="journal" role="tab" aria-selected="false">Journal</button>
 </nav>
@@ -233,6 +234,20 @@
       are different structures and are not analysed here.</div>
     </div>
     <div id="t-result" aria-live="polite"></div>
+  </section>
+
+  <!-- STRUCTURES -->
+  <section id="view-structures" class="view" role="tabpanel">
+    <div class="card">
+      <div class="row">
+        <div><label for="st-net">Target net profit (KSh)</label><input id="st-net" type="number" value="200" min="1" step="50"></div>
+        <div><label for="st-odds">Odds to compare</label><input id="st-odds" type="text" value="1.5, 2, 3, 4, 6"></div>
+        <div class="tight"><button class="primary" id="st-go">Compare</button></div>
+      </div>
+      <div class="caveat">Structures matched on the same net profit. A target is your constraint; the
+      comparison shows what each way of reaching it costs in stake, probability and variance.</div>
+    </div>
+    <div id="st-result" aria-live="polite"></div>
   </section>
 
   <!-- JACKPOT -->
@@ -523,6 +538,35 @@ $("t-go").onclick = async () => {
         ${caveats(r.caveats)}
       </div>`;
   } catch (err) { $("t-result").innerHTML = `<div class="card bad">${err.message}</div>`; }
+};
+
+/* ---------- Structures ---------- */
+$("st-go").onclick = async () => {
+  const p = new URLSearchParams({ target: $("st-net").value, odds: $("st-odds").value });
+  $("st-result").innerHTML = loading("Comparing structures…");
+  try {
+    const r = await getJSON("/api/structures?" + p.toString());
+    const rows = r.structures.map(s => `
+      <tr>
+        <td class="name">${s.odds.toFixed(2)}×</td>
+        <td>KSh ${fmt(s.stake,0)}</td>
+        <td>KSh ${fmt(s.gross,0)}</td>
+        <td>${pct(s.market_implied)}</td>
+        <td>KSh ${fmt(s.expected_loss,2)}</td>
+        <td>${fmt(s.variance,0)}</td>
+      </tr>`).join("");
+    $("st-result").innerHTML = `
+      <div class="card">
+        <h3>Aiming for KSh ${fmt(r.target_net,0)} net</h3>
+        <table class="grid">
+          <thead><tr><th>Odds</th><th>Stake at risk</th><th>Gross return</th>
+          <th>Market-implied hit</th><th>Expected loss</th><th>Variance</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        <div class="verdict">${r.verdict}</div>
+        ${caveats(r.caveats)}
+      </div>`;
+  } catch (err) { $("st-result").innerHTML = `<div class="card bad">${err.message}</div>`; }
 };
 
 /* ---------- Jackpot ---------- */
