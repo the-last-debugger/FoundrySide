@@ -123,11 +123,15 @@ def check_digest_fresh() -> Check:
     if not DIGEST.exists():
         return Check("review digest is current", True, "no digest")
     import review_digest
+    marker = "<!-- as-of: "
+    index = DIGEST.read_text(encoding="utf-8").find(marker)
+    as_of = (DIGEST.read_text(encoding="utf-8")[index + len(marker):].split("-->")[0].strip()
+             if index >= 0 else None)
     original = review_digest.OUT
     try:
         with tempfile.TemporaryDirectory() as tmp:
             review_digest.OUT = Path(tmp) / "digest.md"
-            review_digest.write()
+            review_digest.write(as_of)
             fresh = review_digest.OUT.read_text(encoding="utf-8")
     finally:
         review_digest.OUT = original

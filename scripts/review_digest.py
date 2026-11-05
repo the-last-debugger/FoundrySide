@@ -50,8 +50,20 @@ def rows() -> list[dict]:
     return out
 
 
-def write() -> int:
-    """Regenerate the digest. Callable from other scripts; main() wraps it for the CLI."""
+def head_sha() -> str:
+    proc = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT,
+                          capture_output=True, text=True)
+    return proc.stdout.strip() or "unknown"
+
+
+def write(as_of: str | None = None) -> int:
+    """Regenerate the digest as of a specific commit (default: HEAD).
+
+    The moved-files section compares a row's revision to a commit. Recording which commit that was
+    makes regeneration reproducible: the test regenerates with the recorded value and compares, instead
+    of comparing a document generated at commit N against a repository now at commit N+1.
+    """
+    as_of = as_of or head_sha()
     all_rows = rows()
     by_id = {r["id"]: r for r in all_rows}
     accepted = [r for r in all_rows if r["state"] == "accepted"]
@@ -61,6 +73,7 @@ def write() -> int:
     used: set[str] = set()
     lines = [
         "<!-- generated-by: review_digest.py -->",
+        f"<!-- as-of: {as_of} -->",
         "",
         "# Review digest",
         "",
@@ -111,7 +124,7 @@ def write() -> int:
         files = [f.strip() for f in r["files"].split(",") if f.strip()]
         if not files or not r["rev"]:
             continue
-        proc = subprocess.run(["git", "diff", "--name-only", f"{r['rev']}..HEAD", "--", *files],
+        proc = subprocess.run(["git", "diff", "--name-only", f"{r['rev']}..{as_of}", "--", *files],
                               cwd=ROOT, capture_output=True, text=True)
         changed = [f for f in proc.stdout.splitlines() if f.strip()]
         if changed:

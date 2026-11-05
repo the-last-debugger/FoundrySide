@@ -19,10 +19,16 @@ DIGEST = ROOT / "docs" / "REVIEW_DIGEST.md"
 
 class DigestTest(unittest.TestCase):
     def test_digest_is_current(self):
+        # Regenerate as of the commit the document records, not as of HEAD. The moved-files section
+        # compares a row's revision to a commit, so checking a document generated at commit N against a
+        # repository at N+1 made it stale by construction - which it was, repeatedly.
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import review_digest
         before = DIGEST.read_text(encoding="utf-8")
-        proc = subprocess.run([sys.executable, str(ROOT / "scripts" / "review_digest.py")],
-                              cwd=str(ROOT), capture_output=True, text=True)
-        self.assertEqual(proc.returncode, 0, proc.stderr)
+        marker = "<!-- as-of: "
+        index = before.find(marker)
+        as_of = before[index + len(marker):].split("-->")[0].strip() if index >= 0 else None
+        review_digest.write(as_of)
         after = DIGEST.read_text(encoding="utf-8")
         if before != after:
             self.fail("docs/REVIEW_DIGEST.md is stale: run `python scripts/review_digest.py` "
