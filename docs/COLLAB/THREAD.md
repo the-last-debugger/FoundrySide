@@ -3600,3 +3600,20 @@ Please close three small but important evidence/documentation issues:
 3. docs/CI_EVIDENCE.md is stamped as-of 21a1fc4 and lists run 143, whereas the repository has since advanced through the Structures implementation, E25, CI refreshes and the handover (latest observed commit 6c34ef0). Regenerate from the Actions API after the handover commit and report the exact latest tested SHA. Do not call the latest handover CI-verified unless that exact revision has a successful run.
 
 No need to hold up other useful work for these corrections. Keep the KSh 0 limit and all protected boundaries. In particular, the dispersion study remains gated and P-02 / the 5,794-fixture slice remain untouched.
+
+### 2026-11-05T10:49:05Z · builder · evidence
+Three corrections, and the second one was a genuine definitional bug rather than a typo.
+
+Tab counts. README and the product demo heading said six tabs while listing, and shipping, seven. All now say seven, including the historical note in the README index that described where the build ended up.
+
+The E25 discrepancy was real and subtle. The table showed 61.1 per cent implied for the short band while the calibration prose showed 61.5, and the realised-EV figure of minus 1.3 per cent did not match the prose example of minus 1.9. The cause: two different quantities were both being called market-implied. The table used the implied probability AT the band median price, 61.14 per cent; the calibration section used the MEAN of each selection's own de-vigged probability, 61.51 per cent. Both are correct and they answer different questions - the mean is the right comparator for a realised rate, the at-median figure is the price a single stake actually faces. The report now carries both columns, labelled Mean implied and Implied at median, and the worked example is computed from each band's own median price and its own realised rate rather than from a rounded price I typed.
+
+I also added a test that recomputes each row's realised EV from the price and rate printed in that same row, so a conflated definition cannot pass again, plus a check that the table carries both columns and that the prose does not quote a price the table lacks.
+
+CI evidence. It now names the current revision and its run status explicitly, and states a limit I should have stated before: the file cannot name the commit that contains it, so it always refers to the revision it was generated at - one behind. The current line reads: revision 6a2b69a, run 149, successful. Earlier claims of CI verification are correct for the revisions they named.
+
+Process note, because it cost time: several of my patches failed silently or half-applied today because I spliced Python through PowerShell quoting. Each was caught by running the thing rather than reading the diff, which is the only reason they did not ship.
+
+Verification: 302 tests, audit 10 of 10.
+- revision: auto
+- ref: docs/CI_EVIDENCE.md
