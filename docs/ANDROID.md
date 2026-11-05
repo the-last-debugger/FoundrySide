@@ -52,9 +52,11 @@ Requirements: Android SDK build-tools 37 (34's `d8` crashes on Java 17 class fil
    rather than glossed.
 2. **Debug signing.** Signed with a local debug key, not a release key. Not for distribution.
 3. **600-fixture slice**, chosen for bundle size; the local server has the full corpus.
-4. **The JavaScript is a port**, not the Python engine: it can drift. The arithmetic is duplicated
-   deliberately because the app is offline, and the tests check the pieces that would break silently
-   (de-vig totalling, embedded data matching the export, no network calls).
+4. **The JavaScript is a port**, not the Python engine. The arithmetic is duplicated because the app
+   is offline, and ports drift — so scripts/check_js_parity.py runs the JavaScript under Node and
+   compares de-vig, assessments and structure tables against the Python engine on shared fixtures.
+   The port mirrors the engine's field names and rounding exactly, which is what makes the comparison
+   exact rather than approximate. Run it after touching either side.
 
 ## Reproducing the verification
 

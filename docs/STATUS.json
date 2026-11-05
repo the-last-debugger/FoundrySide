@@ -1,6 +1,6 @@
 {
   "revision": {
-    "value": "66952fe",
+    "value": "bb1033a",
     "source": "git"
   },
   "experiments": {
@@ -20,7 +20,7 @@
     "source": "scripts/audit.py"
   },
   "tests": {
-    "value": 352,
+    "value": 355,
     "source": "python -m unittest discover -s tests"
   },
   "bridge entries": {
