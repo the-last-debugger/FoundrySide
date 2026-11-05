@@ -197,14 +197,28 @@ class Handler(BaseHTTPRequestHandler):
                 if fx is None:
                     raise ValueError(f"unknown fixture: {leg.get('fixture_key')}")
                 outcome = (leg.get("outcome") or "H").upper()
-                if outcome not in engine.OUTCOMES:
+                market = (leg.get("market") or "1X2").upper()
+                if market == "OU" and outcome not in ("O", "U"):
+                    raise ValueError("over/under selections use outcome O or U")
+                if market != "OU" and outcome not in engine.OUTCOMES:
                     raise ValueError("outcome must be H, D or A")
-                idx = engine.OUTCOMES.index(outcome)
-                price = (fx.odds.get("Max") or list(fx.odds.values())[0])[idx]
-                probs = engine.devig(fx.odds["Avg"]) if "Avg" in fx.odds else engine.devig(
-                    list(fx.odds.values())[0])
+                idx = engine.OUTCOMES.index(outcome) if outcome in engine.OUTCOMES else None
+                if market == "OU":
+                    if not fx.totals:
+                        raise ValueError("this fixture has no over/under prices")
+                    oi = 0 if outcome == "O" else 1
+                    price = fx.totals.get("Max", list(fx.totals.values())[0])[oi]
+                    probs = engine.devig(fx.totals["Avg"]) if "Avg" in fx.totals else engine.devig(
+                        list(fx.totals.values())[0])
+                    prob = probs[oi]
+                else:
+                    price = (fx.odds.get("Max") or list(fx.odds.values())[0])[idx]
+                    probs = engine.devig(fx.odds["Avg"]) if "Avg" in fx.odds else engine.devig(
+                        list(fx.odds.values())[0])
+                    prob = probs[idx]
                 normalised.append({"fixture_key": fx.key, "label": f"{fx.label} ({outcome})",
-                                   "outcome": outcome, "price": price, "prob": probs[idx]})
+                                   "outcome": outcome, "market": market,
+                                   "price": price, "prob": prob})
             return json_response(self, engine.slip_view(normalised, stake))
         except (ValueError, json.JSONDecodeError) as exc:
             return error(self, str(exc))

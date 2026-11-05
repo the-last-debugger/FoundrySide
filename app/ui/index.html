@@ -206,8 +206,9 @@
     <div class="card">
       <div class="row">
         <div><label for="s-fixture">Fixture</label><select id="s-fixture"></select></div>
-        <div><label for="s-outcome">Outcome</label><select id="s-outcome">
+        <div><label for="s-outcome">Selection</label><select id="s-outcome">
           <option value="H">Home</option><option value="D">Draw</option><option value="A">Away</option>
+          <option value="O">Over 2.5 goals</option><option value="U">Under 2.5 goals</option>
         </select></div>
         <div class="tight"><button class="primary" id="s-add">Add leg</button></div>
       </div>
@@ -502,7 +503,9 @@ $("s-add").onclick = () => {
   const key = $("s-fixture").value, out = $("s-outcome").value;
   const fx = fixtures.find(f => f.key === key);
   if (!fx) return;
-  legs.push({ fixture_key: key, outcome: out, label: `${fx.label} (${out})` });
+  legs.push({ fixture_key: key, outcome: out,
+              market: (out === "O" || out === "U") ? "OU" : "1X2",
+              label: `${fx.label} (${out})` });
   renderLegs();
 };
 $("s-calc").onclick = async () => {
@@ -517,15 +520,20 @@ $("s-calc").onclick = async () => {
       <div class="card">
         ${kv([
           ["Naive product" + tag("estimated"), pct(s.naive_product, 3)],
-          ["Dependence assumption", s.dependence_ratio === 1 ? "independent (different matches)" : "corrected"],
-          ["Joint probability" + tag("estimated"), pct(s.joint_probability, 3)],
+          ["Dependence assumption", s.same_match
+              ? "same match: no conditional estimate available"
+              : "independent (different matches)"],
+          ["Joint probability" + tag("estimated"),
+              s.joint_probability === null ? "not estimated" : pct(s.joint_probability, 3)],
           ["Combined odds", fmt(s.combined_odds,2) + "×"],
           ["Stake", "KSh " + fmt(s.stake,0)],
           ["Gross return" + tag("hypothetical"), "KSh " + fmt(s.gross_return,0)],
           ["Net if it wins", "KSh " + fmt(s.net_result,0)],
           ["Loss if it fails", "KSh −" + fmt(s.full_stake_loss,0)],
         ])}
-        ${meter(s.joint_probability)}
+        ${s.joint_probability === null
+            ? '<div class="verdict warn">' + s.dependence_note + '</div>'
+            : meter(s.joint_probability)}
         ${caveats(s.caveats)}
       </div>`;
   } catch (err) { $("s-result").innerHTML = `<div class="card bad">${err.message}</div>`; }

@@ -38,6 +38,12 @@ BOOKS = {
     "Avg": ("AvgCH", "AvgCD", "AvgCA"),
 }
 
+# Closing over/under 2.5 prices, where the provider publishes them. Same book, different market.
+OU_COLUMNS = {
+    "Max": ("MaxC>2.5", "MaxC<2.5"),
+    "Avg": ("AvgC>2.5", "AvgC<2.5"),
+}
+
 
 def _num(value) -> float | None:
     try:
@@ -68,6 +74,7 @@ class Fixture:
     home: str
     away: str
     odds: dict[str, list[float]] = field(default_factory=dict)
+    totals: dict[str, list[float]] = field(default_factory=dict)
     score: tuple[int, int] | None = None
 
     @property
@@ -91,6 +98,11 @@ def load_fixtures(limit: int | None = None) -> list[Fixture]:
                     vals = [_num(row.get(c)) for c in cols]
                     if all(v is not None for v in vals):
                         odds[name] = vals  # type: ignore[assignment]
+                totals: dict[str, list[float]] = {}
+                for name, cols in OU_COLUMNS.items():
+                    vals = [_num(row.get(c)) for c in cols]
+                    if all(v is not None for v in vals):
+                        totals[name] = vals  # type: ignore[assignment]
                 if len(odds) < 2:
                     continue
                 score = None
@@ -100,7 +112,7 @@ def load_fixtures(limit: int | None = None) -> list[Fixture]:
                     pass
                 out.append(Fixture(div=div, date=row.get("Date", ""),
                                    home=row.get("HomeTeam", ""), away=row.get("AwayTeam", ""),
-                                   odds=odds, score=score))
+                                   odds=odds, totals=totals, score=score))
                 if limit and len(out) >= limit:
                     return out
     return out
@@ -123,6 +135,13 @@ def market_view(fixture: Fixture) -> dict:
             "implied": [round(p, 4) for p in devig(odds)],
         }
 
+    totals_block = None
+    if fixture.totals:
+        totals_block = {name: {"odds": [round(o, 3) for o in pair],
+                               "overround": round(overround(pair), 4),
+                               "implied": [round(p, 4) for p in devig(pair)]}
+                        for name, pair in fixture.totals.items()}
+
     gap = [best[i] / avg[i] - 1.0 for i in range(3)]
     return {
         "fixture": fixture.label,
@@ -134,6 +153,7 @@ def market_view(fixture: Fixture) -> dict:
         "market_implied": {o: round(fair[i], 4) for i, o in enumerate(OUTCOMES)},
         "best_quote_implied": {o: round(best_probs[i], 4) for i, o in enumerate(OUTCOMES)},
         "best_vs_average": {o: round(gap[i], 4) for i, o in enumerate(OUTCOMES)},
+        "totals": totals_block,
         "claims": {
             "quotes": "observed — recorded closing quotes in the held corpus",
             "market_implied": "estimated — proportional de-vig of the recorded average; an assumption",
@@ -207,21 +227,39 @@ def slip_view(legs: list[dict], stake: float) -> dict:
 
     seen_pairs = set()
     seen_fixtures = set()
+    seen_markets: dict[str, set] = {}
+    same_match_pairs = False
     for leg in legs:
         pair = (leg["fixture_key"], leg["outcome"])
         if pair in seen_pairs:
             raise ValueError(
                 "duplicate selection: the same outcome twice on one match is one selection, not two")
         seen_pairs.add(pair)
+        market = leg.get("market", "1X2")
         if leg["fixture_key"] in seen_fixtures:
-            raise ValueError(
-                "same-match combination unsupported: two 1X2 outcomes of one match are mutually "
-                "exclusive, so their joint probability is zero, not a corrected product")
+            if leg["fixture_key"] not in seen_markets:
+                seen_markets[leg["fixture_key"]] = set()
+            if market in seen_markets[leg["fixture_key"]]:
+                raise ValueError(
+                    "same-match combination unsupported: two selections from the same market of "
+                    "one match are mutually exclusive, so their joint probability is zero, not a "
+                    "corrected product")
+            seen_markets[leg["fixture_key"]].add(market)
+            same_match_pairs = True
+        else:
+            seen_markets[leg["fixture_key"]] = {market}
         seen_fixtures.add(leg["fixture_key"])
 
     naive = 1.0
     for leg in legs:
         naive *= leg["prob"]
+
+    # The 1.49 figure is an aggregate over same-match, cross-market pairs. Applying it as a
+    # multiplier to a specific pair is not justified: on a strongly-favoured pair it pushes the
+    # product above one, which is a probability of 149%. So a same-match pair is accepted, but no
+    # corrected joint is published for it.
+    ratio = None if same_match_pairs else CROSS_MATCH_DEPENDENCE
+    joint = None if same_match_pairs else naive
 
     combined_odds = 1.0
     for leg in legs:
@@ -231,9 +269,17 @@ def slip_view(legs: list[dict], stake: float) -> dict:
     return {
         "legs": len(legs),
         "naive_product": round(naive, 6),
-        "joint_probability": round(naive, 6),
-        "dependence_ratio": CROSS_MATCH_DEPENDENCE,
-        "same_match": False,
+        "joint_probability": None if joint is None else round(joint, 6),
+        "dependence_ratio": ratio,
+        "dependence_note": (
+            "No conditional estimate is available for a same-match pair. The corpus measures an "
+            "aggregate 1.49 ratio across same-match cross-market pairs, but it is a population "
+            "average: applying it here would assume the same lift for every pair, which is not "
+            "supported and can exceed one." if same_match_pairs else
+            "Legs are from different matches, so independence is assumed and the product is used "
+            "unchanged."
+        ),
+        "same_match": same_match_pairs,
         "combined_odds": round(combined_odds, 3),
         "stake": stake,
         "gross_return": round(gross, 2),
@@ -247,9 +293,10 @@ def slip_view(legs: list[dict], stake: float) -> dict:
         "caveats": [
             "Independence across matches is assumed here. It is a reasonable approximation for "
             "different fixtures and is not tested by this view.",
-            "Same-match combinations are refused: 1X2 outcomes on one match are mutually exclusive.",
-            "The 1.49 same-match ratio in this project is an aggregate illustration for different "
-            "markets on one match; it is not a valid multiplier for two 1X2 selections.",
+            "A same-match pair is accepted only across different markets, such as a result with "
+            "over/under. Two selections from one market are mutually exclusive and are refused.",
+            "No corrected joint is shown for a same-match pair: the measured 1.49 ratio is a "
+            "population average, not a conditional model, and can imply probabilities above one.",
             "Gross return uses recorded closing quotes, which are not shown to be obtainable.",
         ],
     }

@@ -52,12 +52,21 @@ def synthetic_fixtures(n: int = 120, seed: int = 20261105) -> list[Fixture]:
         books["Max"] = [round(max(books[k][j] for k in ("B365", "Pinnacle", "Avg")), 2)
                         for j in range(3)]
 
+        # Over/under 2.5, so demo mode can exercise the same-match cross-market case.
+        over = 0.45 + 0.25 * (strength / 3.0)
+        over = min(0.8, max(0.2, over))
+        totals = {}
+        for name, margin in (("Max", 0.0), ("Avg", 0.03)):
+            pair = [1.0 / (over * (1 + margin)), 1.0 / ((1 - over) * (1 + margin))]
+            totals[name] = [round(x, 2) for x in pair]
+
         out.append(Fixture(
             div=div,
             date=f"{1 + i % 28:02d}/0{1 + i % 9}/2023",
             home=home,
             away=away,
             odds=books,
+            totals=totals,
             score=(rng.randint(0, 3), rng.randint(0, 3)),
         ))
     return out
