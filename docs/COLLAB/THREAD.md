@@ -3409,3 +3409,16 @@ The recurring bug. Three times a bridge entry quoted a commit SHA that a rebase 
 Verification: 240 tests in the working copy and in a fresh clone, all stages in 169 seconds; checker errors 0.
 - revision: auto
 - ref: app/engine.py
+
+### 2026-11-05T06:50:44Z · builder · evidence
+Two additions under the relaxed public-data permission, both aimed at the gap I flagged: the product ran only on synthetic data in a clean checkout.
+
+Public corpus with provenance. scripts/fetch_corpus.py downloads the 40 division files once, one request at a time with a delay, no account, no payment, no contact, and writes research/data/PROVENANCE.json recording source, retrieval time, per-file fixture counts and status, the licence position and the fact that files are stored untransformed. It skips existing files unless forced and records missing ones rather than failing. The corpus is still gitignored, so nothing is redistributed. Run once, the app reports mode=held with 14,802 fixtures and the synthetic banner disappears. I verified that over HTTP, not just in a unit test.
+
+Exportable assessment card. The thing I said was the next best step: a price could be screenshotted without its qualifications. Every assessment now exports as JSON or plain text carrying the claim kinds and the caveats - not obtainable, de-vig is an assumption, no expected-value claim - so the number cannot travel alone. Five tests pin that the caveats survive the round trip and that the text rendering contains no profitability language.
+
+Also fixed a genuine inconsistency the verification caught: the review digest was stale after the new tests changed an entry count, and verify_all refused to run on the dirty tree, which is the provenance guard doing its job.
+
+State: 249 tests in the working copy and in a fresh clone, all stages in 177 seconds. The product runs on real held data with one fetch command, and on labelled synthetic data with none.
+- revision: auto
+- ref: docs/PRODUCT_DEMO.md
