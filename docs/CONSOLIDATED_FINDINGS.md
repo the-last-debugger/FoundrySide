@@ -212,6 +212,7 @@ produced it.
 | RESIDUAL_GAP.md | E18 | the remaining gap concentrates where the model departs from the price |
 | ROBUSTNESS.md | E23 | that ordering reproduces in both forward seasons and all eight divisions |
 | THIN_DIVISIONS.md | E24 | thirteen thin divisions are +0.0017 nats worse, not materially |
+| STAKE_STRUCTURES.md | E25 | same net upside costs KSh 357 at 1.5 and KSh 41 at 6; short prices do not survive the margin |
 | DISPERSION_CHECK.md | method | the logit-space projection is not comparable to the de-vigged statistic (ratio 0.037) |
 | SHRINKAGE_POLICY.md | E19 | six shrinkage policies; none beats market-only, which is the optimum |
 | PRICE_INVENTORY.md | E20 | opening and closing snapshots across books; the best quoted price exceeds the average quote, the Max overround is not an opportunity |

@@ -65,6 +65,7 @@ treatment and a stated failure condition. Fit and evaluation never share outcome
 | E22 | **Price movement between opening and closing snapshots** | **signed -0.00022 [-0.00041,-0.00004]; size -0.00001 [-0.00009,+0.00008]** | **negative: the closing price already contains the move** |
 | E23 | **Robustness: does the disagreement ordering reproduce out of time?** | **yes in both forward seasons: near +0.0004 and -0.0003, far +0.0905 [0.0414,0.1406] and +0.0840 [0.0455,0.1410]; all eight divisions show far > near** | **E18 reproduces seasonally within this pilot; still not external validity** |
 | E24 | **Thin-division market efficiency: 13 unused divisions, no model** | **pooled +0.0017 nats against the existing eight, well below the 0.01 scale; division spread 0.652 to 0.698, descriptive only** | **negative: thinner markets are not materially less efficient here** |
+| E25 | **Stake and multiplier structures: same upside, different risk** | **matched on KSh 200 net, a 1.5 shot needs KSh ~357 at risk and a 6 shot KSh ~41; realised hit rates track implied except short prices, which do not survive the margin** | **descriptive: structures differ in distribution, not in value** |
 
 ## What the three studies together say
 
@@ -139,7 +140,7 @@ real defects:
 | Bridge checker | a verdict that names no revision, a row not authorised | once (per-row verdicts), once (malformed header) |
 | scripts/repro_sweep.py | any report that does not reproduce, and any generator that rewrites history when nothing changed | once (manifest clock churn) |
 
-A clean sweep is **33 generators** reproducing byte-for-byte.
+A clean sweep is **34 generators** reproducing byte-for-byte.
 
 ## Product contingency
 

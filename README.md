@@ -71,7 +71,7 @@ Three things are now measured rather than argued:
 
 ## What has been established
 
-Fourteen experiments, all recorded in [CONSOLIDATED_FINDINGS.md](docs/CONSOLIDATED_FINDINGS.md):
+Twenty-five experiments, all recorded in [CONSOLIDATED_FINDINGS.md](docs/CONSOLIDATED_FINDINGS.md):
 
 - **Calibration is recoverable.** An out-of-fold Platt map recovers 0.0114 of the 0.0246-nat
   deficit, but the model still carries about a quarter of the market's separation (AUC 0.562

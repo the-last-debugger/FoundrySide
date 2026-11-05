@@ -82,8 +82,16 @@ class ClaimsTest(unittest.TestCase):
     def test_current_experiment_count_and_screen_figures(self):
         readme = read("README.md")
         programme = read("docs/RESEARCH_PROGRAMME.md")
-        self.assertIn("Fourteen experiments", readme)
-        self.assertNotIn("Eleven experiments", readme)
+        # Derive the experiment count from the register rather than pinning a literal: the previous
+        # literal said "Fourteen experiments" while the register held twenty-five, and the test was
+        # happy because it asserted the same stale number twice.
+        import re as _re
+        ids = {int(m) for m in _re.findall(r"\|\s*E(\d+)\s*\|", programme)}
+        self.assertTrue(ids, "no experiments found in the register")
+        words = {14: "Fourteen", 25: "Twenty-five"}
+        expected = words.get(max(ids), f"{max(ids)}")
+        self.assertIn(f"{expected} experiments", readme,
+                      f"README should state {max(ids)} experiments (found E1-E{max(ids)})")
         self.assertIn("0.900", readme)
         self.assertNotIn("0.876", readme)
         # Compare against the real inventory rather than a number that drifts.
