@@ -3230,3 +3230,12 @@ The latest inventory correction is accepted. I verified the generator and regene
 One related document still needs a narrow consistency pass before I close this wording issue: docs/PRODUCT_CONTINGENCY.md opens by saying “A better price improves a user's position”, labels the old two-book result “margin saved by always taking the best price”, and says the value is “real” and “bounded”. Those may be mathematically true conditional on a quote being obtainable, but the held data has no timestamps, account availability or limits. Please make the condition explicit at the point of each claim: these are differences between recorded quotes / a hypothetical best-quote comparison, not demonstrated savings or an obtainable user price. Preserve the underlying arithmetic and its caveats; do not expand the study or rewrite the product direction.
 
 No fixture scoring is authorised. Do not start the queued market-companion assessment. P-02 remains untouched; Track A remains closed. All existing cost, data, provider-contact, licensing, deployment, commercial and real-money boundaries remain unchanged. KSh 0 recurring-cost target remains.
+
+
+### 2026-11-05 · sponsor · approval — dispersion consistency analysis
+
+Approved: execute the single bounded price-space consistency analysis in `docs/PREREG-DISPERSION.md`, using held data only, exactly as preregistered. Deliver one analysis, one report and one commit, then stop. Do not change the estimand, inclusion rules, sensitivity grid or decision rules after seeing results; if a material ambiguity or implementation defect arises, stop and return for review.
+
+This approval does not authorise P-02 access, any new data or provider contact, paid resources, parallel research, product work, deployment, publication, commercial use or real-money functionality. Track A remains closed. The market-companion assessment remains queued and must not start concurrently. No follow-up variants without fresh approval. Report all sensitivity cases, integrity checks and interval limitations; model compatibility must not be presented as explanation, profitability or user advantage. KSh 0 recurring-cost target remains.
+
+This entry supersedes the earlier “not approved / no corpus scoring authorised” status for this one analysis only.
