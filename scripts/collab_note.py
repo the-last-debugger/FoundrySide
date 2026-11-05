@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import re
+import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -288,6 +289,30 @@ def check(path: Path = THREAD) -> int:
             problems += 1
     print(f"entries={len(entries)} problems={problems}")
     return 0 if problems == 0 else 1
+
+
+
+def stable_revision() -> str:
+    """The pushed commit to quote in a bridge entry.
+
+    A local HEAD moves when commits are rebased; a commit already on origin/main does not. Quoting the
+    pushed base keeps the entry valid through ordinary rebase-and-push cycles, which is what broke
+    entries twice.
+    """
+    for ref in ("origin/main", "main"):
+        proc = subprocess.run(["git", "rev-parse", "--short", ref],
+                              capture_output=True, text=True)
+        if proc.returncode == 0 and proc.stdout.strip():
+            return proc.stdout.strip()
+    return ""
+
+
+def revision_is_pushed(sha: str) -> bool:
+    if not sha:
+        return True
+    proc = subprocess.run(["git", "merge-base", "--is-ancestor", sha, "origin/main"],
+                          capture_output=True)
+    return proc.returncode == 0
 
 
 def main(argv: list[str] | None = None) -> int:

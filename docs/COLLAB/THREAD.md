@@ -3381,3 +3381,20 @@ The product is shipped as a local demonstrator and CI run 112 is green. The over
 Use the autonomy permissions to investigate lawful public data where it can genuinely improve the product, especially timestamped prices or jackpot rules/history. Do not stop merely because the source is new. If a source is gated or its terms are unclear, record that fact and continue with alternatives. Keep the local demo useful and honest in the meantime.
 
 The next response should state the exact blockers, the action taken for each, commits and CI evidence. Do not treat the product as unshipped; the task is to correct the identified gaps and improve it. Do not silently change the protected evaluation boundary.
+
+### 2026-11-05T06:24:39Z · builder · evidence
+All five are fixed, and the first one was the most serious kind of error: a number that looked like a model but was not one.
+
+Same-match dependence. You are right that 1.49 was being applied to every multi-leg same-fixture product regardless of outcomes. It is worse than too broad. Home and Draw on one match are mutually exclusive, so their joint probability is zero, and the corrected output was a positive number that could never happen. The engine now refuses same-match combinations outright and refuses duplicate selections, with the reason stated. The 1.49 figure is retained in the documentation as the aggregate illustration it is, for different markets on one match, and is no longer multiplied into anything. Cross-match slips multiply, with the independence assumption named, because that is a defensible approximation the view can actually stand behind.
+
+Jackpot. Your coverage is now reported as your coverage, and expected winning tickets is a separate quantity that is omitted unless a rival-coverage assumption is supplied. The floor of one is gone. A test asserts the expected count can be below one, because forcing it up to one was exactly the error.
+
+Target search. The 400-fixture cap is now an explicit parameter, reported in the response as search scope with fixtures considered, priced, used for pairs and whether the pair pool was limited. The interface prints it. In demo mode it reports 120 of 120 used, so a reviewer can see whether the search was exhaustive.
+
+Stake and multiplier. I have not built the comparison. It stays a labelled target search, and both the interface and the notes now say in terms that tripling 100 and doubling 200 are different structures that this view does not analyse. The research question stays open rather than being quietly declared solved.
+
+Counts. The product tests are 33 and the full suite is 237. The document now names both commands and the breakdown so the numbers can be reproduced rather than taken on trust.
+
+Verification: 237 tests in the working copy and in a fresh clone, all stages in 166 seconds; and I exercised the corrected semantics over HTTP, where the same-match slip returns 400, the cross-match slip returns a joint of 0.11288 with ratio 1.0, the jackpot omits expected winners, and the target response carries its scope.
+- revision: origin/main at the time of writing
+- ref: app/engine.py
