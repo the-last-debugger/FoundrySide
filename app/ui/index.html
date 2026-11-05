@@ -69,6 +69,7 @@
   <button data-view="slip">Slip</button>
   <button data-view="target">Stake &amp; target</button>
   <button data-view="jackpot">Jackpot arithmetic</button>
+  <button data-view="journal">Journal</button>
 </nav>
 
 <main>
@@ -125,6 +126,17 @@
       are different structures and are not analysed here.</div>
     </div>
     <div id="t-result"></div>
+  </section>
+
+  <!-- JOURNAL -->
+  <section id="view-journal" class="view">
+    <div class="card">
+      <div class="caveat">Assessments are recorded as they were made — quote, claim kinds and caveats —
+      and are never rewritten after the result. Reviewing them settles the ones whose fixtures are in
+      the held corpus.</div>
+      <div style="margin-top:10px"><button class="primary" id="j-refresh">Refresh</button></div>
+    </div>
+    <div id="j-out"></div>
   </section>
 
   <!-- JACKPOT -->
@@ -226,7 +238,18 @@ document.querySelectorAll("#a-outcomes button").forEach(btn => {
           <div class="verdict">${a.assessment}</div>
           ${caveats(a.caveats)}
           <button class="primary" id="a-export" style="margin-top:8px">Copy assessment card</button>
+          <button class="primary" id="a-journal" style="margin-top:8px">Record in journal</button>
         </div>`;
+      $("a-journal").onclick = async () => {
+        try {
+          const r = await fetch("/api/journal", { method:"POST", headers:{"Content-Type":"application/json"},
+            body: JSON.stringify({ fixture_key: key, outcome: out }) });
+          const payload = await r.json();
+          if (!r.ok) throw new Error(payload.error);
+          $("a-journal").textContent = "Recorded";
+        } catch (err) { $("a-journal").textContent = "Could not record"; }
+      };
+
       $("a-export").onclick = async () => {
         const card = await getJSON(`/api/export?key=${encodeURIComponent(key)}&outcome=${out}&format=text`);
         try {
@@ -325,6 +348,29 @@ $("j-go").onclick = async () => {
         ${caveats(r.caveats)}
       </div>`;
   } catch (err) { $("j-result").innerHTML = `<div class="card err">${err.message}</div>`; }
+};
+
+$("j-refresh").onclick = async () => {
+  try {
+    const review = await getJSON("/api/journal/review");
+    const rows = review.detail.map(d => `
+      <div class="cand">${d.fixture} — ${d.outcome} (actual ${d.actual})
+        <span class="${d.hit ? "obs" : "err"}">${d.hit ? "hit" : "miss"}</span>
+        <span class="sub">market ${(d.market_implied*100).toFixed(1)}%</span></div>`).join("");
+    $("j-out").innerHTML = `
+      <div class="card">
+        ${kv([
+          ["Entries recorded", review.entries],
+          ["Settled", review.settled],
+          ["Pending result", review.pending_result],
+          ["Hits" + tag("observed"), review.hits],
+          ["Accuracy" + tag("observed"), review.accuracy === null ? "—" : (review.accuracy*100).toFixed(1) + "%"],
+          ["Mean Brier" + tag("observed"), review.mean_brier === null ? "—" : review.mean_brier.toFixed(4)],
+        ])}
+        ${rows}
+        ${caveats(review.caveats)}
+      </div>`;
+  } catch (err) { $("j-out").innerHTML = `<div class="card err">${err.message}</div>`; }
 };
 
 loadDivisions().catch(err => {

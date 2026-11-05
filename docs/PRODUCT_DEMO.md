@@ -43,6 +43,7 @@ open) and the fact that files are stored as received. It does not overwrite exis
 | **Stake & target** | Searches recorded quotes for single or two-leg combinations approaching a requested multiplier, within a tolerance, and reports the search scope. A target search, **not** a stake-structure comparison | observed, estimated, hypothetical |
 | **Jackpot arithmetic** | Pool size, your coverage, and expected winning tickets only if you supply a rival-coverage assumption | hypothetical |
 | **Export** | Any assessment can be copied as a JSON or plain-text card that carries its claim kinds and caveats | — |
+| **Journal** | Record an assessment as it was made, then settle recorded assessments against held results: accuracy and mean Brier, with the caveat that a hit rate is not an edge | observed |
 
 Every number carries a tag: **observed** (a recorded quote), **estimated** (a model or a measured
 constant applied to observed inputs), **hypothetical** (arithmetic over user-supplied parameters).
@@ -58,6 +59,8 @@ constant applied to observed inputs), **hypothetical** (arithmetic over user-sup
 - An exportable assessment card, in JSON or plain text, that carries the claim kinds and caveats so a
   price cannot travel without its qualifications.
 - A polite public-corpus fetcher with recorded provenance.
+- An assessment journal (local JSONL under ar/, gitignored) that stores the quote, claim kinds and
+  caveats as recorded, and settles them against held results without ever rewriting the entry.
 
 ## What is not implemented, and why
 
@@ -86,7 +89,7 @@ constant applied to observed inputs), **hypothetical** (arithmetic over user-sup
 python -m unittest tests.test_app_engine tests.test_app_server
 ```
 
-Run exactly: `python -m unittest tests.test_app_engine tests.test_app_server tests.test_app_export tests.test_fetch_corpus` → **42 tests**.
+Run exactly: `python -m unittest tests.test_app_engine tests.test_app_server tests.test_app_export tests.test_fetch_corpus` → **49 tests**.
 
 Breakdown: 23 engine tests (de-vig arithmetic, synthetic-corpus loading, claim labelling, provenance
 marking, duplicate and incompatible slip rejection, cross-match combination, stake arithmetic, target

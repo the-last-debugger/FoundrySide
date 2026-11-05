@@ -16,7 +16,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from app import engine
+from app import engine, journal
 
 UI = Path(__file__).resolve().parent / "ui"
 FIXTURES: list[engine.Fixture] = []
@@ -77,6 +77,13 @@ class Handler(BaseHTTPRequestHandler):
             except ValueError as exc:
                 return error(self, str(exc))
 
+        if path == "/api/journal":
+            return json_response(self, {"entries": journal.load()})
+
+        if path == "/api/journal/review":
+            by_key = {f.key: f for f in FIXTURES}
+            return json_response(self, journal.review(by_key))
+
         if path == "/api/export":
             key = (query.get("key") or [""])[0]
             outcome = (query.get("outcome") or ["H"])[0].upper()
@@ -135,6 +142,33 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         parsed = urlparse(self.path)
+        if parsed.path == "/api/journal":
+            length = int(self.headers.get("Content-Length") or 0)
+            try:
+                payload = json.loads(self.rfile.read(length) or b"{}")
+                key = payload.get("fixture_key")
+                outcome = (payload.get("outcome") or "").upper()
+                fx = next((f for f in FIXTURES if f.key == key), None)
+                if fx is None:
+                    raise ValueError("unknown fixture key")
+                if outcome not in engine.OUTCOMES:
+                    raise ValueError("outcome must be H, D or A")
+                assessment = engine.assess_selection(fx, outcome)
+                record = journal.save({
+                    "fixture_key": fx.key,
+                    "fixture": fx.label,
+                    "division": fx.div,
+                    "outcome": outcome,
+                    "best_recorded_price": assessment["best_recorded_price"],
+                    "best_book": assessment["best_book"],
+                    "market_implied": assessment["market_implied"],
+                    "price_implied": assessment["price_implied"],
+                    "claims": assessment["claims"],
+                })
+                return json_response(self, {"saved": record})
+            except (ValueError, json.JSONDecodeError) as exc:
+                return error(self, str(exc))
+
         if parsed.path != "/api/slip":
             return error(self, "not found", HTTPStatus.NOT_FOUND)
         length = int(self.headers.get("Content-Length") or 0)
