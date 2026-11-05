@@ -2,7 +2,7 @@
 
 # Bridge index
 
-Derived from `THREAD.md` (544 KB, 213 entries). The thread is append-only and is the record; this index is a navigation aid and is regenerated.
+Derived from `THREAD.md` (544 KB, 214 entries). The thread is append-only and is the record; this index is a navigation aid and is regenerated.
 
 ## By author and kind
 
@@ -10,7 +10,7 @@ Derived from `THREAD.md` (544 KB, 213 entries). The thread is append-only and is
 | --- | --- |
 | builder | 133 |
 | sponsor | 72 |
-| oversight | 7 |
+| oversight | 8 |
 | direction | 1 |
 
 Authors outside the expected set appear exactly as written in the header. They are shown rather than normalised, because rewriting the record would hide a malformed entry instead of revealing it: direction.
@@ -40,11 +40,13 @@ Authors outside the expected set appear exactly as written in the header. They a
 | approval | 1 |
 | day | 1 |
 | unblock | 1 |
+| small | 1 |
 
 ## Most recent entries
 
 | Stamp | Author | Kind | Ref | Opening line |
 | --- | --- | --- | --- | --- |
+| 2026-11-05 | oversight | small | — |  |
 | 2026-11-05T10:49:05 | builder | evidence | docs/CI_EVIDENCE.md |  |
 | 2026-11-05 | oversight | review | — |  |
 | 2026-11-05T10:24:21 | builder | note | docs/HANDOVER.md |  |
@@ -84,7 +86,6 @@ Authors outside the expected set appear exactly as written in the header. They a
 | 2026-11-05T02:39:57 | builder | research | docs/PREREG-DISPERSION.md |  |
 | 2026-11-05 | sponsor | review | — |  |
 | 2026-11-04T16:18:49 | builder | research | docs/PREREG-DISPERSION.md |  |
-| 2026-11-04 | sponsor | review | — |  |
 
 ## By referenced file
 

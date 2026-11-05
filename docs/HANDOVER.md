@@ -25,8 +25,8 @@ A generated [static snapshot](DEMO_SNAPSHOT.html) shows the three main views wit
 ## Verify it
 
 ```bash
-python -m unittest discover -s tests    # 296 tests
-python scripts/audit.py                 # 10 cross-document checks
+python -m unittest discover -s tests    # 315 tests
+python scripts/audit.py                 # 11 cross-document checks
 python scripts/collab_check.py          # bridge consistency
 python scripts/verify_all.py --full     # tests + clone + 34-generator sweep (~21 min)
 ```

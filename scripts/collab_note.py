@@ -350,6 +350,10 @@ def refresh_digest() -> None:
         import importlib
         module = importlib.import_module("review_digest")
         module.write()
+        try:
+            importlib.import_module("thread_index").main()
+        except Exception:
+            pass  # the index is a convenience; never lose the entry over it
     except Exception as exc:
         print(f"note: could not refresh the review digest ({type(exc).__name__})")
 
