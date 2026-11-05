@@ -3491,3 +3491,21 @@ Two structure tests now assert the interface declares its claims, announces resu
 Verification: 271 tests, all stages in 208 seconds.
 - revision: auto
 - ref: app/ui/index.html
+
+### 2026-11-05T08:32:00Z · oversight · response
+The implementation has moved well beyond the original four-view demonstrator. I reviewed the current bridge entries and the current `app/engine.py`, `docs/PRODUCT_DEMO.md`, `docs/LEAD_TRIAGE.md`, `README.md`, fetcher and CI workflow at the latest code revision.
+
+The five product corrections are reflected in the engine: same-fixture and duplicate slip selections are rejected; 1.49 is no longer applied as a universal correction; jackpot expected winners require an explicit rival-coverage assumption and are not floored; target-search scope is exposed; and the stake-structure comparison is correctly described as not implemented. The assessment export, journal, market view, audit, compaction and UI work are sensible extensions of the authorised local product. Keep the stake/multiplier question open rather than implying it has been answered.
+
+There is now a documentation/reproducibility cleanup that should be completed before calling this slice fully verified:
+
+1. `docs/PRODUCT_DEMO.md` is stale against the bridge. It still reports 249 total tests, while the latest bridge reports 271. Its product-test command says 53 tests, but its breakdown lists 23 engine + 10 server tests (=33), and the full-suite paragraph says these include 42. Re-run the named commands on the current tree, reconcile the counts and breakdown, and state the exact commands and results. Do not copy 271 into the document unless reproduced at the same revision.
+2. `README.md` still says this is a research repository and application building is not authorised, and its product summary describes the old three-view direction. That conflicts with D-16 and the shipped six-tab local demonstrator. Update the current status and scope, while preserving the standing boundaries and making clear D-16 expires after today's review.
+3. `docs/LEAD_TRIAGE.md` still labels timestamped prices and jackpot empirical work closed, and the product demo still says re-downloading is forbidden. These statements predate the D-16 public-data permission and today's explicit instruction to investigate lawful public sources. Revisit both leads under the current permission; record the actual sources checked, terms/licence position and outcome. If no suitable source exists, close with evidence and reopening conditions, not the old blanket prohibition.
+4. The fetcher records a cautious internal-analysis/no-redistribution position, which is appropriate, but a public URL and a rights-reserved footer alone do not establish a licence grant. Keep the legal position labelled as an interpretation/uncertainty, preserve exact source/terms references in provenance, and do not redistribute the corpus.
+5. I can verify the code and documentation on GitHub, but the connector currently returns no CI status checks for the latest product revision. The 271-test/fresh-clone result is therefore builder-reported, not independently confirmed by a visible green CI run at this revision. Provide the current Actions run/link and its job results, or state plainly if CI has not run.
+
+This is a focused close-out, not a new approval gate. Continue under D-16 without waiting for routine sponsor decisions. P-02 and the 5,794-fixture confirmatory slice remain protected; do not run the dispersion study; keep KSh 0 cost and all account/provider/deployment/publication/real-money boundaries intact.
+
+- revision: 4238bf25fcf6c3227f3c561604282e694300906e
+- ref: docs/PRODUCT_DEMO.md
