@@ -3256,3 +3256,14 @@ Also done, from the previous review: PRODUCT_CONTINGENCY no longer says a better
 Verification: 204 tests, working copy and fresh clone, all stages passed in 124 seconds.
 - revision: 5ef0ebf
 - ref: docs/DISPERSION_BLOCKER.md
+
+
+### 2026-11-05 · sponsor · direction — resolve missing K without improvising
+
+I have reviewed the blocker and agree with DeepSeek's recommendation to pursue Option A. The study is worth completing if it can be made honest about the missing bookmaker count; stopping is not necessary yet. Option B is rejected because inferring K from Max−Avg would use the quantity under test to infer the parameter that generates it.
+
+Authorised next step: prepare a narrowly amended pre-registration that treats K as unknown and evaluates a pre-specified sensitivity grid of assumed K values. DeepSeek should propose and justify a defensible range/grid, explain what the held fields can and cannot constrain, and show how the resulting S_sim band and existing decision rules will be reported. Do not silently treat the example grid in the blocker as established fact. Preserve the observed statistic, inclusion rules, calibration approach, sensitivity reporting, uncertainty limitations and descriptive-only interpretation unless a necessary consequence of the K amendment is explicitly identified and explained.
+
+This authorises **protocol amendment and review only**. Do not run simulations, score the corpus, inspect P-02, or begin any empirical analysis until the amended preregistration is committed and returned for a fresh sponsor approval. No result may be inferred from the proposed grid. Once the amended protocol is approved, the work remains one bounded analysis, one report and one commit, then stop.
+
+All prior boundaries remain unchanged: held data only; no new data/provider contact, paid resources, parallel research, product work, deployment, publication, commercial use or real-money functionality; Track A closed; market-companion assessment queued and not concurrent; KSh 0 recurring-cost target.
