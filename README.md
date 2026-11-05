@@ -1,8 +1,15 @@
 # FoundrySide
 
-A research repository, not an application. The project is in its research phase;
-`DECISIONS.md` D-01 records that it is **not authorised to build** an application, while
-D-10 authorises independent research, experiments and research scripts.
+A research repository with a local demonstrator.
+
+Historically this was research only: `DECISIONS.md` D-01 recorded that building was not authorised,
+and D-10 authorised independent research and research scripts. That is still the permanent position —
+**no deployment, no hosting, no accounts, no real-money functionality, ever, under these boundaries.**
+
+The 2026-11-05 day-pass (D-16) added a **time-boxed** exception for local implementation and testing at
+KSh 0 cost, so that the findings could be demonstrated rather than only described. It expires after
+that day's review. `docs/CONCLUSION.md` records the research result; `docs/PRODUCT_DEMO.md` describes
+what the demonstrator does and does not claim.
 
 ## Current status
 

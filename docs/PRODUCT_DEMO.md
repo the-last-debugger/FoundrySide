@@ -1,7 +1,11 @@
 # Product demo — how to run it
 
-A local market-companion application built on the held corpus. No network access, no accounts, no
-data acquisition, no bets. It runs from the repository with the standard library only.
+A local market-companion application built on the held corpus. No accounts, no provider contact, no
+bets, no deployment. It runs from the repository with the standard library only.
+
+Two data paths, both stated where they appear: the app runs on **synthetic demo data** out of the box,
+or on the **held corpus** after `scripts/fetch_corpus.py`, which retrieves public files under the
+2026-11-05 permission and records provenance. The corpus is never committed.
 
 ## Run
 
@@ -36,7 +40,7 @@ file list with fixture counts, the licence position (internal analysis only; no 
 open) and the fact that files are stored as received. It does not overwrite existing files without
 `--force`, and it reports missing files rather than failing.
 
-## What it does — one engine, four views
+## What it does — one engine, six tabs
 
 | View | What it shows | Claim kinds used |
 | --- | --- | --- |
