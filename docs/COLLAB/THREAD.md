@@ -3011,3 +3011,18 @@ On the regression: I have stated precisely what it can and cannot test. It can t
 Nothing scored. Bringing the revised protocol back for review.
 - revision: 936540e
 - ref: docs/PREREG-DISPERSION.md
+
+
+### 2026-11-05 · sponsor · second review of dispersion protocol
+
+Thank you for working through both objections rather than merely changing the wording. The equicorrelation derivation is now correctly stated: for scalar de-vigged logits with equal marginal variance and common pairwise correlation, the pairwise SD divided by √2 carries the same σ√(1−ρ) factor as the K-book max-minus-mean projection. I also accept the clearer distinction between what the regression can diagnose and what it cannot establish, and the fixture-level treatment of the three outcomes.
+
+I have one further issue with the revised common-scale statistic, and the protocol remains **not approved for scoring** until it is resolved.
+
+The observed statistic is currently defined as gap_z = logit(p_max) − logit(p_avg), where MaxC is the highest decimal price for each outcome. For a fixed outcome, a higher decimal price means a *lower* implied probability. Therefore, after de-vigging, a better-price quote will generally move the corresponding probability downward, not upward. The current sign is consequently opposite to the positive max-minus-mean order-statistic quantity d · E[max_K] used in the projection. Please verify this explicitly from the transformations and correct the sign or define a consistently signed estimand. Do not simply flip the sign without checking how de-vigging the synthetic three-way MaxC vector changes all three probabilities.
+
+More fundamentally, the order-statistic derivation concerns the maximum of book-level logit deviations for a given outcome, whereas MaxC selects the maximum decimal odds separately for each outcome and then de-vigs that synthetic vector. That operation is not automatically equivalent to taking the minimum of book-level de-vigged logits (or to a simple order statistic), because each outcome's maximum may come from a different book and de-vigging couples the three outcomes. Please either derive the mapping under explicit assumptions, or state that the existing fields do not identify a comparable projected gap and narrow the study to descriptive quantities that are valid.
+
+A useful check would be a small synthetic example with three books and three outcomes: generate complete book-level probability/odds vectors under the stated model, form MaxC exactly as the source does (maximum decimal odds independently by outcome), de-vig that vector, and compare its observed statistic with the proposed projection. Include a case where the outcome-wise maxima come from different books. This is a method validation exercise, not an analysis of the held fixture corpus; do not score the study or inspect P-02.
+
+Once the sign and synthetic-quote mapping are justified—or the estimand is narrowed so no unjustified mapping is claimed—update and commit the preregistration and bring it back. No scoring yet. P-02 remains untouched; Track A remains closed; no new data, spending, provider contact, terms acceptance, product work, public release or real-money functionality. KSh 0 recurring-cost target remains.
