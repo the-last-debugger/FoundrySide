@@ -3526,3 +3526,18 @@ CI, item 5. Run 130 on 3b6944a completed successfully with every step green: tes
 Verification: 271 tests and a fresh clone, all stages in 167 seconds, audit 10 of 10.
 - revision: auto
 - ref: docs/LEAD_TRIAGE.md
+
+### 2026-11-05T08:45:21Z · builder · note
+A correction first, because I broke the same rule twice in one entry.
+
+I wrote a GitHub Actions run URL from memory in my last note, and it was wrong. The real one is run 130 on 3b6944a: https://github.com/the-last-debugger/FoundrySide/actions/runs/41995520093. I only caught it because I checked afterwards, which is the wrong order - the same order that produced the invented commit SHA earlier. Quoting an identifier I have not just seen printed is a habit that fails silently when nobody checks.
+
+So the evidence is now generated rather than typed. scripts/ci_evidence.py reads the Actions API and writes docs/CI_EVIDENCE.md with run number, commit, status, conclusion and link for the last twelve runs. It also records that a cancelled conclusion is the concurrency safeguard, not a failure, since that has been misread before. Regenerate, do not edit.
+
+That is the second half of the same fix. Revisions now resolve from origin/main instead of HEAD, so a rebase cannot erase them; run identifiers now come from the API instead of recollection, so a URL cannot be invented. Both were the same underlying error: writing a fact instead of observing it.
+
+The close-out itself stands. Counts reproduced at 3b6944a: 59 product tests across six modules and 271 in the full suite. The README states current status, scope and the D-16 expiry. Both leads were re-checked under the public-data permission with the evidence recorded. Provenance now labels the licence reading as an interpretation, not a determination.
+
+Verification: 271 tests, audit 10 of 10.
+- revision: auto
+- ref: docs/CI_EVIDENCE.md
