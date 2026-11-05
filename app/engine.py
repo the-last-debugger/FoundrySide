@@ -175,6 +175,7 @@ def assess_selection(fixture: Fixture, outcome: str) -> dict:
         "market_implied": fair,
         "price_implied": round(implied, 4),
         "price_vs_market": round(implied - fair, 4),
+        "explanations": EXPLANATIONS,
         "claims": {
             "best_recorded_price": "observed — the highest recorded closing quote for this outcome",
             "market_implied": "estimated — de-vigged average quote under proportional de-vig",
@@ -297,6 +298,53 @@ def render_card(card: dict) -> str:
     ]
     lines += [f"  - {c}" for c in card["caveats"]]
     return "\n".join(lines)
+
+
+
+EXPLANATIONS = {
+    "best_recorded_price": {
+        "what": "The highest closing decimal price the provider recorded for this outcome, across the "
+                "books it tracks.",
+        "assumes": "Nothing. It is a recorded number.",
+        "does_not_show": "That you could have obtained it. There is no timestamp, no account term and "
+                         "no limit in this corpus, so a recorded maximum is a historical fact about "
+                         "quotes, not an offer.",
+    },
+    "market_implied": {
+        "what": "The market average closing quote, converted to probabilities and renormalised so the "
+                "three outcomes sum to one.",
+        "assumes": "Proportional de-vig: that a book spreads its margin evenly across outcomes. It also "
+                   "treats the average quote as a fair guide, which it is not exactly.",
+        "does_not_show": "Our forecast. This is the market's implied belief after an assumption about "
+                         "its margin, not an independent estimate, and it is not a prediction of the "
+                         "result.",
+    },
+    "price_implied": {
+        "what": "One divided by the price, which sums with the other outcomes to more than one.",
+        "assumes": "Nothing. The excess over one is the book's margin.",
+        "does_not_show": "A probability you should act on: it includes the margin, so it systematically "
+                         "overstates the chance of every outcome.",
+    },
+    "joint_probability": {
+        "what": "The product of the legs' de-vigged probabilities, for legs from different matches.",
+        "assumes": "Independence across matches. Reasonable as an approximation for separate fixtures, "
+                   "and untested by this view.",
+        "does_not_show": "A joint distribution for legs in the same match: those are refused, because "
+                         "1X2 outcomes of one match are mutually exclusive.",
+    },
+    "gross_return": {
+        "what": "Stake multiplied by the combined price.",
+        "assumes": "That the recorded prices are the prices used, and that the full stake is placed.",
+        "does_not_show": "Profit. A losing slip returns nothing and costs the whole stake, which is "
+                         "shown separately.",
+    },
+}
+
+
+def explanations() -> dict:
+    """The assumptions and limits behind each number the product shows."""
+    return EXPLANATIONS
+
 
 
 def target_search(stake: float, target_multiplier: float, tolerance: float = 0.15,

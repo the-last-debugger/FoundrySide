@@ -118,8 +118,8 @@ python -m unittest discover -s tests
 # Ran 271 tests … OK
 ```
 
-The 59 product tests break down as: **23** engine, **12** server, **5** export, **4** fetcher,
-**11** journal, **4** market. The remaining 212 are the research suite that predates the product
+The 66 product tests break down as: **23** engine, **12** server, **5** export, **4** fetcher,
+**11** journal, **4** market, **7** explanations. The remaining 212 are the research suite that predates the product
 (report stamps, claims, bridge, audit, reproducibility and the studies themselves).
 
 CI on the same revision: workflow run **130** on `3b6944a`, all steps green — test suite, bridge

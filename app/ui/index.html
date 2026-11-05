@@ -179,6 +179,10 @@
         </div>
       </div>
     </div>
+    <details class="card" style="margin-top:var(--sp-3)">
+      <summary style="cursor:pointer;font-weight:600">How to read these numbers</summary>
+      <div id="a-method" style="margin-top:var(--sp-2)"></div>
+    </details>
     <div id="a-result" aria-live="polite"><div class="empty">Choose an outcome to see what the recorded prices imply.</div></div>
   </section>
 
@@ -315,6 +319,26 @@ async function getJSON(url) {
 }
 
 let fixtures = [];
+let methodLoaded = false;
+
+async function loadMethod() {
+  if (methodLoaded) return;
+  try {
+    const data = await getJSON("/api/explanations");
+    const rows = Object.entries(data.explanations).map(([key, item]) => `
+      <div class="cand">
+        <h4>${key.replace(/_/g, " ")}</h4>
+        <div class="caveat"><strong>What it is.</strong> ${item.what}</div>
+        <div class="caveat"><strong>What it assumes.</strong> ${item.assumes}</div>
+        <div class="caveat"><strong>What it does not show.</strong> ${item.does_not_show}</div>
+      </div>`).join("");
+    $("a-method").innerHTML = rows;
+    methodLoaded = true;
+  } catch { /* the panel simply stays empty */ }
+}
+document.querySelector("details")?.addEventListener("toggle", (ev) => {
+  if (ev.target.open) loadMethod();
+});
 
 async function loadDivisions() {
   const health = await getJSON("/api/health");

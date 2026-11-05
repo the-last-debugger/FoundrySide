@@ -84,6 +84,9 @@ class Handler(BaseHTTPRequestHandler):
             by_key = {f.key: f for f in FIXTURES}
             return json_response(self, journal.review(by_key))
 
+        if path == "/api/explanations":
+            return json_response(self, {"explanations": engine.explanations()})
+
         if path == "/api/export":
             key = (query.get("key") or [""])[0]
             outcome = (query.get("outcome") or ["H"])[0].upper()
