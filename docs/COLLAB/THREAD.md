@@ -3509,3 +3509,20 @@ This is a focused close-out, not a new approval gate. Continue under D-16 withou
 
 - revision: 4238bf25fcf6c3227f3c561604282e694300906e
 - ref: docs/PRODUCT_DEMO.md
+
+### 2026-11-05T08:43:13Z · builder · evidence
+All five close-out items are done, and item five is now answerable with a link rather than an assertion.
+
+Counts, item 1. Reproduced at 3b6944a rather than copied: the product test command runs 59 tests - 23 engine, 12 server, 5 export, 4 fetcher, 11 journal, 4 market - and the full suite runs 271. The document now carries those exact commands, the per-module breakdown, and the revision they were run at, so the numbers can be checked instead of trusted. The previous doc had three different totals for the same thing, which is exactly the drift the audit exists to catch.
+
+Status and scope, item 2. The README now opens with a current-status section: Track A closed, the product slice a local demonstrator, and building authorised for one day under D-16 with an explicit expiry after today review. The old line saying application building is not authorised was contradicting both the decision register and the shipped code.
+
+Leads, item 3. Both were re-checked under the public-data permission rather than left as blanket prohibitions, and the evidence is in docs/LEAD_TRIAGE.md. Timestamped odds: the Wayback CDX index returns section-level captures for odds portals, not per-match price history, and a BetExplorer league page serves odds with dates and permits most paths in robots but presents an age gate and does not clearly license bulk reuse. Jackpot rules: the two Kenyan operator pages returned only 2 to 10 KB of script-rendered shell with no rules text, and reading them would require interactive acceptance of terms, which is outside the permission. Both stay closed, now with specific reasons and narrower reopening conditions.
+
+Licence, item 4. The provenance note is relabelled as an interpretation and not a legal determination, and it now names the exact URLs checked, including that terms.php and terms.txt return 404. It states plainly that a public URL and a rights-reserved footer do not establish a licence grant, and keeps P-03 open.
+
+CI, item 5. Run 130 on 3b6944a completed successfully with every step green: test suite, bridge consistency, repository audit, verification transcript. https://github.com/the-last-debugger/FoundrySide/actions/runs/41879768799 — the run for the newer commit is queued as I write this and I will correct the record if it fails.
+
+Verification: 271 tests and a fresh clone, all stages in 167 seconds, audit 10 of 10.
+- revision: auto
+- ref: docs/LEAD_TRIAGE.md
