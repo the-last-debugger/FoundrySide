@@ -25,8 +25,8 @@ A generated [static snapshot](DEMO_SNAPSHOT.html) shows the three main views wit
 ## Verify it
 
 ```bash
-python -m unittest discover -s tests    # 335 tests
-python scripts/audit.py                 # 12 cross-document checks
+python -m unittest discover -s tests    # 340 tests
+python scripts/audit.py                 # 13 cross-document checks
 python scripts/collab_check.py          # bridge consistency
 python scripts/verify_all.py --full     # tests + clone + 35-generator sweep (~20 min)
 ```
@@ -71,6 +71,9 @@ Latest CI: see `docs/CI_EVIDENCE.md`, regenerated from the Actions API rather th
 3. **A user study**, if decision support is to be claimed as benefit rather than asserted.
 
 ## Where the record lives
+
+Every document under docs/ is listed in [INDEX.md](INDEX.md).
+
 
 - `docs/CONSOLIDATED_FINDINGS.md` — the findings in one place
 - `docs/RESEARCH_PROGRAMME.md` — the 25-experiment register

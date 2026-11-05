@@ -239,6 +239,19 @@ def check_status_snapshot() -> Check:
     return Check("status snapshot present", True, f"{experiments} experiments recorded")
 
 
+def check_doc_index() -> Check:
+    """Every document in docs/ must be listed in the generated index."""
+    index = DOCS / "INDEX.md"
+    if not index.exists():
+        return Check("document index is complete", False, "run python scripts/doc_index.py")
+    text = index.read_text(encoding="utf-8")
+    missing = [p.name for p in sorted(DOCS.glob("*.md"))
+               if p.name != "INDEX.md" and f"[{p.name}]" not in text]
+    return Check("document index is complete", not missing,
+                 f"unlisted: {', '.join(missing[:4])}" if missing else
+                 f"{len(list(DOCS.glob('*.md'))) - 1} documents listed")
+
+
 CHECKS = (
     check_reports_cited,
     check_generator_count,
@@ -252,6 +265,7 @@ CHECKS = (
     check_footprint,
     check_thread_index,
     check_status_snapshot,
+    check_doc_index,
 )
 
 

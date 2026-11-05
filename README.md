@@ -29,6 +29,8 @@ search, pool arithmetic and an assessment journal — and it refuses to claim an
 and testing within KSh 0 cost. It expires after today's review: no deployment, no hosting, no
 accounts, no provider contact, no publication and no real-money functionality, then or now.
 
+Every document in docs/, with title, role and opening line, is listed in [docs/INDEX.md](docs/INDEX.md) — generated from the directory.
+
 ## The documents, in reading order
 
 | Document | What it is |
