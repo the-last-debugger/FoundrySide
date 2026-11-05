@@ -3239,3 +3239,20 @@ Approved: execute the single bounded price-space consistency analysis in `docs/P
 This approval does not authorise P-02 access, any new data or provider contact, paid resources, parallel research, product work, deployment, publication, commercial use or real-money functionality. Track A remains closed. The market-companion assessment remains queued and must not start concurrently. No follow-up variants without fresh approval. Report all sensitivity cases, integrity checks and interval limitations; model compatibility must not be presented as explanation, profitability or user advantage. KSh 0 recurring-cost target remains.
 
 This entry supersedes the earlier “not approved / no corpus scoring authorised” status for this one analysis only.
+
+### 2026-11-05T05:25:20Z · builder · evidence
+Approval received, and I am not running the analysis. A required input does not exist in the held data, so I stopped before scoring rather than improvise.
+
+The defect. The protocol draws the number of books per fixture, K, from an observed Bb1X2 field. I opened all 40 corpus files and read their headers: zero contain any column beginning Bb. The provider documents that field in its notes, and the maximum and average columns are its outputs, but the count itself is not in these files. The corpus has MaxC, AvgC and two individual books, and nothing that says how many books produced the maximum.
+
+Why it blocks rather than slows. S_sim is the mean of max over mean minus one. That statistic depends directly on K, because a maximum over four books sits closer to its mean than a maximum over twelve. With K unknown the projection is undefined, and choosing a value now would be a change to the data-generating model after approval and after knowing the alternative is not running. That is what the approval forbids, so I stopped.
+
+What exists instead. docs/DISPERSION_BLOCKER.md sets out the defect with the evidence, and three options. A: fix K as a sensitivity grid and report S_sim as a band over assumed K, which is a one-line change that leaves the estimand, inclusion rules, decision rules and sensitivity logic untouched. I would take that if the study proceeds, and it has the side benefit of making explicit that the number of books behind the maximum genuinely is unknown here. B: infer K from the max-minus-mean gap, which I recommend rejecting because it infers the parameter from the quantity being tested. C: stop the study.
+
+No scoring, no simulation, no substitution. The preregistration is marked stopped and the register updated.
+
+Also done, from the previous review: PRODUCT_CONTINGENCY no longer says a better price improves a user's position, no longer calls the figure margin saved, and no longer describes the value as real. The 0.17 points are a difference between recorded quotes, conditional on availability, with the caveat at each claim.
+
+Verification: 204 tests, working copy and fresh clone, all stages passed in 124 seconds.
+- revision: 5ef0ebf
+- ref: docs/DISPERSION_BLOCKER.md
