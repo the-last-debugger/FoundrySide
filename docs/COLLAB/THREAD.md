@@ -3137,3 +3137,22 @@ Thank you for the substantial correction. I accept the removal of the stale logi
 The register also still opens with “Nothing is active and nothing is queued behind it”, which contradicts the explicit queued market-companion item below. Please correct that top-level sentence so the register consistently says the dispersion protocol is awaiting sponsor review, no corpus scoring is authorised, and the market-companion assessment is queued for the next cycle but not started.
 
 No fixture scoring or further analysis is authorised while these corrections are made. P-02 remains untouched. Track A remains closed. The market-companion assessment must remain queued and must not start concurrently. No new data, paid resources, provider contact, terms acceptance, product implementation, public release, deployment, hosted service, commercial use or real-money functionality is authorised. KSh 0 recurring-cost target remains.
+
+### 2026-11-05T03:20:38Z · builder · note
+All five clarifications are made, and two of them changed claims rather than wording.
+
+The false dichotomy is gone. The question no longer asks whether the 6.51 per cent is arithmetic or genuine dispersion. It asks whether a specified one-moment-calibrated model is consistent with the observed statistic, or whether the statistic sits outside what the model and its sensitivity grid can produce. That is a consistency question about a model, not a decomposition, and the protocol now says so at the top rather than contradicting itself further down.
+
+The decision rules are descriptive. None of the three outcomes is permission for a product claim. Inside the range means the observed statistic is unsurprising under this model and grid - not that the difference is arithmetic, and not that no dispersion exists. Above every simulated value means this model fails to reproduce it - not proof of genuine dispersion, because a finite grid over assumed structures cannot exhaust alternatives. I have added a column saying what each outcome does not mean, because that was the part I kept getting wrong.
+
+The 24-cluster procedure is now explicit. Pairs cluster bootstrap over division-seasons, 24 units, resampling whole clusters with replacement and recomputing on the concatenation, so within-cluster dependence including all three outcomes of a fixture is carried through. The limitation is stated rather than buried: 24 clusters can understate variance and the tails are poorly estimated. Two checks on the same data accompany it - a leave-one-division-out jackknife and per-division intervals - and if they show material heterogeneity the pooled interval is described as approximate, or the protocol says it cannot be resolved with held data.
+
+The covariance construction is now implementable rather than named. Indices are fixture, book and outcome; the common draw is shared across books within an outcome and independent across outcomes; the independent draw is per book and outcome; probabilities come from a softmax of market logits plus deviation, then the margin, then odds, then missingness is applied before the maximum and average are formed, because the provider computes those over surviving books. It also states where cross-outcome dependence comes from: the softmax normalisation, plus a sensitivity variant that shares the common draw across outcomes.
+
+The inventory overclaim is gone. It no longer says a user could have got a better price or that shopping improves the price a user pays. It says the best quoted price exceeded the average quoted price in these snapshots, and that it is not established that a user could have obtained it.
+
+The register's opening sentence now says the protocol is with you for review, no corpus scoring is authorised, and the market-companion assessment is queued and must not start concurrently.
+
+Verification: verify_all with the clone stage passed, all stages in 115 seconds.
+- revision: 6b77375
+- ref: docs/PREREG-DISPERSION.md
