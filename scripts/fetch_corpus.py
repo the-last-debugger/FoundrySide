@@ -38,10 +38,15 @@ SEASONS = ["2021", "2122", "2223", "2324", "2425"]
 DELAY_SECONDS = 1.0
 
 LICENCE_NOTE = (
-    "football-data.co.uk publishes these files free of charge for personal and academic analysis. "
-    "Its site footer states '© Football-Data. Liability Disclaimer. All Rights Reserved', and no "
-    "licence granting redistribution was located (docs/COLLAB/PROPOSALS.md P-03). Files are therefore "
-    "used for internal analysis only and are not committed or redistributed by this project."
+    "INTERPRETATION, NOT A LEGAL DETERMINATION. The files are published free of charge at "
+    "https://football-data.co.uk/mmz4281/<season>/<league>.csv with no account or payment required. "
+    "The site footer at https://football-data.co.uk/ states '© Football-Data. Liability Disclaimer. "
+    "All Rights Reserved', and no licence text granting redistribution was located at "
+    "https://football-data.co.uk/notes.txt, /data.php or /disclaimer.php (terms.php and terms.txt "
+    "return 404). On that basis this project treats the files as usable for internal analysis only and "
+    "does not commit or redistribute them. A public URL and a rights-reserved footer do not by "
+    "themselves establish a licence grant; the position is recorded as unresolved uncertainty, and "
+    "P-03 in docs/COLLAB/PROPOSALS.md remains open."
 )
 
 

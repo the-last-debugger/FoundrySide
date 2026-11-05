@@ -4,6 +4,20 @@ A research repository, not an application. The project is in its research phase;
 `DECISIONS.md` D-01 records that it is **not authorised to build** an application, while
 D-10 authorises independent research, experiments and research scripts.
 
+## Current status
+
+**Track A (prediction) is closed.** The model is worse than the market price on every axis tested;
+`docs/CONCLUSION.md` records what that does and does not establish.
+
+**The product slice is a local demonstrator.** A six-tab market companion runs from `python -m
+app.server` over the held corpus or clearly-labelled synthetic data. It shows what recorded prices
+imply — per-book margins, de-vigged probabilities, quote spreads, dependence-aware slips, target
+search, pool arithmetic and an assessment journal — and it refuses to claim an edge it does not have.
+
+**Building was authorised for one day.** The 2026-11-05 day-pass (D-16) permits local implementation
+and testing within KSh 0 cost. It expires after today's review: no deployment, no hosting, no
+accounts, no provider contact, no publication and no real-money functionality, then or now.
+
 ## The documents, in reading order
 
 | Document | What it is |

@@ -12,8 +12,10 @@ python -m app.server
 
 Options: `--port 9000`, `--host 127.0.0.1`, `--limit 500` (cap fixtures loaded), `--demo` (synthetic).
 
-**The held corpus is not committed** — `research/data/` is gitignored, and re-downloading it would be
-new data acquisition, which the standing boundaries forbid. So a clean checkout runs in demo mode:
+**The held corpus is not committed** — `research/data/` is gitignored. Fetching it is permitted under
+the 2026-11-05 public-data permission (free, lawful, no account, provenance recorded), and
+`scripts/fetch_corpus.py` does exactly that. A clean checkout that has not run the fetcher still
+starts in demo mode:
 
 ```bash
 python -m app.server --demo      # clearly-labelled synthetic fixtures
@@ -101,18 +103,23 @@ Design choices that serve the honesty requirement rather than decoration:
 
 ## Tests
 
+Reproduced at revision `3b6944a`, not copied from a previous run.
+
 ```bash
-python -m unittest tests.test_app_engine tests.test_app_server
+python -m unittest tests.test_app_engine tests.test_app_server tests.test_app_export \
+                   tests.test_fetch_corpus tests.test_app_journal tests.test_app_market
+# Ran 59 tests … OK
+
+python -m unittest discover -s tests
+# Ran 271 tests … OK
 ```
 
-Run exactly: `python -m unittest tests.test_app_engine tests.test_app_server tests.test_app_export tests.test_fetch_corpus` → **53 tests**.
+The 59 product tests break down as: **23** engine, **12** server, **5** export, **4** fetcher,
+**11** journal, **4** market. The remaining 212 are the research suite that predates the product
+(report stamps, claims, bridge, audit, reproducibility and the studies themselves).
 
-Breakdown: 23 engine tests (de-vig arithmetic, synthetic-corpus loading, claim labelling, provenance
-marking, duplicate and incompatible slip rejection, cross-match combination, stake arithmetic, target
-search including the no-match path, pool arithmetic) and 10 server tests (index serving, health and
-mode, fixtures, assess, unknown fixture → 400, slip, empty slip → 400, target, jackpot, path
-traversal refusal). The full repository suite is `python -m unittest discover -s tests` → **249
-tests**, which includes these 42.
+CI on the same revision: workflow run **130** on `3b6944a`, all steps green — test suite, bridge
+consistency, repository audit, verification transcript. `.github` runs the full suite on every push.
 
 ## Growth management
 
