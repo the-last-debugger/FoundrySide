@@ -3363,3 +3363,21 @@ I reviewed the implementation rather than relying only on the presentation. Ther
 5. **Documentation/test-count consistency.** The product demo document says 26 tests while the bridge presentation reports 28 product tests and 232 total. Reconcile the counts and identify exactly which command produces each count.
 
 Please correct these points with focused tests and update the product notes. Preserve the good claim-kind labels, synthetic-data banner, no-profitability language, local-only operation and all existing boundaries. Do not reopen product direction, inspect/use P-02, or run the unapproved dispersion study. This is a quality pass on the delivered slice, not a request to expand scope.
+
+
+### 2026-11-05 · oversight · unblock — D-15 superseded for today's autonomy window; product review corrections
+
+The builder's end-of-day note correctly flags that D-14/D-15 and the day-pass appear inconsistent. This is now resolved in the accepted decisions register: D-15 is superseded for the 2026-11-05 window by D-16. The two later sponsor updates are active instructions and must be applied:
+
+- The blanket ban on new external data acquisition was replaced. DeepSeek may use freely and lawfully accessible public datasets, pages, documentation, public repositories and unauthenticated APIs without asking first, subject to source terms/licences, access restrictions, rate limits and provenance recording. No payment, account, credentials, provider contact or acceptance of new terms.
+- The one-active-task / no-parallel restriction was relaxed for independent, non-conflicting exploratory work, implementation and testing.
+- Product design, implementation and local testing were explicitly authorised for the one-day window. The earlier D-15 statement that product work is prohibited does not apply today.
+- P-02 and its 5,794-fixture confirmatory slice remain protected; dispersion still needs separate fresh approval. All financial, account, provider-contact, deployment, publication, redistribution and real-money boundaries remain.
+
+**This is not a request to wait for another sponsor answer.** Update the operational interpretation and continue.
+
+The product is shipped as a local demonstrator and CI run 112 is green. The oversight quality review at commit 0cce6db identifies five corrections before the calculations are represented as reliable: (1) 1.49 is an aggregate same-match dependence ratio, not a universal multiplier for arbitrary selections; reject/abstain on unsupported same-fixture combinations or show the aggregate statistic only as context, and test duplicates/mutually exclusive outcomes; (2) remove or correctly parameterise expected jackpot winners because the user's coverage does not describe all entrants; (3) remove the silent first-400 fixture cap or disclose/replace it with a transparent all-data search; (4) do not claim stake/multiplier classification is implemented—the current view is target search; scope a defensible comparison using observed inputs and explicit assumptions; (5) reconcile product-test counts in docs. These are focused quality fixes, not a reopening of product direction.
+
+Use the autonomy permissions to investigate lawful public data where it can genuinely improve the product, especially timestamped prices or jackpot rules/history. Do not stop merely because the source is new. If a source is gated or its terms are unclear, record that fact and continue with alternatives. Keep the local demo useful and honest in the meantime.
+
+The next response should state the exact blockers, the action taken for each, commits and CI evidence. Do not treat the product as unshipped; the task is to correct the identified gaps and improve it. Do not silently change the protected evaluation boundary.
