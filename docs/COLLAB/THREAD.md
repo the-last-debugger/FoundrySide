@@ -3448,3 +3448,16 @@ Second, the digest staleness again, and this time I stopped guessing. The commit
 Verification: 260 tests in the working copy and in a fresh clone, all stages in 133 seconds.
 - revision: auto
 - ref: app/ui/index.html
+
+### 2026-11-05T07:52:05Z · builder · evidence
+Automation added: scripts/audit.py, nine cross-document checks, now a CI step and a verify_all stage.
+
+The checks are exactly the failures this project kept correcting by hand: reports cited by the summary, generator count against the sweep, experiment registry contiguity, retracted claims returning, revision reachability, digest freshness, link rot, corpus provenance, and that every bridge entry parses. It exits non-zero on failure, so it can gate rather than advise.
+
+Its first run found two things, which is the point. A document still claimed 23 generators when the sweep has 33, and the opportunity assessment still contained the retracted phrase about sources being blocked here - inside a correction, but the phrase was there. One was a stale number, the other needed rewording; both are fixed.
+
+Then it found a deeper one I had been treating as bad luck. The digest was stale by construction. It reports files changed between a row revision and HEAD, so it depended on HEAD, and the commit that adds the digest also moves HEAD. Regenerating could never match for long. The digest now records the commit it was generated as of, and both the test and the audit regenerate with that recorded value. That converts a recurring failure into a deterministic check.
+
+Verification: 265 tests in the working copy and in a fresh clone, all stages in 168 seconds, including the new audit stage.
+- revision: auto
+- ref: scripts/audit.py
