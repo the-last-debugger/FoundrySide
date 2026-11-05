@@ -76,5 +76,42 @@ class JournalTest(unittest.TestCase):
         self.assertEqual(len(entries), 1)
 
 
+class JournalGrowthTest(unittest.TestCase):
+    """Growth management: the journal must be inspectable and compactable."""
+
+    def setUp(self):
+        self.path = Path(tempfile.mkdtemp()) / "assessments.jsonl"
+
+    def test_stats_reports_size_and_duplicates(self):
+        for _ in range(3):
+            journal.save({"fixture_key": "K", "outcome": "H", "best_recorded_price": 2.0,
+                          "recorded_utc": "2026-11-05T10:00:00+00:00"}, self.path)
+        result = journal.stats(self.path)
+        self.assertEqual(result["entries"], 3)
+        self.assertEqual(result["duplicates"], 2)
+        self.assertGreater(result["bytes"], 0)
+
+    def test_compact_removes_duplicates_and_keeps_one(self):
+        for _ in range(2):
+            journal.save({"fixture_key": "K", "outcome": "H", "best_recorded_price": 2.0,
+                          "recorded_utc": "2026-11-05T10:00:00+00:00"}, self.path)
+        result = journal.compact(self.path)
+        self.assertEqual(result["removed"], 1)
+        self.assertEqual(len(journal.load(self.path)), 1)
+
+    def test_compact_preserves_distinct_entries(self):
+        journal.save({"fixture_key": "K", "outcome": "H", "best_recorded_price": 2.0,
+                      "recorded_utc": "t1"}, self.path)
+        journal.save({"fixture_key": "K", "outcome": "A", "best_recorded_price": 3.0,
+                      "recorded_utc": "t2"}, self.path)
+        journal.compact(self.path)
+        self.assertEqual(len(journal.load(self.path)), 2)
+
+    def test_stats_on_missing_file_is_empty_not_an_error(self):
+        result = journal.stats(self.path)
+        self.assertFalse(result["exists"])
+        self.assertEqual(result["entries"], 0)
+
+
 if __name__ == "__main__":
     unittest.main()

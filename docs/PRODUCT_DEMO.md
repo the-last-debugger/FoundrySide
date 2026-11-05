@@ -98,3 +98,20 @@ search including the no-match path, pool arithmetic) and 10 server tests (index 
 mode, fixtures, assess, unknown fixture → 400, slip, empty slip → 400, target, jackpot, path
 traversal refusal). The full repository suite is `python -m unittest discover -s tests` → **249
 tests**, which includes these 42.
+
+## Growth management
+
+The journal is append-only, which is a correctness property and also how a file grows without bound.
+Re-recording the same fixture, outcome and quote adds no information, so duplicates can be removed
+while every distinct record is kept in order:
+
+`ash
+python scripts/journal_tool.py --stats
+python scripts/journal_tool.py --compact --dry-run
+python scripts/journal_tool.py --compact
+`
+
+scripts/audit.py reports the corpus and journal footprint on every run and flags the thresholds where
+growth needs a decision (50 MB of corpus, 5 MB of journal). The corpus itself is never committed:
+
+esearch/data is gitignored and ar/ holds only local state.

@@ -117,3 +117,46 @@ def review(fixtures_by_key: dict, path: Path | None = None) -> dict:
             "obtainable when the assessment was made.",
         ],
     }
+
+
+def stats(path: Path | None = None) -> dict:
+    """Size and shape of the journal, for growth management."""
+    target = path or DEFAULT_PATH
+    if not target.exists():
+        return {"exists": False, "entries": 0, "bytes": 0}
+    entries = load(target)
+    distinct = {(e.get("fixture_key"), e.get("outcome"), e.get("best_recorded_price"))
+                for e in entries}
+    return {
+        "exists": True,
+        "entries": len(entries),
+        "distinct": len(distinct),
+        "bytes": target.stat().st_size,
+        "duplicates": len(entries) - len(distinct),
+    }
+
+
+def compact(path: Path | None = None, keep_duplicates: bool = False) -> dict:
+    """Rewrite the journal with duplicates removed, preserving first-seen order.
+
+    An assessment recorded twice for the same fixture, outcome and quote is the same record; keeping
+    both inflates the file and biases a later review toward selections that were assessed repeatedly.
+    The rewrite is atomic: the compacted file replaces the original only after it is written.
+    """
+    target = path or DEFAULT_PATH
+    entries = load(target)
+    seen = set()
+    kept = []
+    for entry in entries:
+        signature = (entry.get("fixture_key"), entry.get("outcome"),
+                     entry.get("best_recorded_price"), entry.get("recorded_utc"))
+        if keep_duplicates or signature not in seen:
+            seen.add(signature)
+            kept.append(entry)
+    tmp = target.with_suffix(".tmp")
+    tmp.parent.mkdir(parents=True, exist_ok=True)
+    with open(tmp, "w", encoding="utf-8") as handle:
+        for entry in kept:
+            handle.write(json.dumps(entry, sort_keys=True) + "\n")
+    tmp.replace(target)
+    return {"before": len(entries), "after": len(kept), "removed": len(entries) - len(kept)}

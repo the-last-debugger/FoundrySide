@@ -177,6 +177,29 @@ def check_malformed_headers() -> Check:
     return Check("every bridge entry parses", not bad, f"{len(bad)} unparsed" if bad else "")
 
 
+def check_footprint() -> Check:
+    """Report what is growing, and flag the thresholds where growth needs a decision."""
+    corpus = RESEARCH / "data"
+    corpus_files = list(corpus.glob("*.csv")) if corpus.exists() else []
+    corpus_mb = sum(p.stat().st_size for p in corpus_files) / (1024 * 1024)
+    journal_path = ROOT / "var" / "assessments.jsonl"
+    journal_kb = journal_path.stat().st_size / 1024 if journal_path.exists() else 0.0
+    journal_lines = 0
+    if journal_path.exists():
+        journal_lines = sum(1 for _ in journal_path.open(encoding="utf-8"))
+
+    problems = []
+    if corpus_mb > 50:
+        problems.append(f"corpus {corpus_mb:.1f} MB exceeds 50 MB")
+    if journal_kb > 5120:
+        problems.append(f"journal {journal_kb:.0f} KB exceeds 5 MB; consider compacting")
+    detail = (f"corpus {corpus_mb:.2f} MB in {len(corpus_files)} files; "
+              f"journal {journal_lines} entries, {journal_kb:.1f} KB")
+    if problems:
+        detail = "; ".join(problems) + " — " + detail
+    return Check("data footprint within bounds", not problems, detail)
+
+
 CHECKS = (
     check_reports_cited,
     check_generator_count,
@@ -187,6 +210,7 @@ CHECKS = (
     check_links,
     check_provenance,
     check_malformed_headers,
+    check_footprint,
 )
 
 
