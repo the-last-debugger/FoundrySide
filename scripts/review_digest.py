@@ -50,7 +50,8 @@ def rows() -> list[dict]:
     return out
 
 
-def main() -> int:
+def write() -> int:
+    """Regenerate the digest. Callable from other scripts; main() wraps it for the CLI."""
     all_rows = rows()
     by_id = {r["id"]: r for r in all_rows}
     accepted = [r for r in all_rows if r["state"] == "accepted"]
@@ -136,6 +137,11 @@ def main() -> int:
     print(f"wrote {OUT.relative_to(ROOT)}: {len(all_rows)} rows "
           f"({len(accepted)} accepted, {len(changes)} changes, {len(pending)} pending)")
     return 0
+
+
+
+def main() -> int:
+    return write()
 
 
 if __name__ == "__main__":

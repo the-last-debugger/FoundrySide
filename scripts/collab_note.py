@@ -334,7 +334,24 @@ def main(argv: list[str] | None = None) -> int:
     append(build_entry(args.author, args.kind, args.message, args.revision,
                        args.ref, args.stamp), args.thread)
     print("appended")
+    refresh_digest()
     return 0
+
+
+
+
+def refresh_digest() -> None:
+    """Rebuild docs/REVIEW_DIGEST.md so appending an entry cannot leave it stale.
+
+    The digest embeds how many entries cite each queue row, so it changes with every note. Regenerating
+    here keeps the working tree self-consistent; a failure is reported but never blocks the append.
+    """
+    try:
+        import importlib
+        module = importlib.import_module("review_digest")
+        module.write()
+    except Exception as exc:
+        print(f"note: could not refresh the review digest ({type(exc).__name__})")
 
 
 if __name__ == "__main__":
