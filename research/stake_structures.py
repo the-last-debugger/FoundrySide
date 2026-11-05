@@ -102,9 +102,10 @@ def main() -> int:
         s = structures_for(centre, margin, TARGET_NET)
         realised_ev = realised * centre - 1.0
         table.append({"low": low, "high": high, "n": len(band), "centre": centre,
-                      "implied": implied_mean, "realised": realised, "realised_ev": realised_ev,
+                      "implied_mean": implied_mean, "implied_at_median": s["prob"],
+                      "realised": realised, "realised_ev": realised_ev,
                       "stake": s["stake"], "downside": s["downside"],
-                      "variance": s["variance"], "prob": s["prob"]})
+                      "variance": s["variance"]})
 
     clusters = {}
     for x in plays:
@@ -126,6 +127,11 @@ def main() -> int:
         draws.sort()
         intervals.append((draws[int(0.025 * len(draws))], draws[int(0.975 * len(draws)) - 1])
                          if draws else (float("nan"), float("nan")))
+
+    ev_lines = "\n".join(
+        f"- **{row['low']:.1f}–{row['high']:.1f}**: median price {row['centre']:.2f}, "
+        f"realised {row['realised']*100:.2f}%, EV {row['realised_ev']*100:+.2f}%"
+        for row in table)
 
     doc = f"""{report_stamp.stamp(Path(__file__))}
 
@@ -154,13 +160,14 @@ proportion to their stakes. This is algebra under the margin assumption, not a m
 
 ## Matched on a net upside of KSh {TARGET_NET:.0f}
 
-| Odds band | Selections | Median price | Stake needed | Lost if it fails | Market-implied hit | Realised hit (95% cluster) | Realised EV at that price |
-| --- | --- | --- | --- | --- | --- | --- | --- |
+| Odds band | Selections | Median price | Stake needed | Lost if it fails | Mean implied | Implied at median | Realised hit (95% cluster) | Realised EV at median |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
 """ + "\n".join(
         f"| {row['low']:.1f}–{row['high']:.1f} | {row['n']:,} | {row['centre']:.2f} | "
-        f"KSh {row['stake']:.0f} | KSh {row['downside']:.0f} | {row['prob']*100:.1f}% | "
+        f"KSh {row['stake']:.0f} | KSh {row['downside']:.0f} | {row['implied_mean']*100:.1f}% | "
+        f"{row['implied_at_median']*100:.1f}% | "
         f"{row['realised']*100:.1f}% [{lo*100:.1f}, {hi*100:.1f}] | "
-        f"{row['realised_ev']*100:+.1f}% |"
+        f"{row['realised_ev']*100:+.2f}% |"
         for row, (lo, hi) in zip(table, intervals)) + f"""
 
 Reading the table: to make the same KSh {TARGET_NET:.0f} net, a 1.5 shot needs a **large** stake and a
@@ -179,9 +186,9 @@ net upside — at the cost of a much larger stake at risk.
 ## Do the realised rates match the market's probabilities?
 
 """ + "\n".join(
-        f"- **{row['low']:.1f}–{row['high']:.1f}**: implied {row['implied']*100:.1f}%, realised "
+        f"- **{row['low']:.1f}–{row['high']:.1f}**: mean implied {row['implied_mean']*100:.1f}%, realised "
         f"{row['realised']*100:.1f}%, interval [{lo*100:.1f}, {hi*100:.1f}] — "
-        + ("consistent with the implied probability." if lo <= row['implied'] <= hi
+        + ("consistent with the mean implied probability." if lo <= row['implied_mean'] <= hi
            else "**outside** the interval: a calibration departure, not an edge.")
         for row, (lo, hi) in zip(table, intervals)) + f"""
 
@@ -189,9 +196,14 @@ net upside — at the cost of a much larger stake at risk.
 
 `realised hit x median price - 1` is what a flat-stake backer would have earned in each band, before
 stake limits and with no price shopping. Every band is **negative**, including the short one where the
-realised rate runs above the implied probability: at a median price near 1.55, a 63.3% hit rate returns
-about -1.9%. A calibration pattern that does not survive its own margin is not an opportunity, and
-here the margin is larger than the departure.
+realised rate runs above the mean implied probability. Each figure is computed from that band's own
+median price and its own realised rate, and printed with the price it used, so the two cannot drift
+apart:
+
+{ev_lines}
+
+A calibration pattern that does not survive its own margin is not an opportunity, and here the margin
+is larger than the departure.
 
 ## The answer to the question
 
@@ -223,7 +235,8 @@ either assuming a risk preference or ignoring the margin.
 
     for row, (lo, hi) in zip(table, intervals):
         print(f"{row['low']:.1f}-{row['high']:.1f}  n={row['n']:5,}  stake=KSh{row['stake']:6.0f}  "
-              f"implied={row['prob']*100:5.1f}%  realised={row['realised']*100:5.1f}% "
+              f"implied={row['implied_mean']*100:5.1f}%  at-median={row['implied_at_median']*100:5.1f}%  "
+              f"realised={row['realised']*100:5.1f}% "
               f"[{lo*100:.1f},{hi*100:.1f}]")
     print(f"wrote {OUT.relative_to(ROOT)}")
     return 0

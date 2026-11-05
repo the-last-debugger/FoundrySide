@@ -20,7 +20,7 @@ If you are reading this after the 2026-11-05 build, read **[docs/HANDOVER.md](do
 **Track A (prediction) is closed.** The model is worse than the market price on every axis tested;
 `docs/CONCLUSION.md` records what that does and does not establish.
 
-**The product slice is a local demonstrator.** A six-tab market companion runs from `python -m
+**The product slice is a local demonstrator.** A seven-tab market companion runs from `python -m
 app.server` over the held corpus or clearly-labelled synthetic data. It shows what recorded prices
 imply — per-book margins, de-vigged probabilities, quote spreads, dependence-aware slips, target
 search, pool arithmetic and an assessment journal — and it refuses to claim an edge it does not have.
@@ -42,7 +42,7 @@ accounts, no provider contact, no publication and no real-money functionality, t
 | `docs/COLLAB/` | The bridge: thread, review queue, decisions, proposals. Start at `docs/COLLAB/README.md`. |
 | docs/CONCLUSION.md | **Track A is closed** — what was established, what was not, and the reopening conditions |
 | docs/STRATEGIC_ASSESSMENT.md | Where the project goes next: market intelligence rather than a prediction engine, and the ranked questions |
-| docs/PRODUCT_DIRECTION.md | The product argument as written before the build: one engine, three views, four claim kinds, and what it refuses to build. **Historical** — the implementation grew to six tabs plus export; `docs/PRODUCT_DEMO.md` is current |
+| docs/PRODUCT_DIRECTION.md | The product argument as written before the build: one engine, three views, four claim kinds, and what it refuses to build. **Historical** — the implementation grew to seven tabs plus export; `docs/PRODUCT_DEMO.md` is current |
 | docs/PREREG-DISPERSION.md | The one authorised study, specified before scoring: is the quote gap consistent with a calibrated dispersion model |
 
 ## Run the product

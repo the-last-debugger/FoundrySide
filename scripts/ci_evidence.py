@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import sys
 import urllib.request
 from datetime import datetime, timezone
@@ -34,7 +35,14 @@ def fetch_runs(limit: int = 12) -> list[dict]:
     return payload.get("workflow_runs", [])
 
 
-def render(runs: list[dict]) -> str:
+def current_revision() -> str:
+    import subprocess
+    proc = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT,
+                          capture_output=True, text=True)
+    return proc.stdout.strip()
+
+
+def render(runs: list[dict], head: str = "") -> str:
     stamp = datetime.now(timezone.utc).isoformat(timespec="seconds")
     lines = [
         "<!-- generated-by: ci_evidence.py; regenerate rather than edit -->",
@@ -54,6 +62,16 @@ def render(runs: list[dict]) -> str:
         lines.append(
             f"| {run.get('run_number')} | `{sha}` | {run.get('status')} | {conclusion} | "
             f"{run.get('html_url')} |")
+    if head:
+        matching = [run for run in runs if (run.get("head_sha") or "").startswith(head)]
+        if matching:
+            run = matching[0]
+            state = ("successful" if run.get("conclusion") == "success"
+                     else f"{run.get('status')}/{run.get('conclusion')}")
+            lines += ["", f"**Current revision `{head}`: run {run.get('run_number')} is {state}.**"]
+        else:
+            lines += ["", f"**Current revision `{head}`: no workflow run recorded yet.** "
+                          "Do not describe this revision as CI-verified."]
     lines += [
         "",
         "A `cancelled` conclusion is the concurrency safeguard cancelling a superseded run, not a",
@@ -75,7 +93,7 @@ def main() -> int:
         print(f"could not reach the GitHub API: {type(exc).__name__}: {exc}")
         return 1
 
-    text = render(runs)
+    text = render(runs, current_revision())
     if args.print_only:
         print(text)
         return 0

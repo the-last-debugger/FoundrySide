@@ -40,7 +40,7 @@ file list with fixture counts, the licence position (internal analysis only; no 
 open) and the fact that files are stored as received. It does not overwrite existing files without
 `--force`, and it reports missing files rather than failing.
 
-## What it does — one engine, six tabs
+## What it does — one engine, seven tabs
 
 | View | What it shows | Claim kinds used |
 | --- | --- | --- |
