@@ -314,6 +314,22 @@ function loading(text="Loading…") {
           <div class="empty">${text}</div></div>`;
 }
 
+const tabs = Array.from(document.querySelectorAll("nav.tabs button"));
+tabs.forEach((btn, index) => {
+  btn.setAttribute("tabindex", btn.classList.contains("active") ? "0" : "-1");
+  btn.addEventListener("keydown", (ev) => {
+    if (!["ArrowRight", "ArrowLeft", "Home", "End"].includes(ev.key)) return;
+    ev.preventDefault();
+    let next = index;
+    if (ev.key === "ArrowRight") next = (index + 1) % tabs.length;
+    if (ev.key === "ArrowLeft") next = (index - 1 + tabs.length) % tabs.length;
+    if (ev.key === "Home") next = 0;
+    if (ev.key === "End") next = tabs.length - 1;
+    tabs[next].focus();
+    tabs[next].click();
+  });
+});
+
 document.querySelectorAll("nav.tabs button").forEach(btn => {
   btn.onclick = () => {
     document.querySelectorAll("nav.tabs button").forEach(b => {
@@ -321,6 +337,9 @@ document.querySelectorAll("nav.tabs button").forEach(btn => {
     });
     document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
     btn.classList.add("active"); btn.setAttribute("aria-selected", "true");
+    // Roving tabindex: only the active tab is in the tab order, as a tablist should be.
+    document.querySelectorAll("nav.tabs button").forEach(b =>
+      b.setAttribute("tabindex", b === btn ? "0" : "-1"));
     $("view-" + btn.dataset.view).classList.add("active");
     if (btn.dataset.view === "market" && typeof renderMarket === "function") renderMarket();
   };

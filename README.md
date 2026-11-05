@@ -139,6 +139,7 @@ did not exist.
 ## Auditing the repository
 
 `ash
+python scripts/preflight.py   # tests + bridge + audit, about a minute
 python scripts/audit.py          # nine cross-document checks; non-zero exit on failure
 python scripts/audit.py --json   # machine-readable
 `

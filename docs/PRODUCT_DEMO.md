@@ -67,8 +67,8 @@ Design choices that serve the honesty requirement rather than decoration:
 - every value carries a **claim-kind tag** (observed / estimated / hypothetical) beside it;
 - probability meters and price bars make magnitudes comparable at a glance, so a 0.3% and a 30%
   cannot be confused;
-- results are ria-live regions, tabs are a proper 	ablist, and prefers-reduced-motion is
-  respected;
+- results are ria-live regions, tabs are a proper 	ablist operable with arrow keys, Home and
+  End, and prefers-reduced-motion is respected;
 - loading states are labelled, so an empty panel reads as working rather than broken.
 
 ## What is genuinely implemented
@@ -88,7 +88,7 @@ Design choices that serve the honesty requirement rather than decoration:
 ## What is not implemented, and why
 
 - **Any predictive model.** The evidence says a forecast from this data is worse than the price
-  (23 of 24 experiments negative). Shipping one as a recommendation would contradict the record.
+  (24 of 25 experiments negative). Shipping one as a recommendation would contradict the record.
 - **Live or timestamped prices.** The corpus has no timestamps, so the product cannot say a price was
   obtainable when a user acts. This is a data gap, not a code gap.
 - **Jackpot rules, rollovers, dead heats.** No rules or per-round history were located; the jackpot
@@ -114,10 +114,10 @@ Reproduced at the revision named in the CI line below, not copied from a previou
 python -m unittest tests.test_app_engine tests.test_app_server tests.test_app_export \
                    tests.test_fetch_corpus tests.test_app_journal tests.test_app_market \
                    tests.test_app_explanations tests.test_app_structures
-# Ran 75 tests … OK
+# Ran 76 tests … OK
 
 python -m unittest discover -s tests
-# Ran 296 tests … OK
+# Ran 308 tests … OK
 ```
 
 The 75 product tests break down as: **23** engine, **12** server, **5** export, **4** fetcher,

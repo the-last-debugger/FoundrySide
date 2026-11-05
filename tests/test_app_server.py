@@ -133,5 +133,13 @@ class ServerTest(unittest.TestCase):
         self.assertIn("no profitability", lowered)
 
 
+    def test_tabs_support_keyboard_navigation(self):
+        # A tablist should be operable from the keyboard; the interface is hand-written, so this is
+        # asserted rather than assumed.
+        _, body, _ = self.get("/")
+        self.assertIn("ArrowRight", body)
+        self.assertIn("tabindex", body)
+
+
 if __name__ == "__main__":
     unittest.main()

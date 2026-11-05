@@ -11,7 +11,7 @@ My first critique argued the prediction-first thesis was unlikely to be the best
 The reasons were specific, and they have fared unevenly.
 
 **Supported.** I said the market's closing prices would be a harsh benchmark and that a model built
-from results alone would struggle to beat them. That has held: 23 of 24 experiments are negative or
+from results alone would struggle to beat them. That had held at the time of writing: 23 of 24 experiments were negative or
 immaterial, and the model is worse at ranking, at probabilities *and* at the hard pick. I also said
 the virtual-league 51.5% figure was the wrong baseline; it was, by two points.
 
@@ -60,7 +60,7 @@ pay, and to whom?" without anyone staking money. Concretely:
   that action.
 
 None of this requires beating a market. All of it requires honest measurement, which is what the
-last twenty-four experiments built.
+twenty-four experiments at the time of writing built.
 
 
 ---

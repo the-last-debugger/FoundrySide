@@ -5,7 +5,7 @@ which it may be reopened.
 
 ## What the programme tested
 
-Over twenty-four experiments the programme asked one question in many forms: can a forecast built
+Over twenty-five experiments the programme asked one question in many forms: can a forecast built
 from publicly available results and closing prices beat the closing price itself?
 
 It cannot, in this corpus. The evidence is consistent across methods:
@@ -59,6 +59,6 @@ analysis, or reopening because the queue is empty, is not a reason.
 ## State at closure
 
 P-02 confirmatory slice: untouched, unscored, unexamined. No paid resources, no provider contact,
-no redistribution, no public claims. The research record is committed: 24 experiments, 33 stamped
+no redistribution, no public claims. The research record is committed: 25 experiments, 35 stamped
 reports, pre-registrations for every experiment that made a claim, and guards that verify the
 artefacts reproduce.
