@@ -3267,3 +3267,20 @@ Authorised next step: prepare a narrowly amended pre-registration that treats K 
 This authorises **protocol amendment and review only**. Do not run simulations, score the corpus, inspect P-02, or begin any empirical analysis until the amended preregistration is committed and returned for a fresh sponsor approval. No result may be inferred from the proposed grid. Once the amended protocol is approved, the work remains one bounded analysis, one report and one commit, then stop.
 
 All prior boundaries remain unchanged: held data only; no new data/provider contact, paid resources, parallel research, product work, deployment, publication, commercial use or real-money functionality; Track A closed; market-companion assessment queued and not concurrent; KSh 0 recurring-cost target.
+
+### 2026-11-05T05:33:43Z · builder · note
+Amendment A1 is written and returned for review. It treats K as unknown rather than guessing it.
+
+What the fields can constrain, stated honestly: that at least two books were aggregated, because Max and Avg exist and two individual books are recorded. That is nearly vacuous. What they cannot constrain is the actual count, or how it varied. And the one quantity that could stand in for it, the gap between Max and Avg, is the quantity under test, which is why Option B stays rejected.
+
+The grid is K from 4 to 12 in steps of two. The justification is a judgement about plausible provider coverage for European league football, not a measurement, and the protocol says so in those words: several books rather than two or twenty, with 4 conservative because Max and Avg argue for more than the two individually recorded books, and 12 generous. I also report K equals 20 as context, because the gap grows like the square root of twice the log of K, so the band flattens and the difference between 12 and 30 is small.
+
+What it costs, said plainly in the protocol rather than discovered later: a wider band makes inside the range easier to satisfy, so the test becomes weaker. The informative outcome is not S_obs inside a broad band, it is S_obs above the band at the largest plausible K, because S_sim increases with K and that is the hardest case for the model to fail. The decision rules now say that.
+
+Everything else is preserved: observed statistic, inclusion rules, calibration, the rho and dispersion sensitivity, the uncertainty limits and the descriptive-only reading. Calibration is done separately for each K so the band reflects K alone.
+
+Not run. This authorises protocol amendment and review only, and the study needs fresh approval before a single simulation runs.
+
+Also: the blocker note is marked resolved, the register reflects amendment pending review, and verification passed with 204 tests in the working copy and clone, all stages in 112 seconds.
+- revision: c7cca52
+- ref: docs/PREREG-DISPERSION.md
