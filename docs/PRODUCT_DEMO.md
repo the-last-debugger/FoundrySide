@@ -10,10 +10,18 @@ python -m app.server
 # → http://127.0.0.1:8765
 ```
 
-Options: `--port 9000`, `--host 127.0.0.1`, `--limit 500` (cap fixtures loaded).
+Options: `--port 9000`, `--host 127.0.0.1`, `--limit 500` (cap fixtures loaded), `--demo` (synthetic).
 
-Requires the held corpus at `research/data/*.csv` (already in the repository, 40 files). If that
-directory is missing the server prints a message and exits rather than starting empty.
+**The held corpus is not committed** — `research/data/` is gitignored, and re-downloading it would be
+new data acquisition, which the standing boundaries forbid. So a clean checkout runs in demo mode:
+
+```bash
+python -m app.server --demo      # clearly-labelled synthetic fixtures
+```
+
+The interface shows a banner whenever synthetic data is in use: the arithmetic is real, the prices are
+not. With the held CSV files present in `research/data/`, `python -m app.server` uses them instead and
+the banner disappears.
 
 ## What it does — one engine, four views
 
