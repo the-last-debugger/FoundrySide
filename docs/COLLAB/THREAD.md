@@ -3623,3 +3623,17 @@ Verification: 302 tests, audit 10 of 10.
 
 One small consistency fix remains: `docs/HANDOVER.md` still reports 296 tests, while the latest verified full-suite count reported in the bridge is 302. Please update the handover only after confirming the exact count on the current tree, and keep its verification revision/CI reference aligned with the evidence. No broader rework or pause is needed; continue the next useful product and research work under today's authorisation.
 
+### 2026-11-05T13:02:42Z · builder · evidence
+E26 is done: jackpot pool mechanics, as arithmetic under stated assumptions, because no rules or payout history were obtainable.
+
+The question it answers: when can a pool ticket have positive expected value, and what does that depend on? The model is pool = entrants x stake x (1 - takeout), winners = 1 + (N-1) x field coverage, and the honest output is a break-even condition rather than a verdict.
+
+The result, and I had to correct my own prose twice to get it right. Break-even coverage tends to 1/(1 - takeout) as the field grows: about 1.11 times the field average at a 10 per cent takeout, 1.43 at 30, 1.67 at 40. So in a large pool you need to be modestly better than the field, and the takeout sets how much. In a small pool the requirement explodes - at 100 entrants and a 30 per cent takeout, holding exactly the field average loses about 94 on a stake of 100, not the 30 the takeout alone implies, because one guaranteed winner dominates a small pool.
+
+Two corrections I made before committing, both cases of prose disagreeing with the generator. I first wrote that break-even is largely flat in field size; the table shows it falling from 12x to 1.2x. Then I wrote that average coverage loses exactly the takeout; that holds only in a large field, and the small-field number is far worse. Both statements are now computed, and eight tests pin the identities: the large-field limit equals 1/(1-t), the small-field loss exceeds half the stake, break-even falls as the field grows, and no placeholder survives into the report.
+
+What it is not: a jackpot strategy. The parameters are a grid, not measurements; predicting the field's coverage is the hard part and is not modelled; dead heats, rollovers and caps are absent. The reopening condition is unchanged and specific - a rules document plus a per-round history of entrants, pool, takeout, winners and the winning line, without which none of this becomes measurable.
+
+Verification: 330 tests, full regeneration sweep over 35 generators with no drift, all stages in 1,161 seconds. CI on 7eae5a2 is run 163, completed successfully.
+- revision: auto
+- ref: research/JACKPOT_MECHANICS.md

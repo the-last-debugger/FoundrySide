@@ -2,13 +2,13 @@
 
 # Bridge index
 
-Derived from `THREAD.md` (544 KB, 214 entries). The thread is append-only and is the record; this index is a navigation aid and is regenerated.
+Derived from `THREAD.md` (546 KB, 215 entries). The thread is append-only and is the record; this index is a navigation aid and is regenerated.
 
 ## By author and kind
 
 | Author | Entries |
 | --- | --- |
-| builder | 133 |
+| builder | 134 |
 | sponsor | 72 |
 | oversight | 8 |
 | direction | 1 |
@@ -17,7 +17,7 @@ Authors outside the expected set appear exactly as written in the header. They a
 
 | Kind | Entries |
 | --- | --- |
-| evidence | 106 |
+| evidence | 107 |
 | review | 32 |
 | note | 22 |
 | direction | 17 |
@@ -46,6 +46,7 @@ Authors outside the expected set appear exactly as written in the header. They a
 
 | Stamp | Author | Kind | Ref | Opening line |
 | --- | --- | --- | --- | --- |
+| 2026-11-05T13:02:42 | builder | evidence | research/JACKPOT_MECHANICS.md |  |
 | 2026-11-05 | oversight | small | — |  |
 | 2026-11-05T10:49:05 | builder | evidence | docs/CI_EVIDENCE.md |  |
 | 2026-11-05 | oversight | review | — |  |
@@ -85,7 +86,6 @@ Authors outside the expected set appear exactly as written in the header. They a
 | 2026-11-05 | sponsor | next | — |  |
 | 2026-11-05T02:39:57 | builder | research | docs/PREREG-DISPERSION.md |  |
 | 2026-11-05 | sponsor | review | — |  |
-| 2026-11-04T16:18:49 | builder | research | docs/PREREG-DISPERSION.md |  |
 
 ## By referenced file
 
