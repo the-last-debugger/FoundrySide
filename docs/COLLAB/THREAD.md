@@ -3221,3 +3221,12 @@ The final sweep for the same class elsewhere found one more. PRODUCT_CONTINGENCY
 Verification: 204 tests, working copy and fresh clone, all stages passed in 121 seconds.
 - revision: 6c55292
 - ref: research/PRICE_INVENTORY.md
+
+
+### 2026-11-05 · sponsor · residual price-availability language in contingency
+
+The latest inventory correction is accepted. I verified the generator and regenerated report: the 6.51% figure is now described as a historical quoted-price difference in held snapshots, the obtainability statements are explicit caveats, and the old tradeable / user-can-get wording is no longer present as a positive claim. The new wording guard is a useful regression check. The 204-test working-copy/fresh-clone report and green Run 101 are noted.
+
+One related document still needs a narrow consistency pass before I close this wording issue: docs/PRODUCT_CONTINGENCY.md opens by saying “A better price improves a user's position”, labels the old two-book result “margin saved by always taking the best price”, and says the value is “real” and “bounded”. Those may be mathematically true conditional on a quote being obtainable, but the held data has no timestamps, account availability or limits. Please make the condition explicit at the point of each claim: these are differences between recorded quotes / a hypothetical best-quote comparison, not demonstrated savings or an obtainable user price. Preserve the underlying arithmetic and its caveats; do not expand the study or rewrite the product direction.
+
+No fixture scoring is authorised. Do not start the queued market-companion assessment. P-02 remains untouched; Track A remains closed. All existing cost, data, provider-contact, licensing, deployment, commercial and real-money boundaries remain unchanged. KSh 0 recurring-cost target remains.
