@@ -186,23 +186,37 @@ def assess_selection(fixture: Fixture, outcome: str) -> dict:
 
 
 def slip_view(legs: list[dict], stake: float) -> dict:
-    """Combine legs, correcting for dependence instead of multiplying as if independent.
+    """Combine legs across **different matches**, where independence is a reasonable assumption.
 
-    Each leg: {"fixture_key": str, "label": str, "outcome": str, "price": float, "prob": float}
+    Same-match combinations are rejected rather than approximated, because the 1X2 outcomes of one
+    match are mutually exclusive: Home and Draw cannot both win. The 1.49 dependence figure measured
+    in this project is an aggregate ratio of realised joint frequency to the product of marginals for
+    *different markets* on the same match (1X2 versus over/under). It is not a conditional
+    probability for two 1X2 selections, and applying it to them — which an earlier version of this
+    function did — produces a meaningless number. It is kept as documentation, not as a multiplier.
     """
     if not legs:
         raise ValueError("a slip needs at least one leg")
     if stake <= 0:
         raise ValueError("stake must be positive")
 
+    seen_pairs = set()
+    seen_fixtures = set()
+    for leg in legs:
+        pair = (leg["fixture_key"], leg["outcome"])
+        if pair in seen_pairs:
+            raise ValueError(
+                "duplicate selection: the same outcome twice on one match is one selection, not two")
+        seen_pairs.add(pair)
+        if leg["fixture_key"] in seen_fixtures:
+            raise ValueError(
+                "same-match combination unsupported: two 1X2 outcomes of one match are mutually "
+                "exclusive, so their joint probability is zero, not a corrected product")
+        seen_fixtures.add(leg["fixture_key"])
+
     naive = 1.0
     for leg in legs:
         naive *= leg["prob"]
-
-    fixtures = [leg["fixture_key"] for leg in legs]
-    same_match = len(fixtures) != len(set(fixtures))
-    ratio = SAME_MATCH_DEPENDENCE if same_match else CROSS_MATCH_DEPENDENCE
-    joint = min(1.0, naive * ratio)
 
     combined_odds = 1.0
     for leg in legs:
@@ -212,30 +226,33 @@ def slip_view(legs: list[dict], stake: float) -> dict:
     return {
         "legs": len(legs),
         "naive_product": round(naive, 6),
-        "dependence_ratio": ratio,
-        "same_match": same_match,
-        "joint_probability": round(joint, 6),
+        "joint_probability": round(naive, 6),
+        "dependence_ratio": CROSS_MATCH_DEPENDENCE,
+        "same_match": False,
         "combined_odds": round(combined_odds, 3),
         "stake": stake,
         "gross_return": round(gross, 2),
         "net_result": round(gross - stake, 2),
         "full_stake_loss": round(stake, 2),
         "claims": {
-            "naive_product": "estimated — product of de-vigged market probabilities, wrong if legs co-move",
-            "joint_probability": "estimated — the naive product times a measured dependence ratio",
+            "naive_product": "estimated — product of de-vigged market probabilities across matches",
+            "joint_probability": "estimated — valid only because the legs are from different matches",
             "gross_return": "hypothetical — arithmetic on the recorded quotes and the user's stake",
         },
         "caveats": [
-            "Multiplication assumes the legs are independent. Same-match legs are not: the measured "
-            f"ratio is {SAME_MATCH_DEPENDENCE} in this corpus.",
-            "The dependence ratio is one measured number, not a model of how legs co-move.",
+            "Independence across matches is assumed here. It is a reasonable approximation for "
+            "different fixtures and is not tested by this view.",
+            "Same-match combinations are refused: 1X2 outcomes on one match are mutually exclusive.",
+            "The 1.49 same-match ratio in this project is an aggregate illustration for different "
+            "markets on one match; it is not a valid multiplier for two 1X2 selections.",
             "Gross return uses recorded closing quotes, which are not shown to be obtainable.",
         ],
     }
 
 
 def target_search(stake: float, target_multiplier: float, tolerance: float = 0.15,
-                  fixtures: list[Fixture] | None = None, max_legs: int = 2) -> dict:
+                  fixtures: list[Fixture] | None = None, max_legs: int = 2,
+                  pair_pool_limit: int = 400) -> dict:
     """Find the closest achievable combination to a user's requested multiplier.
 
     The target is a constraint to search against, never a promise. If nothing is close enough, the
@@ -261,8 +278,9 @@ def target_search(stake: float, target_multiplier: float, tolerance: float = 0.1
                 })
 
     doubles = []
+    pool_with_prices = [fx for fx in pool if "Max" in fx.odds]
+    usable = pool_with_prices[:pair_pool_limit]
     if max_legs >= 2:
-        usable = [fx for fx in pool if "Max" in fx.odds][:400]
         for a in range(len(usable)):
             for b in range(a + 1, len(usable)):
                 fa, fb = usable[a], usable[b]
@@ -296,6 +314,12 @@ def target_search(stake: float, target_multiplier: float, tolerance: float = 0.1
         "tolerance": tolerance,
         "matches": candidates[:8],
         "found": bool(candidates),
+        "search_scope": {
+            "fixtures_considered": len(pool),
+            "fixtures_with_prices": len(pool_with_prices),
+            "fixtures_used_for_pairs": len(usable),
+            "pair_pool_limited": len(pool_with_prices) > len(usable),
+        },
         "claims": {
             "matches": "hypothetical — combinations of recorded quotes that approach the target",
             "probability": "estimated — product of de-vigged market probabilities; same-day legs "
@@ -311,37 +335,63 @@ def target_search(stake: float, target_multiplier: float, tolerance: float = 0.1
         "caveats": [
             "Targets are user constraints. Nothing here implies the target is attainable or wise.",
             "Gross return is not profit; a losing slip returns nothing and costs the full stake.",
-            "Legs from the same match are not independent, and the double search only pairs different "
-            "matches on the same day.",
+            "Doubles pair different matches on the same day only; same-match combinations are refused.",
+            "The double search covers a bounded slice of the corpus, reported as search_scope; it is "
+            "not an exhaustive search of every fixture.",
         ],
     }
 
 
 def jackpot_view(entrants: int, stake: float, takeout: float, your_lines: int,
-                 outcomes_per_match: int = 3, matches: int = 6) -> dict:
-    """Pool arithmetic. Hypothetical by construction: this corpus holds no jackpot rules or history."""
+                 outcomes_per_match: int = 3, matches: int = 6,
+                 rival_coverage: float | None = None) -> dict:
+    """Pool arithmetic. Hypothetical by construction: this corpus holds no jackpot rules or history.
+
+    Two quantities that an earlier version conflated:
+
+    - **your coverage** — the share of possible lines you hold. This is about you, and needs no
+      assumption about anyone else.
+    - **expected winning tickets** — a pool-wide quantity. It depends on how many lines *other*
+      entrants hold, which is not knowable from your own coverage. It is reported only when the caller
+      supplies an explicit `rival_coverage` assumption, and never floored at one.
+    """
     if entrants <= 0 or stake <= 0 or not 0 <= takeout < 1:
         raise ValueError("entrants and stake must be positive; takeout in [0,1)")
+    if your_lines <= 0:
+        raise ValueError("your_lines must be positive")
+    if rival_coverage is not None and not 0 <= rival_coverage <= 1:
+        raise ValueError("rival_coverage must be in [0,1]")
+
     pool = entrants * stake * (1 - takeout)
     universe = outcomes_per_match ** matches
     coverage = min(1.0, your_lines / universe)
+
+    expected_winners = None
+    if rival_coverage is not None:
+        # Other entrants only; your own ticket is not a rival.
+        expected_winners = round((entrants - 1) * rival_coverage, 2)
+
     return {
         "pool": round(pool, 2),
         "universe_of_lines": universe,
         "your_lines": your_lines,
         "coverage": round(coverage, 8),
-        "expected_winners_if_random": round(max(1.0, entrants * coverage), 2),
+        "rival_coverage": rival_coverage,
+        "expected_winning_tickets": expected_winners,
         "claims": {
             "pool": "hypothetical — entrants x stake x (1 - takeout); the takeout is user-supplied",
-            "coverage": "hypothetical — lines held over the line universe",
+            "coverage": "hypothetical — your lines over the line universe",
+            "expected_winning_tickets": "hypothetical — requires the rival_coverage assumption; "
+                                        "omitted when it is not supplied",
         },
         "verdict": (
-            "Pool value depends on how many entrants share it, which is unknown before the event. "
-            "This corpus holds no rules or payout history, so nothing here is a measured jackpot "
-            "advantage."
+            "Pool value depends on how many other entrants share it, which your own line count says "
+            "nothing about. This corpus holds no jackpot rules or payout history, so none of this is "
+            "a measured jackpot advantage."
         ),
         "caveats": [
             "No jackpot rules or per-round history were located; these are arithmetic, not evidence.",
-            "Dead heats, rollovers and consolation tiers are not modelled.",
+            "Expected winners is omitted unless you supply a rival-coverage assumption.",
+            "Dead heats, rollovers, consolation tiers and pool caps are not modelled.",
         ],
     }

@@ -28,8 +28,8 @@ the banner disappears.
 | View | What it shows | Claim kinds used |
 | --- | --- | --- |
 | **Assess** | The recorded prices for a fixture and outcome, the de-vigged market probability, the price-implied probability, and the gap between the best recorded quote and the average | observed, estimated |
-| **Slip** | A combination's joint probability with a dependence correction instead of naive multiplication, plus gross return, net result and full-stake loss | estimated, hypothetical |
-| **Stake & target** | Searches recorded quotes for single or two-leg combinations that approach a requested multiplier, within a tolerance; reports hit probability, gross, net and risk; says so when nothing is close | observed, estimated, hypothetical |
+| **Slip** | A combination across **different matches**: joint probability, gross return, net result and full-stake loss. Same-match and duplicate selections are refused, because 1X2 outcomes of one match are mutually exclusive | estimated, hypothetical |
+| **Stake & target** | Searches recorded quotes for single or two-leg combinations approaching a requested multiplier, within a tolerance, and reports the search scope. A target search, **not** a stake-structure comparison | observed, estimated, hypothetical |
 | **Jackpot arithmetic** | Pool size, coverage and expected winners as a function of entrants, takeout and lines held | hypothetical |
 
 Every number carries a tag: **observed** (a recorded quote), **estimated** (a model or a measured
@@ -38,7 +38,8 @@ constant applied to observed inputs), **hypothetical** (arithmetic over user-sup
 ## What is genuinely implemented
 
 - Proportional de-vig, overround, and per-book quote comparison over all 40 held files.
-- Dependence correction using the measured same-match ratio (1.49) versus the cross-match case (1.00).
+- Independence-based combination across different matches, with same-match and duplicate selections
+  rejected outright rather than approximated.
 - Target search over singles and same-day two-leg combinations, ranked by distance from the target.
 - Pool arithmetic with explicit takeout and coverage.
 - A single-page interface with no build step and no external assets.
@@ -70,6 +71,11 @@ constant applied to observed inputs), **hypothetical** (arithmetic over user-sup
 python -m unittest tests.test_app_engine tests.test_app_server
 ```
 
-26 tests: de-vig arithmetic, corpus loading, claim labelling, dependence behaviour, stake arithmetic,
-target search including the no-match path, pool arithmetic, and HTTP-level checks that the server
-serves the interface and its API, returns errors rather than crashing, and refuses path traversal.
+Run exactly: `python -m unittest tests.test_app_engine tests.test_app_server` → **33 tests**.
+
+Breakdown: 23 engine tests (de-vig arithmetic, synthetic-corpus loading, claim labelling, provenance
+marking, duplicate and incompatible slip rejection, cross-match combination, stake arithmetic, target
+search including the no-match path, pool arithmetic) and 10 server tests (index serving, health and
+mode, fixtures, assess, unknown fixture → 400, slip, empty slip → 400, target, jackpot, path
+traversal refusal). The full repository suite is `python -m unittest discover -s tests` → **237
+tests**, which includes these 33.

@@ -82,12 +82,29 @@ class SlipTest(unittest.TestCase):
         self.assertAlmostEqual(result["dependence_ratio"], engine.CROSS_MATCH_DEPENDENCE)
         self.assertAlmostEqual(result["joint_probability"], result["naive_product"], places=9)
 
-    def test_same_match_slip_is_corrected(self):
+    def test_same_match_combination_is_refused(self):
+        # 1X2 outcomes of one match are mutually exclusive: Home and Draw cannot both win. The joint
+        # probability is zero, not a corrected product, so the engine refuses rather than approximates.
         a = self.fixtures[0]
-        result = engine.slip_view([self.leg(a, "H"), self.leg(a, "D")], 100)
-        self.assertTrue(result["same_match"])
-        self.assertAlmostEqual(result["dependence_ratio"], engine.SAME_MATCH_DEPENDENCE)
-        self.assertGreater(result["joint_probability"], result["naive_product"])
+        with self.assertRaises(ValueError) as ctx:
+            engine.slip_view([self.leg(a, "H"), self.leg(a, "D")], 100)
+        self.assertIn("same-match", str(ctx.exception))
+
+    def test_duplicate_selection_is_refused(self):
+        a = self.fixtures[0]
+        with self.assertRaises(ValueError) as ctx:
+            engine.slip_view([self.leg(a, "H"), self.leg(a, "H")], 100)
+        self.assertIn("duplicate", str(ctx.exception))
+
+    def test_dependence_ratio_is_not_applied_as_a_multiplier(self):
+        # The 1.49 figure is an aggregate illustration for different markets on one match. It must
+        # never be multiplied into a 1X2 combination.
+        a, b = self.fixtures[0], self.fixtures[1]
+        result = engine.slip_view([self.leg(a, "H"), self.leg(b, "A")], 100)
+        expected = 1.0
+        for leg in ([self.leg(a, "H"), self.leg(b, "A")]):
+            expected *= leg["prob"]
+        self.assertAlmostEqual(result["joint_probability"], expected, places=6)
 
     def test_stake_arithmetic_is_explicit(self):
         result = engine.slip_view([self.leg(self.fixtures[0])], 100)
@@ -107,6 +124,13 @@ class TargetTest(unittest.TestCase):
         self.assertTrue(result["found"])
         for match in result["matches"]:
             self.assertLessEqual(abs(match["price"] / 10.0 - 1), 0.2 + 1e-9)
+
+    def test_reports_search_scope(self):
+        fixtures = demo_data.synthetic_fixtures(120)
+        result = engine.target_search(100, 3.0, 0.5, fixtures=fixtures)
+        scope = result["search_scope"]
+        self.assertEqual(scope["fixtures_considered"], len(fixtures))
+        self.assertLessEqual(scope["fixtures_used_for_pairs"], scope["fixtures_with_prices"])
 
     def test_reports_no_match_honestly(self):
         fixtures = demo_data.synthetic_fixtures(60)
@@ -133,9 +157,20 @@ class ProvenanceTest(unittest.TestCase):
 
 class JackpotTest(unittest.TestCase):
     def test_pool_and_coverage_arithmetic(self):
-        result = engine.jackpot_view(entrants=1000, stake=100, takeout=0.3, your_lines=1)
+        result = engine.jackpot_view(entrants=1000, stake=100, takeout=0.3, your_lines=5)
         self.assertAlmostEqual(result["pool"], 1000 * 100 * 0.7, places=2)
         self.assertLess(result["coverage"], 0.01)
+
+    def test_expected_winners_is_absent_without_an_assumption(self):
+        # Your own coverage says nothing about how many other entrants share the pool.
+        result = engine.jackpot_view(1000, 100, 0.3, 5)
+        self.assertIsNone(result["expected_winning_tickets"])
+
+    def test_expected_winners_uses_the_stated_assumption_and_never_floors(self):
+        result = engine.jackpot_view(1000, 100, 0.3, 5, rival_coverage=0.0001)
+        self.assertAlmostEqual(result["expected_winning_tickets"], round(999 * 0.0001, 2), places=2)
+        self.assertLess(result["expected_winning_tickets"], 1.0,
+                        "the expected count must not be forced up to one")
 
     def test_more_lines_increases_coverage(self):
         one = engine.jackpot_view(1000, 100, 0.3, 1)

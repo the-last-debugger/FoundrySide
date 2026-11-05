@@ -120,7 +120,9 @@
         <div><label>Tolerance (±)</label><input id="t-tol" type="number" value="0.15" min="0.02" max="0.5" step="0.01"></div>
         <div style="flex:0 0 160px"><label>&nbsp;</label><button class="primary" id="t-go">Search</button></div>
       </div>
-      <div class="caveat">A target is a constraint you choose, not evidence that it is attainable.</div>
+      <div class="caveat">A target is a constraint you choose, not evidence that it is attainable.
+      This is a target search, not a stake-structure comparison: tripling KSh 100 and doubling KSh 200
+      are different structures and are not analysed here.</div>
     </div>
     <div id="t-result"></div>
   </section>
@@ -287,6 +289,9 @@ $("t-go").onclick = async () => {
       <div class="card">
         <div class="verdict ${r.found ? "" : "warn"}">${r.verdict}</div>
         ${cards}
+        <div class="caveat">Search scope: ${r.search_scope.fixtures_used_for_pairs.toLocaleString()}
+        of ${r.search_scope.fixtures_with_prices.toLocaleString()} priced fixtures used for two-leg
+        combinations${r.search_scope.pair_pool_limited ? " (bounded slice, not exhaustive)" : ""}.</div>
         ${caveats(r.caveats)}
       </div>`;
   } catch (err) { $("t-result").innerHTML = `<div class="card err">${err.message}</div>`; }
