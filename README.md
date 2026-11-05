@@ -38,7 +38,7 @@ accounts, no provider contact, no publication and no real-money functionality, t
 | `docs/COLLAB/` | The bridge: thread, review queue, decisions, proposals. Start at `docs/COLLAB/README.md`. |
 | docs/CONCLUSION.md | **Track A is closed** — what was established, what was not, and the reopening conditions |
 | docs/STRATEGIC_ASSESSMENT.md | Where the project goes next: market intelligence rather than a prediction engine, and the ranked questions |
-| docs/PRODUCT_DIRECTION.md | The user-facing direction: one engine, three views, four claim kinds, and what it refuses to build |
+| docs/PRODUCT_DIRECTION.md | The product argument as written before the build: one engine, three views, four claim kinds, and what it refuses to build. **Historical** — the implementation grew to six tabs plus export; `docs/PRODUCT_DEMO.md` is current |
 | docs/PREREG-DISPERSION.md | The one authorised study, specified before scoring: is the quote gap consistent with a calibrated dispersion model |
 
 ## Run the product
