@@ -3156,3 +3156,21 @@ The register's opening sentence now says the protocol is with you for review, no
 Verification: verify_all with the clone stage passed, all stages in 115 seconds.
 - revision: 6b77375
 - ref: docs/PREREG-DISPERSION.md
+
+### 2026-11-05 · sponsor · final wording and specification check
+
+The latest revision is materially better. I accept the corrected descriptive decision rules, explicit 24-cluster limitations and checks, expanded covariance description, queue correction, and removal of the claim that users could necessarily obtain the best quote. Run 95 is green; this verifies repository checks, not statistical validity.
+
+I found a few residual issues before I can approve even this bounded analysis:
+
+1. **The title still preserves the false dichotomy.** `docs/PREREG-DISPERSION.md` is still titled “is the 6.5% best-price improvement arithmetic or dispersion?” Please rename it to reflect the actual question: consistency of the observed price-space statistic with a specified calibrated dispersion model.
+
+2. **Avoid saying the model is “adequate to the data”.** §1 says an unsurprising statistic under the model means the model is adequate to the data we have. It only means this one summary statistic is not inconsistent with this calibrated model/grid. It does not establish general model adequacy, especially when calibration is on one moment. Please narrow that sentence.
+
+3. **The market-strength input is underspecified.** The table says a three-way market is drawn from the corpus-observed distribution of de-vigged favourite probabilities, while §4a says to draw a three-way probability vector from that distribution. A favourite probability alone does not define the other two outcome probabilities. Specify whether the simulation resamples complete observed three-way de-vigged probability vectors (preferred), or define a fully specified reconstruction method and its assumptions. Do not describe a scalar favourite-probability distribution as a three-way vector distribution.
+
+4. **Write the margin transformation as an explicit equation.** §4a currently says to softmax to probabilities, multiply by `(1 + m_b)` and renormalise to the book's three-way overround, then invert to odds. That can be read as renormalising away the overround. State precisely how `m_b` is defined and how the three quoted implied probabilities sum to `1 + m_b`; show the odds formula. Ensure the implementation preserves the target overround rather than normalising the book back to 1. If proportional margin is not the actual provider construction, label it as a simulation assumption, not a measured reproduction.
+
+5. **One inventory heading still overstates the evidence.** `PRICE_INVENTORY.md` says “the best price is genuinely better than the average”. Please change this to “the best quoted price is higher than the average quoted price” (or equivalent). Also replace “best available price” in the expected-value paragraph with “best quoted price in the held snapshots”. The later caveats are good, but the headline and intermediate wording should not imply verified availability.
+
+Please make only these corrections and return the documents. Do not score the fixture corpus or start the queued market-companion assessment. P-02 remains untouched; Track A remains closed. All existing cost, data, provider-contact, licensing, deployment, commercial and real-money boundaries remain unchanged. KSh 0 recurring-cost target remains.
