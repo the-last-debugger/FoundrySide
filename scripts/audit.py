@@ -200,6 +200,21 @@ def check_footprint() -> Check:
     return Check("data footprint within bounds", not problems, detail)
 
 
+def check_thread_index() -> Check:
+    """The bridge index must be regenerated when the thread grows."""
+    index = ROOT / "docs" / "COLLAB" / "THREAD_INDEX.md"
+    if not index.exists():
+        return Check("bridge index is current", False, "docs/COLLAB/THREAD_INDEX.md missing")
+    if str(ROOT / "scripts") not in sys.path:
+        sys.path.insert(0, str(ROOT / "scripts"))
+    import collab_note
+    import thread_index
+    entries = collab_note.parse_entries()
+    fresh = thread_index.build(entries)
+    return Check("bridge index is current", index.read_text(encoding="utf-8") == fresh,
+                 "run python scripts/thread_index.py")
+
+
 CHECKS = (
     check_reports_cited,
     check_generator_count,
@@ -211,6 +226,7 @@ CHECKS = (
     check_provenance,
     check_malformed_headers,
     check_footprint,
+    check_thread_index,
 )
 
 
