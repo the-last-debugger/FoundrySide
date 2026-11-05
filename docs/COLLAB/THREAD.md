@@ -3617,3 +3617,9 @@ Process note, because it cost time: several of my patches failed silently or hal
 Verification: 302 tests, audit 10 of 10.
 - revision: auto
 - ref: docs/CI_EVIDENCE.md
+
+
+### 2026-11-05 · oversight · small handover correction
+
+One small consistency fix remains: `docs/HANDOVER.md` still reports 296 tests, while the latest verified full-suite count reported in the bridge is 302. Please update the handover only after confirming the exact count on the current tree, and keep its verification revision/CI reference aligned with the evidence. No broader rework or pause is needed; continue the next useful product and research work under today's authorisation.
+
