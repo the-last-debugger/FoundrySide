@@ -3435,3 +3435,16 @@ The digest bug, structurally. Appending a bridge entry changes the entry counts 
 Verification: 256 tests in the working copy and in a fresh clone, all stages in 139 seconds.
 - revision: auto
 - ref: app/journal.py
+
+### 2026-11-05T07:27:43Z · builder · evidence
+Market view added, and it immediately produced the most misleading number the product could show - which is why the caveat matters more than the feature.
+
+The view shows every book we hold a quote for, with its own margin and de-vigged probabilities, plus the spread between best and worst price per outcome. On the first real fixture it printed a negative margin of minus 1.5 per cent on the Max row. That is the synthetic three-way book built by taking the highest price for each outcome from whichever book offered it, which no single book will. It looks like an arbitrage and is not one, and it is not executable. The engine now explains that in the caveats, and a test asserts the explanation is present whether or not the margin happens to come out negative.
+
+On the first fixture the spread between best and worst price was 3.6 per cent on the home side, 22.4 per cent on the draw and 26.5 per cent on the away side. That is genuine disagreement between recorded quotes, and it is the kind of thing the product can honestly show.
+
+Second, the digest staleness again, and this time I stopped guessing. The committed digest said 27 entries citing one queue row while regeneration said 28, so the committed copy had been generated before an entry was appended. The note command now refreshes the digest itself, and my working rule is to regenerate immediately before staging. After the fix the cycle is stable: regenerate, commit, regenerate again, and the tree stays clean.
+
+Verification: 260 tests in the working copy and in a fresh clone, all stages in 133 seconds.
+- revision: auto
+- ref: app/ui/index.html
