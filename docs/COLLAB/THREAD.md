@@ -3096,3 +3096,24 @@ Please produce one internally consistent protocol before asking for approval. In
 **Verification:** Actions run 89 on 10e6e21 completed successfully; its checks, test suite, bridge-consistency and verification-transcript steps were green. This verifies the committed tree passed the repository workflow. It does not validate the statistical assumptions or approve scoring.
 
 Please make only these method/protocol and register corrections, then return the revised protocol for sponsor review. Do not score, inspect P-02, start the market-companion assessment, or open another workstream. Track A remains closed. No paid resources, new data, provider contact, terms acceptance, product implementation, public release, deployment, hosted service, commercial use or real-money functionality. KSh 0 recurring-cost target remains.
+
+### 2026-11-05T03:09:41Z · builder · note
+All five corrections are made, plus the register and a CI failure your commit exposed.
+
+The CI failure first, because it is the recurring class again. Run 90 on 1414d2e failed at the test-suite step, and the cause was my own new guard: the checker still treated a header that does not match the strict grammar as an error, so your audit entry, whose kind is a multi-word phrase ending in scope, failed the build. I had made the parser tolerant and left the checker strict, which is exactly half a fix. Now the parser recovers the fields, the checker warns rather than errors, and malformed_headers means what it says: headers that produced no entry, which is now none. Two tests were updated to the new contract and the old error assertion is gone.
+
+Item 1, the observed statistic. I checked how the 6.51 per cent was actually computed rather than assuming. price_inventory.py takes MaxC divided by AvgC minus one for each eligible selection and then the arithmetic mean of those ratios. So the statistic is an arithmetic mean of relative price differences, not a geometric mean and not a mean of logs, and the protocol now defines it that way with the eligibility rules and the 44,406 count reconciled. The simulation is required to produce the same arithmetic mean of the same ratio, so the two sides are the same statistic.
+
+Item 2, the data-generating model. The protocol now specifies market strength drawn from the corpus-observed distribution rather than one fixed market, equicorrelated logit deviations, a proportional margin set to the observed overround, K drawn from the observed Bb1X2 distribution, missingness at the observed availability rate, and Max and Avg formed as maximum and mean of simulated decimal odds exactly as the source does. It states which single quantity is identified by the two-book data, which are assumptions, and which are sensitivity parameters. It also says plainly that calibrating one moment is not validation.
+
+Item 3, uncertainty. Both sides now carry intervals. The observed side is a cluster bootstrap over division-seasons. The simulation side is a percentile interval, which reflects K and draw randomness but not parameter uncertainty, and the parameter uncertainty is handled by the sensitivity grid over rho and dispersion instead of being folded in. The comparison is interval to interval, and no sampling distribution is claimed for the difference.
+
+Item 4, consistency. The document is rewritten as one estimand. The stale logit-space sections, the gap_z regression and the old decision rules are gone rather than re-derived, because the quantity they belonged to was withdrawn.
+
+Item 5, the wording. PRICE_INVENTORY no longer calls 6.51 per cent tradeable. It is a historical quoted-price difference in the held snapshots, not a demonstrated obtainable price, and the report now says so at the point where the number appears.
+
+Register: it now distinguishes no corpus scoring authorised from no active task, records the protocol as with you for review and not approved, and keeps the market-companion item queued without starting it. Minimum stake KSh 20 and the no-hard-cap clarification are noted for that item when it opens.
+
+Verification: verify_all with the clone stage passed, 201 tests in the working copy and 201 in a fresh clone, all stages in 107 seconds.
+- revision: f1d834a
+- ref: docs/PREREG-DISPERSION.md
