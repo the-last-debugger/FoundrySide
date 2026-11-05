@@ -3068,3 +3068,31 @@ For the next cycle, please give your candid assessment of this direction and pro
 - Propose the smallest coherent next steps and their dependencies. Keep one active empirical task at a time; simulations and desk research may inform understanding but should not create unsupported product claims.
 
 This is a request for assessment and planning in the next cycle, **not** an implementation instruction. Do not change the currently authorised dispersion-method scope or interrupt it. Do not inspect or score P-02; it remains untouched. Track A remains closed. No paid resources, recurring costs, new data acquisition, provider contact, new terms acceptance, public release, hosted service, commercial use, deployment, or real-money functionality is authorised. KSh 0 recurring-cost target remains.
+
+
+### 2026-11-05 · sponsor · audit of narrowed dispersion protocol and queued product scope
+
+I reviewed the latest protocol (56e0410), synthetic validation (5bd0f83), queue update (10e6e21), price inventory, and Actions run 89.
+
+**What I accept:** the synthetic check correctly exposed the reversed sign and, more importantly, showed that de-vigging an outcome-wise maximum-odds vector is not equivalent to taking an order statistic of book-level de-vigged logits. Narrowing away from the original logit-space projection and withdrawing the proposed “mechanical versus genuine” decomposition is the right response. The script is explicitly synthetic and reports that it reads no fixture data. I see no evidence in the inspected commits that the held fixture corpus or P-02 was scored or inspected.
+
+**The protocol is still not approved for scoring.** The revised document is internally inconsistent:
+- §4 now defines a price-space comparison, mean log(MaxC / AvgC), and proposes comparing it with a simulated price gap.
+- §6 still describes the old logit-space projection d · E[max_K], calls the observed quantity gap_z, and refers to an observed gap “as in §3”. §3 is now synthetic validation, not the observed corpus statistic.
+- §7 still regresses gap_z on E[max_K] and interprets the slope against d. Those are remnants of the rejected estimand and must either be removed or fully re-derived for the price-space estimand.
+- The decision rules and uncertainty calculation must match the revised price-space procedure, not the superseded logit-space one.
+
+Please produce one internally consistent protocol before asking for approval. In particular:
+1. Define the exact observed statistic behind the reported 6.51%: arithmetic versus geometric averaging, weighting unit, eligible selections/snapshots, and how MaxC and AvgC are defined. Do not assume mean log(MaxC/AvgC) is numerically “the quantity behind 6.51%” until reconciled against the original inventory calculation.
+2. Specify the full price-space data-generating model: outcome probabilities, book-level noise/covariance across books and outcomes, margin allocation, number of books K per observation, missingness, and how simulated quotes form MaxC and AvgC exactly as the source does. State which parameters are identified by the two-book data and which are assumptions or sensitivity parameters. The synthetic check used one true market and one parameterisation; it is a counterexample to the old mapping, not validation of the new one.
+3. Explain calibration and uncertainty. Matching pairwise dispersion by construction does not independently validate the model. Show how parameter/calibration uncertainty and division-season clustering enter the comparison, and avoid comparing an observed confidence interval with an unqualified point prediction.
+4. Reconcile all sections, regression diagnostics, and decision rules with the same price-space estimand. Remove stale references rather than leaving two competing methods in the preregistration.
+5. Audit the wording in PRICE_INVENTORY.md: it calls the 6.51% a “tradeable quantity”, but the same report says there are no price timestamps, account terms, or limits. Until those are established, call it a historical quoted-price difference or best-quote improvement in the held snapshots, not a demonstrated price a user could actually obtain at the time of action.
+
+**Queue/register correction:** docs/RESEARCH_QUEUE.md now records the market-companion item as queued and not started, which is correct. However, its top-level register still says “No active task” while the queued item's status says it is blocked on the sponsor gate for the dispersion study. Please make the current state consistent: the only current bounded work is method correction/preregistration for sponsor review; no corpus scoring is authorised; the market-companion assessment is queued for the next cycle and must not start concurrently. Do not label the protocol approved or the study complete.
+
+**User-scenario clarification for the queued product assessment:** minimum stake is KSh 20. There is no hard-coded maximum stake at this stage; the assessment should consider configurable safeguards and bookmaker/account limits rather than inventing a product cap. A requested target multiplier/return is a constraint to search against, not a promise or reason to force a slip. Keep gross return distinct from net profit and disclose the full stake at risk.
+
+**Verification:** Actions run 89 on 10e6e21 completed successfully; its checks, test suite, bridge-consistency and verification-transcript steps were green. This verifies the committed tree passed the repository workflow. It does not validate the statistical assumptions or approve scoring.
+
+Please make only these method/protocol and register corrections, then return the revised protocol for sponsor review. Do not score, inspect P-02, start the market-companion assessment, or open another workstream. Track A remains closed. No paid resources, new data, provider contact, terms acceptance, product implementation, public release, deployment, hosted service, commercial use or real-money functionality. KSh 0 recurring-cost target remains.
