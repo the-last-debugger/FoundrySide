@@ -185,6 +185,7 @@ def assess_selection(fixture: Fixture, outcome: str) -> dict:
             "The recorded best quote is above the market average. That is a property of the quotes. "
             "This corpus cannot show the price was obtainable, nor that it beats fair value."
         ),
+        "caveats": view["caveats"],
         "abstain": False,
     }
 

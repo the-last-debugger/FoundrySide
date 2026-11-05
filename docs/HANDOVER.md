@@ -20,6 +20,7 @@ python -m app.server --demo         # synthetic, clearly labelled, no download
 ```
 
 Seven tabs: Assess, Market, Slip, Structures, Stake & target, Jackpot, Journal.
+A generated [static snapshot](DEMO_SNAPSHOT.html) shows the three main views without running anything.
 
 ## Verify it
 

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>FoundrySide — static snapshot</title>
+<style>
+ body { margin:0; background:#0b0d11; color:#e8ebf0;
+        font:15px/1.6 ui-sans-serif,-apple-system,"Segoe UI",Roboto,sans-serif; }
+ .wrap { max-width:980px; margin:0 auto; padding:32px 20px 60px; }
+ h1 { font-size:20px; margin:0 0 4px; }
+ .sub { color:#98a2b3; font-size:13px; margin-bottom:22px; }
+ .card { background:#151922; border:1px solid #232833; border-radius:14px;
+          padding:22px 24px; margin:16px 0; }
+ h2 { font-size:15px; margin:0 0 12px; font-weight:620; }
+ .kv { display:grid; grid-template-columns:1fr auto; gap:7px 18px; }
+ .kv > div:nth-child(odd) { color:#98a2b3; }
+ .kv > div:nth-child(even) { text-align:right; font-variant-numeric:tabular-nums; font-weight:560; }
+ table.grid { width:100%; border-collapse:collapse; font-size:13.5px; }
+ table.grid th { text-align:left; color:#6b7484; font-size:11px; text-transform:uppercase;
+                  letter-spacing:.6px; padding:0 8px 7px 0; }
+ table.grid td { padding:9px 8px 9px 0; border-top:1px solid #232833;
+                  font-variant-numeric:tabular-nums; }
+ td.name { font-weight:600; }
+ .tag { font-size:10px; padding:1px 7px; border-radius:999px; border:1px solid currentColor;
+         text-transform:uppercase; font-weight:600; }
+ .obs { color:#6cc6ff; } .est { color:#d8b066; } .hyp { color:#a98ce0; }
+ .caveat { color:#98a2b3; font-size:13px; border-left:2px solid #2f3644;
+            padding-left:11px; margin:8px 0; }
+ .verdict { background:#101419; border:1px solid #2f3644; border-radius:9px;
+             padding:12px 14px; margin:10px 0; }
+ footer { color:#6b7484; font-size:12.5px; border-top:1px solid #232833; margin-top:26px;
+           padding-top:16px; }
+</style></head>
+<body><div class="wrap">
+ <h1>FoundrySide — static snapshot</h1>
+ <div class="sub">Rendered from the live engine over the held corpus. Regenerate with
+ <code>python scripts/render_static.py</code>; nothing here is hand-written.</div>
+
+ <section class="card"><h2>Assess — a standalone selection</h2><div class="kv"><div>Fixture</div><div>Bayern Munich v Schalke 04</div><div>Outcome</div><div>Home</div><div>Best recorded price <span class='tag obs'>observed</span></div><div>1.15 <span class='tag obs'>Max</span></div><div>Market-implied probability <span class='tag est'>estimated</span></div><div>86.3%</div><div>Price-implied probability <span class='tag obs'>observed</span></div><div>87.0%</div></div><div class="verdict">The recorded best quote is above the market average. That is a property of the quotes. This corpus cannot show the price was obtainable, nor that it beats fair value.</div><div class="caveat">No timestamps: these are closing snapshots, not prices available when a user acts.</div><div class="caveat">No account terms, limits or stakes: a quote is not proof of an obtainable price.</div><div class="caveat">The de-vigged probability is a model of the market&#x27;s belief, not a forecast of ours.</div><div class="caveat">A negative margin on the Max row is a synthetic artefact: it takes the highest price for each outcome from whichever book offered it, which no single book will, so it is not an arbitrage and not executable.</div><div class="caveat">Rendered from the held corpus.</div></section>
+ <section class="card"><h2>Market — every book we hold, with its own margin</h2><table class='grid'><thead><tr><th>Book</th><th>Closing H · D · A</th><th>Margin</th><th>Implied probabilities</th></tr></thead><tbody><tr><td class='name'>B365</td><td>1.10 · 11.00 · 21.00</td><td>4.76%</td><td>86.8% · 8.7% · 4.5%</td></tr><tr><td class='name'>Pinnacle</td><td>1.12 · 11.35 · 18.87</td><td>3.40%</td><td>86.4% · 8.5% · 5.1%</td></tr><tr><td class='name'>Max</td><td>1.15 · 13.25 · 25.00</td><td>-1.50%</td><td>88.3% · 7.7% · 4.1%</td></tr><tr><td class='name'>Avg</td><td>1.11 · 10.83 · 19.76</td><td>4.38%</td><td>86.3% · 8.8% · 4.9%</td></tr></tbody></table><div class="caveat">No timestamps: these are closing snapshots, not prices available when a user acts.</div><div class="caveat">No account terms, limits or stakes: a quote is not proof of an obtainable price.</div><div class="caveat">The de-vigged probability is a model of the market&#x27;s belief, not a forecast of ours.</div><div class="caveat">A negative margin on the Max row is a synthetic artefact: it takes the highest price for each outcome from whichever book offered it, which no single book will, so it is not an arbitrage and not executable.</div></section>
+ <section class="card"><h2>Structures — the same net upside at different prices</h2><table class='grid'><thead><tr><th>Odds</th><th>Stake at risk</th><th>Gross return</th><th>Market-implied hit</th><th>Expected loss</th><th>Variance</th></tr></thead><tbody><tr><td class='name'>1.50×</td><td>KSh 400</td><td>KSh 600</td><td>63.5%</td><td>KSh 19.05</td><td>83,447</td></tr><tr><td class='name'>2.00×</td><td>KSh 200</td><td>KSh 400</td><td>47.6%</td><td>KSh 9.52</td><td>39,909</td></tr><tr><td class='name'>3.00×</td><td>KSh 100</td><td>KSh 300</td><td>31.8%</td><td>KSh 4.76</td><td>19,501</td></tr><tr><td class='name'>4.00×</td><td>KSh 67</td><td>KSh 267</td><td>23.8%</td><td>KSh 3.17</td><td>12,900</td></tr><tr><td class='name'>6.00×</td><td>KSh 40</td><td>KSh 240</td><td>15.9%</td><td>KSh 1.90</td><td>7,692</td></tr></tbody></table><div class="verdict">Matched on the same net upside, structures differ in what they cost to hold, not in value: the higher-odds row risks less, wins less often, and has a smaller expected loss, while the lower-odds row has smaller variance and a larger downside. Choosing between them is a preference over distributions.</div><div class="caveat">Expected loss is negative for every row: a quoted price carries a margin.</div><div class="caveat">Market-implied probabilities are an assumption about how the margin is spread, not a forecast.</div><div class="caveat">Stake arithmetic ignores limits, account terms and whether the price is obtainable.</div><div class="caveat">E25 found realised hit rates consistent with these probabilities in four of five bands; the exception did not survive the margin, so no row is an opportunity.</div></section>
+
+ <footer>
+  Prices are recorded closing quotes from a historical corpus. There are no timestamps, no account
+  terms and no limits, so nothing here shows a price was obtainable when a user acts. No
+  profitability, expected-value or user-advantage claim is made or implied.
+ </footer>
+</div></body></html>
