@@ -107,10 +107,11 @@ feature availability.
 
 ### Recommendation
 
-The only decision-support claim this project can make honestly is: **price comparison reduces what a
-user pays, by a measurable amount, and that is not the same as making a bet profitable.** A product
-built on that claim should say exactly that, and should not present a better price as value, a hit
-rate as an edge, or an abstention rule as skill.
+The only claim this project can make honestly is: **in the held snapshots, the highest recorded quote
+sits above the recorded average by a measurable amount, and that is not the same as making a bet
+profitable — nor is it established that a user could obtain that quote.** A product built on that claim
+should say exactly that, and should not present a higher quote as value, a hit rate as an edge, or an
+abstention rule as skill.
 
 Everything else in the contingency plan — slip assistance, projections, jackpots, multi-platform
 aggregation — remains blocked on evidence or access, as recorded above.
