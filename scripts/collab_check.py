@@ -24,6 +24,7 @@ sys.path.insert(0, str(ROOT))
 from scripts.collab_note import (  # noqa: E402
     ACKNOWLEDGED_MALFORMED,
     malformed_headers,
+    loose_headers,
     parse_entries,
 )
 
@@ -405,10 +406,12 @@ def run_checks(thread: Path, queue: Path, decisions: Path,
     coupling_errors, warnings = check_coupling(rows, entries, verify_revisions)
     errors.extend(coupling_errors)
     for header in malformed_headers(thread):
+        errors.append(f"malformed entry header, not parsed as an entry: {header}")
+    for header in loose_headers(thread):
         if header in ACKNOWLEDGED_MALFORMED:
             warnings.append(f"malformed entry header (acknowledged): {header}")
         else:
-            errors.append(f"malformed entry header, not parsed as an entry: {header}")
+            warnings.append(f"header parsed with fallback fields: {header}")
     errors.extend(check_decisions(decisions))
     if check_history:
         errors.extend(check_thread_history(thread))

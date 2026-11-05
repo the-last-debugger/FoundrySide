@@ -6,7 +6,11 @@ are not erased.
 
 ## Active
 
-**No active task.** **Track A is closed** — see docs/CONCLUSION.md.
+**No corpus scoring is authorised.** **Track A is closed** (docs/CONCLUSION.md).
+
+The only current bounded work is **method correction and pre-registration** for the dispersion study
+(docs/PREREG-DISPERSION.md), which is with the sponsor for review. It is **not approved** and the
+study is **not complete**.
 
 ## Next
 
@@ -25,8 +29,8 @@ rate, calibration, price improvement, expected value and profitability separate;
 used without being called safe; and how jackpot discovery sits beside the wider ambition. The smallest
 coherent next steps and their dependencies are part of the ask.
 
-**Status: blocked on the sponsor gate for the dispersion study**, because the instruction was to
-finish the current bounded task first. Nothing has been drafted.
+**Status: queued for the next cycle; it must not start concurrently with the dispersion study.**
+Nothing has been drafted.
 
 ## Decision pending with the sponsor
 

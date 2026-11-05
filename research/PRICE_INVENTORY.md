@@ -42,8 +42,8 @@ corpus actually supports a market-wide best-price question and a movement questi
 
 **Per selection, the best price is genuinely better than the average** by
 6.51% on average across 44,406 selection-snapshots: a user
-backing one outcome can get a better price by choosing the right book. That is the tradeable
-quantity.
+backing one outcome could have got a better price by choosing the right book in these snapshots. That is a
+historical quoted-price difference, not a demonstrated obtainable price: there are no timestamps, no account terms and no limits in this corpus.
 
 **Whether that better price beats the margin is the decision-relevant question.** Treating the
 de-vigged average price as the fair probability, backing one selection at the best available price

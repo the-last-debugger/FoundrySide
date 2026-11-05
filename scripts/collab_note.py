@@ -75,8 +75,14 @@ ACKNOWLEDGED_MALFORMED = {
 }
 
 
-def malformed_headers(path: Path = THREAD) -> list[str]:
-    """Entry-looking lines that do not satisfy the header grammar, in file order."""
+def loose_headers(path: Path = THREAD) -> list[str]:
+    """Entry-looking lines recovered with fallback fields rather than the strict grammar.
+
+    These are not errors. A header that does not match the strict grammar is still parsed as an
+    entry - stamp if a date-like token exists, author from the known names, kind from the words that
+    are actually kinds - so nothing is absorbed into the previous entry's body. The list exists so
+    the checker can say so out loud instead of failing a build over a formatting variation.
+    """
     if not path.exists():
         return []
     found = []
@@ -84,6 +90,23 @@ def malformed_headers(path: Path = THREAD) -> list[str]:
         if line.startswith("### ") and not HEADER_RE.match(line):
             found.append(line.strip())
     return found
+
+
+def malformed_headers(path: Path = THREAD) -> list[str]:
+    """Entry-looking lines that produced no entry at all.
+
+    With tolerant parsing this is empty by construction: every `### ` line becomes an entry. It is
+    kept so callers that want the strict question can still ask it, and so a future grammar change
+    that reintroduces absorption is visible.
+    """
+    if not path.exists():
+        return []
+    headings = sum(1 for line in path.read_text(encoding="utf-8", errors="replace").splitlines()
+                   if line.startswith("### "))
+    return [] if len(parse_entries(path)) >= headings else [
+        line.strip() for line in path.read_text(encoding="utf-8", errors="replace").splitlines()
+        if line.startswith("### ") and not HEADER_RE.match(line)
+    ]
 
 
 

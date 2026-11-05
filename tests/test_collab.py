@@ -27,6 +27,7 @@ from scripts.collab_note import (  # noqa: E402
     append,
     build_entry,
     malformed_headers,
+    loose_headers,
     parse_entries,
 )
 
@@ -277,8 +278,11 @@ class MalformedHeaderTest(unittest.TestCase):
         tmp.write_text(FIXTURE_THREAD + "\n" + self.BAD + "\nThe asks.\n", encoding="utf-8")
         return tmp
 
-    def test_malformed_header_is_detected(self):
-        self.assertEqual(malformed_headers(self._thread()), [self.BAD])
+    def test_malformed_header_is_counted_as_loose(self):
+        # malformed_headers() now reports headers that produced NO entry, which is none: tolerant
+        # parsing recovers every heading. The strict question moves to loose_headers().
+        self.assertEqual(malformed_headers(self._thread()), [])
+        self.assertEqual(loose_headers(self._thread()), [self.BAD])
 
     def test_malformed_header_is_still_an_entry(self):
         # The contract changed deliberately. A header the strict grammar cannot read is now parsed
@@ -289,10 +293,10 @@ class MalformedHeaderTest(unittest.TestCase):
         self.assertEqual(len(entries), 3)
         self.assertTrue(entries[-1].get("loose"))
 
-    def test_malformed_header_fails_the_check(self):
+    def test_malformed_header_warns_instead_of_failing(self):
         root = Path(tempfile.mkdtemp())
-        # A different malformed header, because BAD is acknowledged and downgraded to a
-        # warning; the error path needs a header nobody has excused.
+        # A header nobody has acknowledged is a warning, not an error: it is still an entry, so
+        # failing the build over it would be failing over formatting rather than over substance.
         unknown = "### not-a-timestamp · sponsor · note"
         (root / "thread.md").write_text(FIXTURE_THREAD + "\n" + unknown + "\n", encoding="utf-8")
         (root / "queue.md").write_text(
@@ -301,10 +305,11 @@ class MalformedHeaderTest(unittest.TestCase):
             "| RQ-001 | thing | a.md | - | draft | none | oversight |\n", encoding="utf-8")
         (root / "decisions.md").write_text(
             "## D-01\n\n**Decision:** x\n\n**Status:** accepted\n", encoding="utf-8")
-        errors, _, _ = run_checks(root / "thread.md", root / "queue.md",
-                                  root / "decisions.md", verify_revisions=False,
-                                  check_history=False)
-        self.assertTrue(any("malformed entry header" in e for e in errors))
+        errors, warnings, _ = run_checks(root / "thread.md", root / "queue.md",
+                                        root / "decisions.md", verify_revisions=False,
+                                        check_history=False)
+        self.assertEqual(errors, [])
+        self.assertTrue(any("fallback fields" in w for w in warnings))
 
     def test_the_acknowledged_exception_is_still_named(self):
         self.assertIn(self.BAD, ACKNOWLEDGED_MALFORMED)
