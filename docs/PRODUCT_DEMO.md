@@ -49,6 +49,21 @@ open) and the fact that files are stored as received. It does not overwrite exis
 Every number carries a tag: **observed** (a recorded quote), **estimated** (a model or a measured
 constant applied to observed inputs), **hypothetical** (arithmetic over user-supplied parameters).
 
+## Interface
+
+Single page, no build step, no external assets. A header carries the product and a **mode badge** that
+says whether you are looking at the held corpus or synthetic demo data. Six tabs: Assess, Market, Slip,
+Stake &amp; target, Jackpot, Journal.
+
+Design choices that serve the honesty requirement rather than decoration:
+
+- every value carries a **claim-kind tag** (observed / estimated / hypothetical) beside it;
+- probability meters and price bars make magnitudes comparable at a glance, so a 0.3% and a 30%
+  cannot be confused;
+- results are ria-live regions, tabs are a proper 	ablist, and prefers-reduced-motion is
+  respected;
+- loading states are labelled, so an empty panel reads as working rather than broken.
+
 ## What is genuinely implemented
 
 - Proportional de-vig, overround, and per-book quote comparison over all 40 held files.

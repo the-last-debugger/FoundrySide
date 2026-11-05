@@ -118,5 +118,20 @@ class ServerTest(unittest.TestCase):
         self.assertIn(ctx.exception.code, (403, 404))
 
 
+    def test_interface_declares_its_structure(self):
+        # The UI is hand-written HTML, so its structure is asserted rather than assumed: results must
+        # announce themselves to assistive tech, the tabs must be a tablist, claim-kind tags must
+        # exist, and the mode badge must say whether the data is held or synthetic.
+        _, body, _ = self.get("/")
+        for needle in ('id="mode-badge"', "aria-live=", 'role="tablist"', 'class="tag'):
+            self.assertIn(needle, body, needle)
+
+    def test_interface_states_the_limits_in_the_page(self):
+        _, body, _ = self.get("/")
+        lowered = body.lower()
+        self.assertIn("obtainable", lowered)
+        self.assertIn("no profitability", lowered)
+
+
 if __name__ == "__main__":
     unittest.main()
