@@ -220,6 +220,25 @@ def check_thread_index() -> Check:
     return Check("bridge index present", True, f"{len(entries)} entries")
 
 
+def check_status_snapshot() -> Check:
+    """docs/STATUS.json must exist and describe the current programme."""
+    snapshot = DOCS / "STATUS.json"
+    if not snapshot.exists():
+        return Check("status snapshot present", False, "run python scripts/status.py")
+    try:
+        data = json.loads(snapshot.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return Check("status snapshot present", False, "STATUS.json is not valid JSON")
+    experiments = data.get("experiments", {}).get("value")
+    programme = PROGRAMME.read_text(encoding="utf-8") if PROGRAMME.exists() else ""
+    ids = {int(m) for m in re.findall(r"\|\s*E(\d+)\s*\|", programme)}
+    if ids and experiments != max(ids):
+        return Check("status snapshot present", False,
+                     f"snapshot says {experiments} experiments, register has {max(ids)}; "
+                     f"run python scripts/status.py")
+    return Check("status snapshot present", True, f"{experiments} experiments recorded")
+
+
 CHECKS = (
     check_reports_cited,
     check_generator_count,
@@ -232,6 +251,7 @@ CHECKS = (
     check_malformed_headers,
     check_footprint,
     check_thread_index,
+    check_status_snapshot,
 )
 
 

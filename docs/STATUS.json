@@ -1,0 +1,30 @@
+{
+  "revision": {
+    "value": "d713402",
+    "source": "git"
+  },
+  "experiments": {
+    "value": 26,
+    "source": "docs/RESEARCH_PROGRAMME.md"
+  },
+  "generators": {
+    "value": 35,
+    "source": "scripts/repro_sweep.py"
+  },
+  "reports": {
+    "value": 36,
+    "source": "research/*.md"
+  },
+  "audit checks": {
+    "value": 12,
+    "source": "scripts/audit.py"
+  },
+  "tests": {
+    "value": 335,
+    "source": "python -m unittest discover -s tests"
+  },
+  "bridge entries": {
+    "value": 215,
+    "source": "docs/COLLAB/THREAD.md"
+  }
+}
