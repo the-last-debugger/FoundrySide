@@ -20,6 +20,16 @@ D-10 authorises independent research, experiments and research scripts.
 | docs/PRODUCT_DIRECTION.md | The user-facing direction: one engine, three views, four claim kinds, and what it refuses to build |
 | docs/PREREG-DISPERSION.md | The one authorised study, specified before scoring: is the quote gap consistent with a calibrated dispersion model |
 
+## Run the product
+
+`ash
+python -m app.server      # http://127.0.0.1:8765
+`
+
+A local market-companion app over the held corpus: assess a selection, build a slip with a dependence
+correction, search for a stake-and-target combination, and see pool arithmetic. Every number is tagged
+observed, estimated or hypothetical. See [docs/PRODUCT_DEMO.md](docs/PRODUCT_DEMO.md).
+
 ## Where the argument stands
 
 The vision is sound and the first phase is deliberately narrow. Phase one tests the

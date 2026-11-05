@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FoundrySide — market companion</title>
+<style>
+  :root {
+    --bg:#0f1115; --panel:#171a21; --line:#252a34; --text:#e7e9ee; --muted:#98a0ad;
+    --obs:#5cc8ff; --est:#c8a04a; --hyp:#9d7bd8; --ok:#5ad19a; --warn:#e0b050; --bad:#e07a7a;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text);
+         font:15px/1.55 ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { padding:22px 26px 14px; border-bottom:1px solid var(--line); }
+  h1 { margin:0 0 4px; font-size:19px; letter-spacing:.2px; }
+  .sub { color:var(--muted); font-size:13px; }
+  nav { display:flex; gap:6px; padding:12px 26px 0; flex-wrap:wrap; }
+  nav button { background:transparent; border:1px solid var(--line); color:var(--muted);
+               padding:8px 14px; border-radius:8px; cursor:pointer; font-size:14px; }
+  nav button.active { color:var(--text); border-color:#3b4453; background:var(--panel); }
+  main { padding:18px 26px 60px; max-width:980px; }
+  .view { display:none; } .view.active { display:block; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px;
+          padding:16px 18px; margin:14px 0; }
+  label { display:block; font-size:12px; color:var(--muted); margin:10px 0 4px;
+          text-transform:uppercase; letter-spacing:.6px; }
+  select, input { background:#11141a; color:var(--text); border:1px solid var(--line);
+                  border-radius:8px; padding:9px 10px; font-size:14px; width:100%; max-width:420px; }
+  .row { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; }
+  .row > div { flex:1 1 160px; }
+  button.primary { background:#2d3646; color:var(--text); border:1px solid #3d4859;
+                   border-radius:8px; padding:9px 16px; cursor:pointer; font-size:14px; }
+  button.primary:hover { background:#36414f; }
+  .kv { display:grid; grid-template-columns: 1fr auto; gap:6px 16px; margin:8px 0; }
+  .kv div:nth-child(odd) { color:var(--muted); }
+  .kv div:nth-child(even) { font-variant-numeric: tabular-nums; text-align:right; }
+  .tag { font-size:10px; padding:1px 6px; border-radius:999px; border:1px solid currentColor;
+         margin-left:6px; vertical-align:1px; }
+  .obs { color:var(--obs); } .est { color:var(--est); } .hyp { color:var(--hyp); }
+  .caveat { color:var(--muted); font-size:13px; border-left:2px solid var(--line);
+            padding-left:10px; margin:6px 0; }
+  .verdict { border-radius:10px; padding:12px 14px; margin:10px 0;
+             background:#141821; border:1px solid var(--line); }
+  .verdict.warn { border-color:#4a3d20; color:#f0d9a8; }
+  .verdict.bad { border-color:#4a2626; color:#f2b8b8; }
+  .cand { border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin:8px 0; }
+  .cand h4 { margin:0 0 6px; font-size:14px; }
+  footer { padding:18px 26px 40px; color:var(--muted); font-size:12px;
+           border-top:1px solid var(--line); }
+  .legend span { margin-right:14px; }
+  .err { color:var(--bad); }
+</style>
+</head>
+<body>
+<header>
+  <h1>FoundrySide — market companion</h1>
+  <div class="sub">What the recorded prices imply. Not a prediction, and not a promise of profit.</div>
+</header>
+
+<nav>
+  <button data-view="assess" class="active">Assess</button>
+  <button data-view="slip">Slip</button>
+  <button data-view="target">Stake &amp; target</button>
+  <button data-view="jackpot">Jackpot arithmetic</button>
+</nav>
+
+<main>
+  <!-- ASSESS -->
+  <section id="view-assess" class="view active">
+    <div class="card">
+      <div class="row">
+        <div><label>Division</label><select id="a-div"></select></div>
+        <div><label>Fixture</label><select id="a-fixture"></select></div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <div><label>Outcome</label>
+          <div class="row" id="a-outcomes">
+            <button class="primary" data-out="H">Home</button>
+            <button class="primary" data-out="D">Draw</button>
+            <button class="primary" data-out="A">Away</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="a-result"></div>
+  </section>
+
+  <!-- SLIP -->
+  <section id="view-slip" class="view">
+    <div class="card">
+      <div class="row">
+        <div><label>Fixture</label><select id="s-fixture"></select></div>
+        <div><label>Outcome</label><select id="s-outcome">
+          <option value="H">Home</option><option value="D">Draw</option><option value="A">Away</option>
+        </select></div>
+        <div style="flex:0 0 120px"><label>&nbsp;</label><button class="primary" id="s-add">Add leg</button></div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <div><label>Stake (KSh)</label><input id="s-stake" type="number" value="100" min="20" step="10"></div>
+        <div style="flex:0 0 140px"><label>&nbsp;</label><button class="primary" id="s-calc">Assess slip</button></div>
+      </div>
+      <div id="s-legs" style="margin-top:10px"></div>
+    </div>
+    <div id="s-result"></div>
+  </section>
+
+  <!-- TARGET -->
+  <section id="view-target" class="view">
+    <div class="card">
+      <div class="row">
+        <div><label>Stake (KSh)</label><input id="t-stake" type="number" value="100" min="20" step="10"></div>
+        <div><label>Target multiplier</label><input id="t-target" type="number" value="10" min="1.1" step="0.5"></div>
+        <div><label>Tolerance (±)</label><input id="t-tol" type="number" value="0.15" min="0.02" max="0.5" step="0.01"></div>
+        <div style="flex:0 0 160px"><label>&nbsp;</label><button class="primary" id="t-go">Search</button></div>
+      </div>
+      <div class="caveat">A target is a constraint you choose, not evidence that it is attainable.</div>
+    </div>
+    <div id="t-result"></div>
+  </section>
+
+  <!-- JACKPOT -->
+  <section id="view-jackpot" class="view">
+    <div class="card">
+      <div class="row">
+        <div><label>Entrants</label><input id="j-entrants" type="number" value="1000" min="1"></div>
+        <div><label>Stake (KSh)</label><input id="j-stake" type="number" value="100" min="20"></div>
+        <div><label>Takeout</label><input id="j-takeout" type="number" value="0.3" min="0" max="0.95" step="0.05"></div>
+        <div><label>Your lines</label><input id="j-lines" type="number" value="1" min="1"></div>
+        <div style="flex:0 0 140px"><label>&nbsp;</label><button class="primary" id="j-go">Compute</button></div>
+      </div>
+      <div class="caveat">No jackpot rules or payout history were found for this corpus. This is arithmetic on your inputs.</div>
+    </div>
+    <div id="j-result"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="legend">
+    <span class="obs">● observed</span>
+    <span class="est">● estimated</span>
+    <span class="hyp">● hypothetical</span>
+  </div>
+  <p>Every figure is tagged with the kind of claim it makes. Prices are recorded closing quotes from a
+  historical corpus: there are no timestamps, no account terms and no limits, so nothing here shows a
+  price was obtainable when a user acts. No profitability, expected-value or user-advantage claim is
+  made or implied.</p>
+</footer>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const fmt = (v, d=2) => (v === null || v === undefined) ? "—" : Number(v).toFixed(d);
+
+function tag(kind) {
+  const cls = {observed:"obs", estimated:"est", hypothetical:"hyp"}[kind] || "est";
+  return `<span class="tag ${cls}">${kind}</span>`;
+}
+function kv(pairs) {
+  return `<div class="kv">${pairs.map(([k,v]) => `<div>${k}</div><div>${v}</div>`).join("")}</div>`;
+}
+function caveats(list) {
+  return (list || []).map(c => `<div class="caveat">${c}</div>`).join("");
+}
+
+document.querySelectorAll("nav button").forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+    btn.classList.add("active");
+    $("view-" + btn.dataset.view).classList.add("active");
+  };
+});
+
+async function getJSON(url) {
+  const r = await fetch(url);
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.error || "request failed");
+  return j;
+}
+
+/* ---------- Assess ---------- */
+let fixtures = [];
+async function loadDivisions() {
+  const health = await getJSON("/api/health");
+  const divs = health.divisions;
+  $("a-div").innerHTML = divs.map(d => `<option>${d}</option>`).join("");
+  await loadFixtures(divs[0]);
+}
+async function loadFixtures(div) {
+  const data = await getJSON(`/api/fixtures?div=${encodeURIComponent(div)}&limit=200`);
+  fixtures = data.fixtures;
+  const opts = fixtures.map(f => `<option value="${f.key}">${f.date} — ${f.label}</option>`).join("");
+  $("a-fixture").innerHTML = opts;
+  $("s-fixture").innerHTML = opts;
+}
+$("a-div").onchange = (e) => loadFixtures(e.target.value);
+
+document.querySelectorAll("#a-outcomes button").forEach(btn => {
+  btn.onclick = async () => {
+    const key = $("a-fixture").value, out = btn.dataset.out;
+    $("a-result").innerHTML = "<div class='card'>Assessing…</div>";
+    try {
+      const a = await getJSON(`/api/assess?key=${encodeURIComponent(key)}&outcome=${out}`);
+      $("a-result").innerHTML = `
+        <div class="card">
+          <h3 style="margin:0 0 4px;font-size:16px">${a.fixture} — ${a.outcome_label}</h3>
+          ${kv([
+            ["Best recorded price" + tag("observed"), fmt(a.best_recorded_price, 2) + ` <span class="sub">(${a.best_book})</span>`],
+            ["All recorded prices", Object.entries(a.all_prices).map(([k,v]) => `${k} ${fmt(v,2)}`).join(" · ")],
+            ["Market-implied probability" + tag("estimated"), (a.market_implied*100).toFixed(1) + "%"],
+            ["Price-implied probability" + tag("observed"), (a.price_implied*100).toFixed(1) + "%"],
+            ["Price vs market", ((a.price_vs_market)*100).toFixed(2) + " pp"],
+          ])}
+          <div class="verdict">${a.assessment}</div>
+          ${caveats(a.caveats)}
+        </div>`;
+    } catch (err) { $("a-result").innerHTML = `<div class="card err">${err.message}</div>`; }
+  };
+});
+
+/* ---------- Slip ---------- */
+let legs = [];
+function renderLegs() {
+  $("s-legs").innerHTML = legs.length
+    ? legs.map((l, i) => `<div class="cand">${l.label} <button class="primary" style="float:right" onclick="removeLeg(${i})">remove</button></div>`).join("")
+    : `<div class="caveat">No legs yet. Add at least one.</div>`;
+}
+window.removeLeg = (i) => { legs.splice(i,1); renderLegs(); };
+$("s-add").onclick = () => {
+  const key = $("s-fixture").value, out = $("s-outcome").value;
+  const fx = fixtures.find(f => f.key === key);
+  if (!fx) return;
+  legs.push({ fixture_key: key, outcome: out, label: `${fx.label} (${out})` });
+  renderLegs();
+};
+$("s-calc").onclick = async () => {
+  const stake = Number($("s-stake").value);
+  try {
+    const r = await fetch("/api/slip", { method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ stake, legs }) });
+    const s = await r.json();
+    if (!r.ok) throw new Error(s.error);
+    $("s-result").innerHTML = `
+      <div class="card">
+        ${kv([
+          ["Naive product" + tag("estimated"), (s.naive_product*100).toFixed(3) + "%"],
+          ["Dependence ratio" + tag("estimated"), fmt(s.dependence_ratio,2) + (s.same_match ? " (same match!)" : " (different matches)")],
+          ["Joint probability" + tag("estimated"), (s.joint_probability*100).toFixed(3) + "%"],
+          ["Combined odds", fmt(s.combined_odds,2)],
+          ["Stake", "KSh " + fmt(s.stake,0)],
+          ["Gross return" + tag("hypothetical"), "KSh " + fmt(s.gross_return,0)],
+          ["Net if it wins", "KSh " + fmt(s.net_result,0)],
+          ["Loss if it fails", "KSh −" + fmt(s.full_stake_loss,0)],
+        ])}
+        ${caveats(s.caveats)}
+      </div>`;
+  } catch (err) { $("s-result").innerHTML = `<div class="card err">${err.message}</div>`; }
+};
+
+/* ---------- Target ---------- */
+$("t-go").onclick = async () => {
+  const p = new URLSearchParams({ stake: $("t-stake").value, target: $("t-target").value, tolerance: $("t-tol").value });
+  $("t-result").innerHTML = "<div class='card'>Searching…</div>";
+  try {
+    const r = await getJSON("/api/target?" + p.toString());
+    const cards = r.matches.map(m => `
+      <div class="cand">
+        <h4>${m.label}</h4>
+        ${kv([
+          ["Combined price" + tag("observed"), fmt(m.price,2) + "×"],
+          ["Hit probability" + tag("estimated"), (m.probability*100).toFixed(2) + "%"],
+          ["Gross return" + tag("hypothetical"), "KSh " + fmt(m.gross_return,0)],
+          ["Net if it wins", "KSh " + fmt(m.net_result,0)],
+        ])}
+      </div>`).join("");
+    $("t-result").innerHTML = `
+      <div class="card">
+        <div class="verdict ${r.found ? "" : "warn"}">${r.verdict}</div>
+        ${cards}
+        ${caveats(r.caveats)}
+      </div>`;
+  } catch (err) { $("t-result").innerHTML = `<div class="card err">${err.message}</div>`; }
+};
+
+/* ---------- Jackpot ---------- */
+$("j-go").onclick = async () => {
+  const p = new URLSearchParams({ entrants: $("j-entrants").value, stake: $("j-stake").value,
+    takeout: $("j-takeout").value, lines: $("j-lines").value });
+  try {
+    const r = await getJSON("/api/jackpot?" + p.toString());
+    $("j-result").innerHTML = `
+      <div class="card">
+        ${kv([
+          ["Pool" + tag("hypothetical"), "KSh " + fmt(r.pool,0)],
+          ["Lines in universe", r.universe_of_lines.toLocaleString()],
+          ["Your coverage", (r.coverage*100).toFixed(6) + "%"],
+          ["Expected winners if random" + tag("hypothetical"), fmt(r.expected_winners_if_random,2)],
+        ])}
+        <div class="verdict warn">${r.verdict}</div>
+        ${caveats(r.caveats)}
+      </div>`;
+  } catch (err) { $("j-result").innerHTML = `<div class="card err">${err.message}</div>`; }
+};
+
+loadDivisions().catch(err => {
+  $("a-result").innerHTML = `<div class="card err">${err.message}</div>`;
+});
+</script>
+</body>
+</html>
