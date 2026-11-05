@@ -1,4 +1,4 @@
-<!-- generated-by: price_inventory.py sha256=a8ba6a99df33 -->
+<!-- generated-by: price_inventory.py sha256=3695b334d39f -->
 
 # What the corpus actually contains
 
@@ -41,15 +41,16 @@ earlier best-price study used two books' closing prices because that is what it 
 corpus actually supports a market-wide best-price question and a movement question.
 
 **Per selection, the best quoted price is higher than the average quoted price** by
-6.51% on average across 44,406 selection-snapshots: a user
-backing one outcome can get a better price by choosing the right book. That is the tradeable
-quantity.
+6.51% on average across 44,406 selection-snapshots. That is
+a historical quoted-price difference in the held snapshots, not a demonstrated obtainable price.
 
-**Whether that better price beats the margin is the decision-relevant question.** Treating the
+**Whether the higher quote beats the margin is the decision-relevant question, and this corpus
+cannot answer it.** Treating the
 de-vigged average price as the fair probability, backing one selection at the best quoted price in the held snapshots
 returns a mean expected value of **+0.0160** per unit across 44,406
 selection-snapshots, and **56.6%** of them are positive. That is the whole
-price-shopping case: the average price carries the margin, and the best price sometimes beats it.
+quote-comparison case: the recorded average carries the margin, and the highest recorded quote
+sometimes beats it. None of this shows the quote was obtainable.
 
 **This must not be read as evidence of profit, and the reason is mechanical.** For a *single*
 selection, the maximum across several books is a maximum of noisy quotes: where books allocate their
@@ -66,7 +67,7 @@ obtained that price, nor that shopping improves a user outcome. Whether it impro
 this corpus cannot observe, and the positive share above should be treated as an upper bound
 inflated by the selection effect rather than as an edge.
 
-**The three-way overround from Max columns is not tradeable.** Summing the best home, best draw
+**The three-way overround from Max columns is not executable.** Summing the best home, best draw
 and best away price across books gives an overround 0.0526 lower than the average —
 which is negative, a synthetic arbitrage, because the three best prices come from three different
 books and no one offers all three at once. It is reported here only to say plainly that it must not
@@ -91,7 +92,7 @@ answerable; whether the movement carries information is a separate experiment.
 - **No limits, stakes or account terms**, so an advertised best price is not evidence of an
   obtainable one.
 - **Book coverage is football-data's choice**, not the market: `Max` is the best of the books it
-  tracks, not the best available anywhere.
+  tracks, not the best quote available anywhere.
 
 ## Limits
 

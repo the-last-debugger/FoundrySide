@@ -9,7 +9,7 @@ The answer turns out to be broader than the earlier work assumed. football-data 
 it tracks) and `Avg` (market average). That means this corpus can support two questions the
 best-price study did not ask:
 
-- what the **best available price across the market** is worth, not just the better of two books;
+- what the **highest recorded quote across the market** is worth, not just the better of two books;
 - whether price **movement** between the snapshots carries information.
 
 Neither is timestamped, and that limitation is unchanged.
@@ -64,8 +64,8 @@ def usable(value) -> bool:
 def ev_at_best(rows: list[dict]) -> dict:
     """Per-selection expected value if the de-vigged average price is treated as fair.
 
-    This is the decision-relevant quantity behind price shopping: if the market average already
-    carries the margin, the best available price for one selection may or may not beat it. The
+    This is the quantity price comparison is about: if the market average already carries the
+    margin, the highest recorded quote for one selection may or may not beat it. The
     average is de-vigged across the three outcomes, so it is the best available estimate of the
     fair probability in this corpus - an assumption, stated as such.
     """
@@ -106,9 +106,11 @@ def main() -> int:
         ou_coverage.append({"label": label, "snapshot": snapshot, "cols": [low, high],
                             "present": present, "share": present / n})
 
-    # Per-selection best price: a user backs one selection at one book, so this is the tradeable
-    # quantity. The three-way overround built from Max columns is not tradeable - each leg can come
-    # from a different book - and is computed separately so the two cannot be confused.
+    # Per-selection highest quote: the highest recorded quote for one outcome against the recorded
+    # average for that outcome. It is a property of the quotes in these snapshots - not a price shown
+    # to be obtainable and not an executable quantity. The three-way overround built from Max columns
+    # is likewise not executable, since each leg can come from a different book, and it is computed
+    # separately so the two cannot be confused.
     per_selection = []
     for r in rows:
         for best_col, avg_col in (("MaxCH", "AvgCH"), ("MaxCD", "AvgCD"), ("MaxCA", "AvgCA")):
@@ -116,7 +118,7 @@ def main() -> int:
                 per_selection.append(float(r[best_col]) / float(r[avg_col]) - 1)
     per_selection_mean = statistics.mean(per_selection) if per_selection else float("nan")
 
-    # Best available price versus the market average, on the closing snapshot, per side.
+    # Highest recorded quote versus the recorded market average, on the closing snapshot, per side.
     savings = []
     for r in rows:
         if not all(usable(r.get(c)) for c in ("MaxCH", "MaxCD", "MaxCA",
@@ -168,15 +170,16 @@ earlier best-price study used two books' closing prices because that is what it 
 corpus actually supports a market-wide best-price question and a movement question.
 
 **Per selection, the best quoted price is higher than the average quoted price** by
-{per_selection_mean * 100:.2f}% on average across {len(per_selection):,} selection-snapshots: a user
-backing one outcome can get a better price by choosing the right book. That is the tradeable
-quantity.
+{per_selection_mean * 100:.2f}% on average across {len(per_selection):,} selection-snapshots. That is
+a historical quoted-price difference in the held snapshots, not a demonstrated obtainable price.
 
-**Whether that better price beats the margin is the decision-relevant question.** Treating the
+**Whether the higher quote beats the margin is the decision-relevant question, and this corpus
+cannot answer it.** Treating the
 de-vigged average price as the fair probability, backing one selection at the best quoted price in the held snapshots
 returns a mean expected value of **{ev['mean']:+.4f}** per unit across {ev['n']:,}
 selection-snapshots, and **{ev['share_positive']:.1%}** of them are positive. That is the whole
-price-shopping case: the average price carries the margin, and the best price sometimes beats it.
+quote-comparison case: the recorded average carries the margin, and the highest recorded quote
+sometimes beats it. None of this shows the quote was obtainable.
 
 **This must not be read as evidence of profit, and the reason is mechanical.** For a *single*
 selection, the maximum across several books is a maximum of noisy quotes: where books allocate their
@@ -193,7 +196,7 @@ obtained that price, nor that shopping improves a user outcome. Whether it impro
 this corpus cannot observe, and the positive share above should be treated as an upper bound
 inflated by the selection effect rather than as an edge.
 
-**The three-way overround from Max columns is not tradeable.** Summing the best home, best draw
+**The three-way overround from Max columns is not executable.** Summing the best home, best draw
 and best away price across books gives an overround {saving_mean:.4f} lower than the average —
 which is negative, a synthetic arbitrage, because the three best prices come from three different
 books and no one offers all three at once. It is reported here only to say plainly that it must not
@@ -218,7 +221,7 @@ answerable; whether the movement carries information is a separate experiment.
 - **No limits, stakes or account terms**, so an advertised best price is not evidence of an
   obtainable one.
 - **Book coverage is football-data's choice**, not the market: `Max` is the best of the books it
-  tracks, not the best available anywhere.
+  tracks, not the best quote available anywhere.
 
 ## Limits
 
