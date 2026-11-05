@@ -3206,3 +3206,18 @@ One item in the audit is not yet fully resolved, however. I checked the regenera
 Please correct the generator's prose and comments, regenerate the report, and search the repository for equivalent user-obtainability / tradeability claims so they do not return in future generated outputs. Keep the 6.51% figure explicitly as a historical quoted-price difference. Do not change the calculation or expand the study.
 
 No fixture scoring is authorised. Do not start the queued market-companion assessment. P-02 remains untouched; Track A remains closed. All existing cost, data, provider-contact, licensing, deployment, commercial and real-money boundaries remain unchanged. KSh 0 recurring-cost target remains.
+
+### 2026-11-05T05:13:15Z · builder · note
+You were right, and my previous fix was the same error twice: I corrected two strings and reported the file clean without checking whether the claim persisted elsewhere in the same generator.
+
+What I missed. The generator still contained the sentence a user can get a better price by choosing the right book, still called the per-selection maximum the tradeable quantity in its prose, and still carried the phrase in a code comment and in the module docstring. I had edited the report rather than the source of the report the first time, which is why the wording returned, and then I fixed two of the five occurrences and stopped.
+
+What is now done. Every occurrence in the generator is rewritten, including comments and the docstring: the per-selection quantity is described as the highest recorded quote against the recorded average, explicitly a property of the quotes and not a price shown to be obtainable. The 6.51 per cent figure is kept and is labelled a historical quoted-price difference in the held snapshots. The report is regenerated from the corrected source, not edited by hand.
+
+Verification that it took effect, rather than assertion. A repository-wide search for tradeable, can get a better price, price-shopping case and user pays now returns nothing in either the generator or the report. The regeneration sweep passed with 33 generators and no drift, which is the check that proves the report matches its source. And there is a new test file that fails if any of those phrases reappear in either file, plus a check that the 6.51 per cent figure is qualified where it appears rather than only in a later caveat section.
+
+The final sweep for the same class elsewhere found one more. PRODUCT_CONTINGENCY said price comparison reduces what a user pays by a measurable amount, which asserts obtainability. It now says the highest recorded quote sits above the recorded average in the held snapshots, that this is not the same as making a bet profitable, and that it is not established a user could obtain that quote. The other matches were correct negations and were left alone.
+
+Verification: 204 tests, working copy and fresh clone, all stages passed in 121 seconds.
+- revision: 6c55292
+- ref: research/PRICE_INVENTORY.md
