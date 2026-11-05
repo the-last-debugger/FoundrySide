@@ -1,5 +1,5 @@
 <!-- generated-by: review_digest.py -->
-<!-- as-of: 89c4d18 -->
+<!-- as-of: 9fc4cae -->
 
 # Review digest
 
@@ -102,7 +102,7 @@ current revision, or the row should be updated first.
 | RQ-003 | 0e05653 | 1 |
 | RQ-004 | 0e05653 | 1 |
 | RQ-005 | 0e05653 | 3 |
-| RQ-016 | 2c6199d | 32 |
+| RQ-016 | 2c6199d | 33 |
 | RQ-017 | 2c6199d | 1 |
 | RQ-018 | 2c6199d | 2 |
 | RQ-020 | 600c1b8 | 2 |

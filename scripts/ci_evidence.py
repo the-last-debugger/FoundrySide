@@ -49,8 +49,8 @@ def render(runs: list[dict], head: str = "") -> str:
         "",
         "# CI evidence",
         "",
-        f"Recorded {stamp} from the GitHub Actions API. Regenerate with "
-        "`python scripts/ci_evidence.py` rather than typing a run number or URL by hand — a quoted",
+        f"Recorded {stamp} from the GitHub Actions API. Note on self-reference: this file cannot name the commit that contains it, so it always refers to the revision it was generated at. Regenerate with "
+        "`python scripts/ci_evidence.py` rather than typing a run number or URL by hand: a quoted",
         "identifier that does not exist is worse than no identifier at all.",
         "",
         "| Run | Commit | Status | Conclusion | Link |",
