@@ -1,4 +1,4 @@
-# Pre-registration — is the 6.5% best-price improvement arithmetic or dispersion?
+# Pre-registration — is the observed price-space dispersion statistic consistent with a calibrated model?
 
 Written before scoring. This revision replaces the earlier draft entirely: the previous document
 contained two competing estimands, and the audit was right that a pre-registration with residual
@@ -16,10 +16,11 @@ dispersion consistent with that observed statistic, or does the observed statist
 the model and its sensitivity grid can produce?**
 
 That is a consistency question about a model, not a decomposition of the 6.51%, and not a decision
-about what a product may claim. A design in which the observed statistic is unsurprising under the
-model says the model is adequate to the data we have; a design in which it is surprising says the
-model is missing something. Neither establishes a "genuine" component, because a residual under an
-assumed dispersion model is not identified as anything in particular.
+about what a product may claim. If the observed statistic is unsurprising under the model, that means
+**this one summary statistic is not inconsistent with this calibrated model and grid** — not that the
+model is generally adequate, and not that it would reproduce other statistics. If it is surprising,
+the model as specified is contradicted by this statistic. Neither establishes a "genuine" component,
+because a residual under an assumed dispersion model is not identified as anything in particular.
 
 ## 2. What was withdrawn, and why
 
@@ -62,7 +63,7 @@ The simulation must produce `S_sim` the same way the source produces `S_obs`.
 
 | Component | Specification | Status |
 | --- | --- | --- |
-| Market strength | Three-way market drawn from the corpus-observed distribution of de-vigged favourite probabilities, so the simulation is not anchored to a single market | assumption, sensitivity-checked |
+| Market strength | **Complete observed three-way de-vigged probability vectors are resampled** from the held corpus (one per simulated fixture), so both the favourite level and the draw/away split come from data rather than reconstruction | resampled from data |
 | Book deviation | See §4a — indices and sharing specified exactly | assumption |
 | Dispersion scale | Chosen so simulated pairwise de-vigged dispersion `d` equals the observed `d` from Pinnacle and Bet365 | **calibrated** |
 | Correlation ρ | Not identified from two books; sensitivity parameter at 0, 0.3, 0.6, 0.9 | assumption |
@@ -75,17 +76,32 @@ The simulation must produce `S_sim` the same way the source produces `S_obs`.
 
 Indices: fixture `f`, book `b`, outcome `o`.
 
-1. **Market.** For fixture `f`, draw a three-way probability vector from the corpus-observed
-   distribution of de-vigged favourite probabilities; take `z_{f,o} = logit(p_{f,o})`.
+1. **Market.** For fixture `f`, resample a **complete three-way de-vigged probability vector**
+   `(p_{f,H}, p_{f,D}, p_{f,A})` from the held corpus. Resampling whole vectors preserves the
+   favourite level, the draw/away split and their joint distribution; a scalar favourite-probability
+   distribution would not define the other two outcomes. Set `z_{f,o} = logit(p_{f,o})`.
 2. **Common draw.** For each fixture and outcome, draw `U_{f,o} ~ N(0,1)` — **shared across all books
    for that outcome**, not across outcomes.
 3. **Independent draw.** For each fixture, book and outcome, draw `ε_{f,b,o} ~ N(0,1)`, independent
    everywhere.
 4. **Deviation.** `δ_{f,b,o} = σ · (√ρ · U_{f,o} + √(1−ρ) · ε_{f,b,o})`. So books are correlated
    **within an outcome** (positive ρ) and conditionally independent across outcomes given the market.
-5. **Probability and margin.** `p'_{f,b,o} = softmax_o(z_{f,o} + δ_{f,b,o})`, then multiply by
-   `(1 + m_b)` and renormalise to the book's three-way overround.
-6. **Odds.** `odds_{f,b,o} = 1 / p'_{f,b,o}` — decimal odds, the same quantity the source reports.
+5. **Probability and margin.** Let `q_{f,b,o} = softmax_o(z_{f,o} + δ_{f,b,o})`, so `Σ_o q = 1`.
+   Apply the book's margin `m_b ≥ 0` as a proportional markup:
+
+   `π_{f,b,o} = q_{f,b,o} · (1 + m_b)`, so that `Σ_o π = 1 + m_b`.
+
+   **No renormalisation follows.** The quoted implied probabilities sum to `1 + m_b` by construction;
+   renormalising them back to 1 would silently delete the margin the model is meant to apply.
+6. **Odds.** `odds_{f,b,o} = 1 / π_{f,b,o}`. The book's three-way overround is then
+   `Σ_o (1/odds) = 1 + m_b`, exactly as intended.
+
+   `m_b` is **measured** as the mean closing overround of the same book in the held corpus for the
+   same seasons, where the two individually recorded books are available. For books whose overround is
+   not individually observed, `m_b` is drawn from the observed distribution of overrounds. Applying a
+   *proportional* markup is a **simulation assumption**, not a measured reproduction of the
+   provider's construction; the sensitivity grid varies it by allowing the margin to be allocated
+   more heavily to longshots, which is the alternative documented in the corpus.
 7. **Missingness.** Drop book-outcome quotes at the observed availability rate, **before** forming
    the maximum and average, because the provider's `Max`/`Avg` are computed over the books it
    retained.

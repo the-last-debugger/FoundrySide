@@ -27,8 +27,9 @@ It cannot, in this corpus. The evidence is consistent across methods:
 - That all markets are efficient. Thirteen divisions were tested within one provider's coverage.
 - That every narrower opportunity is ruled out. Match-level microstructure, live prices and
   information arriving before kickoff were not testable here.
-- That a user gains nothing. Price shopping improves the price paid by ~6.5% per selection. What is
-  not established is that it improves expected value or decisions.
+- That a user gains nothing. The best quoted price exceeded the average quoted price by ~6.5% per
+  selection-snapshot. What is not established is that a user could obtain it, or that it improves
+expected value or decisions.
 - That the model approach is wrong in general. The finding is about this information set, not about
   modelling.
 
@@ -38,8 +39,9 @@ Two facts worth carrying forward:
 
 1. **Recalibration transfers forward** (+0.0102 nats on matched rows). Any future forecaster should
    expect to recalibrate and should test it out of time.
-2. **Price comparison improves the price paid** (~6.5% per selection across 44,406 snapshots) —
-   tradeable, bounded, and not the same as value.
+2. **The best quoted price is above the average quoted price** (~6.5% per selection across 44,406
+   snapshots). This is a property of the quoted snapshots, not a demonstrated obtainable price and not
+   a demonstrated user benefit.
 
 ## Reopening conditions
 

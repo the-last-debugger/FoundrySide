@@ -147,7 +147,8 @@ surface, and it would require both new data and a new evaluation design.
 **Mechanism.** Improve the user's decision without beating the market: better available price,
 abstention, clearer uncertainty.
 
-**What is established.** Price shopping improves the price paid by ~6.5% per selection
+**What is established.** The best quoted price exceeded the average quoted price by ~6.5% per
+selection-snapshot
 (`PRICE_INVENTORY.md`); two-book comparison saves 0.17 pp of overround and still leaves 99.1% of
 fixtures negative at the better price (`BEST_PRICE.md`); filtering to confident picks *degrades*
 the displayed probability (`TRACK_B.md`); movement carries nothing (`MOVEMENT_STUDY.md`).
@@ -178,8 +179,8 @@ outside this corpus and this authorisation.
    whether de-vigged prices deviate from realised frequency more in thin divisions. Cheaper and more
    decisive than another feature cycle, it needs no model to beat anything, and it answers a question
    about market efficiency rather than about our model.
-3. Otherwise, **recommend not proceeding** on Track A. The evidence across twenty-three experiments
-   is consistently negative, and manufacturing a twenty-fourth variant would be activity, not
+3. Otherwise, **recommend not proceeding** on Track A. The evidence across twenty-four experiments
+   is consistently negative, and manufacturing a twenty-fifth variant would be activity, not
    progress.
 
 ## What is not being asked for

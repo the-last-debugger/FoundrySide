@@ -40,13 +40,13 @@ books, plus `Max` (best price across the books football-data tracks) and `Avg` (
 earlier best-price study used two books' closing prices because that is what it looked for; the
 corpus actually supports a market-wide best-price question and a movement question.
 
-**Per selection, the best price is genuinely better than the average** by
+**Per selection, the best quoted price is higher than the average quoted price** by
 6.51% on average across 44,406 selection-snapshots: a user
 the best quoted price for one outcome is above the average quoted price in these snapshots. That is a
 historical quoted-price difference, not a demonstrated obtainable price: there are no timestamps, no account terms and no limits in this corpus.
 
 **Whether that better price beats the margin is the decision-relevant question.** Treating the
-de-vigged average price as the fair probability, backing one selection at the best available price
+de-vigged average price as the fair probability, backing one selection at the best quoted price in the held snapshots
 returns a mean expected value of **+0.0160** per unit across 44,406
 selection-snapshots, and **56.6%** of them are positive. That is the whole
 price-shopping case: the average price carries the margin, and the best price sometimes beats it.

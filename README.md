@@ -15,6 +15,10 @@ D-10 authorises independent research, experiments and research scripts.
 | `research/RESULTS_T0_T1_T3.md` | The first measured results: real baseline, data coverage, accumulator dependence. |
 | `docs/CONSOLIDATED_FINDINGS.md` | **The state of the project in one document** — what was measured, what was tested, what would change the answer. |
 | `docs/COLLAB/` | The bridge: thread, review queue, decisions, proposals. Start at `docs/COLLAB/README.md`. |
+| docs/CONCLUSION.md | **Track A is closed** — what was established, what was not, and the reopening conditions |
+| docs/STRATEGIC_ASSESSMENT.md | Where the project goes next: market intelligence rather than a prediction engine, and the ranked questions |
+| docs/PRODUCT_DIRECTION.md | The user-facing direction: one engine, three views, four claim kinds, and what it refuses to build |
+| docs/PREREG-DISPERSION.md | The one authorised study, specified before scoring: is the quote gap consistent with a calibrated dispersion model |
 
 ## Where the argument stands
 

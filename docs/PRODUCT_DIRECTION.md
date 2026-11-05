@@ -59,7 +59,7 @@ product.
 
 | Experience | Needed capability | Needed evidence | Have it? |
 | --- | --- | --- | --- |
-| Standalone — price | multi-book snapshot, matching selections | dispersion and its decomposition | **partly** — closing only, the 6.5% is unexplained |
+| Standalone — price | multi-book snapshot, matching selections | dispersion, and whether it explains the quote gap | **partly** — closing only, the 6.5% is unexplained |
 | Standalone — probability | forecast better than the price | 0.01-nat edge on held-out seasons | **no** — 23 experiments say so |
 | Slip — dependence | joint model over legs | same-match dependence measured; cross-match approximated | **mostly** — 1.49 same-match, ~1.0 cross-match |
 | Slip — risk | joint probability + variance of payout | same, plus stake rules | **mostly** |
@@ -124,8 +124,8 @@ tipping service.
 **It sharpens it rather than changing it.**
 
 The product direction makes the **price claim** load-bearing: experience 1 rests on it, and the whole
-"better price, not edge" framing rests on it. That is exactly what the **6.5% decomposition** tests.
-So it stays first — and the product framing raises its stakes, because if the 6.5% is mechanical, the
+"better price, not edge" framing rests on it. That is exactly what the **dispersion-consistency study** tests.
+So it stays first — and the product framing raises its stakes, because if the quote gap needs no dispersion,
 product's headline claim changes from "we find you a better price" to "we show you the price and the
 margin".
 
@@ -134,7 +134,7 @@ positive (same-match 1.49, cross-match ≈ 1.0) and where most competing tools a
 would move it from rank 2 to the clear second activity, and scope it as a **joint-probability
 calculator** rather than a model of matchups.
 
-**Smallest coherent first activity: the 6.5% decomposition, unchanged.** One bounded study, data in
+**Smallest coherent first activity: the dispersion-consistency study, unchanged.** One bounded study, data in
 hand, corrects a published number, and decides what the product may say. The dependence calculator
 follows as the second, and it is already half-built from the accumulator study.
 

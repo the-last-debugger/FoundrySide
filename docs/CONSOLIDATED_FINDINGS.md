@@ -214,7 +214,7 @@ produced it.
 | THIN_DIVISIONS.md | E24 | thirteen thin divisions are +0.0017 nats worse, not materially |
 | DISPERSION_CHECK.md | method | the logit-space projection is not comparable to the de-vigged statistic (ratio 0.037) |
 | SHRINKAGE_POLICY.md | E19 | six shrinkage policies; none beats market-only, which is the optimum |
-| PRICE_INVENTORY.md | E20 | opening and closing snapshots across books; per-selection best price is tradeable, the Max overround is not |
+| PRICE_INVENTORY.md | E20 | opening and closing snapshots across books; the best quoted price exceeds the average quote, the Max overround is not an opportunity |
 | HIT_RATE_AUDIT.md | E21 | hard-pick accuracy 54.30% vs 57.66%; the model is worse at picking too, not only at scoring |
 | MOVEMENT_STUDY.md | E22 | opening-to-closing movement adds nothing to the closing price |
 

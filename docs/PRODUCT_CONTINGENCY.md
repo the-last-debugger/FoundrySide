@@ -86,7 +86,7 @@ feature availability.
 
 | Claim | Evidence | Strength |
 | --- | --- | --- |
-| Shopping improves the price paid, by about 6.5% per selection against the market average | E20 (PRICE_INVENTORY.md) | measured across 44,406 selection-snapshots |
+| The best quoted price is about 6.5% above the average quoted price per selection | E20 (PRICE_INVENTORY.md) | measured across 44,406 selection-snapshots |
 | Two books' closing prices differ on 93% of fixtures; taking the better saves 0.17 pp of overround | E15 (BEST_PRICE.md) | measured |
 | At the better price, 99.1% of fixtures still have negative expected value | E15 | measured |
 | Opening-to-closing movement adds nothing to the closing price | E22 (MOVEMENT_STUDY.md) | pre-registered, negative |
@@ -98,8 +98,8 @@ feature availability.
 - **That price shopping creates positive expected value.** The apparent 56.6% of selections with
   positive value at the best price is inflated by a mechanical selection effect: for a single
   selection, the maximum across books is the least pessimistic quote, which sits below the fair
-  probability by construction. The corpus can show that shopping improves the price; it cannot
-  observe the fair probability that would decide whether the price is good.
+  probability by construction. The corpus can show that the best quoted price exceeds the average quoted price; it cannot
+  observe the fair probability that would decide whether either is good.
 - **That a better price is obtainable when a user acts.** No timestamp on any price; no limits,
   stakes or account terms.
 - **That any decision-support feature improves user decisions.** That needs a user study, not this

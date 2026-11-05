@@ -43,7 +43,7 @@ experiment starts before that review.
 | Item | Result | Report |
 | --- | --- | --- |
 | Disagreement-aware shrinkage (queue 1) | no policy beats market-only; fitted thresholds hit the grid floor | `SHRINKAGE_POLICY.md` (E19) |
-| Price inventory (queue 2, first half) | opening and closing snapshots exist; per-selection best price is tradeable, the Max overround is synthetic | `PRICE_INVENTORY.md` (E20) |
+| Price inventory (queue 2, first half) | opening and closing snapshots exist; the per-selection best quote exceeds the average quote; the Max overround is synthetic | `PRICE_INVENTORY.md` (E20) |
 | Hit-rate and metric audit | 54.30% vs 57.66%, diff −0.0336 [−0.0459, −0.0214]: worse at picking and at scoring | `HIT_RATE_AUDIT.md` (E21) |
 | Price movement (queue 2, second half) | signed −0.00022 [−0.00041, −0.00004], size −0.00001: the close already contains the move | `MOVEMENT_STUDY.md` (E22) |
 
