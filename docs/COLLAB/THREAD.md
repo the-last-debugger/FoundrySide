@@ -3344,3 +3344,22 @@ Known limitations, stated rather than hidden. Dependence is one measured ratio, 
 Also done under the autonomy: lead triage in docs/LEAD_TRIAGE.md closes three ceremony leads with reopening conditions and keeps the dispersion study as a modest non-blocking item, since with K unknown its test is weak and the product can ship under the honest wording either way.
 - revision: c3d9afc
 - ref: docs/PRODUCT_DEMO.md
+
+
+### 2026-11-05 · sponsor · review — product delivered; correct probability and payout semantics
+
+The local product is a meaningful milestone and the clean-checkout synthetic mode is the right way to make it demonstrable without committing the held corpus. I verified the latest Actions run (Run 112, commit 84926c3): the single checks job completed successfully, including resource policy, test suite, bridge consistency and verification transcript. The product presentation and lead triage are noted.
+
+I reviewed the implementation rather than relying only on the presentation. There are several concrete correctness gaps to fix before treating the slip and jackpot outputs as reliable decision support:
+
+1. **Same-match dependence is being applied too broadly.** The slip engine multiplies every multi-leg same-fixture naive product by 1.49, regardless of the selected outcomes or number/type of legs. The 1.49 figure is an aggregate realised-joint/product ratio (40.9% versus 27.5%), not a universal conditional probability multiplier for every same-match combination. The UI also permits duplicate identical legs and mutually exclusive outcomes from the same fixture. For example, Home and Away on the same match cannot both win, while adding the same Home selection twice should not square its probability. Do not present the current output as a general joint probability. Either implement only combinations for which the held evidence supports a valid calculation, explicitly abstain/reject unsupported same-match combinations, or label the ratio as a rough aggregate illustration and show that no selection-specific joint estimate is available. Add regression tests for duplicate and incompatible selections.
+
+2. **Jackpot expected-winner calculation is not well-defined.** The current formula uses the user's line coverage as if it described every entrant's ticket coverage, and its floor of one is not an expected-value calculation. Separate the user's probability of covering the winning line from the expected number of winning tickets in the whole pool. The latter requires assumptions about all entrants' line counts and selection distribution; if those are unknown, omit it or label a clearly parameterised hypothetical. Never force the expected value to at least one.
+
+3. **Target search is silently truncated.** The double-search pool is restricted to the first 400 fixtures. State that limitation in the UI/report or replace the arbitrary cap with a transparent configurable bound and a sensible sampling/ordering method. Do not imply it searched the full held corpus when it did not.
+
+4. **Stake/multiplier comparison is not yet the requested classification.** The current target view finds quotes near one requested multiplier and scales gross/net linearly with stake. It does not compare structures such as KSh 100 at 3× against KSh 200 at 2× across a defined peer set, nor report variance/downside and uncertainty for those alternatives. Keep this as a clearly labelled target-search utility for now; do not claim the stake/multiplier research question is solved. Add the comparison only if it can be computed honestly from supported assumptions.
+
+5. **Documentation/test-count consistency.** The product demo document says 26 tests while the bridge presentation reports 28 product tests and 232 total. Reconcile the counts and identify exactly which command produces each count.
+
+Please correct these points with focused tests and update the product notes. Preserve the good claim-kind labels, synthetic-data banner, no-profitability language, local-only operation and all existing boundaries. Do not reopen product direction, inspect/use P-02, or run the unapproved dispersion study. This is a quality pass on the delivered slice, not a request to expand scope.
