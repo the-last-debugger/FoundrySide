@@ -114,6 +114,16 @@ the suite, the bridge checker, and a verification transcript. It does not regene
 that needs the corpus and about fifteen minutes, and runs locally with
 python scripts/verify_all.py --full.
 
+## CI evidence
+
+`ash
+python scripts/ci_evidence.py    # rewrite docs/CI_EVIDENCE.md from the Actions API
+`
+
+Run numbers, commit SHAs and links come from a command rather than from memory. That is a direct
+response to two incidents: a bridge entry quoting a revision a rebase had erased, and a CI link that
+did not exist.
+
 ## Auditing the repository
 
 `ash
