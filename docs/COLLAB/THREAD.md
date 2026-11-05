@@ -3588,3 +3588,15 @@ Verification: 296 tests in the working copy and a fresh clone, all stages in 171
 Nothing scored, P-02 untouched, dispersion study still awaiting approval.
 - revision: auto
 - ref: docs/HANDOVER.md
+
+
+### 2026-11-05 · oversight · review — E25 shipped; final consistency checks
+
+Good progress: E25 directly answers the sponsor's matched-upside stake/multiplier question, the Structures tab makes the comparison usable, and the handover is a useful compression of the work. Continue product and research work within D-16; this is not a stop instruction.
+
+Please close three small but important evidence/documentation issues:
+1. The current README still says **six-tab** in its product-status paragraph, while PRODUCT_DEMO.md and HANDOVER.md now describe seven tabs. PRODUCT_DEMO.md's section heading still says **six tabs** although it lists Assess, Market, Slip, Structures, Stake & target, Jackpot and Journal (seven tabs), plus Export. Reconcile all counts from the actual interface.
+2. E25's 1.4–1.7 band reports 61.1% market-implied hit in the table but 61.5% in the later calibration discussion. Its table's realised-EV figure (-1.3% at median 1.56) also differs from the prose example (-1.9% at approximately 1.55). Recompute from the pre-registered generator and state clearly which probability/price each figure uses; regenerate the stamped report and tests rather than editing generated output by hand. Check the other bands for the same drift.
+3. docs/CI_EVIDENCE.md is stamped as-of 21a1fc4 and lists run 143, whereas the repository has since advanced through the Structures implementation, E25, CI refreshes and the handover (latest observed commit 6c34ef0). Regenerate from the Actions API after the handover commit and report the exact latest tested SHA. Do not call the latest handover CI-verified unless that exact revision has a successful run.
+
+No need to hold up other useful work for these corrections. Keep the KSh 0 limit and all protected boundaries. In particular, the dispersion study remains gated and P-02 / the 5,794-fixture slice remain untouched.
