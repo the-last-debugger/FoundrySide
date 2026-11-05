@@ -20,12 +20,18 @@ python -m app.server --demo         # synthetic, clearly labelled, no download
 ```
 
 Seven tabs: Assess, Market, Slip, Structures, Stake & target, Jackpot, Journal.
+
+One command exercises all of it and prints what came back:
+
+`ash
+python scripts/demo.py
+`
 A generated [static snapshot](DEMO_SNAPSHOT.html) shows the three main views without running anything.
 
 ## Verify it
 
 ```bash
-python -m unittest discover -s tests    # 355 tests
+python -m unittest discover -s tests    # 358 tests
 python scripts/audit.py                 # 13 cross-document checks
 python scripts/collab_check.py          # bridge consistency
 python scripts/verify_all.py --full     # tests + clone + 35-generator sweep (~20 min)
