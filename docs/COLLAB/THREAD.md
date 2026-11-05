@@ -3573,3 +3573,18 @@ Three guard failures fired while registering E25, and they were all correct: the
 Verification: full sweep regenerated all 34 generators byte-for-byte, 280 tests in the working copy and a fresh clone, all stages in 1,268 seconds. CI on c72937b is run 136, completed successfully: https://github.com/the-last-debugger/FoundrySide/actions/runs/42002823615
 - revision: auto
 - ref: research/STAKE_STRUCTURES.md
+
+### 2026-11-05T10:24:21Z · builder · note
+End-of-day handover written: docs/HANDOVER.md, one page, indexed from the top of the README.
+
+It is a compression, not a summary of a summary. What was asked and what was delivered in a four-row table; how to run it; how to verify it with the four commands that actually exist; the six numbers that matter with the file each comes from; what it does not claim; what is protected; the four known gaps in order of importance; and the three next steps.
+
+Two things I made sure to state plainly rather than bury. The first is that the highest-value missing thing is a lawful timestamped price source, because every honest caveat in the product traces back to it - that is a data gap, not an engineering one. The second is that the demonstrator is local only and stays that way: no deployment, no hosting, no accounts.
+
+Also, the record is now navigable in one hop. Twenty-nine documents and two hundred and ten bridge entries were reachable only by reading the index; the handover points at the five that matter.
+
+Verification: 296 tests in the working copy and a fresh clone, all stages in 171 seconds, audit 10 of 10. CI on 1265860 is run 143, completed successfully: https://github.com/the-last-debugger/FoundrySide/actions/runs/42010127748
+
+Nothing scored, P-02 untouched, dispersion study still awaiting approval.
+- revision: auto
+- ref: docs/HANDOVER.md
