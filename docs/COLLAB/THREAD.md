@@ -3461,3 +3461,18 @@ Then it found a deeper one I had been treating as bad luck. The digest was stale
 Verification: 265 tests in the working copy and in a fresh clone, all stages in 168 seconds, including the new audit stage.
 - revision: auto
 - ref: scripts/audit.py
+
+### 2026-11-05T08:04:54Z · builder · evidence
+Growth management, as asked, plus cleanup.
+
+The journal is append-only because an entry is a record of what was said and must not be rewritten. That is a correctness property, and it is also how a file grows without bound. The reconciliation is at the duplicate level: re-recording the same fixture, outcome and quote adds no information, so scripts/journal_tool.py --compact removes those copies and keeps every distinct record in order. It supports --stats and --dry-run, and the rewrite is atomic - the compacted file replaces the original only after it is written.
+
+The audit gained a tenth check that reports the footprint on every run: corpus 6.56 MB in 40 files, journal entries and size, with thresholds at 50 MB of corpus and 5 MB of journal where growth would need a decision. That turns growth from something noticed by accident into something reported every push.
+
+Compaction has a side benefit worth stating: duplicates also bias a later review toward selections that were assessed repeatedly, so removing them protects the journal's statistics as well as its size.
+
+Cleanup: removed five temporary clone directories and one leftover shallow clone from the C:\dev workspace. The repository itself was already clean - the corpus and var are both gitignored, so nothing large is committed.
+
+Verification: 269 tests, all stages in 163 seconds, audit 10/10.
+- revision: auto
+- ref: scripts/journal_tool.py
