@@ -56,6 +56,13 @@ def main() -> int:
         ],
     }
 
+    # Copy the shared theme so the app and the local page cannot drift apart.
+    theme_src = ROOT / "app" / "ui" / "theme.css"
+    theme_dst = ROOT / "app" / "android" / "assets" / "www" / "theme.css"
+    if theme_src.exists():
+        theme_dst.parent.mkdir(parents=True, exist_ok=True)
+        theme_dst.write_text(theme_src.read_text(encoding="utf-8"), encoding="utf-8")
+
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")

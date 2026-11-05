@@ -37,6 +37,13 @@ Requirements: Android SDK build-tools 37 (34's `d8` crashes on Java 17 class fil
 - **One selection per slip.** Combining legs needs a joint distribution; the app cannot estimate one,
   and saying so is better than multiplying as though legs were independent.
 - **Claim tags throughout.** Observed, estimated, hypothetical, exactly as in the local server.
+- **One stylesheet, two consumers.** pp/ui/theme.css is the single source of colours, spacing and
+  component classes. scripts/export_app_data.py copies it into the APK's assets, so the phone and
+  the local page cannot drift apart visually; only layout that is genuinely different (desktop versus
+  phone) stays inline in each page.
+- **The same explainer.** The "How to read these numbers" panel appears in the app, stating that the
+  best recorded price is not a price you were offered and that the de-vigged probability is an
+  assumption rather than a forecast.
 
 ## Known limits
 

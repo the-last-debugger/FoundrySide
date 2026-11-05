@@ -44,6 +44,18 @@ class AppAssetTest(unittest.TestCase):
         self.assertEqual(embedded["count"], self.fixtures["count"])
         self.assertEqual(embedded["fixtures"][0]["k"], self.fixtures["fixtures"][0]["k"])
 
+    def test_page_uses_the_shared_theme(self):
+        # One stylesheet, copied at export, so the app and the local page cannot drift apart.
+        self.assertIn('href="theme.css"', self.index)
+        self.assertTrue((WWW / "theme.css").exists())
+        self.assertEqual((WWW / "theme.css").read_text(encoding="utf-8"),
+                         (ROOT / "app" / "ui" / "theme.css").read_text(encoding="utf-8"))
+
+    def test_page_explains_the_numbers(self):
+        self.assertIn("How to read these numbers", self.index)
+        lowered = " ".join(self.index.lower().split())
+        self.assertIn("not a price you were offered", lowered)
+
     def test_page_loads_both_scripts(self):
         self.assertIn('src="data.js"', self.index)
         self.assertIn('src="app.js"', self.index)
