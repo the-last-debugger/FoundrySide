@@ -9,9 +9,10 @@ activating it. Historical records are not erased.
 
 **No corpus scoring is authorised.** **Track A is closed** (docs/CONCLUSION.md).
 
-The only current bounded work is **method correction and pre-registration** for the dispersion study
-(docs/PREREG-DISPERSION.md), which is with the sponsor for review. It is **not approved** and the
-study is **not complete**.
+The dispersion study was **approved** and then **stopped before scoring**: its pre-registered model
+requires Bb1X2, the number of books behind the maximum and average, and **no held file contains that
+column** (0 of 40 checked). docs/DISPERSION_BLOCKER.md records the defect and three options; the
+study has not started and no result exists.
 
 ## Next
 

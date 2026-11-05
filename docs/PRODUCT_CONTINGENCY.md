@@ -7,10 +7,12 @@ without a direction, and so that the direction is defined before it is needed.
 
 ## The distinction the product lives or dies on
 
-**Best available price** is not **positive expected value**. A better price improves a user's
-position; it does not make a selection profitable. Everything below is written to keep those two
-apart, because a price-comparison product that blurs them would be misrepresenting arithmetic to
-its users.
+**A higher recorded quote** is not **positive expected value**. Conditional on a quote being
+obtainable, a better price would improve a user's position; it would not make a selection profitable.
+This corpus cannot establish obtainability — there are no timestamps, account terms or limits — so
+every figure below is a difference between **recorded quotes**, not demonstrated savings. Everything
+here is written to keep those distinctions apart, because a price-comparison product that blurred
+them would be misrepresenting arithmetic to its users.
 
 The corpus already shows how large the gap is. Across 8,938 pilot fixtures with two books'
 closing over/under 2.5 prices (`research/BEST_PRICE.md`):
@@ -20,17 +22,18 @@ closing over/under 2.5 prices (`research/BEST_PRICE.md`):
 | Fixtures where the two books differ | 93.1% |
 | Overround at one book | 3.08% |
 | Overround at the better of the two | 2.91% |
-| Margin saved by always taking the best price | **0.17 pp** [0.14, 0.20] |
+| Margin difference between recorded quotes: best of two versus one book | **0.17 pp** [0.14, 0.20] |
 | Fixtures still negative expected value at the best price | **99.1%** |
 
-So price discovery is worth about 0.17 percentage points of margin — real, small, and nowhere near
-turning a losing bet into a winning one.
+So the recorded-quote difference is about 0.17 percentage points of margin — arithmetically real,
+small, conditional on the quote being obtainable, and nowhere near turning a losing bet into a winning
+one.
 
 ## What the existing research already says about each capability
 
 | Capability | Existing evidence | What it implies |
 | --- | --- | --- |
-| **1. Best-price discovery** | `BEST_PRICE.md`: 0.17 pp saved, 99.1% still negative | The value is real but bounded; the product must present it as margin reduction, never as edge |
+| **1. Best-price discovery** | `BEST_PRICE.md`: 0.17 pp difference between recorded quotes, 99.1% still negative | The arithmetic is real and bounded; the product must present it as a quoted-price difference conditional on availability, never as edge |
 | **2. Slip assistance** | `RESULTS_T0_T1_T3.md`: same-match legs are dependent, realised joint 40.9% vs 27.5% product, ratio 1.49 | Any combinatorial slip tool that multiplies probabilities is wrong by a factor of ~1.5 on the same match; dependence must be modelled or disclosed |
 | **3. Profit/loss projection** | `CALIBRATION_STUDY.md`: probabilities can be made calibrated out of fold | Projections can be built on calibrated numbers rather than raw model output; they must show gross vs net and never present a payout as expected |
 | **4. Jackpot assistance** | dependence evidence above; `GAP_DIAGNOSIS.md` on where models lose resolution | Multi-event jackpots compound the dependence problem; the honest contribution is probability disclosure, not selection |

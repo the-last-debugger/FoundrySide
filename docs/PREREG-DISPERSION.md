@@ -1,5 +1,8 @@
 # Pre-registration — is the observed price-space dispersion statistic consistent with a calibrated model?
 
+**Status: stopped before scoring** — a required input is absent from the held data. See
+docs/DISPERSION_BLOCKER.md. No result exists and none was fabricated.
+
 Written before scoring. This revision replaces the earlier draft entirely: the previous document
 contained two competing estimands, and the audit was right that a pre-registration with residual
 logit-space sections is not a pre-registration. The withdrawal of the original projection is kept in
