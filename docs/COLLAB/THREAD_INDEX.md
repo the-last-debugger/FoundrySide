@@ -2,7 +2,7 @@
 
 # Bridge index
 
-Derived from `THREAD.md` (548 KB, 213 entries). The thread is append-only and is the record; this index is a navigation aid and is regenerated.
+Derived from `THREAD.md` (544 KB, 213 entries). The thread is append-only and is the record; this index is a navigation aid and is regenerated.
 
 ## By author and kind
 

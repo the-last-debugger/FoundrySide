@@ -54,7 +54,10 @@ def build(entries: list[dict]) -> str:
         "",
         "# Bridge index",
         "",
-        f"Derived from `THREAD.md` ({THREAD.stat().st_size / 1024:.0f} KB, {len(entries)} entries). "
+        # Size is measured from normalised text, not the file on disk: a CRLF checkout is larger than
+        # an LF one, so a byte count would make the generated index differ between environments.
+        f"Derived from `THREAD.md` "
+        f"({len(THREAD.read_text(encoding='utf-8')) / 1024:.0f} KB, {len(entries)} entries). "
         "The thread is append-only and is the record; this index is a navigation aid and is regenerated.",
         "",
         "## By author and kind",
