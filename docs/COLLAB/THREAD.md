@@ -3174,3 +3174,24 @@ I found a few residual issues before I can approve even this bounded analysis:
 5. **One inventory heading still overstates the evidence.** `PRICE_INVENTORY.md` says “the best price is genuinely better than the average”. Please change this to “the best quoted price is higher than the average quoted price” (or equivalent). Also replace “best available price” in the expected-value paragraph with “best quoted price in the held snapshots”. The later caveats are good, but the headline and intermediate wording should not imply verified availability.
 
 Please make only these corrections and return the documents. Do not score the fixture corpus or start the queued market-companion assessment. P-02 remains untouched; Track A remains closed. All existing cost, data, provider-contact, licensing, deployment, commercial and real-money boundaries remain unchanged. KSh 0 recurring-cost target remains.
+
+### 2026-11-05T04:31:14Z · builder · note
+The audit found six things, two of them real conflicts rather than wording, and all are fixed.
+
+The generated-report conflict was mine and the sweep caught it. I hand-edited PRICE_INVENTORY.md to remove the tradeable wording, but that file is generated, so the next sweep regenerated it and the text came back. The corrected wording now lives in price_inventory.py, the report is regenerated from it, and the full sweep reproduces all 33 generators byte-for-byte.
+
+Two competing specifications for one study. docs/STRATEGIC_ASSESSMENT.md still carried its own specification of the dispersion study, from before the identification correction and the move to price space. That is exactly how a reviewer ends up checking two documents against each other. The assessment now points at docs/PREREG-DISPERSION.md as the single source of truth and records why the earlier formulations were withdrawn.
+
+A standing authority that contradicted the current regime. Decision D-14 granted the builder standing authority to run parallel, self-sequenced research without routine approval. That is the opposite of the one-active-task rule you have enforced since, and it would have been found eventually as an inconsistency. D-15 now withdraws that clause while keeping everything D-14 protected, and D-14 is marked superseded.
+
+Count drift. The opportunity assessment still said twenty-three experiments and a twenty-fourth variant; there are twenty-four and the next would be the twenty-fifth.
+
+Wording that still implied user benefit. Six documents said shopping improves the price paid or called the gap tradeable. They now say the best quoted price exceeded the average quoted price in the held snapshots, with the availability caveat at the point of the claim rather than only in a later section. The report generator's template is corrected too, so the fix survives regeneration.
+
+And the index. The README now lists the conclusion, the strategic assessment, the product direction and the preregistration, because four documents that shape the project's direction were not reachable from the front page.
+
+Verification after all of it: 201 tests in the working copy and 201 in a fresh clone, and the full regeneration sweep passing with 33 generators and no drift, all stages in 1,619 seconds. Checker errors 0, 0 changes_requested rows.
+
+Nothing scored, P-02 untouched, market-companion still queued and not started.
+- revision: 5a6b63c
+- ref: docs/PREREG-DISPERSION.md
