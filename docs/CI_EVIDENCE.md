@@ -2,11 +2,12 @@
 
 # CI evidence
 
-Recorded 2026-11-05T09:31:25+00:00 from the GitHub Actions API. Regenerate with `python scripts/ci_evidence.py` rather than typing a run number or URL by hand — a quoted
+Recorded 2026-11-05T09:40:12+00:00 from the GitHub Actions API. Regenerate with `python scripts/ci_evidence.py` rather than typing a run number or URL by hand — a quoted
 identifier that does not exist is worse than no identifier at all.
 
 | Run | Commit | Status | Conclusion | Link |
 | --- | --- | --- | --- | --- |
+| 137 | `6ce9d16` | completed | success | https://github.com/the-last-debugger/FoundrySide/actions/runs/42003274016 |
 | 136 | `c72937b` | completed | success | https://github.com/the-last-debugger/FoundrySide/actions/runs/42002823615 |
 | 135 | `2c6c69e` | completed | success | https://github.com/the-last-debugger/FoundrySide/actions/runs/41997791308 |
 | 134 | `1e827d4` | completed | success | https://github.com/the-last-debugger/FoundrySide/actions/runs/41996951565 |
@@ -18,7 +19,6 @@ identifier that does not exist is worse than no identifier at all.
 | 128 | `5b6d39f` | completed | cancelled | https://github.com/the-last-debugger/FoundrySide/actions/runs/41994257518 |
 | 127 | `af47fc5` | completed | success | https://github.com/the-last-debugger/FoundrySide/actions/runs/41991792128 |
 | 126 | `362543f` | completed | cancelled | https://github.com/the-last-debugger/FoundrySide/actions/runs/41991764362 |
-| 125 | `4f44097` | completed | success | https://github.com/the-last-debugger/FoundrySide/actions/runs/41990274600 |
 
 A `cancelled` conclusion is the concurrency safeguard cancelling a superseded run, not a
 failure: `.github/workflows/checks.yml` keeps one run per branch and cancels the older one.

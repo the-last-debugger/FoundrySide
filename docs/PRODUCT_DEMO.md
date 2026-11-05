@@ -107,20 +107,22 @@ Design choices that serve the honesty requirement rather than decoration:
 
 ## Tests
 
-Reproduced at revision `3b6944a`, not copied from a previous run.
+Reproduced at the revision named in the CI line below, not copied from a previous run.
 
 ```bash
 python -m unittest tests.test_app_engine tests.test_app_server tests.test_app_export \
-                   tests.test_fetch_corpus tests.test_app_journal tests.test_app_market
-# Ran 59 tests … OK
+                   tests.test_fetch_corpus tests.test_app_journal tests.test_app_market \
+                   tests.test_app_explanations
+# Ran 66 tests … OK
 
 python -m unittest discover -s tests
-# Ran 271 tests … OK
+# Ran 287 tests … OK
 ```
 
 The 66 product tests break down as: **23** engine, **12** server, **5** export, **4** fetcher,
-**11** journal, **4** market, **7** explanations. The remaining 212 are the research suite that predates the product
-(report stamps, claims, bridge, audit, reproducibility and the studies themselves).
+**11** journal, **4** market, **7** explanations. The remaining 221 are the research suite that
+predates the product (report stamps, claims, bridge, audit, reproducibility and the studies
+themselves).
 
 CI on the same revision: workflow run **130** on `3b6944a`, all steps green — test suite, bridge
 consistency, repository audit, verification transcript. `.github` runs the full suite on every push.
