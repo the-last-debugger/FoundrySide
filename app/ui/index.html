@@ -58,6 +58,12 @@
   <div class="sub">What the recorded prices imply. Not a prediction, and not a promise of profit.</div>
 </header>
 
+<div id="banner" style="display:none;margin:12px 26px 0;padding:10px 14px;border-radius:10px;
+     background:#2a2216;border:1px solid #4a3d20;color:#f0d9a8;font-size:13px">
+  <strong>Synthetic demonstration data.</strong> The held corpus is not committed to this repository.
+  These fixtures are generated for demonstration: the arithmetic is real, the prices are not.
+</div>
+
 <nav>
   <button data-view="assess" class="active">Assess</button>
   <button data-view="slip">Slip</button>
@@ -182,6 +188,10 @@ async function getJSON(url) {
 let fixtures = [];
 async function loadDivisions() {
   const health = await getJSON("/api/health");
+  if (health.mode === "synthetic") {
+    const banner = $("banner");
+    if (banner) banner.style.display = "block";
+  }
   const divs = health.divisions;
   $("a-div").innerHTML = divs.map(d => `<option>${d}</option>`).join("");
   await loadFixtures(divs[0]);

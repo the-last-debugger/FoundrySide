@@ -13,7 +13,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from app import engine  # noqa: E402
+from app import demo_data, engine  # noqa: E402
 
 
 class DevigTest(unittest.TestCase):
@@ -35,7 +35,9 @@ class DevigTest(unittest.TestCase):
 class CorpusTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.fixtures = engine.load_fixtures(limit=40)
+        # The held corpus is gitignored, so these tests use synthetic fixtures: the arithmetic and
+        # claim labelling do not depend on which prices are used.
+        cls.fixtures = demo_data.synthetic_fixtures(40)
 
     def test_corpus_loads(self):
         self.assertGreater(len(self.fixtures), 0)
@@ -65,7 +67,7 @@ class CorpusTest(unittest.TestCase):
 class SlipTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.fixtures = engine.load_fixtures(limit=60)
+        cls.fixtures = demo_data.synthetic_fixtures(60)
 
     def leg(self, fixture, outcome="H"):
         idx = engine.OUTCOMES.index(outcome)
@@ -100,14 +102,14 @@ class SlipTest(unittest.TestCase):
 
 class TargetTest(unittest.TestCase):
     def test_finds_matches_near_the_target(self):
-        fixtures = engine.load_fixtures(limit=300)
+        fixtures = demo_data.synthetic_fixtures(300)
         result = engine.target_search(100, 10.0, 0.2, fixtures=fixtures)
         self.assertTrue(result["found"])
         for match in result["matches"]:
             self.assertLessEqual(abs(match["price"] / 10.0 - 1), 0.2 + 1e-9)
 
     def test_reports_no_match_honestly(self):
-        fixtures = engine.load_fixtures(limit=60)
+        fixtures = demo_data.synthetic_fixtures(60)
         result = engine.target_search(100, 5000.0, 0.01, fixtures=fixtures)
         self.assertFalse(result["found"])
         self.assertIn("not a promise", result["verdict"])
@@ -115,6 +117,18 @@ class TargetTest(unittest.TestCase):
     def test_rejects_impossible_targets(self):
         with self.assertRaises(ValueError):
             engine.target_search(100, 0.5)
+
+
+class ProvenanceTest(unittest.TestCase):
+    def test_synthetic_fixtures_are_marked_synthetic(self):
+        fixtures = demo_data.synthetic_fixtures(5)
+        self.assertTrue(all(fx.div.startswith("SYN-") for fx in fixtures),
+                        "synthetic fixtures must be identifiable by division prefix")
+
+    def test_held_corpus_is_optional(self):
+        # A clean checkout has no research/data; loading must return an empty list, not raise.
+        fixtures = engine.load_fixtures(limit=5)
+        self.assertIsInstance(fixtures, list)
 
 
 class JackpotTest(unittest.TestCase):

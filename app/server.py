@@ -20,6 +20,7 @@ from app import engine
 
 UI = Path(__file__).resolve().parent / "ui"
 FIXTURES: list[engine.Fixture] = []
+MODE = "held"
 
 
 def json_response(handler, payload, status=HTTPStatus.OK):
@@ -54,7 +55,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._static(name, ctype)
 
         if path == "/api/health":
-            return json_response(self, {"ok": True, "fixtures": len(FIXTURES),
+            return json_response(self, {"ok": True, "mode": MODE, "fixtures": len(FIXTURES),
                                         "divisions": sorted({f.div for f in FIXTURES})})
 
         if path == "/api/fixtures":
@@ -156,16 +157,26 @@ def main() -> int:
     parser.add_argument("--port", type=int, default=8765)
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--limit", type=int, default=0, help="cap fixtures loaded (0 = all)")
+    parser.add_argument("--demo", action="store_true",
+                        help="run on clearly-labelled synthetic fixtures")
     args = parser.parse_args()
 
-    global FIXTURES
-    FIXTURES = engine.load_fixtures(limit=args.limit or None)
+    global FIXTURES, MODE
+    if args.demo:
+        from app import demo_data
+        FIXTURES = demo_data.synthetic_fixtures(120)
+        MODE = "synthetic"
+    else:
+        FIXTURES = engine.load_fixtures(limit=args.limit or None)
+        MODE = "held"
     if not FIXTURES:
-        print("No fixtures found under research/data — the demo needs the held corpus.")
+        print("No fixtures found under research/data.")
+        print("The held corpus is not committed to this repository. Run with --demo for synthetic,")
+        print("clearly labelled data, or place the held CSV files in research/data/.")
         return 1
 
     server = ThreadingHTTPServer((args.host, args.port), Handler)
-    print(f"FoundrySide demo: http://{args.host}:{args.port}  ({len(FIXTURES):,} fixtures)")
+    print(f"FoundrySide demo: http://{args.host}:{args.port}  ({len(FIXTURES):,} fixtures, {MODE})")
     print("Ctrl+C to stop. Local only; no external requests.")
     try:
         server.serve_forever()

@@ -18,13 +18,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from app import engine, server  # noqa: E402
+from app import demo_data, engine, server  # noqa: E402
 
 
 class ServerTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        server.FIXTURES = engine.load_fixtures(limit=120)
+        server.FIXTURES = demo_data.synthetic_fixtures(120)
+        server.MODE = "synthetic"
         cls.httpd = ThreadingHTTPServer(("127.0.0.1", 0), server.Handler)
         cls.port = cls.httpd.server_address[1]
         cls.thread = threading.Thread(target=cls.httpd.serve_forever, daemon=True)
@@ -58,6 +59,7 @@ class ServerTest(unittest.TestCase):
         self.assertEqual(status, 200)
         payload = json.loads(body)
         self.assertTrue(payload["ok"])
+        self.assertEqual(payload["mode"], "synthetic")
         self.assertGreater(payload["fixtures"], 0)
 
     def test_fixtures_endpoint(self):
