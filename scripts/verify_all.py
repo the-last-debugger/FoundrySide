@@ -158,6 +158,7 @@ def main() -> int:
     stages = [
         ("test suite", [PY, "-m", "unittest", "discover", "-s", "tests"]),
         ("bridge checker", [PY, "scripts/collab_check.py"]),
+        ("repository audit", [PY, "scripts/audit.py"]),
         ("report stamps, claims, integrity",
          [PY, "-m", "unittest", "tests.test_reports", "tests.test_claims",
           "tests.test_docs_integrity"]),

@@ -112,7 +112,7 @@ because it adds divisions to the corpus, which the protocol forbids without appr
 **What was checked.** Team sheets are published 60–75 minutes before kickoff — **after** a T−90
 cutoff, so lineups cannot help without changing the cutoff. The two open sources that resolve from
 here (openfootball, StatsBomb) carry fixtures, results, events and lineups but **no odds and no
-pre-kickoff timestamps**. No suitable timestamped price source was verified; an earlier draft said such sources were blocked in this environment, which was wrong - direct HTTPS works, so the finding is absence of a verified source, not of network access.
+pre-kickoff timestamps**. No suitable timestamped price source was verified; an earlier draft described those sources as unreachable from here, which was wrong - direct HTTPS works, so the finding is absence of a verified source, not of network access.
 (`SOURCE_TIMING.md`).
 
 **Timing fit.** The binding constraint. Any candidate must be timestamped *before* the cutoff, not

@@ -100,6 +100,17 @@ the suite, the bridge checker, and a verification transcript. It does not regene
 that needs the corpus and about fifteen minutes, and runs locally with
 python scripts/verify_all.py --full.
 
+## Auditing the repository
+
+`ash
+python scripts/audit.py          # nine cross-document checks; non-zero exit on failure
+python scripts/audit.py --json   # machine-readable
+`
+
+It checks the things that kept needing a person: report citations, generator and experiment counts,
+retracted claims reappearing, revision reachability, digest freshness, link rot, corpus provenance and
+bridge parseability. It runs in CI and as a stage of scripts/verify_all.py.
+
 ## Reproducing the measurements
 
 ```powershell

@@ -63,5 +63,11 @@ jobs:
       - name: Bridge consistency
         run: python scripts/collab_check.py
 
+      - name: Repository audit
+        # Cross-document consistency: counts, cited reports, retracted claims, revision reachability,
+        # digest freshness and links. Every failure this project kept correcting by hand is one of
+        # these, so they run on every push rather than when someone remembers.
+        run: python scripts/audit.py
+
       - name: Verification transcript
         run: python scripts/verify_all.py --ci

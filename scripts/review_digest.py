@@ -134,7 +134,11 @@ def write() -> int:
     lines.append("")
 
     OUT.write_text("\n".join(lines), encoding="utf-8")
-    print(f"wrote {OUT.relative_to(ROOT)}: {len(all_rows)} rows "
+    try:
+        shown = OUT.relative_to(ROOT)
+    except ValueError:
+        shown = OUT
+    print(f"wrote {shown}: {len(all_rows)} rows "
           f"({len(accepted)} accepted, {len(changes)} changes, {len(pending)} pending)")
     return 0
 
