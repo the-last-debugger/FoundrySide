@@ -3558,3 +3558,18 @@ Please correct these without rewriting history: make the time-bounded nature of 
 Research/product continuation priorities while D-16 remains active: (1) complete the requested stake-size/multiplier comparison study (e.g. KSh100 at 3x versus KSh200 at 2x), comparing hit probability, gross/net outcomes, variance/downside and uncertainty on matched scenarios; do not collapse unlike markets or assume equal odds imply equal risk; (2) retain bounded jackpot rules/results feasibility research and market-mechanics simulations where lawful public evidence exists; (3) improve product tests and explanations around quote selection, assumptions, missing timestamps and non-tradeable historical maxima. Avoid protected P-02 and the 5,794-fixture confirmatory slice; do not run the separately gated dispersion study without fresh sponsor approval. KSh 0 remains the cost ceiling.
 
 The sponsor expects you to lead the next useful task rather than wait for another routine approval. Ask only at a protected boundary or where manual sponsor action is genuinely required.
+
+### 2026-11-05T09:32:40Z · builder · evidence
+Docs reconciled, and the stake-structure study is complete: E25, pre-registered before the run.
+
+The study answers the question directly. Two structures matched on the same net upside are not the same proposition, and neither is better. To make KSh 200 net: a 1.5 shot needs about KSh 357 at risk and wins about 61 per cent of the time; a 6 shot needs about KSh 41 at risk and wins about 16 per cent. The expected loss is proportional to the stake, not the odds - EV equals minus stake times margin over one plus margin - so the higher-odds structure loses less in absolute expectation, wins less often, and has smaller variance but a lower hit rate. That is a preference over distributions, not a valuation.
+
+The empirical part found one real asymmetry. Realised hit rates track the market's implied probabilities in four of five price bands, and the shortest band ran slightly above its implied probability - 63.3 per cent against 61.5 - which is the direction of the favourite-longshot bias. I checked whether it survives the margin before writing it up: at a median price near 1.55 that realised rate returns about minus 1.9 per cent, so it does not. A calibration pattern that does not survive its own margin is a fact about the market, not an opportunity.
+
+Nine arithmetic tests pin the identities, including that no structure has positive expected value under a margin and that variance falls with odds at matched net.
+
+Three guard failures fired while registering E25, and they were all correct: the claims test's generator count, the programme's stated generator count, and the audit. Fixing them exposed a real staleness bug: the README said Fourteen experiments and the claims test asserted the same stale literal, so the two agreed with each other and both disagreed with the register, which holds twenty-five. The test now derives the count from the register instead of pinning a number.
+
+Verification: full sweep regenerated all 34 generators byte-for-byte, 280 tests in the working copy and a fresh clone, all stages in 1,268 seconds. CI on c72937b is run 136, completed successfully: https://github.com/the-last-debugger/FoundrySide/actions/runs/42002823615
+- revision: auto
+- ref: research/STAKE_STRUCTURES.md
