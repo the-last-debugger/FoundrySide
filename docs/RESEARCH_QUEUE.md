@@ -1,9 +1,12 @@
 # Research status register
 
-No corpus scoring is authorised. The dispersion protocol is with the sponsor for review; the
-market-companion assessment is queued for the next cycle and must not start concurrently. Everything
-finished is listed with its report; everything else is deferred with the evidence that would justify
-activating it. Historical records are not erased.
+No corpus scoring is authorised. The dispersion protocol remains gated; the market-companion
+assessment is queued for the next cycle and must not start concurrently. Everything finished is listed
+with its report; everything else is deferred with the evidence that would justify activating it.
+Historical records are not erased.
+
+Two experiments were completed under the day-pass and are recorded: **E25** (stake and multiplier
+structures) and **E26** (jackpot pool mechanics, arithmetic only).
 
 ## Active
 
@@ -16,8 +19,14 @@ study has not started and no result exists.
 
 ## Next
 
-**No next task authorised.** The next item is the sponsor's review of the candid strategic
-assessment, which is a proposal rather than an experiment.
+**No next task authorised.** Two items wait on the sponsor rather than on the builder:
+
+1. **The dispersion study** needs the Amendment A1 protocol approved before any scoring. Its blocker is
+   documented and its options are priced.
+2. **The market-companion assessment** is queued and must not start concurrently.
+
+Everything else in the deferred backlog waits on data that does not exist yet, and each entry records
+the evidence that would justify activating it.
 
 ## Queued by the sponsor — not started
 

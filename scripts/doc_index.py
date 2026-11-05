@@ -15,6 +15,10 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+# Generated documents whose opening line carries a timestamp. Their prose is excluded
+# from the index so the index does not change every time they are regenerated.
+VOLATILE = {"CI_EVIDENCE.md", "REVIEW_DIGEST.md"}
+
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
 OUT = DOCS / "INDEX.md"
@@ -82,8 +86,8 @@ def build() -> str:
             continue
         text = path.read_text(encoding="utf-8")
         role, purpose = role_for(path.name)
-        rows.append((path.name, first_heading(text) or path.stem, role, purpose,
-                     opening_line(text)))
+        opening = "" if path.name in VOLATILE else opening_line(text)
+        rows.append((path.name, first_heading(text) or path.stem, role, purpose, opening))
 
     counts: dict[str, int] = {}
     for row in rows:
