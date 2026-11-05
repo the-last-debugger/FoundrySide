@@ -20,7 +20,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-DOCS = ("README.md", "docs/CONSOLIDATED_FINDINGS.md", "docs/RESEARCH_PROGRAMME.md", "docs/CONCLUSION.md", "docs/STRATEGIC_ASSESSMENT.md", "docs/PRODUCT_DIRECTION.md", "docs/PREREG-DISPERSION.md", "docs/PREREG-STAKE.md", "docs/PREREG-JACKPOT.md", "docs/DISPERSION_BLOCKER.md", "docs/PRODUCT_DEMO.md", "docs/CI_EVIDENCE.md", "docs/HANDOVER.md", "docs/STATUS.json", "docs/DEMO_SNAPSHOT.html", "docs/COLLAB/THREAD_INDEX.md", "docs/LEAD_TRIAGE.md",
+DOCS = ("README.md", "docs/CONSOLIDATED_FINDINGS.md", "docs/RESEARCH_PROGRAMME.md", "docs/CONCLUSION.md", "docs/STRATEGIC_ASSESSMENT.md", "docs/PRODUCT_DIRECTION.md", "docs/PREREG-DISPERSION.md", "docs/PREREG-STAKE.md", "docs/PREREG-JACKPOT.md", "docs/DISPERSION_BLOCKER.md", "docs/PRODUCT_DEMO.md", "docs/CI_EVIDENCE.md", "docs/HANDOVER.md", "docs/ANDROID.md", "docs/STATUS.json", "docs/DEMO_SNAPSHOT.html", "docs/COLLAB/THREAD_INDEX.md", "docs/LEAD_TRIAGE.md",
         "docs/TRACK_B_DESIGN.md", "docs/PREREG-FL.md")
 
 # Backticked repository paths, e.g. `research/GAP_DIAGNOSIS.md`.

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FoundrySide</title>
+<style>
+  :root {
+    --bg:#0b0d11; --panel:#151922; --line:#232833; --line-strong:#2f3644;
+    --text:#e8ebf0; --muted:#98a2b3; --dim:#6b7484;
+    --obs:#6cc6ff; --est:#d8b066; --hyp:#a98ce0; --warn:#e3b558; --bad:#ea8a8a;
+    --radius:14px; --sp:12px;
+  }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body {
+    margin:0; background:var(--bg); color:var(--text);
+    font:15px/1.55 ui-sans-serif,-apple-system,"Segoe UI",Roboto,sans-serif;
+    padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+  }
+  header { padding:16px 16px 10px; border-bottom:1px solid var(--line); position:sticky; top:0;
+           background:rgba(11,13,17,.96); backdrop-filter:blur(8px); z-index:10; }
+  h1 { margin:0; font-size:17px; font-weight:650; }
+  .sub { color:var(--muted); font-size:12px; margin-top:2px; }
+  nav { display:flex; gap:6px; padding:10px 16px 0; overflow-x:auto; }
+  nav button { flex:0 0 auto; background:transparent; border:1px solid var(--line); color:var(--muted);
+               padding:9px 14px; border-radius:999px; font-size:14px; }
+  nav button.active { color:var(--text); background:var(--panel); border-color:var(--line-strong); }
+  main { padding:12px 16px 60px; }
+  .view { display:none; } .view.active { display:block; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+          padding:16px; margin:12px 0; }
+  label { display:block; font-size:11px; letter-spacing:.7px; text-transform:uppercase;
+          color:var(--dim); margin:10px 0 5px; font-weight:600; }
+  select, input { width:100%; background:#0d1016; color:var(--text); border:1px solid var(--line-strong);
+                  border-radius:9px; padding:12px; font-size:15px; }
+  button.primary { width:100%; background:#27303e; color:var(--text); border:1px solid #384456;
+                   border-radius:10px; padding:13px; font-size:15px; font-weight:600; margin-top:12px; }
+  .kv { display:grid; grid-template-columns:1fr auto; gap:7px 12px; }
+  .kv > div:nth-child(odd) { color:var(--muted); font-size:14px; }
+  .kv > div:nth-child(even) { text-align:right; font-weight:600; font-variant-numeric:tabular-nums; }
+  .tag { font-size:9px; padding:1px 6px; border-radius:999px; border:1px solid currentColor;
+         text-transform:uppercase; font-weight:700; }
+  .obs { color:var(--obs); } .est { color:var(--est); } .hyp { color:var(--hyp); }
+  .caveat { color:var(--muted); font-size:12.5px; border-left:2px solid var(--line-strong);
+            padding-left:10px; margin:8px 0; }
+  .verdict { background:#101419; border:1px solid var(--line-strong); border-radius:10px;
+             padding:11px 13px; margin:10px 0; font-size:14px; }
+  .verdict.warn { border-color:#4a3d20; color:#f0d9a8; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th { text-align:left; color:var(--dim); font-size:10px; text-transform:uppercase;
+       letter-spacing:.6px; padding:0 6px 6px 0; }
+  td { padding:7px 6px 7px 0; border-top:1px solid var(--line); font-variant-numeric:tabular-nums; }
+  td.name { font-weight:600; }
+  .meter { height:6px; border-radius:3px; background:var(--line); overflow:hidden; margin:8px 0 2px; }
+  .meter i { display:block; height:100%; background:linear-gradient(90deg,#5ed39b,#3aa87a); }
+  footer { padding:16px; color:var(--dim); font-size:11.5px; border-top:1px solid var(--line); }
+</style>
+</head>
+<body>
+<header>
+  <h1>FoundrySide</h1>
+  <div class="sub" id="sub">offline · market companion</div>
+</header>
+
+<nav id="tabs">
+  <button data-view="assess" class="active">Assess</button>
+  <button data-view="market">Market</button>
+  <button data-view="structures">Structures</button>
+  <button data-view="slip">Slip</button>
+</nav>
+
+<main>
+  <section id="view-assess" class="view active">
+    <div class="card">
+      <label for="fixture">Fixture</label>
+      <select id="fixture"></select>
+      <label for="outcome">Selection</label>
+      <select id="outcome">
+        <option value="H">Home</option><option value="D">Draw</option><option value="A">Away</option>
+      </select>
+      <button class="primary" id="go-assess">Assess</button>
+    </div>
+    <div id="assess-out"></div>
+  </section>
+
+  <section id="view-market" class="view">
+    <div class="card">
+      <label for="fixture-m">Fixture</label>
+      <select id="fixture-m"></select>
+      <button class="primary" id="go-market">Compare books</button>
+    </div>
+    <div id="market-out"></div>
+  </section>
+
+  <section id="view-structures" class="view">
+    <div class="card">
+      <label for="target">Target net profit (KSh)</label>
+      <input id="target" type="number" value="200" min="1">
+      <label for="odds">Odds to compare</label>
+      <input id="odds" value="1.5, 2, 3, 4, 6">
+      <button class="primary" id="go-structures">Compare</button>
+    </div>
+    <div class="caveat">Structures matched on the same net profit. A target is your constraint; this
+    shows what each way of reaching it costs in stake, probability and variance.</div>
+    <div id="structures-out"></div>
+  </section>
+
+  <section id="view-slip" class="view">
+    <div class="card">
+      <label for="fixture-s">Fixture</label>
+      <select id="fixture-s"></select>
+      <label for="selection-s">Selection</label>
+      <select id="selection-s">
+        <option value="H">Home</option><option value="D">Draw</option><option value="A">Away</option>
+        <option value="O">Over 2.5</option><option value="U">Under 2.5</option>
+      </select>
+      <label for="stake">Stake (KSh)</label>
+      <input id="stake" type="number" value="100" min="20">
+      <button class="primary" id="go-slip">Assess slip</button>
+    </div>
+    <div id="slip-out"></div>
+  </section>
+</main>
+
+<footer>
+  Recorded closing quotes from a historical corpus. No timestamps, no account terms and no limits, so
+  nothing here shows a price was obtainable when you act. No profitability, expected-value or
+  user-advantage claim is made or implied.
+</footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -5,3 +5,5 @@ data/
 logs/
 *.sqlite3
 var/
+app/android/build/
+app/android/debug.keystore

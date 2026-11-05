@@ -2,11 +2,12 @@
 
 # Documentation index
 
-Every document in `docs/`: **31** files. Generated, so it cannot fall behind the directory.
+Every document in `docs/`: **32** files. Generated, so it cannot fall behind the directory.
 
 | Document | Title | Role | What it is for |
 | --- | --- | --- | --- |
 | [ACTIONS_LEDGER.md](ACTIONS_LEDGER.md) | Actions resource ledger | Record | Assigned actions and their state |
+| [ANDROID.md](ANDROID.md) | Android app | Document |  |
 | [CI_EVIDENCE.md](CI_EVIDENCE.md) | CI evidence | Document |  |
 | [COMPUTE_FEASIBILITY.md](COMPUTE_FEASIBILITY.md) | Compute feasibility note | Feasibility | Whether a route can be assessed at all |
 | [CONCLUSION.md](CONCLUSION.md) | Conclusion — Track A | Entry point | The research result and its limits |
@@ -41,6 +42,7 @@ Every document in `docs/`: **31** files. Generated, so it cannot fall behind the
 ## Opening line of each
 
 - **[ACTIONS_LEDGER.md](ACTIONS_LEDGER.md)** — What the workflow's resource controls actually do, and — more importantly — what they do not.
+- **[ANDROID.md](ANDROID.md)** — A debug APK of the market companion that runs **entirely offline** on the phone.
 - **[COMPUTE_FEASIBILITY.md](COMPUTE_FEASIBILITY.md)** — directed that work stay local and zero-cost.
 - **[CONCLUSION.md](CONCLUSION.md)** — which it may be reopened.
 - **[CONFIRMATORY_READINESS.md](CONFIRMATORY_READINESS.md)** — has been tuned against it, and no freeze has been declared.
@@ -75,7 +77,7 @@ Every document in `docs/`: **31** files. Generated, so it cannot fall behind the
 | Role | Documents |
 | --- | --- |
 | Preregistration | 7 |
-| Document | 4 |
+| Document | 5 |
 | Assessment | 2 |
 | Data | 2 |
 | Entry point | 2 |
