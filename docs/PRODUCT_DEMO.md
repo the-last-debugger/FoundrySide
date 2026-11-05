@@ -20,8 +20,19 @@ python -m app.server --demo      # clearly-labelled synthetic fixtures
 ```
 
 The interface shows a banner whenever synthetic data is in use: the arithmetic is real, the prices are
-not. With the held CSV files present in `research/data/`, `python -m app.server` uses them instead and
-the banner disappears.
+not.
+
+To run on real data, fetch the public corpus once:
+
+```bash
+python scripts/fetch_corpus.py          # 40 files, one request at a time, ~40s
+python -m app.server                    # now reports mode=held, 14,802 fixtures
+```
+
+`fetch_corpus.py` writes `research/data/PROVENANCE.json` recording the source, the retrieval time, the
+file list with fixture counts, the licence position (internal analysis only; no redistribution, P-03
+open) and the fact that files are stored as received. It does not overwrite existing files without
+`--force`, and it reports missing files rather than failing.
 
 ## What it does — one engine, four views
 
@@ -30,7 +41,8 @@ the banner disappears.
 | **Assess** | The recorded prices for a fixture and outcome, the de-vigged market probability, the price-implied probability, and the gap between the best recorded quote and the average | observed, estimated |
 | **Slip** | A combination across **different matches**: joint probability, gross return, net result and full-stake loss. Same-match and duplicate selections are refused, because 1X2 outcomes of one match are mutually exclusive | estimated, hypothetical |
 | **Stake & target** | Searches recorded quotes for single or two-leg combinations approaching a requested multiplier, within a tolerance, and reports the search scope. A target search, **not** a stake-structure comparison | observed, estimated, hypothetical |
-| **Jackpot arithmetic** | Pool size, coverage and expected winners as a function of entrants, takeout and lines held | hypothetical |
+| **Jackpot arithmetic** | Pool size, your coverage, and expected winning tickets only if you supply a rival-coverage assumption | hypothetical |
+| **Export** | Any assessment can be copied as a JSON or plain-text card that carries its claim kinds and caveats | — |
 
 Every number carries a tag: **observed** (a recorded quote), **estimated** (a model or a measured
 constant applied to observed inputs), **hypothetical** (arithmetic over user-supplied parameters).
@@ -43,6 +55,9 @@ constant applied to observed inputs), **hypothetical** (arithmetic over user-sup
 - Target search over singles and same-day two-leg combinations, ranked by distance from the target.
 - Pool arithmetic with explicit takeout and coverage.
 - A single-page interface with no build step and no external assets.
+- An exportable assessment card, in JSON or plain text, that carries the claim kinds and caveats so a
+  price cannot travel without its qualifications.
+- A polite public-corpus fetcher with recorded provenance.
 
 ## What is not implemented, and why
 
@@ -71,11 +86,11 @@ constant applied to observed inputs), **hypothetical** (arithmetic over user-sup
 python -m unittest tests.test_app_engine tests.test_app_server
 ```
 
-Run exactly: `python -m unittest tests.test_app_engine tests.test_app_server` → **33 tests**.
+Run exactly: `python -m unittest tests.test_app_engine tests.test_app_server tests.test_app_export tests.test_fetch_corpus` → **42 tests**.
 
 Breakdown: 23 engine tests (de-vig arithmetic, synthetic-corpus loading, claim labelling, provenance
 marking, duplicate and incompatible slip rejection, cross-match combination, stake arithmetic, target
 search including the no-match path, pool arithmetic) and 10 server tests (index serving, health and
 mode, fixtures, assess, unknown fixture → 400, slip, empty slip → 400, target, jackpot, path
-traversal refusal). The full repository suite is `python -m unittest discover -s tests` → **237
-tests**, which includes these 33.
+traversal refusal). The full repository suite is `python -m unittest discover -s tests` → **249
+tests**, which includes these 42.

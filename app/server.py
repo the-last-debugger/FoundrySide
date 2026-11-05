@@ -77,6 +77,28 @@ class Handler(BaseHTTPRequestHandler):
             except ValueError as exc:
                 return error(self, str(exc))
 
+        if path == "/api/export":
+            key = (query.get("key") or [""])[0]
+            outcome = (query.get("outcome") or ["H"])[0].upper()
+            fmt = (query.get("format") or ["json"])[0]
+            fx = next((f for f in FIXTURES if f.key == key), None)
+            if fx is None:
+                return error(self, "unknown fixture key")
+            try:
+                card = engine.assessment_card(engine.assess_selection(fx, outcome))
+            except ValueError as exc:
+                return error(self, str(exc))
+            if fmt == "text":
+                body = engine.render_card(card).encode("utf-8")
+                self.send_response(HTTPStatus.OK)
+                self.send_header("Content-Type", "text/plain; charset=utf-8")
+                self.send_header("Content-Disposition", 'attachment; filename="assessment.txt"')
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+                return
+            return json_response(self, card)
+
         if path == "/api/market":
             key = (query.get("key") or [""])[0]
             fx = next((f for f in FIXTURES if f.key == key), None)

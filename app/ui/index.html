@@ -225,7 +225,17 @@ document.querySelectorAll("#a-outcomes button").forEach(btn => {
           ])}
           <div class="verdict">${a.assessment}</div>
           ${caveats(a.caveats)}
+          <button class="primary" id="a-export" style="margin-top:8px">Copy assessment card</button>
         </div>`;
+      $("a-export").onclick = async () => {
+        const card = await getJSON(`/api/export?key=${encodeURIComponent(key)}&outcome=${out}&format=text`);
+        try {
+          await navigator.clipboard.writeText(typeof card === "string" ? card : JSON.stringify(card, null, 2));
+          $("a-export").textContent = "Copied — caveats included";
+        } catch {
+          $("a-export").textContent = "Clipboard blocked; use the text export URL";
+        }
+      };
     } catch (err) { $("a-result").innerHTML = `<div class="card err">${err.message}</div>`; }
   };
 });

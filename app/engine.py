@@ -250,6 +250,52 @@ def slip_view(legs: list[dict], stake: float) -> dict:
     }
 
 
+
+def assessment_card(result: dict) -> dict:
+    """A self-contained record of one assessment, caveats included.
+
+    The point of exporting a card rather than a number is that a screenshot of a price travels without
+    its qualifications. This carries the claim kinds and the caveats with the values.
+    """
+    return {
+        "kind": "foundryside.assessment",
+        "version": 1,
+        "fixture": result["fixture"],
+        "outcome": result["outcome"],
+        "values": {
+            "best_recorded_price": result["best_recorded_price"],
+            "best_book": result["best_book"],
+            "market_implied": result["market_implied"],
+            "price_implied": result["price_implied"],
+        },
+        "claims": result["claims"],
+        "assessment": result["assessment"],
+        "caveats": [
+            "Recorded closing quotes, not timestamps: no price here is shown to be obtainable.",
+            "The de-vigged probability is an assumption about how the book spreads its margin.",
+            "No expected-value, profitability or user-advantage claim is made.",
+        ],
+    }
+
+
+def render_card(card: dict) -> str:
+    """Plain-text rendering, for copying into a message or a notebook."""
+    v = card["values"]
+    lines = [
+        f"FoundrySide assessment — {card['fixture']} — {card['outcome']}",
+        "",
+        f"  best recorded price   {v['best_recorded_price']}  ({v['best_book']})   [observed]",
+        f"  market-implied prob   {v['market_implied']:.4f}                [estimated]",
+        f"  price-implied prob    {v['price_implied']:.4f}                [observed]",
+        "",
+        card["assessment"],
+        "",
+        "Limits:",
+    ]
+    lines += [f"  - {c}" for c in card["caveats"]]
+    return "\n".join(lines)
+
+
 def target_search(stake: float, target_multiplier: float, tolerance: float = 0.15,
                   fixtures: list[Fixture] | None = None, max_legs: int = 2,
                   pair_pool_limit: int = 400) -> dict:
