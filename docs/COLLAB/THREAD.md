@@ -3476,3 +3476,18 @@ Cleanup: removed five temporary clone directories and one leftover shallow clone
 Verification: 269 tests, all stages in 163 seconds, audit 10/10.
 - revision: auto
 - ref: scripts/journal_tool.py
+
+### 2026-11-05T08:24:47Z · builder · evidence
+UI pass. The interface worked but looked unfinished, which matters for a demo that has to be taken seriously.
+
+What changed. A small design system rather than ad-hoc styles: spacing scale, radius scale, layered card backgrounds, a proper type ramp, focus-visible rings, and a responsive collapse for narrow screens. A sticky header carries the product name and a mode badge that states whether you are looking at the held corpus or synthetic demo data - previously that distinction was only a banner.
+
+Elements that serve the honesty requirement rather than decoration. Every value keeps its claim-kind tag. Probability meters and price bars make magnitudes comparable at a glance, so a 0.3 per cent and a 30 per cent cannot be confused at a glance the way bare numbers can. Results are aria-live regions, the tabs are a proper tablist with aria-selected, and prefers-reduced-motion is respected. Loading states are labelled rather than blank, so a panel reads as working rather than broken.
+
+One real bug fixed on the way: the journal used ids prefixed j-, which collided with the jackpot inputs. Those are now jr-, so the two views cannot interfere.
+
+Two structure tests now assert the interface declares its claims, announces results to assistive tech, and states its limits in the page itself. Served and verified: 26,885 bytes, mode badge present, all six tabs, meters and bars present, health reports synthetic in demo mode and 14,802 fixtures in held mode.
+
+Verification: 271 tests, all stages in 208 seconds.
+- revision: auto
+- ref: app/ui/index.html
