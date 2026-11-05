@@ -144,6 +144,9 @@ def market_view(fixture: Fixture) -> dict:
             "No timestamps: these are closing snapshots, not prices available when a user acts.",
             "No account terms, limits or stakes: a quote is not proof of an obtainable price.",
             "The de-vigged probability is a model of the market's belief, not a forecast of ours.",
+            "A negative margin on the Max row is a synthetic artefact: it takes the highest price for "
+            "each outcome from whichever book offered it, which no single book will, so it is not an "
+            "arbitrage and not executable.",
         ],
     }
 

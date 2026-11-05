@@ -66,6 +66,7 @@
 
 <nav>
   <button data-view="assess" class="active">Assess</button>
+  <button data-view="market">Market</button>
   <button data-view="slip">Slip</button>
   <button data-view="target">Stake &amp; target</button>
   <button data-view="jackpot">Jackpot arithmetic</button>
@@ -91,6 +92,20 @@
       </div>
     </div>
     <div id="a-result"></div>
+  </section>
+
+  <!-- MARKET -->
+  <section id="view-market" class="view">
+    <div class="card">
+      <div class="row">
+        <div><label>Division</label><select id="m-div"></select></div>
+        <div><label>Fixture</label><select id="m-fixture"></select></div>
+      </div>
+      <div class="caveat">Every book we hold a quote for, with its own margin. The spread between the
+      best and worst price for the same outcome is disagreement between books — it is not information
+      about the result.</div>
+    </div>
+    <div id="m-result"></div>
   </section>
 
   <!-- SLIP -->
@@ -188,6 +203,7 @@ document.querySelectorAll("nav button").forEach(btn => {
     document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
     btn.classList.add("active");
     $("view-" + btn.dataset.view).classList.add("active");
+    if (btn.dataset.view === "market" && typeof renderMarket === "function") renderMarket();
   };
 });
 
@@ -216,8 +232,19 @@ async function loadFixtures(div) {
   const opts = fixtures.map(f => `<option value="${f.key}">${f.date} — ${f.label}</option>`).join("");
   $("a-fixture").innerHTML = opts;
   $("s-fixture").innerHTML = opts;
+  if ($("m-fixture")) {
+    $("m-fixture").innerHTML = opts;
+    $("m-div").innerHTML = divs.map(d => `<option>${d}</option>`).join("");
+    $("m-div").value = div;
+  }
 }
 $("a-div").onchange = (e) => loadFixtures(e.target.value);
+if ($("m-div")) {
+  $("m-div").onchange = (e) => loadFixtures(e.target.value);
+}
+if ($("m-fixture")) {
+  $("m-fixture").onchange = () => {};
+}
 
 document.querySelectorAll("#a-outcomes button").forEach(btn => {
   btn.onclick = async () => {
@@ -262,6 +289,42 @@ document.querySelectorAll("#a-outcomes button").forEach(btn => {
     } catch (err) { $("a-result").innerHTML = `<div class="card err">${err.message}</div>`; }
   };
 });
+
+/* ---------- Market ---------- */
+async function renderMarket() {
+  const key = $("m-fixture").value;
+  if (!key || !$("m-result")) return;
+  try {
+    const m = await getJSON(`/api/market?key=${encodeURIComponent(key)}`);
+    const books = Object.entries(m.quotes);
+    const rows = books.map(([name, q]) => `
+      <tr>
+        <td>${name}</td>
+        <td>${q.odds.map(o => fmt(o,2)).join(" · ")}</td>
+        <td>${(q.overround*100).toFixed(2)}%</td>
+        <td>${q.implied.map(p => (p*100).toFixed(1)).join("% · ")}%</td>
+      </tr>`).join("");
+    const spreads = ["H","D","A"].map(o => {
+      const prices = books.filter(([n]) => n !== "Avg").map(([,q]) => q.odds[["H","D","A"].indexOf(o)]);
+      return [o, ((Math.max(...prices) / Math.min(...prices) - 1) * 100).toFixed(2) + "%"];
+    });
+    $("m-result").innerHTML = `
+      <div class="card">
+        <h3 style="margin:0 0 6px;font-size:16px">${m.fixture}</h3>
+        <table style="width:100%;border-collapse:collapse;font-size:13px">
+          <thead><tr style="color:var(--muted);text-align:left">
+            <th>Book</th><th>Closing price H · D · A</th><th>Margin</th><th>Implied H · D · A</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        <div style="margin-top:10px">
+          ${kv(spreads.map(([o,s]) => ["Price spread, " + o + tag("observed"), s]))}
+        </div>
+        ${caveats(m.caveats)}
+      </div>`;
+  } catch (err) { $("m-result").innerHTML = `<div class="card err">${err.message}</div>`; }
+}
+if ($("m-fixture")) { $("m-fixture").onchange = renderMarket; }
 
 /* ---------- Slip ---------- */
 let legs = [];

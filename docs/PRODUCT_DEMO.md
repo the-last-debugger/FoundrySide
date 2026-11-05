@@ -39,6 +39,7 @@ open) and the fact that files are stored as received. It does not overwrite exis
 | View | What it shows | Claim kinds used |
 | --- | --- | --- |
 | **Assess** | The recorded prices for a fixture and outcome, the de-vigged market probability, the price-implied probability, and the gap between the best recorded quote and the average | observed, estimated |
+| **Market** | Every book we hold a quote for, with its own margin and de-vigged probabilities, plus the price spread per outcome. A negative margin on the Max row is labelled a synthetic artefact, not an arbitrage | observed, estimated |
 | **Slip** | A combination across **different matches**: joint probability, gross return, net result and full-stake loss. Same-match and duplicate selections are refused, because 1X2 outcomes of one match are mutually exclusive | estimated, hypothetical |
 | **Stake & target** | Searches recorded quotes for single or two-leg combinations approaching a requested multiplier, within a tolerance, and reports the search scope. A target search, **not** a stake-structure comparison | observed, estimated, hypothetical |
 | **Jackpot arithmetic** | Pool size, your coverage, and expected winning tickets only if you supply a rival-coverage assumption | hypothetical |
@@ -89,7 +90,7 @@ constant applied to observed inputs), **hypothetical** (arithmetic over user-sup
 python -m unittest tests.test_app_engine tests.test_app_server
 ```
 
-Run exactly: `python -m unittest tests.test_app_engine tests.test_app_server tests.test_app_export tests.test_fetch_corpus` → **49 tests**.
+Run exactly: `python -m unittest tests.test_app_engine tests.test_app_server tests.test_app_export tests.test_fetch_corpus` → **53 tests**.
 
 Breakdown: 23 engine tests (de-vig arithmetic, synthetic-corpus loading, claim labelling, provenance
 marking, duplicate and incompatible slip rejection, cross-match combination, stake arithmetic, target
