@@ -1,8 +1,9 @@
 # Research status register
 
-Nothing is active and nothing is queued behind it. Everything finished is listed with its report;
-everything else is deferred with the evidence that would justify activating it. Historical records
-are not erased.
+No corpus scoring is authorised. The dispersion protocol is with the sponsor for review; the
+market-companion assessment is queued for the next cycle and must not start concurrently. Everything
+finished is listed with its report; everything else is deferred with the evidence that would justify
+activating it. Historical records are not erased.
 
 ## Active
 

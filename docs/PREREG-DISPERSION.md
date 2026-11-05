@@ -8,12 +8,18 @@ logit-space sections is not a pre-registration. The withdrawal of the original p
 ## 1. Question
 
 Taking the best closing price for a selection beats taking the market average by 6.51% in the held
-snapshots. Any maximum exceeds a mean **by construction**. The question is how much of that 6.51% a
-model of ordinary book-to-book dispersion can reproduce, and how much would require dispersion beyond
-it.
+snapshots. A maximum exceeds a mean **arithmetically, by construction** — that part is not in doubt
+and needs no study.
 
-The answer decides what the product may say: either "the best price is arithmetic", or "there is
-genuine dispersion the best price is capturing".
+The question is narrower: **is a specified, one-moment-calibrated model of ordinary book-to-book
+dispersion consistent with that observed statistic, or does the observed statistic sit outside what
+the model and its sensitivity grid can produce?**
+
+That is a consistency question about a model, not a decomposition of the 6.51%, and not a decision
+about what a product may claim. A design in which the observed statistic is unsurprising under the
+model says the model is adequate to the data we have; a design in which it is surprising says the
+model is missing something. Neither establishes a "genuine" component, because a residual under an
+assumed dispersion model is not identified as anything in particular.
 
 ## 2. What was withdrawn, and why
 
@@ -57,13 +63,40 @@ The simulation must produce `S_sim` the same way the source produces `S_obs`.
 | Component | Specification | Status |
 | --- | --- | --- |
 | Market strength | Three-way market drawn from the corpus-observed distribution of de-vigged favourite probabilities, so the simulation is not anchored to a single market | assumption, sensitivity-checked |
-| Book deviation | Logit deviations, `√ρ·U + √(1−ρ)·ε`, ε independent per book and outcome | assumption |
+| Book deviation | See §4a — indices and sharing specified exactly | assumption |
 | Dispersion scale | Chosen so simulated pairwise de-vigged dispersion `d` equals the observed `d` from Pinnacle and Bet365 | **calibrated** |
 | Correlation ρ | Not identified from two books; sensitivity parameter at 0, 0.3, 0.6, 0.9 | assumption |
 | Margin | Proportional markup set to the corpus-observed closing overround | measured |
 | Books per fixture K | Drawn from the observed `Bb1X2` distribution | measured |
 | Missingness | Quotes absent at the observed per-outcome availability rate; `Max`/`Avg` computed over survivors | measured, approximate |
 | Max/Avg formation | `max` and `mean` of simulated **decimal odds** per outcome, exactly as the source does | mechanical |
+
+### 4a. Covariance construction, exactly
+
+Indices: fixture `f`, book `b`, outcome `o`.
+
+1. **Market.** For fixture `f`, draw a three-way probability vector from the corpus-observed
+   distribution of de-vigged favourite probabilities; take `z_{f,o} = logit(p_{f,o})`.
+2. **Common draw.** For each fixture and outcome, draw `U_{f,o} ~ N(0,1)` — **shared across all books
+   for that outcome**, not across outcomes.
+3. **Independent draw.** For each fixture, book and outcome, draw `ε_{f,b,o} ~ N(0,1)`, independent
+   everywhere.
+4. **Deviation.** `δ_{f,b,o} = σ · (√ρ · U_{f,o} + √(1−ρ) · ε_{f,b,o})`. So books are correlated
+   **within an outcome** (positive ρ) and conditionally independent across outcomes given the market.
+5. **Probability and margin.** `p'_{f,b,o} = softmax_o(z_{f,o} + δ_{f,b,o})`, then multiply by
+   `(1 + m_b)` and renormalise to the book's three-way overround.
+6. **Odds.** `odds_{f,b,o} = 1 / p'_{f,b,o}` — decimal odds, the same quantity the source reports.
+7. **Missingness.** Drop book-outcome quotes at the observed availability rate, **before** forming
+   the maximum and average, because the provider's `Max`/`Avg` are computed over the books it
+   retained.
+8. **Max and Avg.** `Max_{f,o} = max_b odds_{f,b,o}` and `Avg_{f,o} = mean_b odds_{f,b,o}` over
+   surviving books — a maximum and a **mean of odds**, not of probabilities, matching the source.
+
+**Cross-outcome dependence after de-vigging** arises in two places and the protocol states both: the
+softmax normalisation couples the three outcomes compositionally, and any correlation in `U` across
+outcomes would add to it — this version uses independent `U` across outcomes, so the only cross-outcome
+dependence is compositional. That is a stated modelling choice, and step 4 of the sensitivity grid
+varies it by allowing `U` to be shared across outcomes with correlation 0.5.
 
 **Identified from the two-book data:** `d` only, plus the shape of the pairwise difference
 distribution. **Assumed:** ρ, equicorrelation, proportional margin, logit-normal deviations.
@@ -86,8 +119,19 @@ This is a one-moment-calibrated model. It is not validation of the model.
 
 ## 6. Uncertainty — intervals on both sides
 
-- **Observed side**: cluster bootstrap over division-seasons (24 clusters), resampling whole
-  division-seasons and recomputing `S_obs`; 95% interval.
+- **Observed side — exact scheme.** A **pairs (cluster) bootstrap**: the sampling unit is the
+  division-season. There are 24 (8 divisions × 3 seasons). Each replicate draws 24 clusters **with
+  replacement** from those 24, concatenates their selections, recomputes `S_obs` on the concatenation,
+  and the 2.5th and 97.5th percentiles of 2,000 replicates form the interval. Clusters are resampled
+  whole, so within-cluster dependence (shared competition, shared season, and all three outcomes of a
+  fixture) is carried through.
+- **The 24-cluster limitation is real and stated.** A percentile cluster bootstrap with 24 clusters
+  can understate variance, and the tails are poorly estimated. Two checks are run on the same data:
+  a **leave-one-division-out jackknife** (eight refits, reporting the range of `S_obs` without each
+  division) and **per-division intervals** reported separately. If those suggest material
+  between-division heterogeneity, the pooled interval is described as approximate rather than
+  definitive — and if it cannot be resolved with held data, the protocol says so rather than
+  presenting the interval as exact.
 - **Simulation side**: repeated simulation gives a 2.5th–97.5th percentile interval reflecting K,
   dispersion draws and fixture randomness, **not** parameter uncertainty, because the dispersion
   scale is calibrated.
@@ -99,13 +143,19 @@ because `S_sim` is a model prediction, not a sample.
 
 ## 7. Decision rules, fixed now
 
-| Comparison | Reading | Consequence |
+All three outcomes are **descriptive statements about model adequacy**. None is permission to make a
+product claim, and none establishes user benefit.
+
+| Comparison | What it means | What it does **not** mean |
 | --- | --- | --- |
-| `S_obs` inside the sensitivity range of `S_sim` | consistent with arithmetic under calibrated dispersion | claim **weakened**: present as arithmetic, not advantage |
-| `S_obs` above every `S_sim` in the grid | observed improvement exceeds what the model reproduces | claim **strengthened**, subject to availability |
-| `S_obs` below every `S_sim` | observed smaller than the model predicts | **integrity check first**: verify `Max`/`Avg` book sets and `Bb1X2` semantics |
+| `S_obs` inside the sensitivity range of `S_sim` | the observed statistic is unsurprising under this calibrated model and grid | not that the difference *is* arithmetic, and not that no dispersion exists |
+| `S_obs` above every `S_sim` in the grid | the model, as specified, does not reproduce the observed statistic | not proof of "genuine dispersion", because a finite grid over assumed structures cannot exhaust alternatives; it means this model is inadequate |
+| `S_obs` below every `S_sim` | the same, in the other direction — a model-adequacy failure | an **integrity check first**: verify `Max`/`Avg` book sets and `Bb1X2` semantics before interpreting |
 
 The 0.01-nat scale is **not** used: the quantity is a relative price difference, not a log loss.
+
+Compatibility is not explanation. The grid is assumption-dependent and the model is calibrated on one
+moment, so "inside the range" means only that this model is not contradicted.
 
 ## 8. What this cannot establish
 
