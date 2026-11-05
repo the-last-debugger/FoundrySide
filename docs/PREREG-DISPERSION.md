@@ -71,7 +71,7 @@ The simulation must produce `S_sim` the same way the source produces `S_obs`.
 | Dispersion scale | Chosen so simulated pairwise de-vigged dispersion `d` equals the observed `d` from Pinnacle and Bet365 | **calibrated** |
 | Correlation ρ | Not identified from two books; sensitivity parameter at 0, 0.3, 0.6, 0.9 | assumption |
 | Margin | Proportional markup set to the corpus-observed closing overround | measured |
-| Books per fixture K | Drawn from the observed `Bb1X2` distribution | measured |
+| Books per fixture K | **Unknown; evaluated over a pre-specified grid** (Amendment A1) | **assumption, not measured** |
 | Missingness | Quotes absent at the observed per-outcome availability rate; `Max`/`Avg` computed over survivors | measured, approximate |
 | Max/Avg formation | `max` and `mean` of simulated **decimal odds** per outcome, exactly as the source does | mechanical |
 
@@ -123,18 +123,59 @@ distribution. **Assumed:** ρ, equicorrelation, proportional margin, logit-norma
 
 This is a one-moment-calibrated model. It is not validation of the model.
 
+### 4b. Amendment A1 — `K` is unknown, and treated as such
+
+**Why.** `Bb1X2`, the provider field that would give the number of books behind `Max` and `Avg`, is
+absent from all 40 held files. The original protocol assumed it was available; it is not
+(`docs/DISPERSION_BLOCKER.md`).
+
+**What the held fields can and cannot constrain.**
+
+- **Can**: that at least two books were aggregated, because `Max` and `Avg` exist and two individual
+  books are also recorded. That is the only hard constraint, and it is nearly vacuous.
+- **Can**: the empirical distribution of `Max/Avg − 1` for each fixture — but using it to *infer* `K`
+  is rejected, because that ratio is the quantity the study is testing.
+- **Cannot**: the actual number of books, or how it varied by fixture, division or season.
+
+**The grid.** `K ∈ {4, 6, 8, 10, 12}`, each evaluated separately, with `S_sim(K)` reported for every
+value so the band is visible rather than collapsed to a point.
+
+*Justification for the range.* The provider aggregates commercial bookmaker prices for European
+league football; aggregator coverage in that setting is typically several books, not two and not
+twenty. `K = 4` is a conservative lower end — more than the two individually recorded books, fewer
+than a broad aggregator plausibly carries. `K = 12` is a generous upper end. Values outside this range
+would imply either a two-book aggregate, which the separate presence of `Max` and `Avg` argues
+against, or a very wide aggregator, which the coverage of lower divisions makes unlikely. **This is a
+judgement about plausible provider coverage, not a measurement, and it is labelled as such.**
+
+**A limiting case is reported as context.** `max − mean` grows like `σ√(2 ln K)`, so the band
+flattens: the difference between `K = 12` and `K = 30` is small relative to the difference between
+`K = 4` and `K = 12`. `S_sim` at `K = 20` is reported alongside the grid to show how much the answer
+could move if the assumption is wrong in the direction that matters.
+
+**What this costs the study, stated plainly.** A wider band makes "inside the range" easier to
+satisfy, so the test of model adequacy becomes **weaker**: it has less power to reject. The
+informative outcome is not `S_obs` sitting inside a broad band — it is `S_obs` lying **above the band
+at the largest plausible `K`**, since `S_sim` increases with `K` and that is the hardest case for the
+model to fail. The report must say this where the band is presented, and the decision rules below are
+read with that asymmetry in mind.
+
+**Everything else is unchanged**: the observed statistic, inclusion rules, calibration approach,
+sensitivity grid over ρ and dispersion, uncertainty reporting and descriptive-only interpretation.
+
 ## 5. Procedure
 
 1. Estimate `d` per outcome from Pinnacle and Bet365 de-vigged logits, divided by √2, separately for
    home, draw and away.
 2. Estimate the margin from the same selections' closing overround.
-3. Simulate fixtures: draw K from the observed `Bb1X2` distribution; for each book draw
-   equicorrelated logit deviations; form probabilities; apply the margin; form decimal odds; drop
-   quotes at the observed availability rate; compute `Max` and `Avg` per outcome; compute
-   `r = max/mean − 1`.
-4. Calibrate the dispersion scale so simulated `d` matches observed `d`, per outcome.
-5. **S_sim = arithmetic mean of `r` over simulated selection-snapshots.**
-6. **Excess = S_obs − S_sim.**
+3. Simulate fixtures **for each `K` in the grid of Amendment A1**: for each book draw equicorrelated
+   logit deviations; form probabilities; apply the margin; form decimal odds; drop quotes at the
+   observed availability rate; compute `Max` and `Avg` per outcome; compute `r = max/mean − 1`.
+4. Calibrate the dispersion scale so simulated `d` matches observed `d`, per outcome — separately
+   for each `K`, so the band reflects `K` alone and not a change in calibration.
+5. **S_sim(K) = arithmetic mean of `r` over simulated selection-snapshots**, for each `K`.
+6. **Excess(K) = S_obs − S_sim(K)**, reported for every `K` in the grid, with the band
+   `[min_K S_sim, max_K S_sim]` alongside.
 
 ## 6. Uncertainty — intervals on both sides
 
@@ -167,8 +208,8 @@ product claim, and none establishes user benefit.
 
 | Comparison | What it means | What it does **not** mean |
 | --- | --- | --- |
-| `S_obs` inside the sensitivity range of `S_sim` | the observed statistic is unsurprising under this calibrated model and grid | not that the difference *is* arithmetic, and not that no dispersion exists |
-| `S_obs` above every `S_sim` in the grid | the model, as specified, does not reproduce the observed statistic | not proof of "genuine dispersion", because a finite grid over assumed structures cannot exhaust alternatives; it means this model is inadequate |
+| `S_obs` inside the band over the `K` grid and ρ sensitivity | the observed statistic is unsurprising under this calibrated model, for some plausible `K` | not that the difference *is* arithmetic, and not that no dispersion exists; a wide band makes this weak evidence |
+| `S_obs` above the band at **every** `K` in the grid | the model, as specified, does not reproduce the observed statistic even at the largest plausible `K` | not proof of "genuine dispersion", because a finite grid over assumed structures cannot exhaust alternatives; it means this model is inadequate |
 | `S_obs` below every `S_sim` | the same, in the other direction — a model-adequacy failure | an **integrity check first**: verify `Max`/`Avg` book sets and `Bb1X2` semantics before interpreting |
 
 The 0.01-nat scale is **not** used: the quantity is a relative price difference, not a log loss.

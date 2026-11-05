@@ -1,6 +1,7 @@
 # Dispersion analysis — implementation blocker
 
-**Status: stopped before scoring, returned for review.** The approval said that a material
+**Status: resolved by Amendment A1.** Option A was authorised on 2026-11-05; the protocol now
+treats K as unknown over a pre-specified grid. Stopped before scoring, returned for review. The approval said that a material
 implementation defect means stop rather than improvise, and this is one.
 
 ## The defect
