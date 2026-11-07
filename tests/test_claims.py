@@ -88,7 +88,8 @@ class ClaimsTest(unittest.TestCase):
         import re as _re
         ids = {int(m) for m in _re.findall(r"\|\s*E(\d+)\s*\|", programme)}
         self.assertTrue(ids, "no experiments found in the register")
-        words = {23: "Twenty-three", 24: "Twenty-four", 25: "Twenty-five", 26: "Twenty-six"}
+        words = {23: "Twenty-three", 24: "Twenty-four", 25: "Twenty-five", 26: "Twenty-six",
+             27: "Twenty-seven"}
         expected = words.get(max(ids), f"{max(ids)}")
         self.assertIn(f"{expected} experiments", readme,
                       f"README should state {max(ids)} experiments (found E1-E{max(ids)})")
