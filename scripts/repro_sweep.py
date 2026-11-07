@@ -66,6 +66,7 @@ GENERATORS = [
     ("research/thin_divisions.py", ()),
     ("research/stake_structures.py", ()),
     ("research/jackpot_mechanics.py", ()),
+    ("research/user_simulation.py", ()),
 ]
 
 

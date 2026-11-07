@@ -1,18 +1,18 @@
 {
   "revision": {
-    "value": "a24a6cc",
+    "value": "77ec73e",
     "source": "git"
   },
   "experiments": {
-    "value": 26,
+    "value": 27,
     "source": "docs/RESEARCH_PROGRAMME.md"
   },
   "generators": {
-    "value": 35,
+    "value": 36,
     "source": "scripts/repro_sweep.py"
   },
   "reports": {
-    "value": 36,
+    "value": 37,
     "source": "research/*.md"
   },
   "audit checks": {

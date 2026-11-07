@@ -2,7 +2,7 @@
 
 # Documentation index
 
-Every document in `docs/`: **32** files. Generated, so it cannot fall behind the directory.
+Every document in `docs/`: **34** files. Generated, so it cannot fall behind the directory.
 
 | Document | Title | Role | What it is for |
 | --- | --- | --- | --- |
@@ -20,6 +20,7 @@ Every document in `docs/`: **32** files. Generated, so it cannot fall behind the
 | [JACKPOT_FEASIBILITY.md](JACKPOT_FEASIBILITY.md) | Jackpot feasibility — bounded desk investigation | Feasibility | Whether a route can be assessed at all |
 | [LEAD_TRIAGE.md](LEAD_TRIAGE.md) | Lead triage | Triage | Which leads are alive and why |
 | [METHOD-THIN-DIVISIONS.md](METHOD-THIN-DIVISIONS.md) | Method note — thin-division market-efficiency measurement | Document |  |
+| [MODES.md](MODES.md) | Modes, in plain language | Document |  |
 | [OPPORTUNITY_ASSESSMENT.md](OPPORTUNITY_ASSESSMENT.md) | Next-opportunity assessment | Assessment | A decision document |
 | [PARKED.md](PARKED.md) | Parked research directions | Record | Deliberately not being done |
 | [PREREG-DISPERSION.md](PREREG-DISPERSION.md) | Pre-registration — is the observed price-space dispersion statistic consistent with a calibrated model? | Preregistration | Written before a run; fixes the estimand |
@@ -29,6 +30,7 @@ Every document in `docs/`: **32** files. Generated, so it cannot fall behind the
 | [PREREG-ROBUSTNESS.md](PREREG-ROBUSTNESS.md) | Pre-registration — robustness and transfer of the disagreement finding | Preregistration | Written before a run; fixes the estimand |
 | [PREREG-SHRINKAGE.md](PREREG-SHRINKAGE.md) | Pre-registration — disagreement-aware shrinkage | Preregistration | Written before a run; fixes the estimand |
 | [PREREG-STAKE.md](PREREG-STAKE.md) | Pre-registration — stake and multiplier structures | Preregistration | Written before a run; fixes the estimand |
+| [PREREG-USER-SIM.md](PREREG-USER-SIM.md) | Pre-registration — what a user with KSh 100–300 would have done | Preregistration | Written before a run; fixes the estimand |
 | [PRODUCT_CONTINGENCY.md](PRODUCT_CONTINGENCY.md) | Product contingency — price discovery and decision assistance | Fallback | A recorded alternative, not a pivot |
 | [PRODUCT_DEMO.md](PRODUCT_DEMO.md) | Product demo — how to run it | Product | How to run the demonstrator |
 | [PRODUCT_DIRECTION.md](PRODUCT_DIRECTION.md) | Product direction — independent assessment | Product | Product direction and what it refuses to build |
@@ -54,6 +56,7 @@ Every document in `docs/`: **32** files. Generated, so it cannot fall behind the
 - **[JACKPOT_FEASIBILITY.md](JACKPOT_FEASIBILITY.md)** — than leaving it as "not started".
 - **[LEAD_TRIAGE.md](LEAD_TRIAGE.md)** — Written under the day-pass autonomy.
 - **[METHOD-THIN-DIVISIONS.md](METHOD-THIN-DIVISIONS.md)** — Written before the run, under the sponsor's authorisation of 2026-11-04.
+- **[MODES.md](MODES.md)** — Every switch and view in the product, what it does, and what it can cost.
 - **[OPPORTUNITY_ASSESSMENT.md](OPPORTUNITY_ASSESSMENT.md)** — Authorised as one focused desk investigation.
 - **[PARKED.md](PARKED.md)** — Directions the sponsor has deliberately deferred.
 - **[PREREG-DISPERSION.md](PREREG-DISPERSION.md)** — docs/DISPERSION_BLOCKER.md.
@@ -63,6 +66,7 @@ Every document in `docs/`: **32** files. Generated, so it cannot fall behind the
 - **[PREREG-ROBUSTNESS.md](PREREG-ROBUSTNESS.md)** — E18 reported that after forward calibration the model's deficit is concentrated where it departs
 - **[PREREG-SHRINKAGE.md](PREREG-SHRINKAGE.md)** — E18 found that the model's deficit is not uniform: where it nearly agrees with the market it loses
 - **[PREREG-STAKE.md](PREREG-STAKE.md)** — Written before the analysis.
+- **[PREREG-USER-SIM.md](PREREG-USER-SIM.md)** — Written before the run.
 - **[PRODUCT_CONTINGENCY.md](PRODUCT_CONTINGENCY.md)** — Nothing here authorises a build, an integration, an account, a paid API, hosting, deployment or
 - **[PRODUCT_DEMO.md](PRODUCT_DEMO.md)** — A local market-companion application built on the held corpus.
 - **[PRODUCT_DIRECTION.md](PRODUCT_DIRECTION.md)** — Requested before further research.
@@ -76,8 +80,8 @@ Every document in `docs/`: **32** files. Generated, so it cannot fall behind the
 
 | Role | Documents |
 | --- | --- |
-| Preregistration | 7 |
-| Document | 5 |
+| Preregistration | 8 |
+| Document | 6 |
 | Assessment | 2 |
 | Data | 2 |
 | Entry point | 2 |
