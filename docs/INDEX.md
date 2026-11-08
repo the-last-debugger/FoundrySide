@@ -2,7 +2,7 @@
 
 # Documentation index
 
-Every document in `docs/`: **36** files. Generated, so it cannot fall behind the directory.
+Every document in `docs/`: **37** files. Generated, so it cannot fall behind the directory.
 
 | Document | Title | Role | What it is for |
 | --- | --- | --- | --- |
@@ -16,6 +16,7 @@ Every document in `docs/`: **36** files. Generated, so it cannot fall behind the
 | [DATA_LANDSCAPE.md](DATA_LANDSCAPE.md) | Zero-cost data landscape | Data | What the corpus contains |
 | [DISPERSION_BLOCKER.md](DISPERSION_BLOCKER.md) | Dispersion analysis — implementation blocker | Blocker | What stopped a study and what would unblock it |
 | [EVALUATION_PROTOCOL.md](EVALUATION_PROTOCOL.md) | Evaluation Protocol — preregistration for the first confirmatory experiment | Protocol | The evaluation rules studies must follow |
+| [FIXTURES_FEED.md](FIXTURES_FEED.md) | The fixtures gap, with evidence | Document |  |
 | [HANDOVER.md](HANDOVER.md) | Handover | Entry point | One page: state, verification, next steps |
 | [JACKPOT_FEASIBILITY.md](JACKPOT_FEASIBILITY.md) | Jackpot feasibility — bounded desk investigation | Feasibility | Whether a route can be assessed at all |
 | [LEAD_TRIAGE.md](LEAD_TRIAGE.md) | Lead triage | Triage | Which leads are alive and why |
@@ -54,6 +55,7 @@ Every document in `docs/`: **36** files. Generated, so it cannot fall behind the
 - **[DATA_LANDSCAPE.md](DATA_LANDSCAPE.md)** — Status: desk research, no data merged, confirmatory slice untouched.
 - **[DISPERSION_BLOCKER.md](DISPERSION_BLOCKER.md)** — treats K as unknown over a pre-specified grid.
 - **[EVALUATION_PROTOCOL.md](EVALUATION_PROTOCOL.md)** — scored against the benchmark until every field in §8 is filled and committed, because a
+- **[FIXTURES_FEED.md](FIXTURES_FEED.md)** — The planner can price a slip but cannot see an unplayed fixture.
 - **[HANDOVER.md](HANDOVER.md)** — One page.
 - **[JACKPOT_FEASIBILITY.md](JACKPOT_FEASIBILITY.md)** — than leaving it as "not started".
 - **[LEAD_TRIAGE.md](LEAD_TRIAGE.md)** — Written under the day-pass autonomy.
@@ -85,7 +87,7 @@ Every document in `docs/`: **36** files. Generated, so it cannot fall behind the
 | Role | Documents |
 | --- | --- |
 | Preregistration | 10 |
-| Document | 6 |
+| Document | 7 |
 | Assessment | 2 |
 | Data | 2 |
 | Entry point | 2 |
