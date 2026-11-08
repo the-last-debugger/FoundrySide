@@ -68,6 +68,7 @@ treatment and a stated failure condition. Fit and evaluation never share outcome
 | E25 | **Stake and multiplier structures: same upside, different risk** | **matched on KSh 200 net, a 1.5 shot needs KSh ~357 at risk and a 6 shot KSh ~41; realised hit rates track implied except short prices, which do not survive the margin** | **descriptive: structures differ in distribution, not in value** |
 | E26 | **Jackpot pool mechanics under assumed parameters** | **break-even coverage tends to 1/(1-takeout) for large fields: about 1.11x at 10% and 1.67x at 40%; small fields need many times the field average** | **arithmetic only: no rules or payout history obtainable, so nothing measurable** |
 | E27 | **What a user with KSh 100-300 would have done** | **at the best recorded price a single favourite shows +4.1 per KSh 100; at the average price -0.2; 45% of days down on a favourite, 81-85% on doubles and accumulators** | **the positive figure is the max-of-quotes artefact, not an edge** |
+| E28 | **Daily slip selection and monitoring on data to November 2026** | **five pre-declared rules; forward means +3.6 to +9.9 at the best recorded price but every bootstrap interval straddles zero on the average-price basis; season means change sign** | **no rule qualifies as an edge; the monitors run because the record has value** |
 
 ## What the three studies together say
 
@@ -142,7 +143,7 @@ real defects:
 | Bridge checker | a verdict that names no revision, a row not authorised | once (per-row verdicts), once (malformed header) |
 | scripts/repro_sweep.py | any report that does not reproduce, and any generator that rewrites history when nothing changed | once (manifest clock churn) |
 
-A clean sweep is **36 generators** reproducing byte-for-byte.
+A clean sweep is **37 generators** reproducing byte-for-byte.
 
 ## Product contingency
 

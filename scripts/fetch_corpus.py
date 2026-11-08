@@ -34,7 +34,7 @@ PROVENANCE = DATA / "PROVENANCE.json"
 
 BASE = "https://football-data.co.uk/mmz4281/{season}/{league}.csv"
 LEAGUES = ["E0", "E1", "D1", "F1", "I1", "N1", "P1", "SP1"]
-SEASONS = ["2021", "2122", "2223", "2324", "2425"]
+SEASONS = ["2021", "2122", "2223", "2324", "2425", "2526", "2627"]
 DELAY_SECONDS = 1.0
 
 LICENCE_NOTE = (

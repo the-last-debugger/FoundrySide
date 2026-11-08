@@ -67,6 +67,7 @@ GENERATORS = [
     ("research/stake_structures.py", ()),
     ("research/jackpot_mechanics.py", ()),
     ("research/user_simulation.py", ()),
+    ("research/slip_rules.py", ()),
 ]
 
 
