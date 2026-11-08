@@ -68,5 +68,16 @@ class InterfaceTest(unittest.TestCase):
         self.assertIn("card-go", self.page)
 
 
+    def test_card_editor_plans_a_card_in_a_stubbed_dom(self):
+        # Structural checks cannot tell whether the editor works; this runs it under Node.
+        import shutil, subprocess
+        if not shutil.which("node"):
+            self.skipTest("node not installed")
+        script = ROOT / "tests" / "fixtures" / "card_editor_check.js"
+        result = subprocess.run(["node", str(script)], cwd=ROOT, capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("plans correctly", result.stdout)
+
+
 if __name__ == "__main__":
     unittest.main()
