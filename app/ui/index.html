@@ -249,6 +249,15 @@
       </div>
       <details class="explainer">
         <summary>Planning a card you can see</summary>
+        <div class="caveat">There is no pre-match odds feed, so this page plans on recorded fixtures.
+        To plan an unplayed card, paste it here — one fixture per line:
+        <code>Home | Away | 1.55 | 4.20 | 6.50</code> — and the planner will price the combinations
+        from the odds you entered. Prices are yours; nothing verifies they are live.</div>
+        <textarea id="card-input" rows="5" placeholder="Arsenal | Leeds | 1.55 | 4.20 | 6.50"></textarea>
+        <button class="ghost" id="card-go">Plan this card</button>
+        <div id="card-out" aria-live="polite"></div>
+      </details>
+
         <div class="caveat">This page plans on recorded fixtures, because there is no
         pre-match odds feed. To plan on an unplayed card, put the fixtures and the prices you
         can see into a JSON file and run the planner directly; it will write the plan before
@@ -701,6 +710,96 @@ loadDivisions().catch(err => {
   $("a-result").innerHTML = `<div class="card bad">${err.message}</div>`;
   $("mode-text").textContent = "offline";
 });
+
+/* ---------- Card editor ---------- */
+(function () {
+  const input = document.getElementById("card-input");
+  const go = document.getElementById("card-go");
+  if (!input || !go) return;
+  const out = document.getElementById("card-out");
+
+  function parseCard(text) {
+    const fixtures = [];
+    for (const raw of text.split("\n")) {
+      const line = raw.trim();
+      if (!line || line.startsWith("#")) continue;
+      const parts = line.split("|").map(s => s.trim());
+      if (parts.length < 5) continue;
+      const odds = parts.slice(2, 5).map(Number);
+      if (odds.some(o => !(o > 1))) continue;
+      fixtures.push({ home: parts[0], away: parts[1], odds });
+    }
+    return fixtures;
+  }
+
+  function devigLocal(odds) {
+    const inv = odds.map(o => 1 / o);
+    const total = inv.reduce((a, b) => a + b, 0);
+    return inv.map(x => x / total);
+  }
+
+  function plan(fixtures, stake, target, tolerance) {
+    const lo = target * (1 - tolerance), hi = target * (1 + tolerance);
+    const sels = [];
+    fixtures.forEach(f => {
+      const probs = devigLocal(f.odds);
+      f.odds.forEach((price, i) => sels.push({
+        label: f.home + " v " + f.away, outcome: ["H", "D", "A"][i],
+        price, implied: probs[i], key: f.home + "|" + f.away,
+      }));
+    });
+    const options = [];
+    const add = legs => {
+      let price = 1, implied = 1;
+      for (const l of legs) { price *= l.price; implied *= l.implied; }
+      const gross = stake * price;
+      options.push({ legs, price, implied, gross, ev: implied * gross - stake });
+    };
+    for (let i = 0; i < sels.length; i++) {
+      if (sels[i].price >= lo && sels[i].price <= hi) add([sels[i]]);
+      for (let j = i + 1; j < sels.length; j++) {
+        if (sels[j].key === sels[i].key) continue;
+        const two = sels[i].price * sels[j].price;
+        if (two >= lo && two <= hi) { add([sels[i], sels[j]]); continue; }
+        for (let k = j + 1; k < sels.length; k++) {
+          if (sels[k].key === sels[i].key || sels[k].key === sels[j].key) continue;
+          const three = two * sels[k].price;
+          if (three >= lo && three <= hi) add([sels[i], sels[j], sels[k]]);
+        }
+      }
+    }
+    options.sort((a, b) => Math.abs(a.price - target) - Math.abs(b.price - target));
+    return options.slice(0, 5);
+  }
+
+  go.onclick = () => {
+    const fixtures = parseCard(input.value);
+    if (!fixtures.length) {
+      out.innerHTML = '<div class="caveat bad">No fixtures read. Use: Home | Away | 1.55 | 4.20 | 6.50</div>';
+      return;
+    }
+    const stake = Number(document.getElementById("p-stake").value) || 100;
+    const target = Number(document.getElementById("p-target").value) || 10;
+    const options = plan(fixtures, stake, target, 0.2);
+    if (!options.length) {
+      out.innerHTML = `<div class="verdict warn">No combination of the prices you entered lands near ${target}x.</div>`;
+      return;
+    }
+    out.innerHTML = options.map(o => `
+      <div class="cand">
+        <h4>${o.legs.length} leg${o.legs.length > 1 ? "s" : ""} at ${o.price.toFixed(2)}x</h4>
+        ${o.legs.map(l => `<div class="caveat">${l.label} — ${l.outcome} at ${l.price.toFixed(2)}</div>`).join("")}
+        <div class="kv">
+          <div>Market-implied probability <span class="tag est">estimated</span></div>
+          <div>${(o.implied * 100).toFixed(1)}%</div>
+          <div>Net if it wins <span class="tag hyp">hypothetical</span></div>
+          <div>KSh ${(o.gross - stake).toFixed(0)}</div>
+          <div>Expected net</div><div>KSh ${o.ev.toFixed(2)}</div>
+        </div>
+      </div>`).join("");
+  };
+})();
+
 </script>
 </body>
 </html>

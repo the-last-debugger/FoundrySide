@@ -63,6 +63,9 @@ class InterfaceTest(unittest.TestCase):
         self.assertIn("Target multiplier", self.page)
         # The typed-card path is the only prospective one; the page must at least point at it.
         self.assertIn("plan_card.py", self.page)
+        # And the browser must be able to plan a card itself, not only point at the CLI.
+        self.assertIn("card-input", self.page)
+        self.assertIn("card-go", self.page)
 
 
 if __name__ == "__main__":
