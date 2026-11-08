@@ -32,7 +32,7 @@ A generated [static snapshot](DEMO_SNAPSHOT.html) shows the three main views wit
 ## Verify it
 
 ```bash
-python -m unittest discover -s tests    # 389 tests
+python -m unittest discover -s tests    # 396 tests
 python scripts/audit.py                 # 13 cross-document checks
 python scripts/collab_check.py          # bridge consistency
 python scripts/verify_all.py --full     # tests + clone + 38-generator sweep (~20 min)
