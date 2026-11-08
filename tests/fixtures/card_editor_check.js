@@ -4,7 +4,7 @@ const html = fs.readFileSync("app/ui/index.html", "utf8");
 const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]).join("\n");
 
 const elements = {
-  "card-input": { value: "Arsenal | Leeds | 1.55 | 4.20 | 6.50\nBayern | Mainz | 1.25 | 6.00 | 11.0\nBarcelona | Getafe | 1.40 | 4.80 | 8.00", innerHTML: "" },
+  "card-input": { value: "Arsenal | Leeds | 1.55 | 4.20 | 6.50 | Betika\nArsenal | Leeds | 1.50 | 4.30 | 6.80 | Odibets\nBayern | Mainz | 1.25 | 6.00 | 11.0\nBarcelona | Getafe | 1.40 | 4.80 | 8.00", innerHTML: "" },
   "card-go": { onclick: null },
   "card-out": { innerHTML: "" },
   "p-stake": { value: "100" },
@@ -38,8 +38,9 @@ if (!out || out.includes("No fixtures read")) {
   console.error("FAIL: editor produced no plan:", out.slice(0, 120));
   process.exit(1);
 }
-const options = (out.match(/class="cand"/g) || []).length;
+const options = (out.match(/leg[s]? at /g) || []).length;
+const compared = out.includes("Book comparison");
 const hasEv = out.includes("Expected net");
 console.log(`options rendered: ${options}, expected-net shown: ${hasEv}`);
-if (options < 1 || !hasEv) process.exit(1);
+if (options < 1 || !hasEv || !compared) process.exit(1);
 console.log("card editor plans correctly");

@@ -717,9 +717,10 @@ loadDivisions().catch(err => {
   const go = document.getElementById("card-go");
   if (!input || !go) return;
   const out = document.getElementById("card-out");
+  const OUT = ["H", "D", "A"];
 
   function parseCard(text) {
-    const fixtures = [];
+    const byFixture = new Map();
     for (const raw of text.split("\n")) {
       const line = raw.trim();
       if (!line || line.startsWith("#")) continue;
@@ -727,9 +728,12 @@ loadDivisions().catch(err => {
       if (parts.length < 5) continue;
       const odds = parts.slice(2, 5).map(Number);
       if (odds.some(o => !(o > 1))) continue;
-      fixtures.push({ home: parts[0], away: parts[1], odds });
+      const key = parts[0] + " v " + parts[1];
+      const book = parts[5] || "you";
+      if (!byFixture.has(key)) byFixture.set(key, { key, books: {} });
+      byFixture.get(key).books[book] = odds;
     }
-    return fixtures;
+    return [...byFixture.values()];
   }
 
   function devigLocal(odds) {
@@ -738,16 +742,26 @@ loadDivisions().catch(err => {
     return inv.map(x => x / total);
   }
 
+  const marginOf = odds => odds.reduce((a, o) => a + 1 / o, 0) - 1;
+
+  // One selection set per fixture, taking the best price for each outcome across the books entered.
+  function selections(fixtures) {
+    const sels = [];
+    for (const f of fixtures) {
+      const books = Object.values(f.books);
+      const best = [0, 1, 2].map(i => Math.max(...books.map(b => b[i])));
+      const reference = books[best.findIndex((_, i) => true)] || books[0];
+      const probs = devigLocal(books[0]);
+      best.forEach((price, i) => sels.push({
+        label: f.key, outcome: OUT[i], price, implied: probs[i], key: f.key,
+      }));
+    }
+    return sels;
+  }
+
   function plan(fixtures, stake, target, tolerance) {
     const lo = target * (1 - tolerance), hi = target * (1 + tolerance);
-    const sels = [];
-    fixtures.forEach(f => {
-      const probs = devigLocal(f.odds);
-      f.odds.forEach((price, i) => sels.push({
-        label: f.home + " v " + f.away, outcome: ["H", "D", "A"][i],
-        price, implied: probs[i], key: f.home + "|" + f.away,
-      }));
-    });
+    const sels = selections(fixtures);
     const options = [];
     const add = legs => {
       let price = 1, implied = 1;
@@ -772,20 +786,38 @@ loadDivisions().catch(err => {
     return options.slice(0, 5);
   }
 
+  function comparison(fixtures) {
+    return fixtures.map(f => {
+      const books = Object.entries(f.books);
+      const rows = books.map(([name, odds]) =>
+        `<div class="caveat">${name}: ${odds.map(o => o.toFixed(2)).join(" / ")}` +
+        ` &nbsp;margin ${(marginOf(odds) * 100).toFixed(2)}%</div>`).join("");
+      const best = OUT.map((o, i) => {
+        let price = 0, book = "";
+        for (const [name, odds] of books) if (odds[i] > price) { price = odds[i]; book = name; }
+        return `${o} ${price.toFixed(2)} (${book})`;
+      }).join(", ");
+      return `<div class="cand"><h4>${f.key}</h4>${rows}` +
+             `<div class="caveat">Best per outcome: ${best}. That is a synthetic price: no single ` +
+             `book offers all three.</div></div>`;
+    }).join("");
+  }
+
   go.onclick = () => {
     const fixtures = parseCard(input.value);
     if (!fixtures.length) {
-      out.innerHTML = '<div class="caveat bad">No fixtures read. Use: Home | Away | 1.55 | 4.20 | 6.50</div>';
+      out.innerHTML = '<div class="caveat bad">No fixtures read. Use: Home | Away | 1.55 | 4.20 | 6.50 | Betika</div>';
       return;
     }
     const stake = Number(document.getElementById("p-stake").value) || 100;
     const target = Number(document.getElementById("p-target").value) || 10;
     const options = plan(fixtures, stake, target, 0.2);
+    const head = `<div class="card"><h3>Book comparison</h3>${comparison(fixtures)}</div>`;
     if (!options.length) {
-      out.innerHTML = `<div class="verdict warn">No combination of the prices you entered lands near ${target}x.</div>`;
+      out.innerHTML = head + `<div class="verdict warn">No combination of the prices entered lands near ${target}x.</div>`;
       return;
     }
-    out.innerHTML = options.map(o => `
+    out.innerHTML = head + options.map(o => `
       <div class="cand">
         <h4>${o.legs.length} leg${o.legs.length > 1 ? "s" : ""} at ${o.price.toFixed(2)}x</h4>
         ${o.legs.map(l => `<div class="caveat">${l.label} — ${l.outcome} at ${l.price.toFixed(2)}</div>`).join("")}
