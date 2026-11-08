@@ -41,6 +41,6 @@ if (!out || out.includes("No fixtures read")) {
 const options = (out.match(/leg[s]? at /g) || []).length;
 const compared = out.includes("Book comparison");
 const hasEv = out.includes("Expected net");
-console.log(`options rendered: ${options}, expected-net shown: ${hasEv}`);
+console.log(`options rendered: ${options}, book comparison: ${compared}, expected-net: ${hasEv}`);
 if (options < 1 || !hasEv || !compared) process.exit(1);
 console.log("card editor plans correctly");
