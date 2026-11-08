@@ -2,11 +2,13 @@
 
 # CI evidence
 
-Recorded 2026-11-08T07:32:55+00:00 from the GitHub Actions API. Note on self-reference: this file cannot name the commit that contains it, so it always refers to the revision it was generated at. Regenerate with `python scripts/ci_evidence.py` rather than typing a run number or URL by hand: a quoted
+Recorded 2026-11-08T07:38:09+00:00 from the GitHub Actions API. Note on self-reference: this file cannot name the commit that contains it, so it always refers to the revision it was generated at. Regenerate with `python scripts/ci_evidence.py` rather than typing a run number or URL by hand: a quoted
 identifier that does not exist is worse than no identifier at all.
 
 | Run | Commit | Status | Conclusion | Link |
 | --- | --- | --- | --- | --- |
+| 191 | `f521c1b` | completed | success | https://github.com/the-last-debugger/FoundrySide/actions/runs/42459521524 |
+| 190 | `519b562` | completed | success | https://github.com/the-last-debugger/FoundrySide/actions/runs/42459399636 |
 | 189 | `89de65e` | completed | success | https://github.com/the-last-debugger/FoundrySide/actions/runs/42459127812 |
 | 188 | `2ec284f` | completed | success | https://github.com/the-last-debugger/FoundrySide/actions/runs/42454227427 |
 | 187 | `3717c76` | completed | success | https://github.com/the-last-debugger/FoundrySide/actions/runs/42453613591 |
@@ -17,10 +19,8 @@ identifier that does not exist is worse than no identifier at all.
 | 182 | `0d57435` | completed | success | https://github.com/the-last-debugger/FoundrySide/actions/runs/42449853623 |
 | 181 | `682a8f0` | completed | success | https://github.com/the-last-debugger/FoundrySide/actions/runs/42397135761 |
 | 180 | `391b143` | completed | success | https://github.com/the-last-debugger/FoundrySide/actions/runs/42396948697 |
-| 179 | `77ec73e` | completed | success | https://github.com/the-last-debugger/FoundrySide/actions/runs/42051579142 |
-| 178 | `88a3462` | completed | success | https://github.com/the-last-debugger/FoundrySide/actions/runs/42051199670 |
 
-**Current revision `89de65e`: run 189 is successful.**
+**Current revision `f521c1b`: run 191 is successful.**
 
 A `cancelled` conclusion is the concurrency safeguard cancelling a superseded run, not a
 failure: `.github/workflows/checks.yml` keeps one run per branch and cancels the older one.
