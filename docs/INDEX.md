@@ -2,7 +2,7 @@
 
 # Documentation index
 
-Every document in `docs/`: **37** files. Generated, so it cannot fall behind the directory.
+Every document in `docs/`: **38** files. Generated, so it cannot fall behind the directory.
 
 | Document | Title | Role | What it is for |
 | --- | --- | --- | --- |
@@ -22,6 +22,7 @@ Every document in `docs/`: **37** files. Generated, so it cannot fall behind the
 | [LEAD_TRIAGE.md](LEAD_TRIAGE.md) | Lead triage | Triage | Which leads are alive and why |
 | [METHOD-THIN-DIVISIONS.md](METHOD-THIN-DIVISIONS.md) | Method note — thin-division market-efficiency measurement | Document |  |
 | [MODES.md](MODES.md) | Modes, in plain language | Document |  |
+| [ODDS_SOURCES.md](ODDS_SOURCES.md) | Odds from Kenyan bookmakers: what was checked, and what is possible | Data | What sources exist and on what terms |
 | [OPPORTUNITY_ASSESSMENT.md](OPPORTUNITY_ASSESSMENT.md) | Next-opportunity assessment | Assessment | A decision document |
 | [PARKED.md](PARKED.md) | Parked research directions | Record | Deliberately not being done |
 | [PREREG-DISPERSION.md](PREREG-DISPERSION.md) | Pre-registration — is the observed price-space dispersion statistic consistent with a calibrated model? | Preregistration | Written before a run; fixes the estimand |
@@ -61,6 +62,7 @@ Every document in `docs/`: **37** files. Generated, so it cannot fall behind the
 - **[LEAD_TRIAGE.md](LEAD_TRIAGE.md)** — Written under the day-pass autonomy.
 - **[METHOD-THIN-DIVISIONS.md](METHOD-THIN-DIVISIONS.md)** — Written before the run, under the sponsor's authorisation of 2026-11-04.
 - **[MODES.md](MODES.md)** — Every switch and view in the product, what it does, and what it can cost.
+- **[ODDS_SOURCES.md](ODDS_SOURCES.md)** — The request was to pull prices from Odibets, Betika, SportPesa, Betin, Betway, MozzartBet and others,
 - **[OPPORTUNITY_ASSESSMENT.md](OPPORTUNITY_ASSESSMENT.md)** — Authorised as one focused desk investigation.
 - **[PARKED.md](PARKED.md)** — Directions the sponsor has deliberately deferred.
 - **[PREREG-DISPERSION.md](PREREG-DISPERSION.md)** — docs/DISPERSION_BLOCKER.md.
@@ -88,8 +90,8 @@ Every document in `docs/`: **37** files. Generated, so it cannot fall behind the
 | --- | --- |
 | Preregistration | 10 |
 | Document | 7 |
+| Data | 3 |
 | Assessment | 2 |
-| Data | 2 |
 | Entry point | 2 |
 | Feasibility | 2 |
 | Product | 2 |
