@@ -22,6 +22,20 @@ python -m app.server --demo         # synthetic, clearly labelled, no download
 Eight tabs: Assess, Market, Slip, Plan, Structures, Stake & target, Jackpot, Journal.
 The Plan tab takes a stake and a target multiplier and returns slip options for the latest recorded match-day.
 
+### The three most recent experiments
+
+- **E27** what a KSh 100-300 user would have done: mean near zero at average prices, 45-85% of days
+  down depending on ambition (`research/USER_SIMULATION.md`).
+- **E28** five slip rules to November 2026: forward means look positive at the best quote, but every
+  bootstrap interval straddles zero at the average quote (`research/SLIP_RULES.md`).
+- **E29** a fitted slip model does not beat multiplying the market probabilities: +0.0013 nats out of
+  time, calibration slope 0.19 (`research/SLIP_MODEL.md`).
+
+A card the user types in can be planned with `scripts/plan_card.py` (text or `--json`), the only path
+that produces a genuinely prospective slip: the corpus has no odds for unplayed fixtures
+(`docs/FIXTURES_FEED.md`).
+
+
 One command exercises all of it and prints what came back:
 
 `ash
