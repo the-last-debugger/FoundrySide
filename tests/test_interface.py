@@ -61,6 +61,8 @@ class InterfaceTest(unittest.TestCase):
         # The planner and the typed card are the user-facing answer to "stake X, make Y".
         self.assertIn("/api/plan", self.page)
         self.assertIn("Target multiplier", self.page)
+        # The typed-card path is the only prospective one; the page must at least point at it.
+        self.assertIn("plan_card.py", self.page)
 
 
 if __name__ == "__main__":

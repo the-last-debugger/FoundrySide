@@ -247,6 +247,14 @@
         <div><label for="p-target">Target multiplier</label><input id="p-target" type="number" value="10" min="1.2" step="0.5"></div>
         <div class="tight"><button class="primary" id="p-go">Find slips</button></div>
       </div>
+      <details class="explainer">
+        <summary>Planning a card you can see</summary>
+        <div class="caveat">This page plans on recorded fixtures, because there is no
+        pre-match odds feed. To plan on an unplayed card, put the fixtures and the prices you
+        can see into a JSON file and run the planner directly; it will write the plan before
+        kickoff, which is what makes it checkable afterwards.</div>
+        <div class="caveat"><code>python scripts/plan_card.py card.json --stake 100 --target 10</code></div>
+      </details>
       <div class="caveat">Say what you have and what you want to make. The planner returns slips from
       the latest recorded match-day that land near that multiplier, with the probability the market
       implies and the expected net — which is negative at these prices.</div>
