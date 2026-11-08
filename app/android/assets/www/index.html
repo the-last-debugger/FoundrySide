@@ -66,6 +66,7 @@
 <nav id="tabs">
   <button data-view="assess" class="active">Assess</button>
   <button data-view="market">Market</button>
+  <button data-view="plan">Plan</button>
   <button data-view="structures">Structures</button>
   <button data-view="slip">Slip</button>
 </nav>
@@ -102,6 +103,19 @@
       <button class="primary" id="go-market">Compare books</button>
     </div>
     <div id="market-out"></div>
+  </section>
+
+  <section id="view-plan" class="view">
+    <div class="card">
+      <label for="p-stake">I have (KSh)</label>
+      <input id="p-stake" type="number" value="100" min="20">
+      <label for="p-target">I want to make</label>
+      <input id="p-target" type="number" value="10" min="1.2">
+      <button class="primary" id="p-go">Find slips</button>
+    </div>
+    <div class="caveat">Slips from the latest match-day in the bundle that land near your multiplier,
+    with the probability the market implies. Nothing here is a prediction.</div>
+    <div id="p-out"></div>
   </section>
 
   <section id="view-structures" class="view">

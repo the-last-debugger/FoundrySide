@@ -19,7 +19,8 @@ python -m app.server                # http://127.0.0.1:8765
 python -m app.server --demo         # synthetic, clearly labelled, no download
 ```
 
-Seven tabs: Assess, Market, Slip, Structures, Stake & target, Jackpot, Journal.
+Eight tabs: Assess, Market, Slip, Plan, Structures, Stake & target, Jackpot, Journal.
+The Plan tab takes a stake and a target multiplier and returns slip options for the latest recorded match-day.
 
 One command exercises all of it and prints what came back:
 

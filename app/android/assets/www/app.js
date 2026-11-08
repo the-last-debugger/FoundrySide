@@ -79,9 +79,69 @@ function slip(fixture, selection, stake) {
   return { price, prob, stake, gross: stake * price, net: stake * price - stake, market: "1X2" };
 }
 
+
+/** Latest match-day in the bundle, and its fixtures. */
+function latestDay(fixtures) {
+  const parsed = fixtures
+    .map(f => ({ f, t: Date.parse(f.date.split("/").reverse().join("-")) }))
+    .filter(x => !Number.isNaN(x.t));
+  if (!parsed.length) return { date: "", day: [] };
+  const newest = Math.max(...parsed.map(x => x.t));
+  const day = parsed.filter(x => x.t === newest).map(x => x.f);
+  return { date: day[0].date, day };
+}
+
+/** Every priced outcome on a fixture, with its best price and market-implied probability. */
+function selectionsOf(fixture) {
+  const probs = devig(fixture.odds.Avg || fixture.odds.Max);
+  const best = fixture.odds.Max || fixture.odds.Avg;
+  return OUTCOMES.map((o, i) => ({
+    key: fixture.k, label: fixture.h + " v " + fixture.a, outcome: o,
+    price: best[i], implied: probs[i],
+  })).filter(s => s.price > 1);
+}
+
+/** Slip options for a stake and a target multiplier, on the latest match-day in the bundle. */
+function planSlips(fixtures, stake, target, tolerance = 0.15, maxLegs = 3) {
+  const { date, day } = latestDay(fixtures);
+  if (!day.length) return { date, options: [], found: false };
+  const lo = target * (1 - tolerance), hi = target * (1 + tolerance);
+  const sels = day.flatMap(selectionsOf);
+  const options = [];
+  const add = (legs) => {
+    let price = 1, implied = 1;
+    for (const leg of legs) { price *= leg.price; implied *= leg.implied; }
+    const gross = stake * price;
+    options.push({
+      n_legs: legs.length, combined_price: r(price, 3), implied_probability: r(implied, 6),
+      gross_return: r(gross, 2), net_if_won: r(gross - stake, 2), loss_if_lost: r(stake, 2),
+      expected_net: r(implied * gross - stake, 2),
+      legs: legs.map(l => ({ fixture: l.label, selection: l.outcome,
+                             price: r(l.price, 3), implied: r(l.implied, 4) })),
+    });
+  };
+  for (let i = 0; i < sels.length; i++) {
+    if (sels[i].price >= lo && sels[i].price <= hi) add([sels[i]]);
+    if (maxLegs < 2) continue;
+    for (let j = i + 1; j < sels.length; j++) {
+      if (sels[j].key === sels[i].key) continue;
+      const two = sels[i].price * sels[j].price;
+      if (two >= lo && two <= hi) { add([sels[i], sels[j]]); continue; }
+      if (maxLegs < 3) continue;
+      for (let k = j + 1; k < sels.length; k++) {
+        if (sels[k].key === sels[i].key || sels[k].key === sels[j].key) continue;
+        const three = two * sels[k].price;
+        if (three >= lo && three <= hi) add([sels[i], sels[j], sels[k]]);
+      }
+    }
+  }
+  options.sort((a, b) => Math.abs(a.combined_price - target) - Math.abs(b.combined_price - target));
+  return { date, options: options.slice(0, 6), found: options.length > 0 };
+}
+
 /* Publish the pure surface for the parity check; harmless in a browser. */
 if (typeof globalThis !== "undefined") {
-  globalThis.__fs = { devig, overround, assess, compareStructures, slip, OUTCOMES };
+  globalThis.__fs = { devig, overround, assess, compareStructures, slip, planSlips, OUTCOMES };
 }
 
 /* ================= interface ================= */
@@ -149,6 +209,33 @@ function wireUI() {
         <div class="caveat">A negative margin on the Max row is a synthetic artefact: it takes the best
         price for each outcome separately, which no single book offers. Not an arbitrage.</div>
       </div>`;
+  };
+
+  $("p-go").onclick = () => {
+    const stake = Number($("p-stake").value);
+    const target = Number($("p-target").value);
+    const result = planSlips(FIXTURES, stake, target, 0.15, 3);
+    if (!result.found) {
+      $("p-out").innerHTML = `<div class="card"><div class="verdict warn">
+        No slip on ${result.date} lands near ${target}x. The market does not offer that multiplier
+        from these fixtures.</div></div>`;
+      return;
+    }
+    const cards = result.options.map(o => `
+      <div class="card">
+        <h3>${o.n_legs} leg${o.n_legs > 1 ? "s" : ""} at ${fmt(o.combined_price, 2)}x</h3>
+        ${o.legs.map(l => `<div class="caveat">${l.fixture} - ${l.selection} at ${fmt(l.price, 2)}</div>`).join("")}
+        <div class="kv">
+          <div>Market-implied probability <span class="tag est">estimated</span></div>
+          <div>${pct(o.implied_probability, 2)}</div>
+          <div>Net if it wins <span class="tag hyp">hypothetical</span></div>
+          <div>KSh ${fmt(o.net_if_won, 0)}</div>
+          <div>Loss if it fails</div><div>KSh -${fmt(o.loss_if_lost, 0)}</div>
+          <div>Expected net</div><div>KSh ${fmt(o.expected_net, 2)}</div>
+        </div>
+      </div>`).join("");
+    $("p-out").innerHTML = `<div class="caveat">Match-day ${result.date}, not today's fixtures: this
+      build has no fixtures feed.</div>${cards}`;
   };
 
   $("go-structures").onclick = () => {

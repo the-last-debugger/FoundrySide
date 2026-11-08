@@ -25,6 +25,7 @@ Requirements: Android SDK build-tools 37 (34's `d8` crashes on Java 17 class fil
 | Assess | The recorded prices for a selection, the de-vigged market probability, the price-implied probability, with claim tags |
 | Market | Every book held for the fixture, with its own margin and implied probabilities, plus the over/under pair when present |
 | Structures | The same net upside at different prices: stake at risk, gross, hit probability, expected loss, variance |
+| Plan | A stake and a target multiplier, with slip options for the latest match-day in the bundle |
 | Slip | One selection's price, stake arithmetic, gross, net and full-stake loss |
 
 ## Design decisions that matter
