@@ -158,6 +158,7 @@
   <button data-view="market" role="tab" aria-selected="false">Market</button>
   <button data-view="slip" role="tab" aria-selected="false">Slip</button>
   <button data-view="target" role="tab" aria-selected="false">Stake &amp; target</button>
+  <button data-view="plan" role="tab" aria-selected="false">Plan</button>
   <button data-view="structures" role="tab" aria-selected="false">Structures</button>
   <button data-view="jackpot" role="tab" aria-selected="false">Jackpot</button>
   <button data-view="journal" role="tab" aria-selected="false">Journal</button>
@@ -236,6 +237,21 @@
       are different structures and are not analysed here.</div>
     </div>
     <div id="t-result" aria-live="polite"></div>
+  </section>
+
+  <!-- PLAN -->
+  <section id="view-plan" class="view" role="tabpanel">
+    <div class="card">
+      <div class="row">
+        <div><label for="p-stake">Stake (KSh)</label><input id="p-stake" type="number" value="100" min="20" step="10"></div>
+        <div><label for="p-target">Target multiplier</label><input id="p-target" type="number" value="10" min="1.2" step="0.5"></div>
+        <div class="tight"><button class="primary" id="p-go">Find slips</button></div>
+      </div>
+      <div class="caveat">Say what you have and what you want to make. The planner returns slips from
+      the latest recorded match-day that land near that multiplier, with the probability the market
+      implies and the expected net — which is negative at these prices.</div>
+    </div>
+    <div id="p-result" aria-live="polite"></div>
   </section>
 
   <!-- STRUCTURES -->
@@ -567,6 +583,36 @@ $("t-go").onclick = async () => {
       </div>`;
   } catch (err) { $("t-result").innerHTML = `<div class="card bad">${err.message}</div>`; }
 };
+
+/* ---------- Plan ---------- */
+if ($("p-go")) {
+  $("p-go").onclick = async () => {
+    const params = new URLSearchParams({ stake: $("p-stake").value, target: $("p-target").value });
+    $("p-result").innerHTML = loading("Building slips for that multiplier…");
+    try {
+      const r = await getJSON("/api/plan?" + params.toString());
+      const cards = r.options.map(o => `
+        <div class="cand">
+          <h4>${o.n_legs} leg${o.n_legs > 1 ? "s" : ""} at ${fmt(o.combined_price, 2)}×
+            <span class="tag obs">observed</span></h4>
+          ${o.legs.map(l => `<div class="caveat">${l.fixture} — ${l.selection} at ${fmt(l.price, 2)}</div>`).join("")}
+          ${kv([
+            ["Market-implied probability" + tag("estimated"), pct(o.implied_probability, 2)],
+            ["Net if it wins" + tag("hypothetical"), "KSh " + fmt(o.net_if_won, 0)],
+            ["Loss if it fails", "KSh -" + fmt(o.loss_if_lost, 0)],
+            ["Expected net", "KSh " + fmt(o.expected_net, 2)],
+          ])}
+          ${meter(o.implied_probability)}
+        </div>`).join("");
+      $("p-result").innerHTML = `
+        <div class="card">
+          <div class="verdict ${r.found ? "" : "warn"}">${r.verdict}</div>
+          ${cards}
+          ${caveats(r.caveats)}
+        </div>`;
+    } catch (err) { $("p-result").innerHTML = `<div class="card bad">${err.message}</div>`; }
+  };
+}
 
 /* ---------- Structures ---------- */
 $("st-go").onclick = async () => {

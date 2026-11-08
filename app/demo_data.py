@@ -62,7 +62,8 @@ def synthetic_fixtures(n: int = 120, seed: int = 20261105) -> list[Fixture]:
 
         out.append(Fixture(
             div=div,
-            date=f"{1 + i % 28:02d}/0{1 + i % 9}/2023",
+            # Match-days, not one fixture per day: a slip needs several matches on the same date.
+            date=f"{1 + (i // 8) % 28:02d}/0{1 + (i // 8) % 9}/2023",
             home=home,
             away=away,
             odds=books,

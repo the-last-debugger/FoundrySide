@@ -68,6 +68,7 @@ GENERATORS = [
     ("research/jackpot_mechanics.py", ()),
     ("research/user_simulation.py", ()),
     ("research/slip_rules.py", ()),
+    ("research/slip_model.py", ()),
 ]
 
 

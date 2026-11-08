@@ -16,7 +16,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from app import engine, journal
+from app import engine, journal, planner
 
 UI = Path(__file__).resolve().parent / "ui"
 FIXTURES: list[engine.Fixture] = []
@@ -83,6 +83,16 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/api/journal/review":
             by_key = {f.key: f for f in FIXTURES}
             return json_response(self, journal.review(by_key))
+
+        if path == "/api/plan":
+            try:
+                stake = float((query.get("stake") or ["100"])[0])
+                target = float((query.get("target") or ["10"])[0])
+                tolerance = float((query.get("tolerance") or ["0.15"])[0])
+                max_legs = int((query.get("max_legs") or ["3"])[0])
+                return json_response(self, planner.plan(stake, target, tolerance, max_legs, FIXTURES))
+            except ValueError as exc:
+                return error(self, str(exc) or "invalid planner input")
 
         if path == "/api/structures":
             try:

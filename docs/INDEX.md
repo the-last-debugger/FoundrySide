@@ -2,7 +2,7 @@
 
 # Documentation index
 
-Every document in `docs/`: **35** files. Generated, so it cannot fall behind the directory.
+Every document in `docs/`: **36** files. Generated, so it cannot fall behind the directory.
 
 | Document | Title | Role | What it is for |
 | --- | --- | --- | --- |
@@ -29,6 +29,7 @@ Every document in `docs/`: **35** files. Generated, so it cannot fall behind the
 | [PREREG-JACKPOT.md](PREREG-JACKPOT.md) | Pre-registration — jackpot pool mechanics | Preregistration | Written before a run; fixes the estimand |
 | [PREREG-ROBUSTNESS.md](PREREG-ROBUSTNESS.md) | Pre-registration — robustness and transfer of the disagreement finding | Preregistration | Written before a run; fixes the estimand |
 | [PREREG-SHRINKAGE.md](PREREG-SHRINKAGE.md) | Pre-registration — disagreement-aware shrinkage | Preregistration | Written before a run; fixes the estimand |
+| [PREREG-SLIP-MODEL.md](PREREG-SLIP-MODEL.md) | Pre-registration — can a model predict slip success? | Preregistration | Written before a run; fixes the estimand |
 | [PREREG-SLIPS.md](PREREG-SLIPS.md) | Pre-registration — daily slip selection and monitoring | Preregistration | Written before a run; fixes the estimand |
 | [PREREG-STAKE.md](PREREG-STAKE.md) | Pre-registration — stake and multiplier structures | Preregistration | Written before a run; fixes the estimand |
 | [PREREG-USER-SIM.md](PREREG-USER-SIM.md) | Pre-registration — what a user with KSh 100–300 would have done | Preregistration | Written before a run; fixes the estimand |
@@ -66,6 +67,7 @@ Every document in `docs/`: **35** files. Generated, so it cannot fall behind the
 - **[PREREG-JACKPOT.md](PREREG-JACKPOT.md)** — Written before the run.
 - **[PREREG-ROBUSTNESS.md](PREREG-ROBUSTNESS.md)** — E18 reported that after forward calibration the model's deficit is concentrated where it departs
 - **[PREREG-SHRINKAGE.md](PREREG-SHRINKAGE.md)** — E18 found that the model's deficit is not uniform: where it nearly agrees with the market it loses
+- **[PREREG-SLIP-MODEL.md](PREREG-SLIP-MODEL.md)** — Written before fitting.
 - **[PREREG-SLIPS.md](PREREG-SLIPS.md)** — Written before the rules were evaluated on forward seasons.
 - **[PREREG-STAKE.md](PREREG-STAKE.md)** — Written before the analysis.
 - **[PREREG-USER-SIM.md](PREREG-USER-SIM.md)** — Written before the run.
@@ -82,7 +84,7 @@ Every document in `docs/`: **35** files. Generated, so it cannot fall behind the
 
 | Role | Documents |
 | --- | --- |
-| Preregistration | 9 |
+| Preregistration | 10 |
 | Document | 6 |
 | Assessment | 2 |
 | Data | 2 |

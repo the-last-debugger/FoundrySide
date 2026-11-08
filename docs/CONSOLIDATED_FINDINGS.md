@@ -216,6 +216,7 @@ produced it.
 | JACKPOT_MECHANICS.md | E26 | pool break-even is 1/(1-takeout) in a large field; no rules obtainable, so arithmetic only |
 | USER_SIMULATION.md | E27 | KSh 100-300 on one day: mean near zero at average prices, 45-85% of days down depending on ambition |
 | SLIP_RULES.md | E28 | five slip rules to Nov 2026: forward means look positive at the best quote, intervals straddle zero at the average quote |
+| SLIP_MODEL.md | E29 | a fitted slip model does not beat multiplying the market probabilities out of time |
 | DISPERSION_CHECK.md | method | the logit-space projection is not comparable to the de-vigged statistic (ratio 0.037) |
 | SHRINKAGE_POLICY.md | E19 | six shrinkage policies; none beats market-only, which is the optimum |
 | PRICE_INVENTORY.md | E20 | opening and closing snapshots across books; the best quoted price exceeds the average quote, the Max overround is not an opportunity |

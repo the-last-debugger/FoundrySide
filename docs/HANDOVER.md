@@ -6,7 +6,7 @@ One page. What exists, how to verify it, what it does not claim, and what to do 
 
 | Direction | Outcome |
 |---|---|
-| Find a way to beat the closing price | **Closed.** 28 experiments; the model is worse than the market on log loss, ranking and the hard pick. `CONCLUSION.md` |
+| Find a way to beat the closing price | **Closed.** 29 experiments; the model is worse than the market on log loss, ranking and the hard pick. `CONCLUSION.md` |
 | Build a market-intelligence capability instead | **Delivered as a local demonstrator**, `app/`, seven tabs, no external assets |
 | Answer the stake/multiplier question | **Answered.** E25: matched on net, higher odds risks less, wins less often, loses less in expectation; neither is better value |
 | Keep the record honest | Guaranteed by tests, an audit, and pre-registrations committed before each run |
@@ -31,10 +31,10 @@ A generated [static snapshot](DEMO_SNAPSHOT.html) shows the three main views wit
 ## Verify it
 
 ```bash
-python -m unittest discover -s tests    # 374 tests
+python -m unittest discover -s tests    # 383 tests
 python scripts/audit.py                 # 13 cross-document checks
 python scripts/collab_check.py          # bridge consistency
-python scripts/verify_all.py --full     # tests + clone + 37-generator sweep (~20 min)
+python scripts/verify_all.py --full     # tests + clone + 38-generator sweep (~20 min)
 ```
 
 Latest CI: see `docs/CI_EVIDENCE.md`, regenerated from the Actions API rather than typed.

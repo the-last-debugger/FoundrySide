@@ -1,18 +1,18 @@
 {
   "revision": {
-    "value": "682a8f0",
+    "value": "17865c2",
     "source": "git"
   },
   "experiments": {
-    "value": 28,
+    "value": 29,
     "source": "docs/RESEARCH_PROGRAMME.md"
   },
   "generators": {
-    "value": 37,
+    "value": 38,
     "source": "scripts/repro_sweep.py"
   },
   "reports": {
-    "value": 38,
+    "value": 39,
     "source": "research/*.md"
   },
   "audit checks": {
@@ -20,7 +20,7 @@
     "source": "scripts/audit.py"
   },
   "tests": {
-    "value": 374,
+    "value": 383,
     "source": "python -m unittest discover -s tests"
   },
   "bridge entries": {
