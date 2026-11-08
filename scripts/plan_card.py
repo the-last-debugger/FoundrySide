@@ -54,6 +54,8 @@ def main() -> int:
     parser.add_argument("--target", type=float, default=10.0)
     parser.add_argument("--tolerance", type=float, default=0.15)
     parser.add_argument("--max-legs", type=int, default=3)
+    parser.add_argument("--json", action="store_true",
+                        help="emit the plan as JSON so another surface can consume it")
     args = parser.parse_args()
 
     fixtures = load_card(Path(args.card))
@@ -64,6 +66,11 @@ def main() -> int:
         "Probabilities are the market's own, multiplied. No model is applied beyond that product.",
         "This plan is written before kickoff, so it can be checked afterwards against the result.",
     ]
+
+    if args.json:
+        import json as _json
+        print(_json.dumps(result, indent=2, default=str))
+        return 0
 
     print(f"card: {len(fixtures)} fixtures | stake KSh {args.stake:.0f} | target {args.target:g}x")
     if not result["found"]:
